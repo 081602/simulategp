@@ -10,9 +10,14 @@
         <h2 class="fw-bold mb-0"><i class="bi bi-people text-warning"></i> Manage Teams</h2>
         <p class="text-secondary mb-0">{{ teams|length }} teams registered</p>
       </div>
-      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left me-1"></i> Dashboard
-      </a>
+      <div class="d-flex gap-2">
+        <button class="btn btn-warning text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#createTeamModal">
+          <i class="bi bi-person-plus-fill me-1"></i> Add Team
+        </button>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left me-1"></i> Dashboard
+        </a>
+      </div>
     </div>
 
     <div class="card border-secondary shadow">
@@ -82,6 +87,50 @@
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- Create Team Modal -->
+<div class="modal fade" id="createTeamModal" tabindex="-1" aria-labelledby="createTeamModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark border-secondary">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title text-warning" id="createTeamModalLabel">
+          <i class="bi bi-person-plus-fill"></i> Add New Team
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{{ url_for('admin_create_team') }}">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Firm Name</label>
+            <input type="text" class="form-control bg-dark text-white border-secondary"
+                   name="firm_name" required placeholder="e.g. Apex Capital">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Username</label>
+            <input type="text" class="form-control bg-dark text-white border-secondary"
+                   name="username" required placeholder="e.g. team4">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Password</label>
+            <input type="text" class="form-control bg-dark text-white border-secondary"
+                   name="password" required placeholder="e.g. pass4">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Starting Capital ($M)</label>
+            <input type="number" class="form-control bg-dark text-white border-secondary"
+                   name="starting_capital" value="100" min="1" step="1" required>
+          </div>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-warning text-dark fw-semibold">
+            <i class="bi bi-person-plus-fill"></i> Create Team
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 {% endblock %}

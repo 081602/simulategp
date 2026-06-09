@@ -923,6 +923,52 @@ def admin_teams():
     return render_template('admin/teams.html', game=game, teams=teams)
 
 
+@app.route('/admin/teams/create', methods=['POST'])
+@login_required
+@admin_required
+def admin_create_team():
+    game = Game.query.first()
+    if not game:
+        flash('No game found. Please set up a game first.', 'warning')
+        return redirect(url_for('admin_teams'))
+
+    firm_name = request.form.get('firm_name', '').strip()
+    username = request.form.get('username', '').strip()
+    password = request.form.get('password', '').strip()
+    starting_capital = float(request.form.get('starting_capital', 100))
+
+    if not firm_name or not username or not password:
+        flash('Firm name, username, and password are required.', 'danger')
+        return redirect(url_for('admin_teams'))
+
+    if Team.query.filter_by(username=username).first():
+        flash(f'Username "{username}" is already taken.', 'danger')
+        return redirect(url_for('admin_teams'))
+
+    team = Team(
+        game_id=game.id,
+        username=username,
+        firm_name=firm_name,
+        reputation=2.0,
+        query_points=game.query_points_per_year
+    )
+    team.set_password(password)
+    db.session.add(team)
+    db.session.flush()
+
+    fund = Fund(
+        team_id=team.id,
+        name=f'{firm_name} Fund I',
+        total_capital=starting_capital,
+        available_capital=starting_capital,
+        year_raised=game.current_year
+    )
+    db.session.add(fund)
+    db.session.commit()
+    flash(f'Team "{firm_name}" created successfully.', 'success')
+    return redirect(url_for('admin_teams'))
+
+
 @app.route('/admin/team/<int:team_id>/edit', methods=['GET', 'POST'])
 @login_required
 @admin_required
