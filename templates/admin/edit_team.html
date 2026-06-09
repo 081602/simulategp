@@ -26,14 +26,14 @@
           <div class="row g-3">
 
             <div class="col-md-8">
-              <label for="firm_name" class="form-label fw-semibold">Firm Name</label>
+              <label for="firm_name" class="form-label fw-semibold text-white">Firm Name</label>
               <input type="text" class="form-control bg-dark text-white border-secondary"
                      id="firm_name" name="firm_name"
                      value="{{ team.firm_name }}" maxlength="100" required>
             </div>
 
             <div class="col-md-4">
-              <label for="query_points" class="form-label fw-semibold">Query Points</label>
+              <label for="query_points" class="form-label fw-semibold text-white">Query Points</label>
               <input type="number" class="form-control bg-dark text-white border-secondary"
                      id="query_points" name="query_points"
                      value="{{ team.query_points }}" min="0" max="999" required>
@@ -76,7 +76,7 @@
         </div>
         <div class="card-body p-4">
           <div class="col-md-8">
-            <label for="new_password" class="form-label fw-semibold">New Password <span class="text-secondary small fw-normal">(leave blank to keep current)</span></label>
+            <label for="new_password" class="form-label fw-semibold text-white">New Password <span class="text-secondary small fw-normal">(leave blank to keep current)</span></label>
             <input type="password" class="form-control bg-dark text-white border-secondary"
                    id="new_password" name="new_password"
                    autocomplete="new-password"
@@ -96,7 +96,7 @@
           <div class="row g-3">
             {% for fund in team.funds %}
             <div class="col-md-6">
-              <label for="fund_cap_{{ fund.id }}" class="form-label fw-semibold">
+              <label for="fund_cap_{{ fund.id }}" class="form-label fw-semibold text-white">
                 {{ fund.name }}
                 <span class="text-secondary small fw-normal">($M)</span>
               </label>

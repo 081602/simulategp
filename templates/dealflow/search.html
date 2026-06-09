@@ -31,7 +31,7 @@
           <div class="row g-3 align-items-end">
 
             <div class="col-md-4">
-              <label for="sector" class="form-label fw-semibold">Sector</label>
+              <label for="sector" class="form-label fw-semibold text-white">Sector</label>
               <select class="form-select bg-dark text-white border-secondary" id="sector" name="sector">
                 <option value="">All Sectors</option>
                 {% for s in sectors %}
@@ -43,7 +43,7 @@
             </div>
 
             <div class="col-md-3">
-              <label for="stage" class="form-label fw-semibold">Stage</label>
+              <label for="stage" class="form-label fw-semibold text-white">Stage</label>
               <select class="form-select bg-dark text-white border-secondary" id="stage" name="stage">
                 <option value="">All Stages</option>
                 <option value="startup"      {% if request.form.get('stage') == 'startup' %}selected{% endif %}>Startup</option>
@@ -54,7 +54,7 @@
             </div>
 
             <div class="col-md-3">
-              <label for="max_capital" class="form-label fw-semibold">Max Capital ($M)</label>
+              <label for="max_capital" class="form-label fw-semibold text-white">Max Capital ($M)</label>
               <input type="number"
                      class="form-control bg-dark text-white border-secondary"
                      id="max_capital"
@@ -111,11 +111,11 @@
 
               <div class="row g-2 mb-2">
                 <div class="col-6">
-                  <small class="text-secondary d-block">Capital Requested</small>
+                  <small class="text-light d-block">Capital Requested</small>
                   <span class="fw-bold">${{ "{:,.1f}M".format(company.capital_requested) }}</span>
                 </div>
                 <div class="col-6">
-                  <small class="text-secondary d-block">Expected Multiple</small>
+                  <small class="text-light d-block">Expected Multiple</small>
                   <span class="fw-bold text-success">{{ "%.2f"|format(company.expected_multiple) }}x</span>
                 </div>
               </div>

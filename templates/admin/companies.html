@@ -65,7 +65,7 @@
               {% if not status_filter or company.status == status_filter %}
               <tr>
                 <td class="fw-semibold">{{ company.name }}</td>
-                <td class="text-secondary small">{{ company.sector }}</td>
+                <td class="text-light small">{{ company.sector }}</td>
                 <td>
                   {% if company.stage == 'startup' %}<span class="badge bg-danger">Startup</span>
                   {% elif company.stage == 'developing' %}<span class="badge bg-warning text-dark">Developing</span>
@@ -84,7 +84,7 @@
                 <td class="text-center text-secondary">Year {{ company.year_available }}</td>
                 <td class="text-end">${{ "{:,.1f}M".format(company.capital_requested) }}</td>
                 <td class="text-end fw-bold">${{ "{:,.1f}M".format(company.current_valuation) }}</td>
-                <td class="text-secondary small">
+                <td class="text-light small">
                   {% if company.lead_team %}{{ company.lead_team.firm_name }}{% else %}&mdash;{% endif %}
                 </td>
                 <td class="text-end fw-bold text-success">{{ "%.2f"|format(company.expected_multiple) }}x</td>

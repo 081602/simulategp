@@ -26,21 +26,21 @@
           <div class="row g-3">
 
             <div class="col-12">
-              <label for="name" class="form-label fw-semibold">Company Name</label>
+              <label for="name" class="form-label fw-semibold text-white">Company Name</label>
               <input type="text" class="form-control bg-dark text-white border-secondary"
                      id="name" name="name"
                      value="{{ company.name }}" maxlength="150" required>
             </div>
 
             <div class="col-12">
-              <label for="description" class="form-label fw-semibold">Description</label>
+              <label for="description" class="form-label fw-semibold text-white">Description</label>
               <textarea class="form-control bg-dark text-white border-secondary"
                         id="description" name="description" rows="4"
                         maxlength="1000">{{ company.description or '' }}</textarea>
             </div>
 
             <div class="col-md-6">
-              <label for="current_valuation" class="form-label fw-semibold">Current Valuation ($)</label>
+              <label for="current_valuation" class="form-label fw-semibold text-white">Current Valuation ($)</label>
               <div class="input-group">
                 <span class="input-group-text bg-dark border-secondary text-secondary">$</span>
                 <input type="number" class="form-control bg-dark text-white border-secondary"
@@ -51,7 +51,7 @@
             </div>
 
             <div class="col-md-6">
-              <label for="status" class="form-label fw-semibold">Status</label>
+              <label for="status" class="form-label fw-semibold text-white">Status</label>
               <select class="form-select bg-dark text-white border-secondary" id="status" name="status">
                 <option value="available"            {% if company.status == 'available' %}selected{% endif %}>Available</option>
                 <option value="term_sheet_submitted" {% if company.status == 'term_sheet_submitted' %}selected{% endif %}>Term Sheet Submitted</option>
@@ -63,7 +63,7 @@
             </div>
 
             <div class="col-md-6">
-              <label for="management_quality" class="form-label fw-semibold">Management Quality</label>
+              <label for="management_quality" class="form-label fw-semibold text-white">Management Quality</label>
               <select class="form-select bg-dark text-white border-secondary" id="management_quality" name="management_quality">
                 <option value="excellent" {% if company.management_quality == 'excellent' %}selected{% endif %}>Excellent</option>
                 <option value="good"      {% if company.management_quality == 'good' %}selected{% endif %}>Good</option>
@@ -77,7 +77,7 @@
                 <input class="form-check-input" type="checkbox" id="is_cash_flow_positive"
                        name="is_cash_flow_positive" value="1"
                        {% if company.is_cash_flow_positive %}checked{% endif %}>
-                <label class="form-check-label" for="is_cash_flow_positive">
+                <label class="form-check-label text-white" for="is_cash_flow_positive">
                   <i class="bi bi-graph-up-arrow text-success me-1"></i> Cash Flow Positive
                 </label>
               </div>
@@ -85,7 +85,7 @@
                 <input class="form-check-input" type="checkbox" id="dividend_eligible"
                        name="dividend_eligible" value="1"
                        {% if company.dividend_eligible %}checked{% endif %}>
-                <label class="form-check-label" for="dividend_eligible">
+                <label class="form-check-label text-white" for="dividend_eligible">
                   <i class="bi bi-cash-coin text-success me-1"></i> Dividend Eligible
                 </label>
               </div>

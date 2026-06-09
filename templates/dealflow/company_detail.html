@@ -142,7 +142,7 @@
 
             <!-- Expected Multiple Highlight -->
             <div class="text-center mb-4 p-3 rounded" style="background:#0f2d1a;">
-              <div class="text-secondary small mb-1">Expected Return Multiple</div>
+              <div class="text-light small mb-1">Expected Return Multiple</div>
               <div class="display-5 fw-bold text-success">{{ "%.2f"|format(company.expected_multiple) }}x</div>
             </div>
 
@@ -194,7 +194,7 @@
 
           <!-- Refer to Team -->
           <div class="col-md-5">
-            <label class="form-label fw-semibold text-secondary small">Refer to Another Team</label>
+            <label class="form-label fw-semibold text-white">Refer to Another Team</label>
             <form method="POST" action="{{ url_for('refer_company', company_id=company.id) }}" class="d-flex gap-2">
               <select class="form-select bg-dark text-white border-secondary" name="team_id" required>
                 <option value="">Select a team&hellip;</option>
@@ -216,7 +216,7 @@
 
           <!-- Term Sheet -->
           <div class="col-md-6">
-            <label class="form-label fw-semibold text-secondary small">Investment Action</label>
+            <label class="form-label fw-semibold text-white">Investment Action</label>
             <div>
               {% if existing_ts %}
               <div class="d-flex align-items-center gap-2">

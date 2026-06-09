@@ -17,26 +17,26 @@
       <div class="col-md-6">
         <div class="card border-success shadow text-center" style="background:rgba(25,135,84,0.1) !important;">
           <div class="card-body py-4">
-            <div class="text-secondary small mb-1">
+            <div class="text-light small mb-1">
               <i class="bi bi-check-circle-fill text-success me-1"></i> Realized IRR
             </div>
             <div class="display-4 fw-bold text-success irr-display">
               {{ "%.1f"|format(realized_irr * 100) }}%
             </div>
-            <div class="text-secondary small">From exited investments</div>
+            <div class="text-light small">From exited investments</div>
           </div>
         </div>
       </div>
       <div class="col-md-6">
         <div class="card border-info shadow text-center" style="background:rgba(13,202,240,0.1) !important;">
           <div class="card-body py-4">
-            <div class="text-secondary small mb-1">
+            <div class="text-light small mb-1">
               <i class="bi bi-graph-up-arrow text-info me-1"></i> Unrealized IRR
             </div>
             <div class="display-4 fw-bold text-info irr-display">
               {{ "%.1f"|format(unrealized_irr * 100) }}%
             </div>
-            <div class="text-secondary small">Based on current valuations</div>
+            <div class="text-light small">Based on current valuations</div>
           </div>
         </div>
       </div>
@@ -57,19 +57,19 @@
           <div class="card-body">
             <div class="row g-2 mb-3">
               <div class="col-6">
-                <div class="text-secondary small">Total Capital</div>
+                <div class="text-light small">Total Capital</div>
                 <div class="fw-bold">${{ "{:,.1f}M".format(fund.total_capital) }}</div>
               </div>
               <div class="col-6">
-                <div class="text-secondary small">Available</div>
+                <div class="text-light small">Available</div>
                 <div class="fw-bold text-success">${{ "{:,.1f}M".format(fund.available_capital) }}</div>
               </div>
               <div class="col-6">
-                <div class="text-secondary small">Deployed</div>
+                <div class="text-light small">Deployed</div>
                 <div class="fw-bold text-warning">${{ "{:,.1f}M".format(fund.deployed_capital) }}</div>
               </div>
               <div class="col-6">
-                <div class="text-secondary small">Deployment</div>
+                <div class="text-light small">Deployment</div>
                 <div class="fw-bold">{{ "%.1f"|format(deployment_pct) }}%</div>
               </div>
             </div>

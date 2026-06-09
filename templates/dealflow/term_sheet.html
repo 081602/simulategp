@@ -25,27 +25,27 @@
       <div class="card-body py-3">
         <div class="row g-3 text-center">
           <div class="col-4 col-md-2">
-            <div class="text-secondary small">Suggested Valuation</div>
+            <div class="text-light small">Suggested Valuation</div>
             <div class="fw-bold">${{ "{:,.1f}M".format(company.current_valuation) }}</div>
           </div>
           <div class="col-4 col-md-2">
-            <div class="text-secondary small">Capital Requested</div>
+            <div class="text-light small">Capital Requested</div>
             <div class="fw-bold">${{ "{:,.1f}M".format(company.capital_requested) }}</div>
           </div>
           <div class="col-4 col-md-2">
-            <div class="text-secondary small">Expected Multiple</div>
+            <div class="text-light small">Expected Multiple</div>
             <div class="fw-bold text-success">{{ "%.2f"|format(company.expected_multiple) }}x</div>
           </div>
           <div class="col-4 col-md-2">
-            <div class="text-secondary small">Rolled Equity</div>
+            <div class="text-light small">Rolled Equity</div>
             <div class="fw-bold">{{ "%.0f"|format(company.rolled_equity_min * 100) }}%&mdash;{{ "%.0f"|format(company.rolled_equity_max * 100) }}%</div>
           </div>
           <div class="col-4 col-md-2">
-            <div class="text-secondary small">Debt Capacity</div>
+            <div class="text-light small">Debt Capacity</div>
             <div class="fw-bold">{% if company.debt_capacity > 0 %}${{ "{:,.1f}M".format(company.debt_capacity) }}{% else %}None{% endif %}</div>
           </div>
           <div class="col-4 col-md-2">
-            <div class="text-secondary small">Aggressive Terms</div>
+            <div class="text-light small">Aggressive Terms</div>
             <div class="fw-bold">{% if company.allows_aggressive_terms %}<i class="bi bi-check-circle-fill text-success"></i>{% else %}<i class="bi bi-x-circle-fill text-danger"></i>{% endif %}</div>
           </div>
         </div>
@@ -108,7 +108,7 @@
             </div>
 
             <div class="col-md-6">
-              <label for="fund_id" class="form-label fw-semibold">Fund</label>
+              <label for="fund_id" class="form-label fw-semibold text-white">Fund</label>
               <select class="form-select bg-dark text-white border-secondary" id="fund_id" name="fund_id" required>
                 <option value="">Select a fund&hellip;</option>
                 {% for fund in funds %}
@@ -132,7 +132,7 @@
 
           <div class="form-check form-switch mb-3">
             <input class="form-check-input" type="checkbox" id="willing_to_fill" name="willing_to_fill" value="1">
-            <label class="form-check-label fw-semibold" for="willing_to_fill">
+            <label class="form-check-label fw-semibold text-white" for="willing_to_fill">
               Willing to be a Fill Investor
             </label>
             <div class="form-text text-secondary">Allow other teams to bring you in as a co-investor</div>
@@ -141,14 +141,14 @@
           <div id="fillInvestorFields" class="d-none">
             <div class="row g-3">
               <div class="col-md-6">
-                <label for="min_lead_reputation" class="form-label fw-semibold">Minimum Lead Reputation (0&ndash;5)</label>
+                <label for="min_lead_reputation" class="form-label fw-semibold text-white">Minimum Lead Reputation (0&ndash;5)</label>
                 <input type="number" class="form-control bg-dark text-white border-secondary"
                        id="min_lead_reputation" name="min_lead_reputation"
                        min="0" max="5" step="0.5" value="3">
                 <div class="form-text text-secondary">Only accept fill positions from leads with this reputation or higher</div>
               </div>
               <div class="col-md-6">
-                <label for="max_fill_equity" class="form-label fw-semibold">Max Fill Equity Amount ($)</label>
+                <label for="max_fill_equity" class="form-label fw-semibold text-white">Max Fill Equity Amount ($)</label>
                 <input type="number" class="form-control bg-dark text-white border-secondary"
                        id="max_fill_equity" name="max_fill_equity"
                        min="0" step="0.1" placeholder="e.g. 5000000">
@@ -170,11 +170,11 @@
 
             <!-- Liquidation Preference -->
             <div class="col-md-4">
-              <label class="form-label fw-semibold">Liquidation Preference</label>
+              <label class="form-label fw-semibold text-white">Liquidation Preference</label>
               <div class="d-flex flex-column gap-2">
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="liquidation_preference" id="liq_1x" value="1" checked>
-                  <label class="form-check-label" for="liq_1x">1x (Standard)</label>
+                  <label class="form-check-label text-white" for="liq_1x">1x (Standard)</label>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="liquidation_preference" id="liq_2x" value="2"
@@ -194,11 +194,11 @@
 
             <!-- Participation -->
             <div class="col-md-4">
-              <label class="form-label fw-semibold">Participation</label>
+              <label class="form-label fw-semibold text-white">Participation</label>
               <div class="form-check form-switch mt-2">
                 <input class="form-check-input" type="checkbox" id="participation" name="participation" value="1"
                   {% if not company.allows_aggressive_terms %}disabled{% endif %}>
-                <label class="form-check-label" for="participation">
+                <label class="form-check-label text-white" for="participation">
                   Participating Preferred
                   {% if not company.allows_aggressive_terms %}
                   <br><span class="badge bg-secondary">Not Allowed</span>
@@ -209,7 +209,7 @@
 
             <!-- Anti-Dilution -->
             <div class="col-md-4">
-              <label for="anti_dilution" class="form-label fw-semibold">Anti-Dilution Protection</label>
+              <label for="anti_dilution" class="form-label fw-semibold text-white">Anti-Dilution Protection</label>
               <select class="form-select bg-dark text-white border-secondary" id="anti_dilution" name="anti_dilution">
                 <option value="none">None</option>
                 <option value="weighted" {% if not company.allows_aggressive_terms %}disabled{% endif %}>
@@ -233,17 +233,17 @@
         <div class="card-body p-4">
 
           <div class="mb-3">
-            <label class="form-label fw-semibold">Term Sheet Type</label>
+            <label class="form-label fw-semibold text-white">Term Sheet Type</label>
             <div class="d-flex gap-4">
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="ts_type" id="ts_solo" value="solo" checked>
-                <label class="form-check-label" for="ts_solo">
+                <label class="form-check-label text-white" for="ts_solo">
                   <i class="bi bi-person-fill text-warning me-1"></i> Solo Deal
                 </label>
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="ts_type" id="ts_syndicate" value="syndicate">
-                <label class="form-check-label" for="ts_syndicate">
+                <label class="form-check-label text-white" for="ts_syndicate">
                   <i class="bi bi-people-fill text-info me-1"></i> Syndicate
                 </label>
               </div>
@@ -251,7 +251,7 @@
           </div>
 
           <div id="syndicatePartners" class="d-none">
-            <label class="form-label fw-semibold">Syndicate Partners</label>
+            <label class="form-label fw-semibold text-white">Syndicate Partners</label>
             <div class="form-text text-secondary mb-2">Select teams to invite as syndicate partners. They must approve to be included.</div>
             <div class="row g-2">
               {% for team in teams %}
@@ -259,9 +259,9 @@
                 <div class="col-md-4">
                   <div class="form-check card border-secondary p-2 ps-4">
                     <input class="form-check-input" type="checkbox" name="syndicate_partners" value="{{ team.id }}" id="partner_{{ team.id }}">
-                    <label class="form-check-label" for="partner_{{ team.id }}">
+                    <label class="form-check-label text-white" for="partner_{{ team.id }}">
                       <strong>{{ team.firm_name }}</strong>
-                      <div class="text-secondary small">
+                      <div class="text-light small">
                         {% for i in range(1, 6) %}
                           {% if i <= team.reputation %}
                             <i class="bi bi-star-fill text-warning" style="font-size:0.65rem;"></i>

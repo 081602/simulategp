@@ -24,7 +24,7 @@
       <div class="card-body p-4">
         <div class="row g-4 text-center">
           <div class="col-6 col-md-3">
-            <div class="text-secondary small mb-1">Current Valuation</div>
+            <div class="text-light small mb-1">Current Valuation</div>
             {% set is_distressed = company.current_valuation < company.post_money_valuation * 0.5 %}
             <div class="fw-bold fs-4 {% if is_distressed %}text-danger{% else %}text-success{% endif %}">
               ${{ "{:,.1f}M".format(company.current_valuation) }}
@@ -34,11 +34,11 @@
             {% endif %}
           </div>
           <div class="col-6 col-md-3">
-            <div class="text-secondary small mb-1">Post-Money Valuation</div>
+            <div class="text-light small mb-1">Post-Money Valuation</div>
             <div class="fw-bold fs-4">${{ "{:,.1f}M".format(company.post_money_valuation) }}</div>
           </div>
           <div class="col-6 col-md-3">
-            <div class="text-secondary small mb-1">Debt Outstanding</div>
+            <div class="text-light small mb-1">Debt Outstanding</div>
             <div class="fw-bold fs-4 {% if company.debt_outstanding > 0 %}text-warning{% else %}text-secondary{% endif %}">
               {% if company.debt_outstanding > 0 %}
                 ${{ "{:,.1f}M".format(company.debt_outstanding) }}
@@ -48,7 +48,7 @@
             </div>
           </div>
           <div class="col-6 col-md-3">
-            <div class="text-secondary small mb-1">Company Cash</div>
+            <div class="text-light small mb-1">Company Cash</div>
             <div class="fw-bold fs-4 text-info">${{ "{:,.1f}M".format(company.company_funds) }}</div>
           </div>
         </div>

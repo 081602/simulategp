@@ -55,7 +55,7 @@
             <!-- Capital -->
             <div class="border-top border-secondary pt-3 mt-auto">
               <div class="d-flex align-items-center justify-content-between">
-                <span class="text-secondary small"><i class="bi bi-cash-stack"></i> Available Capital</span>
+                <span class="text-light small"><i class="bi bi-cash-stack"></i> Available Capital</span>
                 <span class="fw-bold text-success">
                   ${{ "{:,.1f}M".format(team.total_available_capital) if team.total_available_capital >= 1_000_000 else "${:,.0f}K".format(team.total_available_capital / 1_000) }}
                 </span>
