@@ -11,7 +11,7 @@
       </a>
       <div>
         <h2 class="fw-bold mb-0"><i class="bi bi-gear-wide-connected text-warning"></i> Run Crank</h2>
-        <p class="text-secondary mb-0">Advance the simulation â€" irreversible action</p>
+        <p class="text-secondary mb-0">Advance the simulation &mdash; irreversible action</p>
       </div>
     </div>
 
@@ -22,7 +22,7 @@
         <div class="fs-3 fw-bold">
           <i class="bi bi-calendar3 text-info me-2"></i>
           Year {{ game.current_year }} / {{ game.total_years }}
-          <span class="badge bg-info text-dark ms-2 fs-5">Phase {{ game.current_phase }} â€" {{ game.phase_label }}</span>
+          <span class="badge bg-info text-dark ms-2 fs-5">Phase {{ game.current_phase }} &mdash; {{ game.phase_label }}</span>
         </div>
         {% if game.status == 'paused' %}
         <div class="mt-2">
@@ -39,7 +39,7 @@
         {% if game.current_phase == 1 and game.status != 'paused' %}border-warning{% else %}border-secondary{% endif %}"
         style="{% if game.current_phase == 1 and game.status != 'paused' %}background:rgba(255,193,7,0.1) !important;{% endif %}">
         <h5 class="mb-0 fw-bold {% if game.current_phase == 1 %}text-warning{% else %}text-secondary{% endif %}">
-          <i class="bi bi-1-circle-fill me-2"></i> Phase 1 Crank â€" Term Sheet Processing
+          <i class="bi bi-1-circle-fill me-2"></i> Phase 1 Crank &mdash; Term Sheet Processing
           {% if game.current_phase != 1 %}<span class="badge bg-secondary ms-2 fs-6">Not Active</span>{% endif %}
         </h5>
       </div>
@@ -106,7 +106,7 @@
         {% if game.current_phase == 2 and game.status != 'paused' %}border-info{% else %}border-secondary{% endif %}"
         style="{% if game.current_phase == 2 and game.status != 'paused' %}background:rgba(13,202,240,0.1) !important;{% endif %}">
         <h5 class="mb-0 fw-bold {% if game.current_phase == 2 %}text-info{% else %}text-secondary{% endif %}">
-          <i class="bi bi-2-circle-fill me-2"></i> Phase 2 Crank â€" Deal Finalization &amp; Year Advance
+          <i class="bi bi-2-circle-fill me-2"></i> Phase 2 Crank &mdash; Deal Finalization &amp; Year Advance
           {% if game.current_phase != 2 %}<span class="badge bg-secondary ms-2 fs-6">Not Active</span>{% endif %}
         </h5>
       </div>

@@ -197,7 +197,7 @@
             <label class="form-label fw-semibold text-secondary small">Refer to Another Team</label>
             <form method="POST" action="{{ url_for('refer_company', company_id=company.id) }}" class="d-flex gap-2">
               <select class="form-select bg-dark text-white border-secondary" name="team_id" required>
-                <option value="">Select a teamâ€¦</option>
+                <option value="">Select a team&hellip;</option>
                 {% for team in teams %}
                   {% if team.id != current_user.id %}
                   <option value="{{ team.id }}">{{ team.firm_name }}</option>

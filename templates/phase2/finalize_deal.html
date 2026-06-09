@@ -1,5 +1,5 @@
 ﻿{% extends "base.html" %}
-{% block title %}Finalize Deal â€" {{ company.name }}{% endblock %}
+{% block title %}Finalize Deal &mdash; {{ company.name }}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -11,7 +11,7 @@
       </a>
       <div>
         <h2 class="fw-bold mb-0"><i class="bi bi-check2-square text-warning"></i> Finalize Deal</h2>
-        <p class="text-secondary mb-0">Phase 2 â€" Confirm final terms and close the investment</p>
+        <p class="text-secondary mb-0">Phase 2 &mdash; Confirm final terms and close the investment</p>
       </div>
     </div>
 
@@ -108,7 +108,7 @@
                      step="1"
                      value="{{ "%.0f"|format(company.rolled_equity_min * 100) }}" required>
               <div class="form-text text-secondary">
-                Allowed range: {{ "%.0f"|format(company.rolled_equity_min * 100) }}% â€" {{ "%.0f"|format(company.rolled_equity_max * 100) }}%
+                Allowed range: {{ "%.0f"|format(company.rolled_equity_min * 100) }}% &mdash; {{ "%.0f"|format(company.rolled_equity_max * 100) }}%
               </div>
             </div>
 
@@ -117,7 +117,7 @@
               <input type="number" class="form-control bg-dark text-white border-secondary"
                      id="mgmt_option_pct" name="mgmt_option_pct"
                      min="0" max="20" step="1" value="10">
-              <div class="form-text text-secondary">Management incentive shares (0â€"20%)</div>
+              <div class="form-text text-secondary">Management incentive shares (0&mdash;20%)</div>
             </div>
 
           </div>

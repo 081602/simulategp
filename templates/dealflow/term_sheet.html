@@ -1,5 +1,5 @@
 ﻿{% extends "base.html" %}
-{% block title %}Term Sheet â€" {{ company.name }}{% endblock %}
+{% block title %}Term Sheet &mdash; {{ company.name }}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -38,7 +38,7 @@
           </div>
           <div class="col-4 col-md-2">
             <div class="text-secondary small">Rolled Equity</div>
-            <div class="fw-bold">{{ "%.0f"|format(company.rolled_equity_min * 100) }}%â€"{{ "%.0f"|format(company.rolled_equity_max * 100) }}%</div>
+            <div class="fw-bold">{{ "%.0f"|format(company.rolled_equity_min * 100) }}%&mdash;{{ "%.0f"|format(company.rolled_equity_max * 100) }}%</div>
           </div>
           <div class="col-4 col-md-2">
             <div class="text-secondary small">Debt Capacity</div>
@@ -106,10 +106,10 @@
             <div class="col-md-6">
               <label for="fund_id" class="form-label fw-semibold">Fund</label>
               <select class="form-select bg-dark text-white border-secondary" id="fund_id" name="fund_id" required>
-                <option value="">Select a fundâ€¦</option>
+                <option value="">Select a fund&hellip;</option>
                 {% for fund in funds %}
                 <option value="{{ fund.id }}">
-                  {{ fund.name }} â€" ${{ "{:,.1f}M".format(fund.available_capital) }} available
+                  {{ fund.name }} &mdash; ${{ "{:,.1f}M".format(fund.available_capital) }} available
                 </option>
                 {% endfor %}
               </select>
@@ -137,7 +137,7 @@
           <div id="fillInvestorFields" class="d-none">
             <div class="row g-3">
               <div class="col-md-6">
-                <label for="min_lead_reputation" class="form-label fw-semibold">Minimum Lead Reputation (0–5)</label>
+                <label for="min_lead_reputation" class="form-label fw-semibold">Minimum Lead Reputation (0&ndash;5)</label>
                 <input type="number" class="form-control bg-dark text-white border-secondary"
                        id="min_lead_reputation" name="min_lead_reputation"
                        min="0" max="5" step="0.5" value="3">

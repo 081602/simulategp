@@ -1,5 +1,5 @@
 ﻿{% extends "base.html" %}
-{% block title %}Edit Team â€" {{ team.firm_name }}{% endblock %}
+{% block title %}Edit Team &mdash; {{ team.firm_name }}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -48,8 +48,8 @@
                      min="0" max="5" step="0.5"
                      value="{{ team.reputation }}">
               <div class="d-flex justify-content-between text-secondary small">
-                <span>0 â€" No Reputation</span>
-                <span>5 â€" Elite</span>
+                <span>0 &mdash; No Reputation</span>
+                <span>5 &mdash; Elite</span>
               </div>
               <!-- Star preview -->
               <div class="mt-2" id="rep_stars">
@@ -80,7 +80,7 @@
             <input type="password" class="form-control bg-dark text-white border-secondary"
                    id="new_password" name="new_password"
                    autocomplete="new-password"
-                   placeholder="Enter new password to changeâ€¦">
+                   placeholder="Enter new password to change&hellip;">
           </div>
         </div>
       </div>
@@ -92,7 +92,7 @@
           <h6 class="mb-0 fw-semibold"><i class="bi bi-wallet2 text-warning"></i> Fund Capital Adjustments</h6>
         </div>
         <div class="card-body p-4">
-          <p class="text-secondary small mb-3">Adjust available capital for each fund. Be careful â€" this does not automatically reconcile deployed capital.</p>
+          <p class="text-secondary small mb-3">Adjust available capital for each fund. Be careful &mdash; this does not automatically reconcile deployed capital.</p>
           <div class="row g-3">
             {% for fund in team.funds %}
             <div class="col-md-6">

@@ -1,5 +1,5 @@
 ﻿{% extends "base.html" %}
-{% block title %}{{ company.name }} â€" Portfolio{% endblock %}
+{% block title %}{{ company.name }} &mdash; Portfolio{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -15,7 +15,7 @@
           {% if is_lead %}<span class="badge bg-warning text-dark ms-2 fs-6"><i class="bi bi-star-fill"></i> Lead</span>
           {% else %}<span class="badge bg-secondary ms-2 fs-6"><i class="bi bi-people"></i> Fill</span>{% endif %}
         </h2>
-        <p class="text-secondary mb-0">{{ company.sector }} â€" Portfolio Management</p>
+        <p class="text-secondary mb-0">{{ company.sector }} &mdash; Portfolio Management</p>
       </div>
     </div>
 
@@ -97,7 +97,7 @@
                 <tr class="text-secondary">
                   <td><em>Management Pool</em></td>
                   <td class="text-end">{{ "%.1f"|format(company.mgmt_option_pct * 100) }}%</td>
-                  <td class="text-end">â€"</td>
+                  <td class="text-end">&mdash;</td>
                   <td class="text-center"><span class="badge bg-secondary">Options</span></td>
                 </tr>
                 {% endif %}
@@ -204,7 +204,7 @@
                 <i class="bi bi-cash-coin me-1"></i> Issue Dividend
               </h6>
               <p class="text-secondary small mb-0">
-                Not available â€"
+                Not available &mdash;
                 {% if not company.dividend_eligible %}company is not dividend eligible{% endif %}
                 {% if not company.is_cash_flow_positive %}{% if not company.dividend_eligible %} and {% endif %}not cash flow positive{% endif %}.
               </p>

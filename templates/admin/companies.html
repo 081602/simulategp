@@ -85,7 +85,7 @@
                 <td class="text-end">${{ "{:,.1f}M".format(company.capital_requested) }}</td>
                 <td class="text-end fw-bold">${{ "{:,.1f}M".format(company.current_valuation) }}</td>
                 <td class="text-secondary small">
-                  {% if company.lead_team %}{{ company.lead_team.firm_name }}{% else %}â€"{% endif %}
+                  {% if company.lead_team %}{{ company.lead_team.firm_name }}{% else %}&mdash;{% endif %}
                 </td>
                 <td class="text-end fw-bold text-success">{{ "%.2f"|format(company.expected_multiple) }}x</td>
                 <td class="text-center">
