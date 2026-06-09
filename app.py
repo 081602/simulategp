@@ -193,9 +193,9 @@ def search_companies():
         flash('Company search is only available in Phase 1.', 'warning')
         return redirect(url_for('dealflow'))
 
-    sectors = db.session.query(GameCompany.sector).filter_by(
+    all_sectors = db.session.query(GameCompany.sector).filter_by(
         game_id=game.id).distinct().all()
-    sectors = [s[0] for s in sectors]
+    sectors = sorted(set(s[0].split('/')[0].strip() for s in all_sectors))
 
     results = []
     if request.method == 'POST':
@@ -236,7 +236,7 @@ def search_companies():
             GameCompany.year_available <= game.current_year)
 
         if sector_filter:
-            query = query.filter(GameCompany.sector == sector_filter)
+            query = query.filter(GameCompany.sector.like(sector_filter + '%'))
         if stage_filter:
             query = query.filter(GameCompany.stage == stage_filter)
         if max_capital:
