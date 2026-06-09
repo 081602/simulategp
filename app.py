@@ -18,8 +18,12 @@ from game_logic import (run_phase1_crank, run_phase2_crank,
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-change-in-prod')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'DATABASE_URL', 'sqlite:///simulategp.db')
+
+# Use absolute path for SQLite so the same DB is used regardless of working directory
+_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+_DB_PATH = os.path.join(_BASE_DIR, 'simulategp.db').replace('\\', '/')
+_DEFAULT_DB = f'sqlite:///{_DB_PATH}'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', _DEFAULT_DB)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -377,9 +381,9 @@ def create_term_sheet(company_id):
             participation = 'participation' in request.form
             anti_dilution = request.form.get('anti_dilution', 'none')
             willing_fill = 'willing_to_fill' in request.form
-            max_fill = float(request.form.get('max_fill_equity', 0))
-            min_rep = float(request.form.get('min_lead_reputation', 0))
-            ts_type = request.form.get('term_sheet_type', 'solo')
+            max_fill = float(request.form.get('max_fill_equity') or 0)
+            min_rep = float(request.form.get('min_lead_reputation') or 0)
+            ts_type = request.form.get('term_sheet_type') or request.form.get('ts_type', 'solo')
             syndicate_ids = request.form.getlist('syndicate_partners')
             syndicate_ids = [int(x) for x in syndicate_ids if x]
 
@@ -543,7 +547,7 @@ def finalize_deal_route(deal_id):
             return redirect(url_for('timeline'))
 
         try:
-            final_pre_money = float(request.form['pre_money_valuation'])
+            final_pre_money = float(request.form.get('pre_money_valuation') or request.form.get('final_pre_money', lead_ts.pre_money_valuation))
             # Validate: can't go below 90% of original bid
             min_allowed = lead_ts.pre_money_valuation * 0.90
             if final_pre_money < min_allowed:
@@ -551,11 +555,11 @@ def finalize_deal_route(deal_id):
                       f'(90% of your original bid).', 'danger')
                 return redirect(request.url)
 
-            my_equity = float(request.form['my_equity'])
-            rolled_pct = float(request.form['rolled_equity_pct']) / 100
-            debt_amount = float(request.form.get('debt_amount', 0))
-            debt_rate = float(request.form.get('debt_rate', 0)) / 100
-            mgmt_options = float(request.form.get('mgmt_option_pct', 0))
+            my_equity = float(request.form.get('my_equity') or request.form.get('my_equity_contribution', 0))
+            rolled_pct = float(request.form.get('rolled_equity_pct') or 90) / 100
+            debt_amount = float(request.form.get('debt_amount') or 0)
+            debt_rate = float(request.form.get('debt_rate') or request.form.get('interest_rate') or 0) / 100
+            mgmt_options = float(request.form.get('mgmt_option_pct') or 0)
 
             # Validate debt capacity
             if debt_amount > company.debt_capacity:
@@ -971,8 +975,15 @@ def admin_crank():
         return redirect(url_for('admin_setup'))
 
     if request.method == 'POST':
+        # Support both 'crank_type' and 'crank_phase' field names
         crank_type = request.form.get('crank_type')
-        market_adj = float(request.form.get('market_condition', game.market_condition))
+        crank_phase = request.form.get('crank_phase')
+        if crank_phase == '1':
+            crank_type = 'phase1'
+        elif crank_phase == '2':
+            crank_type = 'phase2'
+
+        market_adj = float(request.form.get('market_condition') or game.market_condition)
         game.market_condition = market_adj
 
         if crank_type == 'phase1' and game.current_phase == 1:
@@ -1114,4 +1125,4 @@ def init_db():
 
 if __name__ == '__main__':
     init_db()
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5000, use_reloader=False)

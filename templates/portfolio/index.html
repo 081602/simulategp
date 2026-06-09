@@ -55,7 +55,7 @@
               {% set is_distressed = company.current_valuation < company.post_money_valuation * 0.5 %}
               <tr class="{% if is_distressed %}distress-row{% endif %}">
                 <td>
-                  <a href="{{ url_for('portfolio_company', deal_id=stake.deal.id) }}" class="text-warning fw-semibold text-decoration-none">
+                  <a href="{{ url_for('portfolio_company', company_id=stake.deal.company_id) }}" class="text-warning fw-semibold text-decoration-none">
                     {{ company.name }}
                   </a>
                   {% if is_distressed %}
@@ -70,7 +70,7 @@
                   {% elif company.stage == 'mature' %}<span class="badge bg-success">Mature</span>
                   {% else %}<span class="badge bg-secondary">{{ company.stage | title }}</span>{% endif %}
                 </td>
-                <td class="text-end fw-bold">{{ "%.1f"|format(stake.ownership_pct * 100) }}%</td>
+                <td class="text-end fw-bold">{{ "%.1f"|format(stake.ownership_pct) }}%</td>
                 <td class="text-end">
                   <span class="{% if is_distressed %}text-danger{% else %}text-white{% endif %} fw-semibold">
                     ${{ "{:,.1f}M".format(company.current_valuation) }}
@@ -82,7 +82,7 @@
                   {% endif %}
                 </td>
                 <td class="text-end fw-bold text-success">
-                  ${{ "{:,.1f}M".format(company.current_valuation * stake.ownership_pct) }}
+                  ${{ "{:,.1f}M".format(company.current_valuation * stake.ownership_pct / 100) }}
                 </td>
                 <td class="text-center">
                   {% if stake.is_lead %}
@@ -92,7 +92,7 @@
                   {% endif %}
                 </td>
                 <td class="text-center">
-                  <a href="{{ url_for('portfolio_company', deal_id=stake.deal.id) }}" class="btn btn-outline-warning btn-sm">
+                  <a href="{{ url_for('portfolio_company', company_id=stake.deal.company_id) }}" class="btn btn-outline-warning btn-sm">
                     <i class="bi bi-gear"></i> Manage
                   </a>
                 </td>
@@ -137,7 +137,7 @@
                 <td class="fw-semibold text-secondary">{{ item.company_name }}</td>
                 <td class="text-secondary">{{ item.sector }}</td>
                 <td class="text-end text-secondary">Year {{ item.exit_year }}</td>
-                <td class="text-end">{{ "%.1f"|format(item.ownership_pct * 100) }}%</td>
+                <td class="text-end">{{ "%.1f"|format(item.ownership_pct) }}%</td>
                 <td class="text-end text-secondary">${{ "{:,.1f}M".format(item.equity_invested) }}</td>
                 <td class="text-end fw-bold text-success">${{ "{:,.1f}M".format(item.proceeds) }}</td>
                 <td class="text-end">
@@ -166,4 +166,6 @@
   </div>
 </div>
 {% endblock %}
+
+
 

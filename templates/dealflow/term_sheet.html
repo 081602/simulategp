@@ -67,7 +67,7 @@
               <label for="pre_money_valuation" class="form-label fw-semibold">Pre-Money Valuation ($)</label>
               <input type="number" class="form-control bg-dark text-white border-secondary"
                      id="pre_money_valuation" name="pre_money_valuation"
-                     min="0" step="100000"
+                     min="0" step="0.1"
                      value="{{ company.current_valuation }}" required>
               <div class="form-text text-secondary">Suggested: ${{ "{:,.1f}M".format(company.current_valuation) }}</div>
             </div>
@@ -76,7 +76,7 @@
               <label for="total_investment" class="form-label fw-semibold">Total Investment Size ($)</label>
               <input type="number" class="form-control bg-dark text-white border-secondary"
                      id="total_investment" name="total_investment"
-                     min="0" step="100000"
+                     min="0" step="0.1"
                      value="{{ company.capital_requested }}" required>
               <div class="form-text text-secondary">Company is asking for ${{ "{:,.1f}M".format(company.capital_requested) }}</div>
             </div>
@@ -147,7 +147,7 @@
                 <label for="max_fill_equity" class="form-label fw-semibold">Max Fill Equity Amount ($)</label>
                 <input type="number" class="form-control bg-dark text-white border-secondary"
                        id="max_fill_equity" name="max_fill_equity"
-                       min="0" step="100000" placeholder="e.g. 5000000">
+                       min="0" step="0.1" placeholder="e.g. 5000000">
                 <div class="form-text text-secondary">Maximum amount you are willing to invest as a fill</div>
               </div>
             </div>
@@ -307,4 +307,5 @@
   });
 </script>
 {% endblock %}
+
 

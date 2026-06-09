@@ -166,7 +166,7 @@
                   Current: {{ company.management_quality | title }}
                 </span>
               </div>
-              <form method="POST" action="{{ url_for('change_management', deal_id=deal.id) }}">
+              <form method="POST" action="{{ url_for('change_management', company_id=company.id) }}">
                 <button type="button" class="btn btn-outline-info btn-sm confirm-action"
                         data-confirm="Change management for {{ company.name }}? This will cost ${{ '{:,.1f}M'.format(company.current_valuation * 0.1) }} and cannot be undone."
                         onclick="this.closest('form').submit()">
@@ -185,12 +185,12 @@
                 Maximum: <strong class="text-success">${{ "{:,.1f}M".format(company.company_funds * 0.2) }}</strong>
                 (20% of ${{ "{:,.1f}M".format(company.company_funds) }} company cash)
               </p>
-              <form method="POST" action="{{ url_for('issue_dividend', deal_id=deal.id) }}" class="d-flex gap-2">
+              <form method="POST" action="{{ url_for('issue_dividend', company_id=company.id) }}" class="d-flex gap-2">
                 <div class="input-group" style="max-width:300px;">
                   <span class="input-group-text bg-dark border-secondary text-secondary">$</span>
                   <input type="number" class="form-control bg-dark text-white border-secondary"
                          name="dividend_amount"
-                         min="0" max="{{ company.company_funds * 0.2 }}" step="100000"
+                         min="0" max="{{ company.company_funds * 0.2 }}" step="0.1"
                          placeholder="Amount">
                 </div>
                 <button type="submit" class="btn btn-success btn-sm">
@@ -219,12 +219,12 @@
               <p class="text-secondary small mb-2">
                 Set a reserve price. If achieved at next crank, company will be exited.
               </p>
-              <form method="POST" action="{{ url_for('mark_liquidation', deal_id=deal.id) }}" class="d-flex gap-2">
+              <form method="POST" action="{{ url_for('mark_liquidation', company_id=company.id) }}" class="d-flex gap-2">
                 <div class="input-group" style="max-width:300px;">
                   <span class="input-group-text bg-dark border-secondary text-secondary">$</span>
                   <input type="number" class="form-control bg-dark text-white border-secondary"
                          name="reserve_price"
-                         min="0" step="100000"
+                         min="0" step="0.1"
                          placeholder="Reserve price">
                 </div>
                 <button type="submit" class="btn btn-outline-danger btn-sm confirm-action"
@@ -250,4 +250,6 @@
   </div>
 </div>
 {% endblock %}
+
+
 

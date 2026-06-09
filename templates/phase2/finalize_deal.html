@@ -83,7 +83,7 @@
               <label for="final_pre_money" class="form-label fw-semibold">Final Pre-Money Valuation ($)</label>
               <input type="number" class="form-control bg-dark text-white border-secondary"
                      id="final_pre_money" name="final_pre_money"
-                     min="0" step="100000"
+                     min="0" step="0.1"
                      value="{{ lead_ts.pre_money_valuation }}" required>
               <div class="form-text" id="valuationWarning">
                 <i class="bi bi-info-circle text-info"></i>
@@ -95,7 +95,7 @@
               <label for="my_equity_contribution" class="form-label fw-semibold">My Equity Contribution ($)</label>
               <input type="number" class="form-control bg-dark text-white border-secondary"
                      id="my_equity_contribution" name="my_equity_contribution"
-                     min="0" step="100000" required>
+                     min="0" step="0.1" required>
               <div class="form-text text-secondary">Amount your fund will invest in this deal</div>
             </div>
 
@@ -140,7 +140,7 @@
               <label for="debt_amount" class="form-label fw-semibold">Debt Amount ($)</label>
               <input type="number" class="form-control bg-dark text-white border-secondary"
                      id="debt_amount" name="debt_amount"
-                     min="0" max="{{ company.debt_capacity }}" step="100000"
+                     min="0" max="{{ company.debt_capacity }}" step="0.1"
                      placeholder="Max ${{ "{:,.1f}M".format(company.debt_capacity) }}">
               <div class="form-text text-secondary">Maximum capacity: ${{ "{:,.1f}M".format(company.debt_capacity) }}</div>
             </div>
@@ -267,7 +267,7 @@
                   <td>
                     <input type="number" class="form-control form-control-sm bg-dark text-white border-secondary fill-amount-input"
                            name="fill_amount_{{ offer.id }}"
-                           min="0" max="{{ offer.max_fill_equity }}" step="100000"
+                           min="0" max="{{ offer.max_fill_equity }}" step="0.1"
                            placeholder="Amount"
                            style="width:140px;"
                            disabled>
@@ -382,4 +382,5 @@
   }
 </script>
 {% endblock %}
+
 
