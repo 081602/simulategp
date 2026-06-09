@@ -14,11 +14,26 @@
     "base_valuation": 18.0,
     "year_available": 1,
     "outcome_distributions": [
-      {"multiple": 0.0, "prob": 0.30},
-      {"multiple": 0.5, "prob": 0.20},
-      {"multiple": 1.5, "prob": 0.20},
-      {"multiple": 4.0, "prob": 0.20},
-      {"multiple": 10.0, "prob": 0.10}
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
     ]
   },
   {
@@ -27,7 +42,7 @@
     "stage": "early_revenue",
     "description": "B2B SaaS platform for supply chain management. $2M ARR, 120% net revenue retention, growing 80% YoY. Seeking capital to expand sales team.",
     "capital_requested": 15.0,
-    "rolled_equity_min": 0.80,
+    "rolled_equity_min": 0.8,
     "rolled_equity_max": 1.0,
     "debt_capacity": 5.0,
     "is_cash_flow_positive": false,
@@ -36,11 +51,26 @@
     "base_valuation": 45.0,
     "year_available": 1,
     "outcome_distributions": [
-      {"multiple": 0.4, "prob": 0.10},
-      {"multiple": 0.8, "prob": 0.20},
-      {"multiple": 1.3, "prob": 0.35},
-      {"multiple": 2.0, "prob": 0.25},
-      {"multiple": 3.5, "prob": 0.10}
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
     ]
   },
   {
@@ -50,7 +80,7 @@
     "description": "Regional manufacturer of precision components for aerospace. EBITDA margin of 22%, stable cash flows, family-owned since 1978. Owner seeking retirement exit.",
     "capital_requested": 40.0,
     "rolled_equity_min": 0.0,
-    "rolled_equity_max": 0.30,
+    "rolled_equity_max": 0.3,
     "debt_capacity": 25.0,
     "is_cash_flow_positive": true,
     "dividend_eligible": true,
@@ -58,11 +88,26 @@
     "base_valuation": 80.0,
     "year_available": 1,
     "outcome_distributions": [
-      {"multiple": 0.7, "prob": 0.10},
-      {"multiple": 0.9, "prob": 0.20},
-      {"multiple": 1.1, "prob": 0.40},
-      {"multiple": 1.4, "prob": 0.20},
-      {"multiple": 1.8, "prob": 0.10}
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
     ]
   },
   {
@@ -71,8 +116,8 @@
     "stage": "developing",
     "description": "Organic snack food brand with strong DTC presence. $8M revenue, expanding into retail. Management disputes are a concern.",
     "capital_requested": 10.0,
-    "rolled_equity_min": 0.70,
-    "rolled_equity_max": 0.90,
+    "rolled_equity_min": 0.7,
+    "rolled_equity_max": 0.9,
     "debt_capacity": 0.0,
     "is_cash_flow_positive": false,
     "dividend_eligible": false,
@@ -80,11 +125,26 @@
     "base_valuation": 22.0,
     "year_available": 1,
     "outcome_distributions": [
-      {"multiple": 0.0, "prob": 0.20},
-      {"multiple": 0.5, "prob": 0.25},
-      {"multiple": 1.0, "prob": 0.30},
-      {"multiple": 2.0, "prob": 0.15},
-      {"multiple": 3.5, "prob": 0.10}
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
     ]
   },
   {
@@ -102,11 +162,26 @@
     "base_valuation": 50.0,
     "year_available": 1,
     "outcome_distributions": [
-      {"multiple": 0.3, "prob": 0.10},
-      {"multiple": 0.8, "prob": 0.20},
-      {"multiple": 1.4, "prob": 0.35},
-      {"multiple": 2.2, "prob": 0.25},
-      {"multiple": 4.0, "prob": 0.10}
+      {
+        "multiple": 0.3,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.2,
+        "prob": 0.25
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.1
+      }
     ]
   },
   {
@@ -116,7 +191,7 @@
     "description": "Boutique hotel chain, 8 properties across New England. Solid EBITDA, real asset backing, moderate debt already on balance sheet. Classic LBO candidate.",
     "capital_requested": 60.0,
     "rolled_equity_min": 0.0,
-    "rolled_equity_max": 0.20,
+    "rolled_equity_max": 0.2,
     "debt_capacity": 40.0,
     "is_cash_flow_positive": true,
     "dividend_eligible": true,
@@ -124,11 +199,26 @@
     "base_valuation": 100.0,
     "year_available": 1,
     "outcome_distributions": [
-      {"multiple": 0.5, "prob": 0.10},
-      {"multiple": 0.85, "prob": 0.25},
-      {"multiple": 1.1, "prob": 0.35},
-      {"multiple": 1.5, "prob": 0.20},
-      {"multiple": 2.0, "prob": 0.10}
+      {
+        "multiple": 0.5,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.85,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.35
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
     ]
   },
   {
@@ -137,7 +227,7 @@
     "stage": "developing",
     "description": "Remote patient monitoring platform targeting chronic disease management. 50 hospital pilots underway. Regulatory approval expected in 18 months.",
     "capital_requested": 8.0,
-    "rolled_equity_min": 0.80,
+    "rolled_equity_min": 0.8,
     "rolled_equity_max": 1.0,
     "debt_capacity": 0.0,
     "is_cash_flow_positive": false,
@@ -146,11 +236,26 @@
     "base_valuation": 25.0,
     "year_available": 1,
     "outcome_distributions": [
-      {"multiple": 0.0, "prob": 0.20},
-      {"multiple": 0.6, "prob": 0.20},
-      {"multiple": 1.2, "prob": 0.25},
-      {"multiple": 2.5, "prob": 0.25},
-      {"multiple": 5.0, "prob": 0.10}
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.6,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.25
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.1
+      }
     ]
   },
   {
@@ -159,8 +264,8 @@
     "stage": "mature",
     "description": "Regional specialty lender focused on SMB loans. Profitable for 12 consecutive years. Regulatory environment stable. Seeking capital for geographic expansion.",
     "capital_requested": 35.0,
-    "rolled_equity_min": 0.30,
-    "rolled_equity_max": 0.60,
+    "rolled_equity_min": 0.3,
+    "rolled_equity_max": 0.6,
     "debt_capacity": 20.0,
     "is_cash_flow_positive": true,
     "dividend_eligible": true,
@@ -168,11 +273,26 @@
     "base_valuation": 70.0,
     "year_available": 2,
     "outcome_distributions": [
-      {"multiple": 0.6, "prob": 0.10},
-      {"multiple": 0.9, "prob": 0.20},
-      {"multiple": 1.15, "prob": 0.40},
-      {"multiple": 1.5, "prob": 0.20},
-      {"multiple": 2.0, "prob": 0.10}
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.15,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
     ]
   },
   {
@@ -181,7 +301,7 @@
     "stage": "startup",
     "description": "Foundation model startup targeting enterprise code generation. Pre-revenue but recruited a world-class team from top labs. Extremely competitive space.",
     "capital_requested": 20.0,
-    "rolled_equity_min": 0.90,
+    "rolled_equity_min": 0.9,
     "rolled_equity_max": 1.0,
     "debt_capacity": 0.0,
     "is_cash_flow_positive": false,
@@ -190,11 +310,26 @@
     "base_valuation": 30.0,
     "year_available": 2,
     "outcome_distributions": [
-      {"multiple": 0.0, "prob": 0.35},
-      {"multiple": 0.3, "prob": 0.15},
-      {"multiple": 1.5, "prob": 0.20},
-      {"multiple": 5.0, "prob": 0.20},
-      {"multiple": 15.0, "prob": 0.10}
+      {
+        "multiple": 0.0,
+        "prob": 0.35
+      },
+      {
+        "multiple": 0.3,
+        "prob": 0.15
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 15.0,
+        "prob": 0.1
+      }
     ]
   },
   {
@@ -212,11 +347,26 @@
     "base_valuation": 28.0,
     "year_available": 2,
     "outcome_distributions": [
-      {"multiple": 0.2, "prob": 0.15},
-      {"multiple": 0.7, "prob": 0.25},
-      {"multiple": 1.2, "prob": 0.35},
-      {"multiple": 2.0, "prob": 0.15},
-      {"multiple": 3.0, "prob": 0.10}
+      {
+        "multiple": 0.2,
+        "prob": 0.15
+      },
+      {
+        "multiple": 0.7,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.0,
+        "prob": 0.1
+      }
     ]
   },
   {
@@ -234,11 +384,26 @@
     "base_valuation": 20.0,
     "year_available": 2,
     "outcome_distributions": [
-      {"multiple": 0.0, "prob": 0.25},
-      {"multiple": 0.5, "prob": 0.20},
-      {"multiple": 1.0, "prob": 0.25},
-      {"multiple": 2.0, "prob": 0.20},
-      {"multiple": 4.0, "prob": 0.10}
+      {
+        "multiple": 0.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.1
+      }
     ]
   },
   {
@@ -256,11 +421,26 @@
     "base_valuation": 90.0,
     "year_available": 3,
     "outcome_distributions": [
-      {"multiple": 0.6, "prob": 0.10},
-      {"multiple": 0.9, "prob": 0.20},
-      {"multiple": 1.1, "prob": 0.40},
-      {"multiple": 1.4, "prob": 0.20},
-      {"multiple": 1.8, "prob": 0.10}
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
     ]
   },
   {
@@ -278,11 +458,26 @@
     "base_valuation": 20.0,
     "year_available": 3,
     "outcome_distributions": [
-      {"multiple": 0.0, "prob": 0.40},
-      {"multiple": 0.5, "prob": 0.20},
-      {"multiple": 1.5, "prob": 0.15},
-      {"multiple": 4.0, "prob": 0.15},
-      {"multiple": 8.0, "prob": 0.10}
+      {
+        "multiple": 0.0,
+        "prob": 0.4
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 8.0,
+        "prob": 0.1
+      }
     ]
   },
   {
@@ -291,7 +486,7 @@
     "stage": "early_revenue",
     "description": "K-12 tutoring marketplace with AI-powered matching. $6M GMV, growing 60% YoY. Founder-led. Strong unit economics but competitive market.",
     "capital_requested": 10.0,
-    "rolled_equity_min": 0.80,
+    "rolled_equity_min": 0.8,
     "rolled_equity_max": 1.0,
     "debt_capacity": 0.0,
     "is_cash_flow_positive": false,
@@ -300,11 +495,26 @@
     "base_valuation": 30.0,
     "year_available": 3,
     "outcome_distributions": [
-      {"multiple": 0.2, "prob": 0.15},
-      {"multiple": 0.7, "prob": 0.25},
-      {"multiple": 1.3, "prob": 0.30},
-      {"multiple": 2.5, "prob": 0.20},
-      {"multiple": 5.0, "prob": 0.10}
+      {
+        "multiple": 0.2,
+        "prob": 0.15
+      },
+      {
+        "multiple": 0.7,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.1
+      }
     ]
   },
   {
@@ -313,8 +523,8 @@
     "stage": "mature",
     "description": "$2.8B AUM registered investment advisor. Fee-based model, high client retention, aging founder team. Classic management buyout / succession scenario.",
     "capital_requested": 45.0,
-    "rolled_equity_min": 0.10,
-    "rolled_equity_max": 0.40,
+    "rolled_equity_min": 0.1,
+    "rolled_equity_max": 0.4,
     "debt_capacity": 20.0,
     "is_cash_flow_positive": true,
     "dividend_eligible": true,
@@ -322,11 +532,3171 @@
     "base_valuation": 85.0,
     "year_available": 4,
     "outcome_distributions": [
-      {"multiple": 0.7, "prob": 0.10},
-      {"multiple": 0.95, "prob": 0.25},
-      {"multiple": 1.15, "prob": 0.35},
-      {"multiple": 1.5, "prob": 0.20},
-      {"multiple": 2.0, "prob": 0.10}
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.95,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.15,
+        "prob": 0.35
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Redwood Data Infrastructure",
+    "sector": "Technology / SaaS",
+    "stage": "startup",
+    "description": "Developer-focused data pipeline tooling. Backed by two ex-Databricks engineers. No revenue yet but strong open-source traction with 8,000 GitHub stars.",
+    "capital_requested": 8.0,
+    "rolled_equity_min": 0.85,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 15.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Vantage Dental Partners",
+    "sector": "Healthcare / Dental",
+    "stage": "mature",
+    "description": "Regional dental services organization (DSO) with 45 locations across the Southeast. Strong EBITDA, acquisition-driven growth model, experienced management.",
+    "capital_requested": 55.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.25,
+    "debt_capacity": 35.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 95.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.6,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.2,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "TerraFirm Construction Tech",
+    "sector": "Technology / ConTech",
+    "stage": "developing",
+    "description": "AI-powered project management platform for general contractors. $4M ARR, 90% gross margin. Founders have deep construction industry relationships.",
+    "capital_requested": 11.0,
+    "rolled_equity_min": 0.75,
+    "rolled_equity_max": 0.95,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 32.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 0.6,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "LuminaLab Diagnostics",
+    "sector": "Healthcare / Medical Devices",
+    "stage": "startup",
+    "description": "Point-of-care diagnostic device for sepsis detection. FDA breakthrough designation received. Pre-revenue, but pilot agreements with 3 hospital systems signed.",
+    "capital_requested": 10.0,
+    "rolled_equity_min": 0.85,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 22.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 0.3,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 9.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Northgate Auto Services",
+    "sector": "Consumer / Auto Services",
+    "stage": "mature",
+    "description": "Chain of 30 quick-lube and tire centers in the Midwest. Recession-resistant, strong free cash flow, low capex. Owner-operated for 20 years, seeking buyout.",
+    "capital_requested": 25.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.3,
+    "debt_capacity": 18.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 48.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.15
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "BlueWave Aquaculture",
+    "sector": "Agriculture / Food Tech",
+    "stage": "developing",
+    "description": "Land-based salmon farming using recirculating aquaculture systems. Unique technology, no revenue yet from commercial scale. Permitting completed.",
+    "capital_requested": 14.0,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 5.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 28.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.4,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "ClearPath Insurance Tech",
+    "sector": "Financial Services / InsurTech",
+    "stage": "early_revenue",
+    "description": "Embedded insurance platform for e-commerce. $4M ARR, partnered with 3 major online marketplaces. Loss ratio improving quarter over quarter.",
+    "capital_requested": 13.0,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 38.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.2,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.7,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.2,
+        "prob": 0.25
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Meridian Waste Solutions",
+    "sector": "Industrials / Environmental Services",
+    "stage": "mature",
+    "description": "Specialty waste management company focused on industrial and hazardous materials. Strong recurring revenues, highly fragmented market with roll-up potential.",
+    "capital_requested": 45.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.25,
+    "debt_capacity": 30.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 85.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.6,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Onyx Media Group",
+    "sector": "Media / Digital Content",
+    "stage": "developing",
+    "description": "Creator-economy platform for independent journalists. 200,000 paying subscribers, $6M ARR. High churn but passionate niche audience. Founder has strong public profile.",
+    "capital_requested": 7.0,
+    "rolled_equity_min": 0.7,
+    "rolled_equity_max": 0.9,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 18.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 0.4,
+        "prob": 0.25
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.25
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "SkyBridge Telecom",
+    "sector": "Technology / Telecom",
+    "stage": "mature",
+    "description": "Rural fixed-wireless broadband provider. 85,000 subscribers, government subsidy agreements secured. Steady EBITDA, limited competition by geography.",
+    "capital_requested": 38.0,
+    "rolled_equity_min": 0.1,
+    "rolled_equity_max": 0.4,
+    "debt_capacity": 25.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 72.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.85,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.45,
+        "prob": 0.15
+      },
+      {
+        "multiple": 1.9,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "PixelForge Studios",
+    "sector": "Media / Gaming",
+    "stage": "startup",
+    "description": "Mobile game studio with one viral hit (5M downloads). Building a second title. Revenue volatile and driven by single IP. Team of 15 strong creators.",
+    "capital_requested": 6.0,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 12.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.35
+      },
+      {
+        "multiple": 0.3,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 3.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 8.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Forge Analytics",
+    "sector": "Technology / AI",
+    "stage": "early_revenue",
+    "description": "AI-driven business intelligence for mid-market manufacturers. $5M ARR, 110% net revenue retention. Competing against legacy BI vendors with a 10x cheaper offering.",
+    "capital_requested": 18.0,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 3.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 55.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.3,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 4.5,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Prairie Home Care",
+    "sector": "Healthcare / Home Health",
+    "stage": "mature",
+    "description": "Home health and personal care services with 1,200 caregivers across 4 states. Medicaid and Medicare reimbursement mix. Aging population tailwind.",
+    "capital_requested": 30.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.35,
+    "debt_capacity": 15.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 58.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.85,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Voltz Energy Storage",
+    "sector": "Energy / CleanTech",
+    "stage": "startup",
+    "description": "Next-gen grid-scale battery technology using sodium-ion chemistry. Pre-revenue, but DOE grant of $8M received. Long path to commercialization.",
+    "capital_requested": 16.0,
+    "rolled_equity_min": 0.85,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 25.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.35
+      },
+      {
+        "multiple": 0.2,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Summit Beverage Co.",
+    "sector": "Consumer / CPG",
+    "stage": "developing",
+    "description": "Premium functional beverages brand. $12M revenue, in 8,000 retail doors. Founder-led, cash burn is high due to marketing. Category growing 35% annually.",
+    "capital_requested": 9.0,
+    "rolled_equity_min": 0.7,
+    "rolled_equity_max": 0.9,
+    "debt_capacity": 2.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 24.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Keystone Title & Escrow",
+    "sector": "Financial Services / Real Estate",
+    "stage": "mature",
+    "description": "Title insurance and escrow services in 6 states. Highly fragmented market, steady volumes tied to real estate transactions. Owner looking for partial liquidity.",
+    "capital_requested": 22.0,
+    "rolled_equity_min": 0.2,
+    "rolled_equity_max": 0.5,
+    "debt_capacity": 10.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 42.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.5,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.15
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "DeepRoot Genomics",
+    "sector": "Healthcare / Biotech",
+    "stage": "startup",
+    "description": "Gene-editing platform for rare metabolic diseases. Exceptional scientific team, two Nature publications. No IND filed yet. Very long investment horizon.",
+    "capital_requested": 18.0,
+    "rolled_equity_min": 0.9,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 35.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.4
+      },
+      {
+        "multiple": 0.2,
+        "prob": 0.15
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 15.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Cascade Fitness Holdings",
+    "sector": "Consumer / Fitness",
+    "stage": "mature",
+    "description": "Operator of 60 boutique fitness studios across the Pacific Northwest. Membership model, high retention. Post-COVID recovery complete. Franchise-ready.",
+    "capital_requested": 28.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.3,
+    "debt_capacity": 15.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 55.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.35
+      },
+      {
+        "multiple": 1.6,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.2,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Nimbus Fleet Management",
+    "sector": "Technology / SaaS",
+    "stage": "early_revenue",
+    "description": "Fleet telematics and compliance SaaS for trucking companies. $7M ARR, 95% gross retention. DOT compliance requirements create sticky recurring revenue.",
+    "capital_requested": 16.0,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 4.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 48.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.3,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.7,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.4
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Iron Horse Distillery",
+    "sector": "Consumer / Spirits",
+    "stage": "developing",
+    "description": "Craft spirits brand (whiskey and gin) with strong regional following. $5M revenue, limited national distribution. Founder needs capital partner to scale.",
+    "capital_requested": 8.0,
+    "rolled_equity_min": 0.7,
+    "rolled_equity_max": 0.9,
+    "debt_capacity": 3.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 18.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.2,
+        "prob": 0.15
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Argent Metals Recycling",
+    "sector": "Industrials / Metals",
+    "stage": "mature",
+    "description": "Scrap metal processing and recycling business. Commodity-linked revenues but historically resilient. 3 processing facilities, union workforce.",
+    "capital_requested": 32.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.3,
+    "debt_capacity": 20.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 60.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 0.85,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.35
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Pantheon Pharma Services",
+    "sector": "Healthcare / Life Sciences",
+    "stage": "mature",
+    "description": "Contract research organization (CRO) providing clinical trial support. $80M revenue, 20% EBITDA margin. Long-term pharma client relationships.",
+    "capital_requested": 50.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.25,
+    "debt_capacity": 30.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 92.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.15,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "OceanPath Logistics",
+    "sector": "Transportation / Logistics",
+    "stage": "early_revenue",
+    "description": "Last-mile delivery network for perishable goods. $10M revenue, grocery chain partnerships. Thin margins but growing fast with volume.",
+    "capital_requested": 14.0,
+    "rolled_equity_min": 0.75,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 5.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 35.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.2,
+        "prob": 0.15
+      },
+      {
+        "multiple": 0.6,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "WillowBend Veterinary Group",
+    "sector": "Healthcare / Veterinary",
+    "stage": "mature",
+    "description": "Multi-site veterinary practice group, 22 clinics across Texas and Oklahoma. Recession-resistant, cash-pay model, strong pet humanization trend.",
+    "capital_requested": 40.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.3,
+    "debt_capacity": 22.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 78.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.6,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.1,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Synapse Neuro",
+    "sector": "Healthcare / Medical Devices",
+    "stage": "startup",
+    "description": "Closed-loop neuromodulation device for treatment-resistant depression. Pre-clinical results promising. FDA regulatory pathway is long but addressable market is enormous.",
+    "capital_requested": 14.0,
+    "rolled_equity_min": 0.85,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 28.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.35
+      },
+      {
+        "multiple": 0.2,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 9.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Marquee Event Services",
+    "sector": "Business Services / Events",
+    "stage": "mature",
+    "description": "Full-service corporate event management company. $40M revenue, blue-chip corporate client roster. Post-pandemic recovery complete, strong forward bookings.",
+    "capital_requested": 20.0,
+    "rolled_equity_min": 0.1,
+    "rolled_equity_max": 0.4,
+    "debt_capacity": 8.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 38.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "SparrowNet Cybersecurity",
+    "sector": "Technology / Cybersecurity",
+    "stage": "early_revenue",
+    "description": "Managed detection and response (MDR) for healthcare systems. $8M ARR, HIPAA-specialized, 140% net revenue retention. Regulatory tailwinds strong.",
+    "capital_requested": 15.0,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 2.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 50.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.3,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 4.5,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "WoodCraft Cabinetry",
+    "sector": "Industrials / Home Products",
+    "stage": "mature",
+    "description": "Semi-custom cabinet manufacturer serving homebuilders. $65M revenue, long-term builder contracts. Housing cycle dependency is key risk.",
+    "capital_requested": 28.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.3,
+    "debt_capacity": 18.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 52.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.15
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.35
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "QuantumLeap Robotics",
+    "sector": "Technology / Robotics",
+    "stage": "startup",
+    "description": "Autonomous warehouse picking robots. 2 pilots with Tier 1 retailers. Pre-revenue but letters of intent in hand. Hardware unit economics not yet proven.",
+    "capital_requested": 18.0,
+    "rolled_equity_min": 0.85,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 32.0,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.3,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 8.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Silverline Business Process Outsourcing",
+    "sector": "Business Services / BPO",
+    "stage": "mature",
+    "description": "Finance & accounting BPO serving mid-market companies. $55M revenue, long-term contracts, sticky relationships. Offshore delivery model keeps margins healthy.",
+    "capital_requested": 35.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.3,
+    "debt_capacity": 20.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 68.0,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.15,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "SkyRoot PropTech",
+    "sector": "Technology / PropTech",
+    "stage": "developing",
+    "description": "AI platform for commercial real estate underwriting and due diligence. $3M ARR, strong traction with mid-size REITs. Founder previously built and sold a proptech startup.",
+    "capital_requested": 10.0,
+    "rolled_equity_min": 0.75,
+    "rolled_equity_max": 0.95,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 28.0,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Lakeview Orthopedics Group",
+    "sector": "Healthcare / Physician Practices",
+    "stage": "mature",
+    "description": "15-physician orthopedic practice with ambulatory surgery center. Strong ancillary revenue, growing demand from aging population. Classic physician practice roll-up target.",
+    "capital_requested": 42.0,
+    "rolled_equity_min": 0.1,
+    "rolled_equity_max": 0.4,
+    "debt_capacity": 25.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 80.0,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.6,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.2,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Axiom Legal Tech",
+    "sector": "Technology / LegalTech",
+    "stage": "early_revenue",
+    "description": "Contract lifecycle management SaaS for corporate legal teams. $6M ARR, 120% NRR. Fortune 500 pipeline robust. Competitive market but differentiated AI features.",
+    "capital_requested": 15.0,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 3.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 44.0,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.3,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 4.5,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "PineCrest Timberlands",
+    "sector": "Industrials / Forestry",
+    "stage": "mature",
+    "description": "Timberland REIT structure with 180,000 acres in the Pacific Northwest. Carbon credit upside potential. Steady long-term asset value appreciation.",
+    "capital_requested": 65.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.2,
+    "debt_capacity": 40.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 110.0,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Glow Beauty Tech",
+    "sector": "Consumer / Beauty",
+    "stage": "developing",
+    "description": "AI-powered personalized skincare brand. $9M DTC revenue, passionate repeat customer base. Gross margins 70%+. Scaling into retail is the next challenge.",
+    "capital_requested": 8.0,
+    "rolled_equity_min": 0.7,
+    "rolled_equity_max": 0.9,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 22.0,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "TrueNorth Staffing Solutions",
+    "sector": "Business Services / Staffing",
+    "stage": "mature",
+    "description": "Specialized staffing agency for skilled trades (electricians, HVAC, plumbers). $90M revenue. Tight labor market creates durable pricing power.",
+    "capital_requested": 40.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.25,
+    "debt_capacity": 22.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 76.0,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.6,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "CarbonTrace Platform",
+    "sector": "Energy / CleanTech",
+    "stage": "startup",
+    "description": "Scope 3 carbon accounting SaaS for large enterprises. Pre-revenue, but 10 paid pilots with Fortune 500 companies. Regulatory mandates could accelerate growth dramatically.",
+    "capital_requested": 7.0,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 14.0,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.3,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 7.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Harrington Specialty Chemicals",
+    "sector": "Industrials / Chemicals",
+    "stage": "mature",
+    "description": "Manufacturer of specialty coatings for electronics and aerospace. $75M revenue, 25% EBITDA margin, strong IP moat. Key-person risk around founder-CEO.",
+    "capital_requested": 48.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.25,
+    "debt_capacity": 30.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 90.0,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.6,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "EchoHealth Digital",
+    "sector": "Healthcare / Digital Health",
+    "stage": "early_revenue",
+    "description": "Virtual behavioral health platform for employers. $9M ARR, contracted with 150 self-insured employers. Mental health demand growing but competition increasing.",
+    "capital_requested": 18.0,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 52.0,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.3,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 4.5,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Riverbend Power & Utilities",
+    "sector": "Energy / Utilities",
+    "stage": "mature",
+    "description": "Independent power producer with 8 natural gas peaker plants. Capacity payments provide stable base revenue. Energy transition creates long-term headwind.",
+    "capital_requested": 55.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.2,
+    "debt_capacity": 40.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 98.0,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.5,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.3
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.35
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.15
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "VoltArc Electric Vehicles",
+    "sector": "Transportation / EV",
+    "stage": "developing",
+    "description": "Class 3-5 electric work vehicle OEM. $15M backlog, first deliveries beginning. Dependent on battery supply chain and IRA tax credit structure remaining favorable.",
+    "capital_requested": 22.0,
+    "rolled_equity_min": 0.75,
+    "rolled_equity_max": 0.95,
+    "debt_capacity": 5.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 48.0,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.4,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Pinstripe Capital Markets",
+    "sector": "Financial Services / Capital Markets",
+    "stage": "mature",
+    "description": "Boutique investment bank focused on middle-market M&A advisory. $30M revenue, fee-based, low capital requirements. Senior banker succession is key challenge.",
+    "capital_requested": 18.0,
+    "rolled_equity_min": 0.2,
+    "rolled_equity_max": 0.5,
+    "debt_capacity": 5.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 36.0,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.5,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Cortex Semiconductor",
+    "sector": "Technology / Semiconductors",
+    "stage": "startup",
+    "description": "Fabless chip design company targeting edge AI inference. Pre-revenue, tape-out scheduled. $4M in DARPA grants. Extremely capital-intensive to scale.",
+    "capital_requested": 25.0,
+    "rolled_equity_min": 0.85,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 40.0,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.35
+      },
+      {
+        "multiple": 0.2,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 12.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Granite Peak Mining Services",
+    "sector": "Industrials / Mining",
+    "stage": "mature",
+    "description": "Contract mining services and equipment operator for copper and gold mines. $100M revenue, asset-light model, long-term mine site contracts.",
+    "capital_requested": 50.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.25,
+    "debt_capacity": 35.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 92.0,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.5,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "TidePool Marine Tech",
+    "sector": "Technology / Maritime",
+    "stage": "developing",
+    "description": "Autonomous underwater vehicle (AUV) for offshore wind farm inspection. $2M ARR from early contracts with two European energy majors. Hardware margins improving.",
+    "capital_requested": 12.0,
+    "rolled_equity_min": 0.75,
+    "rolled_equity_max": 0.95,
+    "debt_capacity": 2.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 26.0,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Linchpin HR Platform",
+    "sector": "Technology / HRTech",
+    "stage": "early_revenue",
+    "description": "HR and payroll SaaS for hourly workers in hospitality and retail. $11M ARR, 50,000 end-users. Low churn, ADP/Paychex legacy replacement opportunity.",
+    "capital_requested": 20.0,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 5.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 60.0,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.3,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.4
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Ashford Private Schools",
+    "sector": "Education / Private Schools",
+    "stage": "mature",
+    "description": "Operator of 12 private K-12 schools with 4,200 students. Tuition pricing power, brand reputation strong. Urban market focus, real estate owned.",
+    "capital_requested": 45.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.25,
+    "debt_capacity": 25.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 85.0,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.9,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "SpinOut Defense Systems",
+    "sector": "Technology / Defense",
+    "stage": "startup",
+    "description": "University spinout developing drone countermeasure systems for military use. Pre-revenue, SBIR-funded. Regulatory and export control risks significant but TAM is large.",
+    "capital_requested": 12.0,
+    "rolled_equity_min": 0.85,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 20.0,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.3,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 9.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Copperfield Distribution",
+    "sector": "Industrials / Distribution",
+    "stage": "mature",
+    "description": "Industrial fastener and component distributor serving OEM manufacturers. $110M revenue, 8% EBITDA margin. Highly fragmented market with roll-up opportunity.",
+    "capital_requested": 45.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.25,
+    "debt_capacity": 30.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 82.0,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Meridian Crop Sciences",
+    "sector": "Agriculture / Biotech",
+    "stage": "startup",
+    "description": "Synthetic biology startup engineering drought-resistant crop traits. Pre-revenue. USDA regulatory process started. 5+ year time to market but transformational potential.",
+    "capital_requested": 15.0,
+    "rolled_equity_min": 0.9,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 30.0,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.35
+      },
+      {
+        "multiple": 0.2,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.15
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Beacon Real Estate Software",
+    "sector": "Technology / PropTech",
+    "stage": "early_revenue",
+    "description": "Property management software for small landlords. $14M ARR, 18,000 paying accounts. Payments embedded in the product create additional monetization. Very low churn.",
+    "capital_requested": 22.0,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 5.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 65.0,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.2,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.8,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "National Urgent Care Network",
+    "sector": "Healthcare / Urgent Care",
+    "stage": "mature",
+    "description": "Operator of 70 urgent care centers, primarily in the Sunbelt. Consumer-pay mix, brand awareness growing. Strong same-store growth, looking to double footprint.",
+    "capital_requested": 60.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.2,
+    "debt_capacity": 40.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 105.0,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.6,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.2,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Epoch Space Systems",
+    "sector": "Technology / Space",
+    "stage": "startup",
+    "description": "Small satellite launch services company. One successful orbital mission completed. Seeking capital to build second vehicle. Huge TAM but very capital intensive.",
+    "capital_requested": 30.0,
+    "rolled_equity_min": 0.9,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 50.0,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.4
+      },
+      {
+        "multiple": 0.2,
+        "prob": 0.15
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 15.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Alpine Food Distribution",
+    "sector": "Consumer / Food Distribution",
+    "stage": "mature",
+    "description": "Specialty food distributor serving independent restaurants. $85M revenue, strong chef relationships, difficult for large distributors to replicate service model.",
+    "capital_requested": 35.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.3,
+    "debt_capacity": 20.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 64.0,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.5,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Thornwood Print & Fulfillment",
+    "sector": "Industrials / Print & Fulfillment",
+    "stage": "mature",
+    "description": "Commercial printing and order fulfillment services. $50M revenue, 12% EBITDA. Digital displacement risk, but e-commerce fulfillment pivot underway.",
+    "capital_requested": 25.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.3,
+    "debt_capacity": 15.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 46.0,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.15
+      },
+      {
+        "multiple": 0.7,
+        "prob": 0.3
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.35
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.15
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.05
+      }
+    ]
+  },
+  {
+    "name": "BioReactor Systems",
+    "sector": "Healthcare / Biotech",
+    "stage": "developing",
+    "description": "Bioreactor equipment and services for cell therapy manufacturing. $6M ARR from early biopharma clients. Secular growth in cell & gene therapy is a strong tailwind.",
+    "capital_requested": 14.0,
+    "rolled_equity_min": 0.75,
+    "rolled_equity_max": 0.95,
+    "debt_capacity": 3.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 38.0,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.1,
+        "prob": 0.15
+      },
+      {
+        "multiple": 0.6,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Clearwater Analytics Hub",
+    "sector": "Technology / FinTech",
+    "stage": "early_revenue",
+    "description": "Portfolio analytics and reporting SaaS for family offices and RIAs. $8M ARR, 130% NRR, highly technical buyers. Salesforce partnership recently signed.",
+    "capital_requested": 18.0,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 3.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 55.0,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.3,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 4.5,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Rampart Security Group",
+    "sector": "Business Services / Security",
+    "stage": "mature",
+    "description": "Physical security and guard services for commercial real estate and data centers. $70M revenue, long-term contracts. Highly labor-intensive with wage inflation risk.",
+    "capital_requested": 30.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.3,
+    "debt_capacity": 15.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 56.0,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.5,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.15
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Aurora Imaging Systems",
+    "sector": "Healthcare / Medical Imaging",
+    "stage": "startup",
+    "description": "AI radiology assistant for detecting early-stage lung nodules. CE mark received in Europe, FDA submission filed. Radiologist shortage creates compelling market entry.",
+    "capital_requested": 10.0,
+    "rolled_equity_min": 0.85,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 22.0,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 8.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Solara Green Buildings",
+    "sector": "Industrials / Construction",
+    "stage": "mature",
+    "description": "Commercial building retrofit contractor specializing in energy efficiency. $60M revenue, government incentive programs driving demand. Backlog at record levels.",
+    "capital_requested": 30.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.3,
+    "debt_capacity": 18.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 58.0,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.6,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.1,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "GrowPath AgTech",
+    "sector": "Agriculture / Food Tech",
+    "stage": "early_revenue",
+    "description": "Controlled environment agriculture (CEA) operator growing leafy greens for grocery chains. $12M revenue from 3 facilities. Capital-intensive to scale but unit economics improving.",
+    "capital_requested": 20.0,
+    "rolled_equity_min": 0.75,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 8.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 42.0,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.2,
+        "prob": 0.15
+      },
+      {
+        "multiple": 0.6,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Veritas Legal Outsourcing",
+    "sector": "Business Services / Legal",
+    "stage": "mature",
+    "description": "Legal process outsourcing for large law firms and corporate legal departments. $45M revenue, 22% EBITDA. Large law firm budget pressures create durable demand.",
+    "capital_requested": 28.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.3,
+    "debt_capacity": 15.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 55.0,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.15,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "MindBridge Edtech",
+    "sector": "Education / EdTech",
+    "stage": "developing",
+    "description": "Adaptive learning platform for corporate training. $7M ARR, 200 enterprise clients. AI-driven personalization differentiates from legacy LMS players.",
+    "capital_requested": 12.0,
+    "rolled_equity_min": 0.75,
+    "rolled_equity_max": 0.95,
+    "debt_capacity": 2.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 32.0,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Polaris Cold Chain Logistics",
+    "sector": "Transportation / Cold Chain",
+    "stage": "mature",
+    "description": "Temperature-controlled warehousing and transportation for pharma and food. $80M revenue, high barriers to entry, regulatory compliance moat.",
+    "capital_requested": 45.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.25,
+    "debt_capacity": 28.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 84.0,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.6,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.1,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Nexus Payments",
+    "sector": "Financial Services / FinTech",
+    "stage": "early_revenue",
+    "description": "Embedded payments infrastructure for vertical SaaS companies. $10M in payment volume, rapidly onboarding new SaaS partners. Revenue growth 100%+ YoY.",
+    "capital_requested": 20.0,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 58.0,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.2,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.7,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Valor Aerospace MRO",
+    "sector": "Industrials / Aerospace",
+    "stage": "mature",
+    "description": "Aircraft maintenance, repair, and overhaul (MRO) for regional airlines. $90M revenue, FAA-certified, backlog growing with fleet age and air travel recovery.",
+    "capital_requested": 48.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.25,
+    "debt_capacity": 30.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 88.0,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.6,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.2,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "StellarMind AI Tutor",
+    "sector": "Education / AI",
+    "stage": "startup",
+    "description": "AI-powered personal tutor for STEM subjects targeting high school students. 50,000 active users on free tier, monetization just launched. Viral growth with strong retention.",
+    "capital_requested": 8.0,
+    "rolled_equity_min": 0.85,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 18.0,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 0.3,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 8.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "GrandOak Senior Living",
+    "sector": "Healthcare / Senior Living",
+    "stage": "mature",
+    "description": "Owner-operator of 9 assisted living and memory care communities. Demand driven by demographics, real asset backing. Staffing costs are key operating risk.",
+    "capital_requested": 55.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.2,
+    "debt_capacity": 38.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 96.0,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.5,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.85,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.15
+      },
+      {
+        "multiple": 1.9,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "DraftLine Sports Analytics",
+    "sector": "Media / Sports Tech",
+    "stage": "developing",
+    "description": "Data analytics and AI scouting platform for professional sports teams. 12 team clients paying $300K/yr each. Strong retention, expanding into European soccer.",
+    "capital_requested": 10.0,
+    "rolled_equity_min": 0.75,
+    "rolled_equity_max": 0.95,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 28.0,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Borealis Energy Transition Fund Target",
+    "sector": "Energy / Oil & Gas",
+    "stage": "mature",
+    "description": "Midstream oil and gas pipeline operator. Contracted capacity, fee-based model. Energy transition creates long-term obsolescence risk but near-term cash flows are strong.",
+    "capital_requested": 70.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.2,
+    "debt_capacity": 50.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 120.0,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.15
+      },
+      {
+        "multiple": 0.7,
+        "prob": 0.3
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.35
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.15
+      },
+      {
+        "multiple": 1.6,
+        "prob": 0.05
+      }
+    ]
+  },
+  {
+    "name": "Highline E-Commerce Enablement",
+    "sector": "Technology / E-Commerce",
+    "stage": "early_revenue",
+    "description": "Managed marketplace services for brands selling on Amazon, Walmart, and Target. $15M revenue, 35% net margin. Highly scalable, recurring retainer model.",
+    "capital_requested": 20.0,
+    "rolled_equity_min": 0.75,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 5.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 60.0,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.4
+      },
+      {
+        "multiple": 2.2,
+        "prob": 0.2
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "OptiLens Eyecare",
+    "sector": "Healthcare / Eyecare",
+    "stage": "mature",
+    "description": "Operator of 35 independent optometry practices. Vision care is largely insurance-reimbursed and non-cyclical. Classic multi-site healthcare services roll-up.",
+    "capital_requested": 35.0,
+    "rolled_equity_min": 0.1,
+    "rolled_equity_max": 0.4,
+    "debt_capacity": 18.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 66.0,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "FortressNet Data Centers",
+    "sector": "Technology / Infrastructure",
+    "stage": "mature",
+    "description": "Operator of 4 colocation data centers serving enterprise and cloud tenants. Power capacity sold out, strong multi-year leases, high recurring EBITDA.",
+    "capital_requested": 60.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.2,
+    "debt_capacity": 40.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 105.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.6,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.2,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Terracycle Bio Materials",
+    "sector": "Industrials / Sustainability",
+    "stage": "developing",
+    "description": "Produces compostable packaging materials from agricultural waste. $5M revenue, EU and US retailer pilots. Margins improving as scale increases.",
+    "capital_requested": 12.0,
+    "rolled_equity_min": 0.75,
+    "rolled_equity_max": 0.95,
+    "debt_capacity": 3.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 26.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Paragon Market Research",
+    "sector": "Business Services / Research",
+    "stage": "mature",
+    "description": "$35M revenue market research firm serving CPG and pharma. High NPS, subscription model growing. Sticky client relationships built over 15 years.",
+    "capital_requested": 20.0,
+    "rolled_equity_min": 0.15,
+    "rolled_equity_max": 0.45,
+    "debt_capacity": 10.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 40.0,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "HelixBio Cell Therapy",
+    "sector": "Healthcare / Biotech",
+    "stage": "startup",
+    "description": "CAR-T cell therapy startup targeting solid tumors. Novel approach, promising pre-clinical data. Series A stage, top oncology KOLs on advisory board.",
+    "capital_requested": 18.0,
+    "rolled_equity_min": 0.9,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 35.0,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.35
+      },
+      {
+        "multiple": 0.2,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 12.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Vega Supply Chain Software",
+    "sector": "Technology / Supply Chain",
+    "stage": "early_revenue",
+    "description": "Demand forecasting and inventory optimization SaaS for mid-market retailers. $9M ARR, 115% NRR. Recent Gartner recognition driving inbound pipeline.",
+    "capital_requested": 16.0,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 3.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 50.0,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.3,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.2,
+        "prob": 0.25
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Marquis Dermatology Partners",
+    "sector": "Healthcare / Dermatology",
+    "stage": "mature",
+    "description": "Multi-site dermatology practice group, 28 locations across the Mid-Atlantic. Mix of medical and cosmetic dermatology. Strong cash-pay aesthetic revenue.",
+    "capital_requested": 38.0,
+    "rolled_equity_min": 0.1,
+    "rolled_equity_max": 0.4,
+    "debt_capacity": 20.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 72.0,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.6,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.2,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Anchor Home Services",
+    "sector": "Consumer / Home Services",
+    "stage": "mature",
+    "description": "HVAC, plumbing, and electrical services provider across 4 markets. Recurring membership model, strong brand. Home services consolidation play.",
+    "capital_requested": 32.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.3,
+    "debt_capacity": 18.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 62.0,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.2,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.6,
+        "prob": 0.2
+      },
+      {
+        "multiple": 2.2,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "OpalStar E-Sports",
+    "sector": "Media / E-Sports",
+    "stage": "developing",
+    "description": "E-sports team and content platform. $8M revenue from sponsorships and streaming. Audience demographics are premium for advertisers. Monetization still maturing.",
+    "capital_requested": 9.0,
+    "rolled_equity_min": 0.7,
+    "rolled_equity_max": 0.9,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 20.0,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 0.4,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "CapstoneEDU Prep",
+    "sector": "Education / Test Prep",
+    "stage": "mature",
+    "description": "Premium college admissions and test prep services. $28M revenue, franchise network of 40 centers. High-income, recession-resistant client base.",
+    "capital_requested": 18.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.35,
+    "debt_capacity": 8.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 36.0,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.6,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.85,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.15
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Stormbridge Infrastructure",
+    "sector": "Industrials / Infrastructure Services",
+    "stage": "mature",
+    "description": "Bridge and road inspection services for state DOTs. $45M revenue, multi-year government contracts. Highly defensive, infrastructure spending is a tailwind.",
+    "capital_requested": 25.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.3,
+    "debt_capacity": 15.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 50.0,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Celeste Nutrition Science",
+    "sector": "Healthcare / Nutrition",
+    "stage": "developing",
+    "description": "Personalized nutrition supplements using microbiome testing. $10M revenue, 65% gross margin, DTC subscription model. Retention improving after reformulation.",
+    "capital_requested": 10.0,
+    "rolled_equity_min": 0.7,
+    "rolled_equity_max": 0.9,
+    "debt_capacity": 2.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 24.0,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.5,
+        "prob": 0.15
+      },
+      {
+        "multiple": 5.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "WaveForm Audio Tech",
+    "sector": "Technology / Audio",
+    "stage": "startup",
+    "description": "AI-powered audio mastering and production tools for independent musicians. 20,000 paid users, $1.5M ARR. Competing against expensive studio software at a fraction of the cost.",
+    "capital_requested": 5.0,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 12.0,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 0.4,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 7.0,
+        "prob": 0.1
+      }
+    ]
+  },
+  {
+    "name": "Cornerstone Pet Nutrition",
+    "sector": "Consumer / Pet Care",
+    "stage": "early_revenue",
+    "description": "Premium prescription pet food brand sold through veterinary channels. $11M revenue, vet relationships create strong distribution moat. Pet humanization trend is a tailwind.",
+    "capital_requested": 14.0,
+    "rolled_equity_min": 0.75,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 3.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 40.0,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.3,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.2,
+        "prob": 0.25
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.1
+      }
     ]
   }
 ]
