@@ -236,7 +236,7 @@ def search_companies():
             GameCompany.year_available <= game.current_year)
 
         if sector_filter:
-            query = query.filter(GameCompany.sector.like(sector_filter + '%'))
+            query = query.filter(GameCompany.sector == sector_filter)
         if stage_filter:
             query = query.filter(GameCompany.stage == stage_filter)
         if max_capital:

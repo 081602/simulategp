@@ -1,7 +1,7 @@
 [
   {
     "name": "NovaMed Therapeutics",
-    "sector": "Healthcare / Biotech",
+    "sector": "Healthcare",
     "stage": "startup",
     "description": "Pre-revenue biotech developing a novel oncology treatment. Strong IP portfolio, Phase I trials underway. High risk, high reward.",
     "capital_requested": 12.0,
@@ -38,11 +38,12 @@
     "reasons_for_funding": "pre-commercial development and testing",
     "available_cash": 0.4,
     "founder_shares": 10000000,
-    "management_option_pct": 0.121
+    "management_option_pct": 0.121,
+    "subsector": "Healthcare / Biotech"
   },
   {
     "name": "CloudStack Logistics",
-    "sector": "Technology / SaaS",
+    "sector": "Technology",
     "stage": "early_revenue",
     "description": "B2B SaaS platform for supply chain management. $2M ARR, 120% net revenue retention, growing 80% YoY. Seeking capital to expand sales team.",
     "capital_requested": 15.0,
@@ -79,11 +80,12 @@
     "reasons_for_funding": "working capital and inventory build",
     "available_cash": 4.6,
     "founder_shares": 10000000,
-    "management_option_pct": 0.052
+    "management_option_pct": 0.052,
+    "subsector": "Technology / SaaS"
   },
   {
     "name": "Apex Industrial Partners",
-    "sector": "Industrials / Manufacturing",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Regional manufacturer of precision components for aerospace. EBITDA margin of 22%, stable cash flows, family-owned since 1978. Owner seeking retirement exit.",
     "capital_requested": 40.0,
@@ -120,11 +122,12 @@
     "reasons_for_funding": "management buyout financing",
     "available_cash": 23.2,
     "founder_shares": 10000000,
-    "management_option_pct": 0.046
+    "management_option_pct": 0.046,
+    "subsector": "Industrials / Manufacturing"
   },
   {
     "name": "GreenLeaf Consumer Brands",
-    "sector": "Consumer / Retail",
+    "sector": "Consumer",
     "stage": "developing",
     "description": "Organic snack food brand with strong DTC presence. $8M revenue, expanding into retail. Management disputes are a concern.",
     "capital_requested": 10.0,
@@ -161,11 +164,12 @@
     "reasons_for_funding": "channel partnerships and distribution",
     "available_cash": 5.4,
     "founder_shares": 10000000,
-    "management_option_pct": 0.103
+    "management_option_pct": 0.103,
+    "subsector": "Consumer / Retail"
   },
   {
     "name": "UrbanGrid Energy",
-    "sector": "Energy / CleanTech",
+    "sector": "Energy",
     "stage": "early_revenue",
     "description": "Distributed solar + storage solutions for commercial real estate. $5M revenue, long-term contracts, backed by government grants. Strong macro tailwinds.",
     "capital_requested": 20.0,
@@ -202,11 +206,12 @@
     "reasons_for_funding": "working capital and inventory build",
     "available_cash": 3.3,
     "founder_shares": 10000000,
-    "management_option_pct": 0.052
+    "management_option_pct": 0.052,
+    "subsector": "Energy / CleanTech"
   },
   {
     "name": "HarborView Hotels",
-    "sector": "Hospitality / Real Estate",
+    "sector": "Consumer",
     "stage": "mature",
     "description": "Boutique hotel chain, 8 properties across New England. Solid EBITDA, real asset backing, moderate debt already on balance sheet. Classic LBO candidate.",
     "capital_requested": 60.0,
@@ -243,11 +248,12 @@
     "reasons_for_funding": "acquisition of a complementary business",
     "available_cash": 22.7,
     "founder_shares": 10000000,
-    "management_option_pct": 0.032
+    "management_option_pct": 0.032,
+    "subsector": "Hospitality / Real Estate"
   },
   {
     "name": "PulseCheck Health",
-    "sector": "Healthcare / Digital Health",
+    "sector": "Healthcare",
     "stage": "developing",
     "description": "Remote patient monitoring platform targeting chronic disease management. 50 hospital pilots underway. Regulatory approval expected in 18 months.",
     "capital_requested": 8.0,
@@ -284,11 +290,12 @@
     "reasons_for_funding": "brand building and customer acquisition",
     "available_cash": 1.2,
     "founder_shares": 10000000,
-    "management_option_pct": 0.113
+    "management_option_pct": 0.113,
+    "subsector": "Healthcare / Digital Health"
   },
   {
     "name": "BridgePoint Financial",
-    "sector": "Financial Services",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Regional specialty lender focused on SMB loans. Profitable for 12 consecutive years. Regulatory environment stable. Seeking capital for geographic expansion.",
     "capital_requested": 35.0,
@@ -325,11 +332,12 @@
     "reasons_for_funding": "succession planning and ownership transition",
     "available_cash": 20.5,
     "founder_shares": 10000000,
-    "management_option_pct": 0.045
+    "management_option_pct": 0.045,
+    "subsector": "Financial Services"
   },
   {
     "name": "Spectra AI",
-    "sector": "Technology / AI",
+    "sector": "Technology",
     "stage": "startup",
     "description": "Foundation model startup targeting enterprise code generation. Pre-revenue but recruited a world-class team from top labs. Extremely competitive space.",
     "capital_requested": 20.0,
@@ -366,11 +374,12 @@
     "reasons_for_funding": "market validation and pilot customers",
     "available_cash": 0.4,
     "founder_shares": 10000000,
-    "management_option_pct": 0.112
+    "management_option_pct": 0.112,
+    "subsector": "Technology / AI"
   },
   {
     "name": "MidWest Agri Solutions",
-    "sector": "Agriculture / Food Tech",
+    "sector": "Consumer",
     "stage": "early_revenue",
     "description": "Precision agriculture SaaS platform. $3M ARR across 400 farms. Seeking capital to develop hardware offering and expand to Canada.",
     "capital_requested": 12.0,
@@ -407,11 +416,12 @@
     "reasons_for_funding": "accelerating sales team growth",
     "available_cash": 7.6,
     "founder_shares": 10000000,
-    "management_option_pct": 0.072
+    "management_option_pct": 0.072,
+    "subsector": "Agriculture / Food Tech"
   },
   {
     "name": "Ironclad Security Systems",
-    "sector": "Technology / Cybersecurity",
+    "sector": "Technology",
     "stage": "developing",
     "description": "Zero-trust security vendor for mid-market companies. Seed funded 2 years ago. $1.5M ARR, high churn is a concern. Recent CISO hire may turn things around.",
     "capital_requested": 9.0,
@@ -448,11 +458,12 @@
     "reasons_for_funding": "brand building and customer acquisition",
     "available_cash": 2.4,
     "founder_shares": 10000000,
-    "management_option_pct": 0.102
+    "management_option_pct": 0.102,
+    "subsector": "Technology / Cybersecurity"
   },
   {
     "name": "Crestline Packaging",
-    "sector": "Industrials / Packaging",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Sustainable packaging manufacturer. $120M revenue, 18% EBITDA margin. ESG credentials strong. Some customer concentration risk (top 3 = 55% of revenue).",
     "capital_requested": 50.0,
@@ -489,11 +500,12 @@
     "reasons_for_funding": "succession planning and ownership transition",
     "available_cash": 29.0,
     "founder_shares": 10000000,
-    "management_option_pct": 0.034
+    "management_option_pct": 0.034,
+    "subsector": "Industrials / Packaging"
   },
   {
     "name": "NexGen Mobility",
-    "sector": "Transportation / EV",
+    "sector": "Industrials",
     "stage": "startup",
     "description": "Electric micro-mobility startup targeting B2B fleet leasing. Pre-revenue hardware play with a working prototype. Regulatory risks are significant.",
     "capital_requested": 15.0,
@@ -530,11 +542,12 @@
     "reasons_for_funding": "founding team expansion and product build",
     "available_cash": 0.5,
     "founder_shares": 10000000,
-    "management_option_pct": 0.123
+    "management_option_pct": 0.123,
+    "subsector": "Transportation / EV"
   },
   {
     "name": "Summit Education Group",
-    "sector": "Education / EdTech",
+    "sector": "Consumer",
     "stage": "early_revenue",
     "description": "K-12 tutoring marketplace with AI-powered matching. $6M GMV, growing 60% YoY. Founder-led. Strong unit economics but competitive market.",
     "capital_requested": 10.0,
@@ -571,11 +584,12 @@
     "reasons_for_funding": "expanding into enterprise market segment",
     "available_cash": 5.7,
     "founder_shares": 10000000,
-    "management_option_pct": 0.068
+    "management_option_pct": 0.068,
+    "subsector": "Education / EdTech"
   },
   {
     "name": "Coastal Wealth Management",
-    "sector": "Financial Services / RIA",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "$2.8B AUM registered investment advisor. Fee-based model, high client retention, aging founder team. Classic management buyout / succession scenario.",
     "capital_requested": 45.0,
@@ -612,11 +626,12 @@
     "reasons_for_funding": "owner liquidity and partial exit",
     "available_cash": 34.7,
     "founder_shares": 10000000,
-    "management_option_pct": 0.027
+    "management_option_pct": 0.027,
+    "subsector": "Financial Services / RIA"
   },
   {
     "name": "Redwood Data Infrastructure",
-    "sector": "Technology / SaaS",
+    "sector": "Technology",
     "stage": "startup",
     "description": "Developer-focused data pipeline tooling. Backed by two ex-Databricks engineers. No revenue yet but strong open-source traction with 8,000 GitHub stars.",
     "capital_requested": 8.0,
@@ -653,11 +668,12 @@
     "reasons_for_funding": "technology development and IP filing",
     "available_cash": 2.0,
     "founder_shares": 10000000,
-    "management_option_pct": 0.107
+    "management_option_pct": 0.107,
+    "subsector": "Technology / SaaS"
   },
   {
     "name": "Vantage Dental Partners",
-    "sector": "Healthcare / Dental",
+    "sector": "Healthcare",
     "stage": "mature",
     "description": "Regional dental services organization (DSO) with 45 locations across the Southeast. Strong EBITDA, acquisition-driven growth model, experienced management.",
     "capital_requested": 55.0,
@@ -694,11 +710,12 @@
     "reasons_for_funding": "management buyout financing",
     "available_cash": 22.1,
     "founder_shares": 10000000,
-    "management_option_pct": 0.042
+    "management_option_pct": 0.042,
+    "subsector": "Healthcare / Dental"
   },
   {
     "name": "TerraFirm Construction Tech",
-    "sector": "Technology / ConTech",
+    "sector": "Technology",
     "stage": "developing",
     "description": "AI-powered project management platform for general contractors. $4M ARR, 90% gross margin. Founders have deep construction industry relationships.",
     "capital_requested": 11.0,
@@ -735,11 +752,12 @@
     "reasons_for_funding": "sales and marketing expansion",
     "available_cash": 3.6,
     "founder_shares": 10000000,
-    "management_option_pct": 0.118
+    "management_option_pct": 0.118,
+    "subsector": "Technology / ConTech"
   },
   {
     "name": "LuminaLab Diagnostics",
-    "sector": "Healthcare / Medical Devices",
+    "sector": "Healthcare",
     "stage": "startup",
     "description": "Point-of-care diagnostic device for sepsis detection. FDA breakthrough designation received. Pre-revenue, but pilot agreements with 3 hospital systems signed.",
     "capital_requested": 10.0,
@@ -776,11 +794,12 @@
     "reasons_for_funding": "R&D and prototype completion",
     "available_cash": 0.9,
     "founder_shares": 10000000,
-    "management_option_pct": 0.124
+    "management_option_pct": 0.124,
+    "subsector": "Healthcare / Medical Devices"
   },
   {
     "name": "Northgate Auto Services",
-    "sector": "Consumer / Auto Services",
+    "sector": "Consumer",
     "stage": "mature",
     "description": "Chain of 30 quick-lube and tire centers in the Midwest. Recession-resistant, strong free cash flow, low capex. Owner-operated for 20 years, seeking buyout.",
     "capital_requested": 25.0,
@@ -817,11 +836,12 @@
     "reasons_for_funding": "dividend recapitalization",
     "available_cash": 34.3,
     "founder_shares": 10000000,
-    "management_option_pct": 0.028
+    "management_option_pct": 0.028,
+    "subsector": "Consumer / Auto Services"
   },
   {
     "name": "BlueWave Aquaculture",
-    "sector": "Agriculture / Food Tech",
+    "sector": "Consumer",
     "stage": "developing",
     "description": "Land-based salmon farming using recirculating aquaculture systems. Unique technology, no revenue yet from commercial scale. Permitting completed.",
     "capital_requested": 14.0,
@@ -858,11 +878,12 @@
     "reasons_for_funding": "sales and marketing expansion",
     "available_cash": 3.5,
     "founder_shares": 10000000,
-    "management_option_pct": 0.081
+    "management_option_pct": 0.081,
+    "subsector": "Agriculture / Food Tech"
   },
   {
     "name": "ClearPath Insurance Tech",
-    "sector": "Financial Services / InsurTech",
+    "sector": "Industrials",
     "stage": "early_revenue",
     "description": "Embedded insurance platform for e-commerce. $4M ARR, partnered with 3 major online marketplaces. Loss ratio improving quarter over quarter.",
     "capital_requested": 13.0,
@@ -899,11 +920,12 @@
     "reasons_for_funding": "strategic acquisitions of smaller competitors",
     "available_cash": 10.7,
     "founder_shares": 10000000,
-    "management_option_pct": 0.093
+    "management_option_pct": 0.093,
+    "subsector": "Financial Services / InsurTech"
   },
   {
     "name": "Meridian Waste Solutions",
-    "sector": "Industrials / Environmental Services",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Specialty waste management company focused on industrial and hazardous materials. Strong recurring revenues, highly fragmented market with roll-up potential.",
     "capital_requested": 45.0,
@@ -940,11 +962,12 @@
     "reasons_for_funding": "succession planning and ownership transition",
     "available_cash": 7.4,
     "founder_shares": 10000000,
-    "management_option_pct": 0.049
+    "management_option_pct": 0.049,
+    "subsector": "Industrials / Environmental Services"
   },
   {
     "name": "Onyx Media Group",
-    "sector": "Media / Digital Content",
+    "sector": "Consumer",
     "stage": "developing",
     "description": "Creator-economy platform for independent journalists. 200,000 paying subscribers, $6M ARR. High churn but passionate niche audience. Founder has strong public profile.",
     "capital_requested": 7.0,
@@ -981,11 +1004,12 @@
     "reasons_for_funding": "operational scaling and infrastructure",
     "available_cash": 3.3,
     "founder_shares": 10000000,
-    "management_option_pct": 0.107
+    "management_option_pct": 0.107,
+    "subsector": "Media / Digital Content"
   },
   {
     "name": "SkyBridge Telecom",
-    "sector": "Technology / Telecom",
+    "sector": "Technology",
     "stage": "mature",
     "description": "Rural fixed-wireless broadband provider. 85,000 subscribers, government subsidy agreements secured. Steady EBITDA, limited competition by geography.",
     "capital_requested": 38.0,
@@ -1022,11 +1046,12 @@
     "reasons_for_funding": "acquisition of a complementary business",
     "available_cash": 12.6,
     "founder_shares": 10000000,
-    "management_option_pct": 0.049
+    "management_option_pct": 0.049,
+    "subsector": "Technology / Telecom"
   },
   {
     "name": "PixelForge Studios",
-    "sector": "Media / Gaming",
+    "sector": "Consumer",
     "stage": "startup",
     "description": "Mobile game studio with one viral hit (5M downloads). Building a second title. Revenue volatile and driven by single IP. Team of 15 strong creators.",
     "capital_requested": 6.0,
@@ -1063,11 +1088,12 @@
     "reasons_for_funding": "R&D and prototype completion",
     "available_cash": 1.0,
     "founder_shares": 10000000,
-    "management_option_pct": 0.126
+    "management_option_pct": 0.126,
+    "subsector": "Media / Gaming"
   },
   {
     "name": "Forge Analytics",
-    "sector": "Technology / AI",
+    "sector": "Technology",
     "stage": "early_revenue",
     "description": "AI-driven business intelligence for mid-market manufacturers. $5M ARR, 110% net revenue retention. Competing against legacy BI vendors with a 10x cheaper offering.",
     "capital_requested": 18.0,
@@ -1104,11 +1130,12 @@
     "reasons_for_funding": "international expansion",
     "available_cash": 2.5,
     "founder_shares": 10000000,
-    "management_option_pct": 0.097
+    "management_option_pct": 0.097,
+    "subsector": "Technology / AI"
   },
   {
     "name": "Prairie Home Care",
-    "sector": "Healthcare / Home Health",
+    "sector": "Healthcare",
     "stage": "mature",
     "description": "Home health and personal care services with 1,200 caregivers across 4 states. Medicaid and Medicare reimbursement mix. Aging population tailwind.",
     "capital_requested": 30.0,
@@ -1145,11 +1172,12 @@
     "reasons_for_funding": "succession planning and ownership transition",
     "available_cash": 33.1,
     "founder_shares": 10000000,
-    "management_option_pct": 0.044
+    "management_option_pct": 0.044,
+    "subsector": "Healthcare / Home Health"
   },
   {
     "name": "Voltz Energy Storage",
-    "sector": "Energy / CleanTech",
+    "sector": "Energy",
     "stage": "startup",
     "description": "Next-gen grid-scale battery technology using sodium-ion chemistry. Pre-revenue, but DOE grant of $8M received. Long path to commercialization.",
     "capital_requested": 16.0,
@@ -1186,11 +1214,12 @@
     "reasons_for_funding": "R&D and prototype completion",
     "available_cash": 1.2,
     "founder_shares": 10000000,
-    "management_option_pct": 0.123
+    "management_option_pct": 0.123,
+    "subsector": "Energy / CleanTech"
   },
   {
     "name": "Summit Beverage Co.",
-    "sector": "Consumer / CPG",
+    "sector": "Consumer",
     "stage": "developing",
     "description": "Premium functional beverages brand. $12M revenue, in 8,000 retail doors. Founder-led, cash burn is high due to marketing. Category growing 35% annually.",
     "capital_requested": 9.0,
@@ -1227,11 +1256,12 @@
     "reasons_for_funding": "product line extension",
     "available_cash": 1.2,
     "founder_shares": 10000000,
-    "management_option_pct": 0.107
+    "management_option_pct": 0.107,
+    "subsector": "Consumer / CPG"
   },
   {
     "name": "Keystone Title & Escrow",
-    "sector": "Financial Services / Real Estate",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Title insurance and escrow services in 6 states. Highly fragmented market, steady volumes tied to real estate transactions. Owner looking for partial liquidity.",
     "capital_requested": 22.0,
@@ -1268,11 +1298,12 @@
     "reasons_for_funding": "owner liquidity and partial exit",
     "available_cash": 15.1,
     "founder_shares": 10000000,
-    "management_option_pct": 0.044
+    "management_option_pct": 0.044,
+    "subsector": "Financial Services / Real Estate"
   },
   {
     "name": "DeepRoot Genomics",
-    "sector": "Healthcare / Biotech",
+    "sector": "Healthcare",
     "stage": "startup",
     "description": "Gene-editing platform for rare metabolic diseases. Exceptional scientific team, two Nature publications. No IND filed yet. Very long investment horizon.",
     "capital_requested": 18.0,
@@ -1309,11 +1340,12 @@
     "reasons_for_funding": "founding team expansion and product build",
     "available_cash": 1.4,
     "founder_shares": 10000000,
-    "management_option_pct": 0.142
+    "management_option_pct": 0.142,
+    "subsector": "Healthcare / Biotech"
   },
   {
     "name": "Cascade Fitness Holdings",
-    "sector": "Consumer / Fitness",
+    "sector": "Consumer",
     "stage": "mature",
     "description": "Operator of 60 boutique fitness studios across the Pacific Northwest. Membership model, high retention. Post-COVID recovery complete. Franchise-ready.",
     "capital_requested": 28.0,
@@ -1350,11 +1382,12 @@
     "reasons_for_funding": "management buyout financing",
     "available_cash": 12.0,
     "founder_shares": 10000000,
-    "management_option_pct": 0.027
+    "management_option_pct": 0.027,
+    "subsector": "Consumer / Fitness"
   },
   {
     "name": "Nimbus Fleet Management",
-    "sector": "Technology / SaaS",
+    "sector": "Technology",
     "stage": "early_revenue",
     "description": "Fleet telematics and compliance SaaS for trucking companies. $7M ARR, 95% gross retention. DOT compliance requirements create sticky recurring revenue.",
     "capital_requested": 16.0,
@@ -1391,11 +1424,12 @@
     "reasons_for_funding": "strategic acquisitions of smaller competitors",
     "available_cash": 11.3,
     "founder_shares": 10000000,
-    "management_option_pct": 0.098
+    "management_option_pct": 0.098,
+    "subsector": "Technology / SaaS"
   },
   {
     "name": "Iron Horse Distillery",
-    "sector": "Consumer / Spirits",
+    "sector": "Consumer",
     "stage": "developing",
     "description": "Craft spirits brand (whiskey and gin) with strong regional following. $5M revenue, limited national distribution. Founder needs capital partner to scale.",
     "capital_requested": 8.0,
@@ -1432,11 +1466,12 @@
     "reasons_for_funding": "hiring senior leadership team",
     "available_cash": 1.2,
     "founder_shares": 10000000,
-    "management_option_pct": 0.083
+    "management_option_pct": 0.083,
+    "subsector": "Consumer / Spirits"
   },
   {
     "name": "Argent Metals Recycling",
-    "sector": "Industrials / Metals",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Scrap metal processing and recycling business. Commodity-linked revenues but historically resilient. 3 processing facilities, union workforce.",
     "capital_requested": 32.0,
@@ -1473,11 +1508,12 @@
     "reasons_for_funding": "management buyout financing",
     "available_cash": 10.4,
     "founder_shares": 10000000,
-    "management_option_pct": 0.034
+    "management_option_pct": 0.034,
+    "subsector": "Industrials / Metals"
   },
   {
     "name": "Pantheon Pharma Services",
-    "sector": "Healthcare / Life Sciences",
+    "sector": "Healthcare",
     "stage": "mature",
     "description": "Contract research organization (CRO) providing clinical trial support. $80M revenue, 20% EBITDA margin. Long-term pharma client relationships.",
     "capital_requested": 50.0,
@@ -1514,11 +1550,12 @@
     "reasons_for_funding": "funding a strategic growth initiative",
     "available_cash": 7.5,
     "founder_shares": 10000000,
-    "management_option_pct": 0.043
+    "management_option_pct": 0.043,
+    "subsector": "Healthcare / Life Sciences"
   },
   {
     "name": "OceanPath Logistics",
-    "sector": "Transportation / Logistics",
+    "sector": "Industrials",
     "stage": "early_revenue",
     "description": "Last-mile delivery network for perishable goods. $10M revenue, grocery chain partnerships. Thin margins but growing fast with volume.",
     "capital_requested": 14.0,
@@ -1555,11 +1592,12 @@
     "reasons_for_funding": "accelerating sales team growth",
     "available_cash": 7.1,
     "founder_shares": 10000000,
-    "management_option_pct": 0.1
+    "management_option_pct": 0.1,
+    "subsector": "Transportation / Logistics"
   },
   {
     "name": "WillowBend Veterinary Group",
-    "sector": "Healthcare / Veterinary",
+    "sector": "Healthcare",
     "stage": "mature",
     "description": "Multi-site veterinary practice group, 22 clinics across Texas and Oklahoma. Recession-resistant, cash-pay model, strong pet humanization trend.",
     "capital_requested": 40.0,
@@ -1596,11 +1634,12 @@
     "reasons_for_funding": "owner liquidity and partial exit",
     "available_cash": 33.8,
     "founder_shares": 10000000,
-    "management_option_pct": 0.034
+    "management_option_pct": 0.034,
+    "subsector": "Healthcare / Veterinary"
   },
   {
     "name": "Synapse Neuro",
-    "sector": "Healthcare / Medical Devices",
+    "sector": "Healthcare",
     "stage": "startup",
     "description": "Closed-loop neuromodulation device for treatment-resistant depression. Pre-clinical results promising. FDA regulatory pathway is long but addressable market is enormous.",
     "capital_requested": 14.0,
@@ -1637,11 +1676,12 @@
     "reasons_for_funding": "clinical trials and regulatory filing",
     "available_cash": 1.5,
     "founder_shares": 10000000,
-    "management_option_pct": 0.114
+    "management_option_pct": 0.114,
+    "subsector": "Healthcare / Medical Devices"
   },
   {
     "name": "Marquee Event Services",
-    "sector": "Business Services / Events",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Full-service corporate event management company. $40M revenue, blue-chip corporate client roster. Post-pandemic recovery complete, strong forward bookings.",
     "capital_requested": 20.0,
@@ -1678,11 +1718,12 @@
     "reasons_for_funding": "management buyout financing",
     "available_cash": 11.5,
     "founder_shares": 10000000,
-    "management_option_pct": 0.026
+    "management_option_pct": 0.026,
+    "subsector": "Business Services / Events"
   },
   {
     "name": "SparrowNet Cybersecurity",
-    "sector": "Technology / Cybersecurity",
+    "sector": "Technology",
     "stage": "early_revenue",
     "description": "Managed detection and response (MDR) for healthcare systems. $8M ARR, HIPAA-specialized, 140% net revenue retention. Regulatory tailwinds strong.",
     "capital_requested": 15.0,
@@ -1719,11 +1760,12 @@
     "reasons_for_funding": "accelerating sales team growth",
     "available_cash": 10.8,
     "founder_shares": 10000000,
-    "management_option_pct": 0.051
+    "management_option_pct": 0.051,
+    "subsector": "Technology / Cybersecurity"
   },
   {
     "name": "WoodCraft Cabinetry",
-    "sector": "Industrials / Home Products",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Semi-custom cabinet manufacturer serving homebuilders. $65M revenue, long-term builder contracts. Housing cycle dependency is key risk.",
     "capital_requested": 28.0,
@@ -1760,11 +1802,12 @@
     "reasons_for_funding": "succession planning and ownership transition",
     "available_cash": 8.2,
     "founder_shares": 10000000,
-    "management_option_pct": 0.042
+    "management_option_pct": 0.042,
+    "subsector": "Industrials / Home Products"
   },
   {
     "name": "QuantumLeap Robotics",
-    "sector": "Technology / Robotics",
+    "sector": "Technology",
     "stage": "startup",
     "description": "Autonomous warehouse picking robots. 2 pilots with Tier 1 retailers. Pre-revenue but letters of intent in hand. Hardware unit economics not yet proven.",
     "capital_requested": 18.0,
@@ -1801,11 +1844,12 @@
     "reasons_for_funding": "clinical trials and regulatory filing",
     "available_cash": 0.6,
     "founder_shares": 10000000,
-    "management_option_pct": 0.149
+    "management_option_pct": 0.149,
+    "subsector": "Technology / Robotics"
   },
   {
     "name": "Silverline Business Process Outsourcing",
-    "sector": "Business Services / BPO",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Finance & accounting BPO serving mid-market companies. $55M revenue, long-term contracts, sticky relationships. Offshore delivery model keeps margins healthy.",
     "capital_requested": 35.0,
@@ -1842,11 +1886,12 @@
     "reasons_for_funding": "owner liquidity and partial exit",
     "available_cash": 23.6,
     "founder_shares": 10000000,
-    "management_option_pct": 0.025
+    "management_option_pct": 0.025,
+    "subsector": "Business Services / BPO"
   },
   {
     "name": "SkyRoot PropTech",
-    "sector": "Technology / PropTech",
+    "sector": "Technology",
     "stage": "developing",
     "description": "AI platform for commercial real estate underwriting and due diligence. $3M ARR, strong traction with mid-size REITs. Founder previously built and sold a proptech startup.",
     "capital_requested": 10.0,
@@ -1883,11 +1928,12 @@
     "reasons_for_funding": "hiring senior leadership team",
     "available_cash": 3.8,
     "founder_shares": 10000000,
-    "management_option_pct": 0.11
+    "management_option_pct": 0.11,
+    "subsector": "Technology / PropTech"
   },
   {
     "name": "Lakeview Orthopedics Group",
-    "sector": "Healthcare / Physician Practices",
+    "sector": "Healthcare",
     "stage": "mature",
     "description": "15-physician orthopedic practice with ambulatory surgery center. Strong ancillary revenue, growing demand from aging population. Classic physician practice roll-up target.",
     "capital_requested": 42.0,
@@ -1924,11 +1970,12 @@
     "reasons_for_funding": "funding a strategic growth initiative",
     "available_cash": 7.6,
     "founder_shares": 10000000,
-    "management_option_pct": 0.036
+    "management_option_pct": 0.036,
+    "subsector": "Healthcare / Physician Practices"
   },
   {
     "name": "Axiom Legal Tech",
-    "sector": "Technology / LegalTech",
+    "sector": "Technology",
     "stage": "early_revenue",
     "description": "Contract lifecycle management SaaS for corporate legal teams. $6M ARR, 120% NRR. Fortune 500 pipeline robust. Competitive market but differentiated AI features.",
     "capital_requested": 15.0,
@@ -1965,11 +2012,12 @@
     "reasons_for_funding": "strategic acquisitions of smaller competitors",
     "available_cash": 2.3,
     "founder_shares": 10000000,
-    "management_option_pct": 0.067
+    "management_option_pct": 0.067,
+    "subsector": "Technology / LegalTech"
   },
   {
     "name": "PineCrest Timberlands",
-    "sector": "Industrials / Forestry",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Timberland REIT structure with 180,000 acres in the Pacific Northwest. Carbon credit upside potential. Steady long-term asset value appreciation.",
     "capital_requested": 65.0,
@@ -2006,11 +2054,12 @@
     "reasons_for_funding": "succession planning and ownership transition",
     "available_cash": 12.4,
     "founder_shares": 10000000,
-    "management_option_pct": 0.048
+    "management_option_pct": 0.048,
+    "subsector": "Industrials / Forestry"
   },
   {
     "name": "Glow Beauty Tech",
-    "sector": "Consumer / Beauty",
+    "sector": "Consumer",
     "stage": "developing",
     "description": "AI-powered personalized skincare brand. $9M DTC revenue, passionate repeat customer base. Gross margins 70%+. Scaling into retail is the next challenge.",
     "capital_requested": 8.0,
@@ -2047,11 +2096,12 @@
     "reasons_for_funding": "channel partnerships and distribution",
     "available_cash": 2.4,
     "founder_shares": 10000000,
-    "management_option_pct": 0.082
+    "management_option_pct": 0.082,
+    "subsector": "Consumer / Beauty"
   },
   {
     "name": "TrueNorth Staffing Solutions",
-    "sector": "Business Services / Staffing",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Specialized staffing agency for skilled trades (electricians, HVAC, plumbers). $90M revenue. Tight labor market creates durable pricing power.",
     "capital_requested": 40.0,
@@ -2088,11 +2138,12 @@
     "reasons_for_funding": "acquisition of a complementary business",
     "available_cash": 15.0,
     "founder_shares": 10000000,
-    "management_option_pct": 0.032
+    "management_option_pct": 0.032,
+    "subsector": "Business Services / Staffing"
   },
   {
     "name": "CarbonTrace Platform",
-    "sector": "Energy / CleanTech",
+    "sector": "Energy",
     "stage": "startup",
     "description": "Scope 3 carbon accounting SaaS for large enterprises. Pre-revenue, but 10 paid pilots with Fortune 500 companies. Regulatory mandates could accelerate growth dramatically.",
     "capital_requested": 7.0,
@@ -2129,11 +2180,12 @@
     "reasons_for_funding": "technology development and IP filing",
     "available_cash": 1.0,
     "founder_shares": 10000000,
-    "management_option_pct": 0.132
+    "management_option_pct": 0.132,
+    "subsector": "Energy / CleanTech"
   },
   {
     "name": "Harrington Specialty Chemicals",
-    "sector": "Industrials / Chemicals",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Manufacturer of specialty coatings for electronics and aerospace. $75M revenue, 25% EBITDA margin, strong IP moat. Key-person risk around founder-CEO.",
     "capital_requested": 48.0,
@@ -2170,11 +2222,12 @@
     "reasons_for_funding": "acquisition of a complementary business",
     "available_cash": 18.5,
     "founder_shares": 10000000,
-    "management_option_pct": 0.023
+    "management_option_pct": 0.023,
+    "subsector": "Industrials / Chemicals"
   },
   {
     "name": "EchoHealth Digital",
-    "sector": "Healthcare / Digital Health",
+    "sector": "Healthcare",
     "stage": "early_revenue",
     "description": "Virtual behavioral health platform for employers. $9M ARR, contracted with 150 self-insured employers. Mental health demand growing but competition increasing.",
     "capital_requested": 18.0,
@@ -2211,11 +2264,12 @@
     "reasons_for_funding": "marketing spend to capture market share",
     "available_cash": 2.9,
     "founder_shares": 10000000,
-    "management_option_pct": 0.086
+    "management_option_pct": 0.086,
+    "subsector": "Healthcare / Digital Health"
   },
   {
     "name": "Riverbend Power & Utilities",
-    "sector": "Energy / Utilities",
+    "sector": "Energy",
     "stage": "mature",
     "description": "Independent power producer with 8 natural gas peaker plants. Capacity payments provide stable base revenue. Energy transition creates long-term headwind.",
     "capital_requested": 55.0,
@@ -2252,11 +2306,12 @@
     "reasons_for_funding": "management buyout financing",
     "available_cash": 26.7,
     "founder_shares": 10000000,
-    "management_option_pct": 0.044
+    "management_option_pct": 0.044,
+    "subsector": "Energy / Utilities"
   },
   {
     "name": "VoltArc Electric Vehicles",
-    "sector": "Transportation / EV",
+    "sector": "Industrials",
     "stage": "developing",
     "description": "Class 3-5 electric work vehicle OEM. $15M backlog, first deliveries beginning. Dependent on battery supply chain and IRA tax credit structure remaining favorable.",
     "capital_requested": 22.0,
@@ -2293,11 +2348,12 @@
     "reasons_for_funding": "geographic expansion into new markets",
     "available_cash": 2.2,
     "founder_shares": 10000000,
-    "management_option_pct": 0.098
+    "management_option_pct": 0.098,
+    "subsector": "Transportation / EV"
   },
   {
     "name": "Pinstripe Capital Markets",
-    "sector": "Financial Services / Capital Markets",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Boutique investment bank focused on middle-market M&A advisory. $30M revenue, fee-based, low capital requirements. Senior banker succession is key challenge.",
     "capital_requested": 18.0,
@@ -2334,11 +2390,12 @@
     "reasons_for_funding": "dividend recapitalization",
     "available_cash": 30.9,
     "founder_shares": 10000000,
-    "management_option_pct": 0.037
+    "management_option_pct": 0.037,
+    "subsector": "Financial Services / Capital Markets"
   },
   {
     "name": "Cortex Semiconductor",
-    "sector": "Technology / Semiconductors",
+    "sector": "Technology",
     "stage": "startup",
     "description": "Fabless chip design company targeting edge AI inference. Pre-revenue, tape-out scheduled. $4M in DARPA grants. Extremely capital-intensive to scale.",
     "capital_requested": 25.0,
@@ -2375,11 +2432,12 @@
     "reasons_for_funding": "pre-commercial development and testing",
     "available_cash": 1.7,
     "founder_shares": 10000000,
-    "management_option_pct": 0.123
+    "management_option_pct": 0.123,
+    "subsector": "Technology / Semiconductors"
   },
   {
     "name": "Granite Peak Mining Services",
-    "sector": "Industrials / Mining",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Contract mining services and equipment operator for copper and gold mines. $100M revenue, asset-light model, long-term mine site contracts.",
     "capital_requested": 50.0,
@@ -2416,11 +2474,12 @@
     "reasons_for_funding": "dividend recapitalization",
     "available_cash": 21.6,
     "founder_shares": 10000000,
-    "management_option_pct": 0.044
+    "management_option_pct": 0.044,
+    "subsector": "Industrials / Mining"
   },
   {
     "name": "TidePool Marine Tech",
-    "sector": "Technology / Maritime",
+    "sector": "Technology",
     "stage": "developing",
     "description": "Autonomous underwater vehicle (AUV) for offshore wind farm inspection. $2M ARR from early contracts with two European energy majors. Hardware margins improving.",
     "capital_requested": 12.0,
@@ -2457,11 +2516,12 @@
     "reasons_for_funding": "brand building and customer acquisition",
     "available_cash": 4.3,
     "founder_shares": 10000000,
-    "management_option_pct": 0.106
+    "management_option_pct": 0.106,
+    "subsector": "Technology / Maritime"
   },
   {
     "name": "Linchpin HR Platform",
-    "sector": "Technology / HRTech",
+    "sector": "Technology",
     "stage": "early_revenue",
     "description": "HR and payroll SaaS for hourly workers in hospitality and retail. $11M ARR, 50,000 end-users. Low churn, ADP/Paychex legacy replacement opportunity.",
     "capital_requested": 20.0,
@@ -2498,11 +2558,12 @@
     "reasons_for_funding": "international expansion",
     "available_cash": 7.2,
     "founder_shares": 10000000,
-    "management_option_pct": 0.053
+    "management_option_pct": 0.053,
+    "subsector": "Technology / HRTech"
   },
   {
     "name": "Ashford Private Schools",
-    "sector": "Education / Private Schools",
+    "sector": "Consumer",
     "stage": "mature",
     "description": "Operator of 12 private K-12 schools with 4,200 students. Tuition pricing power, brand reputation strong. Urban market focus, real estate owned.",
     "capital_requested": 45.0,
@@ -2539,11 +2600,12 @@
     "reasons_for_funding": "management buyout financing",
     "available_cash": 20.6,
     "founder_shares": 10000000,
-    "management_option_pct": 0.045
+    "management_option_pct": 0.045,
+    "subsector": "Education / Private Schools"
   },
   {
     "name": "SpinOut Defense Systems",
-    "sector": "Technology / Defense",
+    "sector": "Technology",
     "stage": "startup",
     "description": "University spinout developing drone countermeasure systems for military use. Pre-revenue, SBIR-funded. Regulatory and export control risks significant but TAM is large.",
     "capital_requested": 12.0,
@@ -2580,11 +2642,12 @@
     "reasons_for_funding": "clinical trials and regulatory filing",
     "available_cash": 1.3,
     "founder_shares": 10000000,
-    "management_option_pct": 0.14
+    "management_option_pct": 0.14,
+    "subsector": "Technology / Defense"
   },
   {
     "name": "Copperfield Distribution",
-    "sector": "Industrials / Distribution",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Industrial fastener and component distributor serving OEM manufacturers. $110M revenue, 8% EBITDA margin. Highly fragmented market with roll-up opportunity.",
     "capital_requested": 45.0,
@@ -2621,11 +2684,12 @@
     "reasons_for_funding": "succession planning and ownership transition",
     "available_cash": 17.1,
     "founder_shares": 10000000,
-    "management_option_pct": 0.05
+    "management_option_pct": 0.05,
+    "subsector": "Industrials / Distribution"
   },
   {
     "name": "Meridian Crop Sciences",
-    "sector": "Agriculture / Biotech",
+    "sector": "Healthcare",
     "stage": "startup",
     "description": "Synthetic biology startup engineering drought-resistant crop traits. Pre-revenue. USDA regulatory process started. 5+ year time to market but transformational potential.",
     "capital_requested": 15.0,
@@ -2662,11 +2726,12 @@
     "reasons_for_funding": "founding team expansion and product build",
     "available_cash": 0.4,
     "founder_shares": 10000000,
-    "management_option_pct": 0.108
+    "management_option_pct": 0.108,
+    "subsector": "Agriculture / Biotech"
   },
   {
     "name": "Beacon Real Estate Software",
-    "sector": "Technology / PropTech",
+    "sector": "Technology",
     "stage": "early_revenue",
     "description": "Property management software for small landlords. $14M ARR, 18,000 paying accounts. Payments embedded in the product create additional monetization. Very low churn.",
     "capital_requested": 22.0,
@@ -2703,11 +2768,12 @@
     "reasons_for_funding": "working capital and inventory build",
     "available_cash": 10.9,
     "founder_shares": 10000000,
-    "management_option_pct": 0.098
+    "management_option_pct": 0.098,
+    "subsector": "Technology / PropTech"
   },
   {
     "name": "National Urgent Care Network",
-    "sector": "Healthcare / Urgent Care",
+    "sector": "Healthcare",
     "stage": "mature",
     "description": "Operator of 70 urgent care centers, primarily in the Sunbelt. Consumer-pay mix, brand awareness growing. Strong same-store growth, looking to double footprint.",
     "capital_requested": 60.0,
@@ -2744,11 +2810,12 @@
     "reasons_for_funding": "management buyout financing",
     "available_cash": 33.3,
     "founder_shares": 10000000,
-    "management_option_pct": 0.049
+    "management_option_pct": 0.049,
+    "subsector": "Healthcare / Urgent Care"
   },
   {
     "name": "Epoch Space Systems",
-    "sector": "Technology / Space",
+    "sector": "Technology",
     "stage": "startup",
     "description": "Small satellite launch services company. One successful orbital mission completed. Seeking capital to build second vehicle. Huge TAM but very capital intensive.",
     "capital_requested": 30.0,
@@ -2785,11 +2852,12 @@
     "reasons_for_funding": "founding team expansion and product build",
     "available_cash": 0.6,
     "founder_shares": 10000000,
-    "management_option_pct": 0.131
+    "management_option_pct": 0.131,
+    "subsector": "Technology / Space"
   },
   {
     "name": "Alpine Food Distribution",
-    "sector": "Consumer / Food Distribution",
+    "sector": "Consumer",
     "stage": "mature",
     "description": "Specialty food distributor serving independent restaurants. $85M revenue, strong chef relationships, difficult for large distributors to replicate service model.",
     "capital_requested": 35.0,
@@ -2826,11 +2894,12 @@
     "reasons_for_funding": "management buyout financing",
     "available_cash": 14.0,
     "founder_shares": 10000000,
-    "management_option_pct": 0.032
+    "management_option_pct": 0.032,
+    "subsector": "Consumer / Food Distribution"
   },
   {
     "name": "Thornwood Print & Fulfillment",
-    "sector": "Industrials / Print & Fulfillment",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Commercial printing and order fulfillment services. $50M revenue, 12% EBITDA. Digital displacement risk, but e-commerce fulfillment pivot underway.",
     "capital_requested": 25.0,
@@ -2867,11 +2936,12 @@
     "reasons_for_funding": "succession planning and ownership transition",
     "available_cash": 6.0,
     "founder_shares": 10000000,
-    "management_option_pct": 0.026
+    "management_option_pct": 0.026,
+    "subsector": "Industrials / Print & Fulfillment"
   },
   {
     "name": "BioReactor Systems",
-    "sector": "Healthcare / Biotech",
+    "sector": "Healthcare",
     "stage": "developing",
     "description": "Bioreactor equipment and services for cell therapy manufacturing. $6M ARR from early biopharma clients. Secular growth in cell & gene therapy is a strong tailwind.",
     "capital_requested": 14.0,
@@ -2908,11 +2978,12 @@
     "reasons_for_funding": "product line extension",
     "available_cash": 2.0,
     "founder_shares": 10000000,
-    "management_option_pct": 0.091
+    "management_option_pct": 0.091,
+    "subsector": "Healthcare / Biotech"
   },
   {
     "name": "Clearwater Analytics Hub",
-    "sector": "Technology / FinTech",
+    "sector": "Technology",
     "stage": "early_revenue",
     "description": "Portfolio analytics and reporting SaaS for family offices and RIAs. $8M ARR, 130% NRR, highly technical buyers. Salesforce partnership recently signed.",
     "capital_requested": 18.0,
@@ -2949,11 +3020,12 @@
     "reasons_for_funding": "accelerating sales team growth",
     "available_cash": 9.8,
     "founder_shares": 10000000,
-    "management_option_pct": 0.064
+    "management_option_pct": 0.064,
+    "subsector": "Technology / FinTech"
   },
   {
     "name": "Rampart Security Group",
-    "sector": "Business Services / Security",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Physical security and guard services for commercial real estate and data centers. $70M revenue, long-term contracts. Highly labor-intensive with wage inflation risk.",
     "capital_requested": 30.0,
@@ -2990,11 +3062,12 @@
     "reasons_for_funding": "owner liquidity and partial exit",
     "available_cash": 28.5,
     "founder_shares": 10000000,
-    "management_option_pct": 0.033
+    "management_option_pct": 0.033,
+    "subsector": "Business Services / Security"
   },
   {
     "name": "Aurora Imaging Systems",
-    "sector": "Healthcare / Medical Imaging",
+    "sector": "Healthcare",
     "stage": "startup",
     "description": "AI radiology assistant for detecting early-stage lung nodules. CE mark received in Europe, FDA submission filed. Radiologist shortage creates compelling market entry.",
     "capital_requested": 10.0,
@@ -3031,11 +3104,12 @@
     "reasons_for_funding": "market validation and pilot customers",
     "available_cash": 1.5,
     "founder_shares": 10000000,
-    "management_option_pct": 0.123
+    "management_option_pct": 0.123,
+    "subsector": "Healthcare / Medical Imaging"
   },
   {
     "name": "Solara Green Buildings",
-    "sector": "Industrials / Construction",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Commercial building retrofit contractor specializing in energy efficiency. $60M revenue, government incentive programs driving demand. Backlog at record levels.",
     "capital_requested": 30.0,
@@ -3072,11 +3146,12 @@
     "reasons_for_funding": "succession planning and ownership transition",
     "available_cash": 22.9,
     "founder_shares": 10000000,
-    "management_option_pct": 0.036
+    "management_option_pct": 0.036,
+    "subsector": "Industrials / Construction"
   },
   {
     "name": "GrowPath AgTech",
-    "sector": "Agriculture / Food Tech",
+    "sector": "Consumer",
     "stage": "early_revenue",
     "description": "Controlled environment agriculture (CEA) operator growing leafy greens for grocery chains. $12M revenue from 3 facilities. Capital-intensive to scale but unit economics improving.",
     "capital_requested": 20.0,
@@ -3113,11 +3188,12 @@
     "reasons_for_funding": "product development and platform enhancements",
     "available_cash": 11.6,
     "founder_shares": 10000000,
-    "management_option_pct": 0.092
+    "management_option_pct": 0.092,
+    "subsector": "Agriculture / Food Tech"
   },
   {
     "name": "Veritas Legal Outsourcing",
-    "sector": "Business Services / Legal",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Legal process outsourcing for large law firms and corporate legal departments. $45M revenue, 22% EBITDA. Large law firm budget pressures create durable demand.",
     "capital_requested": 28.0,
@@ -3154,11 +3230,12 @@
     "reasons_for_funding": "refinancing existing debt",
     "available_cash": 13.4,
     "founder_shares": 10000000,
-    "management_option_pct": 0.042
+    "management_option_pct": 0.042,
+    "subsector": "Business Services / Legal"
   },
   {
     "name": "MindBridge Edtech",
-    "sector": "Education / EdTech",
+    "sector": "Consumer",
     "stage": "developing",
     "description": "Adaptive learning platform for corporate training. $7M ARR, 200 enterprise clients. AI-driven personalization differentiates from legacy LMS players.",
     "capital_requested": 12.0,
@@ -3195,11 +3272,12 @@
     "reasons_for_funding": "brand building and customer acquisition",
     "available_cash": 5.9,
     "founder_shares": 10000000,
-    "management_option_pct": 0.08
+    "management_option_pct": 0.08,
+    "subsector": "Education / EdTech"
   },
   {
     "name": "Polaris Cold Chain Logistics",
-    "sector": "Transportation / Cold Chain",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Temperature-controlled warehousing and transportation for pharma and food. $80M revenue, high barriers to entry, regulatory compliance moat.",
     "capital_requested": 45.0,
@@ -3236,11 +3314,12 @@
     "reasons_for_funding": "acquisition of a complementary business",
     "available_cash": 11.4,
     "founder_shares": 10000000,
-    "management_option_pct": 0.037
+    "management_option_pct": 0.037,
+    "subsector": "Transportation / Cold Chain"
   },
   {
     "name": "Nexus Payments",
-    "sector": "Financial Services / FinTech",
+    "sector": "Industrials",
     "stage": "early_revenue",
     "description": "Embedded payments infrastructure for vertical SaaS companies. $10M in payment volume, rapidly onboarding new SaaS partners. Revenue growth 100%+ YoY.",
     "capital_requested": 20.0,
@@ -3277,11 +3356,12 @@
     "reasons_for_funding": "strategic acquisitions of smaller competitors",
     "available_cash": 4.4,
     "founder_shares": 10000000,
-    "management_option_pct": 0.081
+    "management_option_pct": 0.081,
+    "subsector": "Industrials"
   },
   {
     "name": "Valor Aerospace MRO",
-    "sector": "Industrials / Aerospace",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Aircraft maintenance, repair, and overhaul (MRO) for regional airlines. $90M revenue, FAA-certified, backlog growing with fleet age and air travel recovery.",
     "capital_requested": 48.0,
@@ -3318,11 +3398,12 @@
     "reasons_for_funding": "funding a strategic growth initiative",
     "available_cash": 29.4,
     "founder_shares": 10000000,
-    "management_option_pct": 0.036
+    "management_option_pct": 0.036,
+    "subsector": "Industrials / Aerospace"
   },
   {
     "name": "StellarMind AI Tutor",
-    "sector": "Education / AI",
+    "sector": "Consumer",
     "stage": "startup",
     "description": "AI-powered personal tutor for STEM subjects targeting high school students. 50,000 active users on free tier, monetization just launched. Viral growth with strong retention.",
     "capital_requested": 8.0,
@@ -3359,11 +3440,12 @@
     "reasons_for_funding": "product development and initial hiring",
     "available_cash": 1.1,
     "founder_shares": 10000000,
-    "management_option_pct": 0.134
+    "management_option_pct": 0.134,
+    "subsector": "Education / AI"
   },
   {
     "name": "GrandOak Senior Living",
-    "sector": "Healthcare / Senior Living",
+    "sector": "Healthcare",
     "stage": "mature",
     "description": "Owner-operator of 9 assisted living and memory care communities. Demand driven by demographics, real asset backing. Staffing costs are key operating risk.",
     "capital_requested": 55.0,
@@ -3400,11 +3482,12 @@
     "reasons_for_funding": "acquisition of a complementary business",
     "available_cash": 6.5,
     "founder_shares": 10000000,
-    "management_option_pct": 0.038
+    "management_option_pct": 0.038,
+    "subsector": "Healthcare / Senior Living"
   },
   {
     "name": "DraftLine Sports Analytics",
-    "sector": "Media / Sports Tech",
+    "sector": "Consumer",
     "stage": "developing",
     "description": "Data analytics and AI scouting platform for professional sports teams. 12 team clients paying $300K/yr each. Strong retention, expanding into European soccer.",
     "capital_requested": 10.0,
@@ -3441,11 +3524,12 @@
     "reasons_for_funding": "hiring senior leadership team",
     "available_cash": 3.5,
     "founder_shares": 10000000,
-    "management_option_pct": 0.093
+    "management_option_pct": 0.093,
+    "subsector": "Media / Sports Tech"
   },
   {
     "name": "Borealis Energy Transition Fund Target",
-    "sector": "Energy / Oil & Gas",
+    "sector": "Energy",
     "stage": "mature",
     "description": "Midstream oil and gas pipeline operator. Contracted capacity, fee-based model. Energy transition creates long-term obsolescence risk but near-term cash flows are strong.",
     "capital_requested": 70.0,
@@ -3482,11 +3566,12 @@
     "reasons_for_funding": "owner liquidity and partial exit",
     "available_cash": 33.8,
     "founder_shares": 10000000,
-    "management_option_pct": 0.047
+    "management_option_pct": 0.047,
+    "subsector": "Energy / Oil & Gas"
   },
   {
     "name": "Highline E-Commerce Enablement",
-    "sector": "Technology / E-Commerce",
+    "sector": "Technology",
     "stage": "early_revenue",
     "description": "Managed marketplace services for brands selling on Amazon, Walmart, and Target. $15M revenue, 35% net margin. Highly scalable, recurring retainer model.",
     "capital_requested": 20.0,
@@ -3523,11 +3608,12 @@
     "reasons_for_funding": "product development and platform enhancements",
     "available_cash": 5.8,
     "founder_shares": 10000000,
-    "management_option_pct": 0.056
+    "management_option_pct": 0.056,
+    "subsector": "Technology / E-Commerce"
   },
   {
     "name": "OptiLens Eyecare",
-    "sector": "Healthcare / Eyecare",
+    "sector": "Healthcare",
     "stage": "mature",
     "description": "Operator of 35 independent optometry practices. Vision care is largely insurance-reimbursed and non-cyclical. Classic multi-site healthcare services roll-up.",
     "capital_requested": 35.0,
@@ -3564,11 +3650,12 @@
     "reasons_for_funding": "succession planning and ownership transition",
     "available_cash": 18.4,
     "founder_shares": 10000000,
-    "management_option_pct": 0.029
+    "management_option_pct": 0.029,
+    "subsector": "Healthcare / Eyecare"
   },
   {
     "name": "FortressNet Data Centers",
-    "sector": "Technology / Infrastructure",
+    "sector": "Technology",
     "stage": "mature",
     "description": "Operator of 4 colocation data centers serving enterprise and cloud tenants. Power capacity sold out, strong multi-year leases, high recurring EBITDA.",
     "capital_requested": 60.0,
@@ -3605,11 +3692,12 @@
     "reasons_for_funding": "funding a strategic growth initiative",
     "available_cash": 21.9,
     "founder_shares": 10000000,
-    "management_option_pct": 0.028
+    "management_option_pct": 0.028,
+    "subsector": "Technology / Infrastructure"
   },
   {
     "name": "Terracycle Bio Materials",
-    "sector": "Industrials / Sustainability",
+    "sector": "Industrials",
     "stage": "developing",
     "description": "Produces compostable packaging materials from agricultural waste. $5M revenue, EU and US retailer pilots. Margins improving as scale increases.",
     "capital_requested": 12.0,
@@ -3646,11 +3734,12 @@
     "reasons_for_funding": "channel partnerships and distribution",
     "available_cash": 3.3,
     "founder_shares": 10000000,
-    "management_option_pct": 0.113
+    "management_option_pct": 0.113,
+    "subsector": "Industrials / Sustainability"
   },
   {
     "name": "Paragon Market Research",
-    "sector": "Business Services / Research",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "$35M revenue market research firm serving CPG and pharma. High NPS, subscription model growing. Sticky client relationships built over 15 years.",
     "capital_requested": 20.0,
@@ -3687,11 +3776,12 @@
     "reasons_for_funding": "management buyout financing",
     "available_cash": 31.6,
     "founder_shares": 10000000,
-    "management_option_pct": 0.044
+    "management_option_pct": 0.044,
+    "subsector": "Business Services / Research"
   },
   {
     "name": "HelixBio Cell Therapy",
-    "sector": "Healthcare / Biotech",
+    "sector": "Healthcare",
     "stage": "startup",
     "description": "CAR-T cell therapy startup targeting solid tumors. Novel approach, promising pre-clinical data. Series A stage, top oncology KOLs on advisory board.",
     "capital_requested": 18.0,
@@ -3728,11 +3818,12 @@
     "reasons_for_funding": "founding team expansion and product build",
     "available_cash": 2.1,
     "founder_shares": 10000000,
-    "management_option_pct": 0.112
+    "management_option_pct": 0.112,
+    "subsector": "Healthcare / Biotech"
   },
   {
     "name": "Vega Supply Chain Software",
-    "sector": "Technology / Supply Chain",
+    "sector": "Technology",
     "stage": "early_revenue",
     "description": "Demand forecasting and inventory optimization SaaS for mid-market retailers. $9M ARR, 115% NRR. Recent Gartner recognition driving inbound pipeline.",
     "capital_requested": 16.0,
@@ -3769,11 +3860,12 @@
     "reasons_for_funding": "expanding into enterprise market segment",
     "available_cash": 5.0,
     "founder_shares": 10000000,
-    "management_option_pct": 0.057
+    "management_option_pct": 0.057,
+    "subsector": "Technology / Supply Chain"
   },
   {
     "name": "Marquis Dermatology Partners",
-    "sector": "Healthcare / Dermatology",
+    "sector": "Healthcare",
     "stage": "mature",
     "description": "Multi-site dermatology practice group, 28 locations across the Mid-Atlantic. Mix of medical and cosmetic dermatology. Strong cash-pay aesthetic revenue.",
     "capital_requested": 38.0,
@@ -3810,11 +3902,12 @@
     "reasons_for_funding": "management buyout financing",
     "available_cash": 32.9,
     "founder_shares": 10000000,
-    "management_option_pct": 0.027
+    "management_option_pct": 0.027,
+    "subsector": "Healthcare / Dermatology"
   },
   {
     "name": "Anchor Home Services",
-    "sector": "Consumer / Home Services",
+    "sector": "Consumer",
     "stage": "mature",
     "description": "HVAC, plumbing, and electrical services provider across 4 markets. Recurring membership model, strong brand. Home services consolidation play.",
     "capital_requested": 32.0,
@@ -3851,11 +3944,12 @@
     "reasons_for_funding": "management buyout financing",
     "available_cash": 12.0,
     "founder_shares": 10000000,
-    "management_option_pct": 0.049
+    "management_option_pct": 0.049,
+    "subsector": "Consumer / Home Services"
   },
   {
     "name": "OpalStar E-Sports",
-    "sector": "Media / E-Sports",
+    "sector": "Consumer",
     "stage": "developing",
     "description": "E-sports team and content platform. $8M revenue from sponsorships and streaming. Audience demographics are premium for advertisers. Monetization still maturing.",
     "capital_requested": 9.0,
@@ -3892,11 +3986,12 @@
     "reasons_for_funding": "sales and marketing expansion",
     "available_cash": 5.4,
     "founder_shares": 10000000,
-    "management_option_pct": 0.118
+    "management_option_pct": 0.118,
+    "subsector": "Media / E-Sports"
   },
   {
     "name": "CapstoneEDU Prep",
-    "sector": "Education / Test Prep",
+    "sector": "Consumer",
     "stage": "mature",
     "description": "Premium college admissions and test prep services. $28M revenue, franchise network of 40 centers. High-income, recession-resistant client base.",
     "capital_requested": 18.0,
@@ -3933,11 +4028,12 @@
     "reasons_for_funding": "funding a strategic growth initiative",
     "available_cash": 28.7,
     "founder_shares": 10000000,
-    "management_option_pct": 0.023
+    "management_option_pct": 0.023,
+    "subsector": "Education / Test Prep"
   },
   {
     "name": "Stormbridge Infrastructure",
-    "sector": "Industrials / Infrastructure Services",
+    "sector": "Industrials",
     "stage": "mature",
     "description": "Bridge and road inspection services for state DOTs. $45M revenue, multi-year government contracts. Highly defensive, infrastructure spending is a tailwind.",
     "capital_requested": 25.0,
@@ -3974,11 +4070,12 @@
     "reasons_for_funding": "owner liquidity and partial exit",
     "available_cash": 7.2,
     "founder_shares": 10000000,
-    "management_option_pct": 0.026
+    "management_option_pct": 0.026,
+    "subsector": "Industrials / Infrastructure Services"
   },
   {
     "name": "Celeste Nutrition Science",
-    "sector": "Healthcare / Nutrition",
+    "sector": "Healthcare",
     "stage": "developing",
     "description": "Personalized nutrition supplements using microbiome testing. $10M revenue, 65% gross margin, DTC subscription model. Retention improving after reformulation.",
     "capital_requested": 10.0,
@@ -4015,11 +4112,12 @@
     "reasons_for_funding": "sales and marketing expansion",
     "available_cash": 4.1,
     "founder_shares": 10000000,
-    "management_option_pct": 0.119
+    "management_option_pct": 0.119,
+    "subsector": "Healthcare / Nutrition"
   },
   {
     "name": "WaveForm Audio Tech",
-    "sector": "Technology / Audio",
+    "sector": "Technology",
     "stage": "startup",
     "description": "AI-powered audio mastering and production tools for independent musicians. 20,000 paid users, $1.5M ARR. Competing against expensive studio software at a fraction of the cost.",
     "capital_requested": 5.0,
@@ -4056,11 +4154,12 @@
     "reasons_for_funding": "pre-commercial development and testing",
     "available_cash": 2.7,
     "founder_shares": 10000000,
-    "management_option_pct": 0.103
+    "management_option_pct": 0.103,
+    "subsector": "Technology / Audio"
   },
   {
     "name": "Cornerstone Pet Nutrition",
-    "sector": "Consumer / Pet Care",
+    "sector": "Consumer",
     "stage": "early_revenue",
     "description": "Premium prescription pet food brand sold through veterinary channels. $11M revenue, vet relationships create strong distribution moat. Pet humanization trend is a tailwind.",
     "capital_requested": 14.0,
@@ -4097,6 +4196,7 @@
     "reasons_for_funding": "working capital and inventory build",
     "available_cash": 8.3,
     "founder_shares": 10000000,
-    "management_option_pct": 0.076
+    "management_option_pct": 0.076,
+    "subsector": "Consumer / Pet Care"
   }
 ]
