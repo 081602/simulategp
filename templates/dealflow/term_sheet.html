@@ -26,11 +26,11 @@
         <div class="row g-3 text-center">
           <div class="col-4 col-md-2">
             <div class="text-light small">Suggested Valuation</div>
-            <div class="fw-bold">${{ "{:,.1f}M".format(company.current_valuation) }}</div>
+            <div class="fw-bold text-white">${{ "{:,.1f}M".format(company.current_valuation) }}</div>
           </div>
           <div class="col-4 col-md-2">
             <div class="text-light small">Capital Requested</div>
-            <div class="fw-bold">${{ "{:,.1f}M".format(company.capital_requested) }}</div>
+            <div class="fw-bold text-white">${{ "{:,.1f}M".format(company.capital_requested) }}</div>
           </div>
           <div class="col-4 col-md-2">
             <div class="text-light small">Expected Multiple</div>
@@ -38,11 +38,11 @@
           </div>
           <div class="col-4 col-md-2">
             <div class="text-light small">Rolled Equity</div>
-            <div class="fw-bold">{{ "%.0f"|format(company.rolled_equity_min * 100) }}%&mdash;{{ "%.0f"|format(company.rolled_equity_max * 100) }}%</div>
+            <div class="fw-bold text-white">{{ "%.0f"|format(company.rolled_equity_min * 100) }}%&mdash;{{ "%.0f"|format(company.rolled_equity_max * 100) }}%</div>
           </div>
           <div class="col-4 col-md-2">
             <div class="text-light small">Debt Capacity</div>
-            <div class="fw-bold">{% if company.debt_capacity > 0 %}${{ "{:,.1f}M".format(company.debt_capacity) }}{% else %}None{% endif %}</div>
+            <div class="fw-bold text-white">{% if company.debt_capacity > 0 %}${{ "{:,.1f}M".format(company.debt_capacity) }}{% else %}None{% endif %}</div>
           </div>
           <div class="col-4 col-md-2">
             <div class="text-light small">Aggressive Terms</div>
@@ -69,7 +69,7 @@
                      id="pre_money_valuation" name="pre_money_valuation"
                      min="0" step="0.1"
                      value="{{ company.current_valuation }}" required>
-              <div class="form-text text-secondary">Suggested: ${{ "{:,.1f}M".format(company.current_valuation) }}</div>
+              <div class="form-text text-light">Suggested: ${{ "{:,.1f}M".format(company.current_valuation) }}</div>
             </div>
 
             <div class="col-md-6">
@@ -78,7 +78,7 @@
                      id="total_investment" name="total_investment"
                      min="0" step="0.1"
                      value="{{ company.capital_requested }}" required>
-              <div class="form-text text-secondary">Company is asking for ${{ "{:,.1f}M".format(company.capital_requested) }}</div>
+              <div class="form-text text-light">Company is asking for ${{ "{:,.1f}M".format(company.capital_requested) }}</div>
             </div>
 
             <div class="col-12">
@@ -92,7 +92,7 @@
                          step="1"
                          value="{{ "%.0f"|format(company.rolled_equity_min * 100) }}" required
                          placeholder="Min %">
-                  <div class="form-text text-secondary">Minimum: {{ "%.0f"|format(company.rolled_equity_min * 100) }}%</div>
+                  <div class="form-text text-light">Minimum: {{ "%.0f"|format(company.rolled_equity_min * 100) }}%</div>
                 </div>
                 <div class="col-md-6">
                   <input type="number" class="form-control bg-dark text-white border-secondary"
@@ -102,7 +102,7 @@
                          step="1"
                          value="{{ "%.0f"|format(company.rolled_equity_max * 100) }}" required
                          placeholder="Max %">
-                  <div class="form-text text-secondary">Maximum: {{ "%.0f"|format(company.rolled_equity_max * 100) }}%</div>
+                  <div class="form-text text-light">Maximum: {{ "%.0f"|format(company.rolled_equity_max * 100) }}%</div>
                 </div>
               </div>
             </div>
@@ -135,7 +135,7 @@
             <label class="form-check-label fw-semibold text-white" for="willing_to_fill">
               Willing to be a Fill Investor
             </label>
-            <div class="form-text text-secondary">Allow other teams to bring you in as a co-investor</div>
+            <div class="form-text text-light">Allow other teams to bring you in as a co-investor</div>
           </div>
 
           <div id="fillInvestorFields" class="d-none">
@@ -145,14 +145,14 @@
                 <input type="number" class="form-control bg-dark text-white border-secondary"
                        id="min_lead_reputation" name="min_lead_reputation"
                        min="0" max="5" step="0.5" value="3">
-                <div class="form-text text-secondary">Only accept fill positions from leads with this reputation or higher</div>
+                <div class="form-text text-light">Only accept fill positions from leads with this reputation or higher</div>
               </div>
               <div class="col-md-6">
                 <label for="max_fill_equity" class="form-label fw-semibold text-white">Max Fill Equity Amount ($)</label>
                 <input type="number" class="form-control bg-dark text-white border-secondary"
                        id="max_fill_equity" name="max_fill_equity"
                        min="0" step="0.1" placeholder="e.g. 5000000">
-                <div class="form-text text-secondary">Maximum amount you are willing to invest as a fill</div>
+                <div class="form-text text-light">Maximum amount you are willing to invest as a fill</div>
               </div>
             </div>
           </div>
@@ -179,7 +179,7 @@
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="liquidation_preference" id="liq_2x" value="2"
                     {% if not company.allows_aggressive_terms %}disabled{% endif %}>
-                  <label class="form-check-label {% if not company.allows_aggressive_terms %}text-secondary{% endif %}" for="liq_2x">
+                  <label class="form-check-label {% if not company.allows_aggressive_terms %}text-secondary{% else %}text-white{% endif %}" for="liq_2x">
                     2x {% if not company.allows_aggressive_terms %}<span class="badge bg-secondary ms-1">Not Allowed</span>{% endif %}
                   </label>
                 </div>
