@@ -120,8 +120,8 @@ class CompanyTemplate(db.Model):
 
     @property
     def allows_aggressive_terms(self):
-        """2x/3x liq pref, participation, and full anti-dilution only for startup/developing."""
-        return self.stage in ('startup', 'developing')
+        """2x/3x liq pref, participation, and full anti-dilution not available for mature companies."""
+        return self.stage in ('startup', 'developing', 'early_revenue')
 
 
 class GameCompany(db.Model):
@@ -191,7 +191,7 @@ class GameCompany(db.Model):
 
     @property
     def allows_aggressive_terms(self):
-        return self.stage in ('startup', 'developing')
+        return self.stage in ('startup', 'developing', 'early_revenue')
 
     @property
     def status_badge(self):
