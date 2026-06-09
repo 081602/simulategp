@@ -1,0 +1,167 @@
+﻿{% extends "base.html" %}
+{% block title %}Game Setup{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+
+    <div class="d-flex align-items-center mb-4">
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-sm btn-outline-secondary me-3">
+        <i class="bi bi-arrow-left"></i>
+      </a>
+      <div>
+        <h2 class="fw-bold mb-0"><i class="bi bi-sliders text-warning"></i> Game Setup</h2>
+        <p class="text-secondary mb-0">Configure and initialize a new simulation</p>
+      </div>
+    </div>
+
+    <!-- Warning Banner -->
+    <div class="alert border-danger mb-4" style="background:rgba(220,53,69,0.15);">
+      <div class="d-flex align-items-center gap-3">
+        <i class="bi bi-exclamation-triangle-fill text-danger fs-3"></i>
+        <div>
+          <strong class="text-danger">Warning: Destructive Action</strong>
+          <p class="mb-0 text-secondary">Submitting this form will <strong>reset any existing game data</strong>, including all teams, companies, deals, and transactions. This cannot be undone.</p>
+        </div>
+      </div>
+    </div>
+
+    <form method="POST" action="{{ url_for('admin_setup') }}" id="setupForm">
+
+      <!-- Game Config -->
+      <div class="card border-secondary shadow mb-4">
+        <div class="card-header border-secondary">
+          <h6 class="mb-0 fw-semibold"><i class="bi bi-gear text-warning"></i> Game Configuration</h6>
+        </div>
+        <div class="card-body p-4">
+          <div class="row g-3">
+
+            <div class="col-md-8">
+              <label for="game_name" class="form-label fw-semibold">Game Name</label>
+              <input type="text" class="form-control bg-dark text-white border-secondary"
+                     id="game_name" name="game_name"
+                     placeholder="e.g. Babson MBA PE Simulation Spring 2026"
+                     value="SimulateGP" maxlength="100" required>
+            </div>
+
+            <div class="col-md-4">
+              <label for="total_years" class="form-label fw-semibold">Total Years</label>
+              <input type="number" class="form-control bg-dark text-white border-secondary"
+                     id="total_years" name="total_years"
+                     min="1" max="20" value="7" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="query_points" class="form-label fw-semibold">Starting Query Points (per team)</label>
+              <input type="number" class="form-control bg-dark text-white border-secondary"
+                     id="query_points" name="query_points"
+                     min="1" max="100" value="10" required>
+              <div class="form-text text-secondary">Each search costs 1 query point per year</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="starting_capital" class="form-label fw-semibold">Starting Capital per Team ($M)</label>
+              <div class="input-group">
+                <span class="input-group-text bg-dark border-secondary text-secondary">$</span>
+                <input type="number" class="form-control bg-dark text-white border-secondary"
+                       id="starting_capital" name="starting_capital"
+                       min="10" max="10000" step="10" value="100" required>
+                <span class="input-group-text bg-dark border-secondary text-secondary">M</span>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label for="team_count" class="form-label fw-semibold d-flex align-items-center justify-content-between">
+                <span>Number of Teams</span>
+                <span class="badge bg-warning text-dark" id="team_count_display">5</span>
+              </label>
+              <input type="number" class="form-control bg-dark text-white border-secondary"
+                     id="team_count" name="team_count"
+                     min="1" max="20" value="5" required>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Dynamic Team Inputs -->
+      <div class="card border-secondary shadow mb-4">
+        <div class="card-header border-secondary">
+          <h6 class="mb-0 fw-semibold"><i class="bi bi-people text-warning"></i> Team Setup</h6>
+        </div>
+        <div class="card-body p-4">
+          <div id="teamInputs">
+            <!-- Teams rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Confirm & Submit -->
+      <div class="card border-danger shadow mb-4" style="background:rgba(220,53,69,0.08) !important;">
+        <div class="card-body p-4">
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="confirm_reset" name="confirm_reset" value="1" required>
+            <label class="form-check-label fw-semibold text-danger" for="confirm_reset">
+              I understand this will reset all existing game data and this action cannot be undone.
+            </label>
+          </div>
+          <button type="submit" class="btn btn-danger fw-bold btn-lg w-100 confirm-action"
+                  data-confirm="This will RESET ALL game data and create a new game. Are you absolutely sure?">
+            <i class="bi bi-play-circle-fill me-2"></i> Initialize New Game
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  var teamCountInput = document.getElementById('team_count');
+  var teamCountDisplay = document.getElementById('team_count_display');
+  var teamInputsDiv = document.getElementById('teamInputs');
+
+  function renderTeamInputs() {
+    var n = parseInt(teamCountInput.value) || 0;
+    n = Math.min(Math.max(n, 1), 20);
+    teamCountDisplay.textContent = n;
+    teamInputsDiv.innerHTML = '';
+
+    for (var i = 1; i <= n; i++) {
+      var card = document.createElement('div');
+      card.className = 'card border-secondary mb-3';
+      card.innerHTML = [
+        '<div class="card-header border-secondary py-2">',
+        '  <h6 class="mb-0 text-warning fw-semibold"><i class="bi bi-person-circle me-2"></i>Team ' + i + '</h6>',
+        '</div>',
+        '<div class="card-body p-3">',
+        '  <div class="row g-3">',
+        '    <div class="col-md-4">',
+        '      <label class="form-label small fw-semibold">Firm Name</label>',
+        '      <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary"',
+        '             name="team_' + i + '_name" placeholder="e.g. Atlas Capital" maxlength="100" required>',
+        '    </div>',
+        '    <div class="col-md-4">',
+        '      <label class="form-label small fw-semibold">Username</label>',
+        '      <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary"',
+        '             name="team_' + i + '_username" placeholder="e.g. team' + i + '" maxlength="50" required>',
+        '    </div>',
+        '    <div class="col-md-4">',
+        '      <label class="form-label small fw-semibold">Password</label>',
+        '      <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary"',
+        '             name="team_' + i + '_password" placeholder="Password" maxlength="100" required',
+        '             autocomplete="new-password">',
+        '    </div>',
+        '  </div>',
+        '</div>'
+      ].join('');
+      teamInputsDiv.appendChild(card);
+    }
+  }
+
+  teamCountInput.addEventListener('input', renderTeamInputs);
+  renderTeamInputs();
+</script>
+{% endblock %}

@@ -1,0 +1,79 @@
+﻿{% extends "base.html" %}
+{% block title %}Edit Firm Profile{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6 col-md-8">
+
+    <div class="d-flex align-items-center mb-4">
+      <a href="{{ url_for('firm_directory') }}" class="btn btn-sm btn-outline-secondary me-3">
+        <i class="bi bi-arrow-left"></i>
+      </a>
+      <div>
+        <h2 class="fw-bold mb-0"><i class="bi bi-pencil-square text-warning"></i> Edit Firm Profile</h2>
+        <p class="text-secondary mb-0">Update your firm's public-facing information</p>
+      </div>
+    </div>
+
+    <div class="card border-secondary shadow">
+      <div class="card-body p-4">
+        <form method="POST" action="{{ url_for('edit_firm') }}">
+
+          <div class="mb-4">
+            <label for="firm_name" class="form-label fw-semibold">
+              <i class="bi bi-building me-1 text-warning"></i>Firm Name
+            </label>
+            <input type="text"
+                   class="form-control bg-dark text-white border-secondary"
+                   id="firm_name"
+                   name="firm_name"
+                   value="{{ current_user.firm_name }}"
+                   maxlength="100"
+                   required>
+            <div class="form-text text-secondary">This name is visible to all participants.</div>
+          </div>
+
+          <div class="mb-4">
+            <label for="about_us" class="form-label fw-semibold">
+              <i class="bi bi-card-text me-1 text-warning"></i>About Us
+            </label>
+            <textarea class="form-control bg-dark text-white border-secondary"
+                      id="about_us"
+                      name="about_us"
+                      rows="5"
+                      maxlength="500"
+                      placeholder="Describe your firm's investment strategy, focus sectors, and competitive advantage...">{{ current_user.about_us or '' }}</textarea>
+            <div class="d-flex justify-content-between form-text text-secondary">
+              <span>Shown on the firm directory to other teams.</span>
+              <span id="about_char_count">0 / 500</span>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 justify-content-end">
+            <a href="{{ url_for('firm_directory') }}" class="btn btn-outline-secondary">
+              <i class="bi bi-x-circle"></i> Cancel
+            </a>
+            <button type="submit" class="btn btn-warning text-dark fw-semibold">
+              <i class="bi bi-check-circle"></i> Save Changes
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const aboutField = document.getElementById('about_us');
+  const charCount = document.getElementById('about_char_count');
+  function updateCount() {
+    charCount.textContent = aboutField.value.length + ' / 500';
+  }
+  aboutField.addEventListener('input', updateCount);
+  updateCount();
+</script>
+{% endblock %}

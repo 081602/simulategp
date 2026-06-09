@@ -1,0 +1,110 @@
+﻿{% extends "base.html" %}
+{% block title %}Edit Company -- {{ company.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+
+    <div class="d-flex align-items-center mb-4">
+      <a href="{{ url_for('admin_companies') }}" class="btn btn-sm btn-outline-secondary me-3">
+        <i class="bi bi-arrow-left"></i>
+      </a>
+      <div>
+        <h2 class="fw-bold mb-0"><i class="bi bi-pencil-square text-warning"></i> Edit Company</h2>
+        <p class="text-secondary mb-0">{{ company.name }} -- {{ company.sector }}</p>
+      </div>
+    </div>
+
+    <form method="POST" action="{{ url_for('admin_edit_company', company_id=company.id) }}">
+
+      <!-- Basic Info -->
+      <div class="card border-secondary shadow mb-4">
+        <div class="card-header border-secondary">
+          <h6 class="mb-0 fw-semibold"><i class="bi bi-building text-warning"></i> Company Information</h6>
+        </div>
+        <div class="card-body p-4">
+          <div class="row g-3">
+
+            <div class="col-12">
+              <label for="name" class="form-label fw-semibold">Company Name</label>
+              <input type="text" class="form-control bg-dark text-white border-secondary"
+                     id="name" name="name"
+                     value="{{ company.name }}" maxlength="150" required>
+            </div>
+
+            <div class="col-12">
+              <label for="description" class="form-label fw-semibold">Description</label>
+              <textarea class="form-control bg-dark text-white border-secondary"
+                        id="description" name="description" rows="4"
+                        maxlength="1000">{{ company.description or '' }}</textarea>
+            </div>
+
+            <div class="col-md-6">
+              <label for="current_valuation" class="form-label fw-semibold">Current Valuation ($)</label>
+              <div class="input-group">
+                <span class="input-group-text bg-dark border-secondary text-secondary">$</span>
+                <input type="number" class="form-control bg-dark text-white border-secondary"
+                       id="current_valuation" name="current_valuation"
+                       min="0" step="100000"
+                       value="{{ company.current_valuation }}" required>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="status" class="form-label fw-semibold">Status</label>
+              <select class="form-select bg-dark text-white border-secondary" id="status" name="status">
+                <option value="available"            {% if company.status == 'available' %}selected{% endif %}>Available</option>
+                <option value="term_sheet_submitted" {% if company.status == 'term_sheet_submitted' %}selected{% endif %}>Term Sheet Submitted</option>
+                <option value="in_deal"              {% if company.status == 'in_deal' %}selected{% endif %}>In Deal</option>
+                <option value="acquired"             {% if company.status == 'acquired' %}selected{% endif %}>Acquired</option>
+                <option value="exited"               {% if company.status == 'exited' %}selected{% endif %}>Exited</option>
+                <option value="distressed"           {% if company.status == 'distressed' %}selected{% endif %}>Distressed</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="management_quality" class="form-label fw-semibold">Management Quality</label>
+              <select class="form-select bg-dark text-white border-secondary" id="management_quality" name="management_quality">
+                <option value="excellent" {% if company.management_quality == 'excellent' %}selected{% endif %}>Excellent</option>
+                <option value="good"      {% if company.management_quality == 'good' %}selected{% endif %}>Good</option>
+                <option value="average"   {% if company.management_quality == 'average' %}selected{% endif %}>Average</option>
+                <option value="poor"      {% if company.management_quality == 'poor' %}selected{% endif %}>Poor</option>
+              </select>
+            </div>
+
+            <div class="col-md-6 d-flex flex-column justify-content-end">
+              <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" id="is_cash_flow_positive"
+                       name="is_cash_flow_positive" value="1"
+                       {% if company.is_cash_flow_positive %}checked{% endif %}>
+                <label class="form-check-label" for="is_cash_flow_positive">
+                  <i class="bi bi-graph-up-arrow text-success me-1"></i> Cash Flow Positive
+                </label>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="dividend_eligible"
+                       name="dividend_eligible" value="1"
+                       {% if company.dividend_eligible %}checked{% endif %}>
+                <label class="form-check-label" for="dividend_eligible">
+                  <i class="bi bi-cash-coin text-success me-1"></i> Dividend Eligible
+                </label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex gap-3 justify-content-end">
+        <a href="{{ url_for('admin_companies') }}" class="btn btn-outline-secondary btn-lg">
+          <i class="bi bi-x-circle"></i> Cancel
+        </a>
+        <button type="submit" class="btn btn-warning text-dark fw-bold btn-lg">
+          <i class="bi bi-check-circle"></i> Save Changes
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endblock %}

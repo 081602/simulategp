@@ -1,0 +1,385 @@
+﻿{% extends "base.html" %}
+{% block title %}Finalize Deal â€" {{ company.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+
+    <div class="d-flex align-items-center mb-4">
+      <a href="{{ url_for('timeline') }}" class="btn btn-sm btn-outline-secondary me-3">
+        <i class="bi bi-arrow-left"></i>
+      </a>
+      <div>
+        <h2 class="fw-bold mb-0"><i class="bi bi-check2-square text-warning"></i> Finalize Deal</h2>
+        <p class="text-secondary mb-0">Phase 2 â€" Confirm final terms and close the investment</p>
+      </div>
+    </div>
+
+    <!-- Company Summary -->
+    <div class="card border-secondary shadow mb-4">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div>
+            <h4 class="fw-bold mb-1">{{ company.name }}</h4>
+            <div class="d-flex gap-2 flex-wrap">
+              <span class="badge bg-secondary">{{ company.sector }}</span>
+              {% if company.stage == 'startup' %}<span class="badge bg-danger">Startup</span>
+              {% elif company.stage == 'developing' %}<span class="badge bg-warning text-dark">Developing</span>
+              {% elif company.stage == 'early_revenue' %}<span class="badge bg-info text-dark">Early Revenue</span>
+              {% elif company.stage == 'mature' %}<span class="badge bg-success">Mature</span>{% endif %}
+            </div>
+          </div>
+          <div class="text-end">
+            <div class="text-secondary small">Expected Multiple</div>
+            <div class="fw-bold text-success fs-4">{{ "%.2f"|format(company.expected_multiple) }}x</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lead Term Sheet Summary -->
+    <div class="card border-info shadow mb-4">
+      <div class="card-header border-info" style="background:rgba(13,202,240,0.1);">
+        <h6 class="mb-0 fw-semibold text-info"><i class="bi bi-file-earmark-text"></i> Original Term Sheet (Reference)</h6>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-6 col-md-3">
+            <div class="text-secondary small">Pre-Money Val.</div>
+            <div class="fw-bold">${{ "{:,.1f}M".format(lead_ts.pre_money_valuation) }}</div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="text-secondary small">Total Investment</div>
+            <div class="fw-bold">${{ "{:,.1f}M".format(lead_ts.total_investment) }}</div>
+          </div>
+          <div class="col-6 col-md-2">
+            <div class="text-secondary small">Liq. Preference</div>
+            <div class="fw-bold">{{ lead_ts.liquidation_preference }}x</div>
+          </div>
+          <div class="col-6 col-md-2">
+            <div class="text-secondary small">Participation</div>
+            <div class="fw-bold">{% if lead_ts.participation %}Yes{% else %}No{% endif %}</div>
+          </div>
+          <div class="col-6 col-md-2">
+            <div class="text-secondary small">Anti-Dilution</div>
+            <div class="fw-bold">{{ lead_ts.anti_dilution | title }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Finalize Form -->
+    <form method="POST" action="{{ url_for('finalize_deal_route', deal_id=deal.id) }}" id="finalizeForm">
+
+      <!-- Section 1: Final Valuation & Equity -->
+      <div class="card border-secondary shadow mb-4">
+        <div class="card-header border-secondary">
+          <h6 class="mb-0 fw-semibold"><i class="bi bi-currency-dollar text-warning"></i> Final Valuation &amp; Equity</h6>
+        </div>
+        <div class="card-body p-4">
+          <div class="row g-3">
+
+            <div class="col-md-6">
+              <label for="final_pre_money" class="form-label fw-semibold">Final Pre-Money Valuation ($)</label>
+              <input type="number" class="form-control bg-dark text-white border-secondary"
+                     id="final_pre_money" name="final_pre_money"
+                     min="0" step="100000"
+                     value="{{ lead_ts.pre_money_valuation }}" required>
+              <div class="form-text" id="valuationWarning">
+                <i class="bi bi-info-circle text-info"></i>
+                Cannot be less than 90% of original (${{ "{:,.1f}M".format(lead_ts.pre_money_valuation * 0.9) }})
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="my_equity_contribution" class="form-label fw-semibold">My Equity Contribution ($)</label>
+              <input type="number" class="form-control bg-dark text-white border-secondary"
+                     id="my_equity_contribution" name="my_equity_contribution"
+                     min="0" step="100000" required>
+              <div class="form-text text-secondary">Amount your fund will invest in this deal</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="rolled_equity_pct" class="form-label fw-semibold">Rolled Equity %</label>
+              <input type="number" class="form-control bg-dark text-white border-secondary"
+                     id="rolled_equity_pct" name="rolled_equity_pct"
+                     min="{{ company.rolled_equity_min * 100 }}"
+                     max="{{ company.rolled_equity_max * 100 }}"
+                     step="1"
+                     value="{{ "%.0f"|format(company.rolled_equity_min * 100) }}" required>
+              <div class="form-text text-secondary">
+                Allowed range: {{ "%.0f"|format(company.rolled_equity_min * 100) }}% â€" {{ "%.0f"|format(company.rolled_equity_max * 100) }}%
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="mgmt_option_pct" class="form-label fw-semibold">Management Option Pool (%)</label>
+              <input type="number" class="form-control bg-dark text-white border-secondary"
+                     id="mgmt_option_pct" name="mgmt_option_pct"
+                     min="0" max="20" step="1" value="10">
+              <div class="form-text text-secondary">Management incentive shares (0â€"20%)</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Debt (only if debt_capacity > 0) -->
+      {% if company.debt_capacity > 0 %}
+      <div class="card border-secondary shadow mb-4">
+        <div class="card-header border-secondary d-flex align-items-center justify-content-between">
+          <h6 class="mb-0 fw-semibold"><i class="bi bi-bank text-warning"></i> Debt Financing</h6>
+          <div class="form-check form-switch mb-0">
+            <input class="form-check-input" type="checkbox" id="include_debt" name="include_debt" value="1">
+            <label class="form-check-label small text-secondary" for="include_debt">Include Debt</label>
+          </div>
+        </div>
+        <div class="card-body p-4" id="debtFields">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="debt_amount" class="form-label fw-semibold">Debt Amount ($)</label>
+              <input type="number" class="form-control bg-dark text-white border-secondary"
+                     id="debt_amount" name="debt_amount"
+                     min="0" max="{{ company.debt_capacity }}" step="100000"
+                     placeholder="Max ${{ "{:,.1f}M".format(company.debt_capacity) }}">
+              <div class="form-text text-secondary">Maximum capacity: ${{ "{:,.1f}M".format(company.debt_capacity) }}</div>
+            </div>
+            <div class="col-md-6">
+              <label for="interest_rate" class="form-label fw-semibold">Interest Rate (%)</label>
+              <input type="number" class="form-control bg-dark text-white border-secondary"
+                     id="interest_rate" name="interest_rate"
+                     min="0" max="30" step="0.25" value="8.0">
+              <div class="form-text text-secondary">Annual interest rate</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Section 3: Deal Terms -->
+      <div class="card border-secondary shadow mb-4">
+        <div class="card-header border-secondary">
+          <h6 class="mb-0 fw-semibold"><i class="bi bi-file-earmark-ruled text-warning"></i> Final Deal Terms</h6>
+        </div>
+        <div class="card-body p-4">
+          <div class="row g-4">
+
+            <!-- Liquidation Preference -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Liquidation Preference</label>
+              <div class="d-flex flex-column gap-2">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="liquidation_preference" id="final_liq_1x" value="1"
+                    {% if lead_ts.liquidation_preference == 1 %}checked{% endif %}>
+                  <label class="form-check-label" for="final_liq_1x">1x (Standard)</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="liquidation_preference" id="final_liq_2x" value="2"
+                    {% if lead_ts.liquidation_preference == 2 %}checked{% endif %}
+                    {% if not company.allows_aggressive_terms %}disabled{% endif %}>
+                  <label class="form-check-label {% if not company.allows_aggressive_terms %}text-secondary{% endif %}" for="final_liq_2x">
+                    2x {% if not company.allows_aggressive_terms %}<span class="badge bg-secondary ms-1">Not Allowed</span>{% endif %}
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="liquidation_preference" id="final_liq_3x" value="3" disabled>
+                  <label class="form-check-label text-secondary" for="final_liq_3x">3x <span class="badge bg-secondary ms-1">Disabled</span></label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Participation -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Participation</label>
+              <div class="form-check form-switch mt-2">
+                <input class="form-check-input" type="checkbox" id="final_participation" name="participation" value="1"
+                  {% if lead_ts.participation %}checked{% endif %}
+                  {% if not company.allows_aggressive_terms %}disabled{% endif %}>
+                <label class="form-check-label" for="final_participation">
+                  Participating Preferred
+                  {% if not company.allows_aggressive_terms %}
+                  <br><span class="badge bg-secondary">Not Allowed</span>
+                  {% endif %}
+                </label>
+              </div>
+            </div>
+
+            <!-- Anti-Dilution -->
+            <div class="col-md-4">
+              <label for="final_anti_dilution" class="form-label fw-semibold">Anti-Dilution Protection</label>
+              <select class="form-select bg-dark text-white border-secondary" id="final_anti_dilution" name="anti_dilution">
+                <option value="none" {% if lead_ts.anti_dilution == 'none' %}selected{% endif %}>None</option>
+                <option value="weighted" {% if lead_ts.anti_dilution == 'weighted' %}selected{% endif %}
+                        {% if not company.allows_aggressive_terms %}disabled{% endif %}>
+                  Weighted Average{% if not company.allows_aggressive_terms %} (Not Allowed){% endif %}
+                </option>
+                <option value="full_ratchet" {% if lead_ts.anti_dilution == 'full_ratchet' %}selected{% endif %}
+                        {% if not company.allows_aggressive_terms %}disabled{% endif %}>
+                  Full Ratchet{% if not company.allows_aggressive_terms %} (Not Allowed){% endif %}
+                </option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Fill Investors -->
+      {% if fill_offers %}
+      <div class="card border-secondary shadow mb-4">
+        <div class="card-header border-secondary">
+          <h6 class="mb-0 fw-semibold"><i class="bi bi-people text-warning"></i> Fill Investors</h6>
+        </div>
+        <div class="card-body p-4">
+          <p class="text-secondary small mb-3">Select which fill investors to include and confirm their equity contribution.</p>
+          <div class="table-responsive">
+            <table class="table table-dark">
+              <thead>
+                <tr>
+                  <th>Include</th>
+                  <th>Team</th>
+                  <th>Their Max Fill Equity</th>
+                  <th>Actual Fill Amount ($)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for offer in fill_offers %}
+                <tr>
+                  <td>
+                    <div class="form-check">
+                      <input class="form-check-input fill-include-check" type="checkbox"
+                             name="include_fill_{{ offer.id }}" value="1" id="fill_include_{{ offer.id }}">
+                    </div>
+                  </td>
+                  <td>
+                    <strong>{{ offer.team.firm_name }}</strong>
+                    <div class="text-secondary small">
+                      {% for i in range(1, 6) %}
+                        {% if i <= offer.team.reputation %}
+                          <i class="bi bi-star-fill text-warning" style="font-size:0.65rem;"></i>
+                        {% else %}
+                          <i class="bi bi-star text-secondary" style="font-size:0.65rem;"></i>
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  </td>
+                  <td class="text-secondary">${{ "{:,.1f}M".format(offer.max_fill_equity) }}</td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm bg-dark text-white border-secondary fill-amount-input"
+                           name="fill_amount_{{ offer.id }}"
+                           min="0" max="{{ offer.max_fill_equity }}" step="100000"
+                           placeholder="Amount"
+                           style="width:140px;"
+                           disabled>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Action Buttons -->
+      <div class="d-flex gap-3 justify-content-between">
+        <div>
+          <!-- Drop Deal -->
+          <button type="button" class="btn btn-outline-danger btn-lg" data-bs-toggle="modal" data-bs-target="#dropDealModal">
+            <i class="bi bi-trash3"></i> Drop Deal
+          </button>
+        </div>
+        <div class="d-flex gap-3">
+          <a href="{{ url_for('timeline') }}" class="btn btn-outline-secondary btn-lg">
+            <i class="bi bi-x-circle"></i> Cancel
+          </a>
+          <button type="submit" name="action" value="finalize"
+                  class="btn btn-warning text-dark fw-bold btn-lg confirm-action"
+                  data-confirm="Are you sure you want to finalize this deal? This action cannot be undone.">
+            <i class="bi bi-check2-circle"></i> Finalize Deal
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<!-- Drop Deal Modal -->
+<div class="modal fade" id="dropDealModal" tabindex="-1" aria-labelledby="dropDealModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark border-danger">
+      <div class="modal-header border-danger">
+        <h5 class="modal-title text-danger" id="dropDealModalLabel">
+          <i class="bi bi-exclamation-triangle-fill"></i> Drop Deal
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{{ url_for('finalize_deal_route', deal_id=deal.id) }}">
+        <div class="modal-body">
+          <p class="text-secondary">You are about to drop the deal for <strong>{{ company.name }}</strong>. This will make the company available again for other teams.</p>
+          <div class="mb-3">
+            <label for="drop_reason" class="form-label fw-semibold">Reason for Dropping</label>
+            <textarea class="form-control bg-dark text-white border-secondary"
+                      id="drop_reason" name="drop_reason" rows="3"
+                      placeholder="Briefly explain why you are dropping this deal..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" name="action" value="drop" class="btn btn-danger fw-semibold">
+            <i class="bi bi-trash3"></i> Confirm Drop Deal
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Enable/disable fill amount inputs based on checkbox
+  document.querySelectorAll('.fill-include-check').forEach(function(chk) {
+    chk.addEventListener('change', function() {
+      var row = this.closest('tr');
+      var amtInput = row.querySelector('.fill-amount-input');
+      amtInput.disabled = !this.checked;
+      if (!this.checked) amtInput.value = '';
+    });
+  });
+
+  // Debt toggle
+  var includeDebtChk = document.getElementById('include_debt');
+  var debtFields = document.getElementById('debtFields');
+  if (includeDebtChk && debtFields) {
+    // Start hidden
+    var debtInputs = debtFields.querySelectorAll('input');
+    function toggleDebt() {
+      debtInputs.forEach(function(inp) { inp.disabled = !includeDebtChk.checked; });
+    }
+    includeDebtChk.addEventListener('change', toggleDebt);
+    toggleDebt();
+  }
+
+  // Valuation warning
+  var finalPreMoney = document.getElementById('final_pre_money');
+  var minAllowed = {{ lead_ts.pre_money_valuation * 0.9 }};
+  if (finalPreMoney) {
+    finalPreMoney.addEventListener('input', function() {
+      var warn = document.getElementById('valuationWarning');
+      if (parseFloat(this.value) < minAllowed) {
+        warn.classList.remove('text-info');
+        warn.classList.add('text-danger');
+        warn.innerHTML = '<i class="bi bi-exclamation-triangle-fill text-danger"></i> Warning: Cannot be less than ${{ "{:,.1f}M".format(lead_ts.pre_money_valuation * 0.9) }}';
+      } else {
+        warn.classList.remove('text-danger');
+        warn.classList.add('text-info');
+        warn.innerHTML = '<i class="bi bi-info-circle text-info"></i> Cannot be less than 90% of original (${{ "{:,.1f}M".format(lead_ts.pre_money_valuation * 0.9) }})';
+      }
+    });
+  }
+</script>
+{% endblock %}
+

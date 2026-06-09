@@ -1,0 +1,253 @@
+﻿{% extends "base.html" %}
+{% block title %}{{ company.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-11">
+
+    <!-- Back nav -->
+    <div class="mb-3">
+      <a href="{{ url_for('dealflow') }}" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Deal Flow
+      </a>
+    </div>
+
+    <!-- Company Header -->
+    <div class="card border-secondary shadow mb-4">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+          <div>
+            <h2 class="fw-bold mb-1">{{ company.name }}</h2>
+            <div class="d-flex gap-2 flex-wrap">
+              <span class="badge bg-secondary fs-6">{{ company.sector }}</span>
+
+              {% if company.stage == 'startup' %}
+                <span class="badge bg-danger fs-6">Startup</span>
+              {% elif company.stage == 'developing' %}
+                <span class="badge bg-warning text-dark fs-6">Developing</span>
+              {% elif company.stage == 'early_revenue' %}
+                <span class="badge bg-info text-dark fs-6">Early Revenue</span>
+              {% elif company.stage == 'mature' %}
+                <span class="badge bg-success fs-6">Mature</span>
+              {% else %}
+                <span class="badge bg-secondary fs-6">{{ company.stage | title }}</span>
+              {% endif %}
+
+              {% if company.status == 'available' %}
+                <span class="badge bg-success fs-6"><i class="bi bi-check-circle"></i> Available</span>
+              {% elif company.status == 'term_sheet_submitted' %}
+                <span class="badge bg-warning text-dark fs-6"><i class="bi bi-file-earmark-text"></i> Term Sheet Submitted</span>
+              {% elif company.status == 'in_deal' %}
+                <span class="badge bg-primary fs-6"><i class="bi bi-briefcase"></i> In Deal</span>
+              {% elif company.status == 'acquired' %}
+                <span class="badge bg-secondary fs-6"><i class="bi bi-lock"></i> Acquired</span>
+              {% else %}
+                <span class="badge bg-secondary fs-6">{{ company.status | title }}</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        {% if company.description %}
+        <p class="text-secondary mt-3 mb-0">{{ company.description }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Two-Column Details -->
+    <div class="row g-4 mb-4">
+
+      <!-- LEFT: Financial Details -->
+      <div class="col-lg-6">
+        <div class="card border-secondary shadow h-100">
+          <div class="card-header border-secondary">
+            <h6 class="mb-0 fw-semibold"><i class="bi bi-currency-dollar text-warning"></i> Financial Details</h6>
+          </div>
+          <div class="card-body">
+            <table class="table table-dark table-sm mb-0">
+              <tbody>
+                <tr>
+                  <td class="text-secondary">Capital Requested</td>
+                  <td class="fw-bold text-white">${{ "{:,.1f}M".format(company.capital_requested) }}</td>
+                </tr>
+                <tr>
+                  <td class="text-secondary">Base Valuation</td>
+                  <td class="fw-bold text-white">${{ "{:,.1f}M".format(company.current_valuation) }}</td>
+                </tr>
+                <tr>
+                  <td class="text-secondary">Debt Capacity</td>
+                  <td class="fw-bold text-white">
+                    {% if company.debt_capacity > 0 %}
+                      ${{ "{:,.1f}M".format(company.debt_capacity) }}
+                    {% else %}
+                      <span class="text-secondary">None</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-secondary">Rolled Equity Range</td>
+                  <td class="fw-bold text-white">
+                    {{ "%.0f"|format(company.rolled_equity_min * 100) }}% -- {{ "%.0f"|format(company.rolled_equity_max * 100) }}%
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-secondary">Management Quality</td>
+                  <td>
+                    {% if company.management_quality == 'excellent' %}
+                      <span class="badge bg-success">Excellent</span>
+                    {% elif company.management_quality == 'good' %}
+                      <span class="badge bg-primary">Good</span>
+                    {% elif company.management_quality == 'average' %}
+                      <span class="badge bg-warning text-dark">Average</span>
+                    {% elif company.management_quality == 'poor' %}
+                      <span class="badge bg-danger">Poor</span>
+                    {% else %}
+                      <span class="badge bg-secondary">{{ company.management_quality | title }}</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-secondary">Cash Flow Positive</td>
+                  <td>
+                    {% if company.is_cash_flow_positive %}
+                      <i class="bi bi-check-circle-fill text-success"></i> Yes
+                    {% else %}
+                      <i class="bi bi-x-circle-fill text-danger"></i> No
+                    {% endif %}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-secondary">Dividend Eligible</td>
+                  <td>
+                    {% if company.dividend_eligible %}
+                      <i class="bi bi-check-circle-fill text-success"></i> Yes
+                    {% else %}
+                      <i class="bi bi-x-circle-fill text-danger"></i> No
+                    {% endif %}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Valuation Forecast -->
+      <div class="col-lg-6">
+        <div class="card border-secondary shadow h-100">
+          <div class="card-header border-secondary">
+            <h6 class="mb-0 fw-semibold"><i class="bi bi-graph-up-arrow text-warning"></i> Valuation Forecast</h6>
+          </div>
+          <div class="card-body">
+
+            <!-- Expected Multiple Highlight -->
+            <div class="text-center mb-4 p-3 rounded" style="background:#0f2d1a;">
+              <div class="text-secondary small mb-1">Expected Return Multiple</div>
+              <div class="display-5 fw-bold text-success">{{ "%.2f"|format(company.expected_multiple) }}x</div>
+            </div>
+
+            <!-- Outcome Distribution -->
+            {% set outcomes = company.get_outcomes() %}
+            {% if outcomes %}
+            <table class="table table-dark table-sm">
+              <thead>
+                <tr>
+                  <th class="text-secondary">Multiple</th>
+                  <th class="text-secondary text-end">Probability</th>
+                  <th class="text-secondary">Bar</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for o in outcomes %}
+                <tr>
+                  <td class="fw-bold {% if o.multiple >= 2 %}text-success{% elif o.multiple >= 1 %}text-warning{% else %}text-danger{% endif %}">
+                    {{ "%.1f"|format(o.multiple) }}x
+                  </td>
+                  <td class="text-end">{{ "%.0f"|format(o.prob * 100) }}%</td>
+                  <td style="width:120px">
+                    <div class="progress bg-secondary" style="height:8px;">
+                      <div class="progress-bar {% if o.multiple >= 2 %}bg-success{% elif o.multiple >= 1 %}bg-warning{% else %}bg-danger{% endif %}"
+                           style="width:{{ (o.prob * 100)|int }}%"></div>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <p class="text-secondary text-center small mt-3">No outcome data available.</p>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons (Phase 1 only, status available) -->
+    {% if game.current_phase == 1 and company.status == 'available' %}
+    <div class="card border-secondary shadow mb-4">
+      <div class="card-header border-secondary">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-lightning-charge text-warning"></i> Actions</h6>
+      </div>
+      <div class="card-body">
+        <div class="row g-3 align-items-start">
+
+          <!-- Refer to Team -->
+          <div class="col-md-5">
+            <label class="form-label fw-semibold text-secondary small">Refer to Another Team</label>
+            <form method="POST" action="{{ url_for('refer_company', company_id=company.id) }}" class="d-flex gap-2">
+              <select class="form-select bg-dark text-white border-secondary" name="team_id" required>
+                <option value="">Select a teamâ€¦</option>
+                {% for team in teams %}
+                  {% if team.id != current_user.id %}
+                  <option value="{{ team.id }}">{{ team.firm_name }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+              <button type="submit" class="btn btn-outline-info text-nowrap">
+                <i class="bi bi-person-check"></i> Refer
+              </button>
+            </form>
+          </div>
+
+          <div class="col-md-1 d-flex align-items-center justify-content-center">
+            <div class="vr" style="height:60px;opacity:0.3;"></div>
+          </div>
+
+          <!-- Term Sheet -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-secondary small">Investment Action</label>
+            <div>
+              {% if existing_ts %}
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge fs-6 px-3 py-2
+                  {% if existing_ts.status == 'pending' %}bg-warning text-dark
+                  {% elif existing_ts.status == 'approved' %}bg-success
+                  {% elif existing_ts.status == 'rejected' %}bg-danger
+                  {% else %}bg-secondary{% endif %}">
+                  <i class="bi bi-file-earmark-check"></i>
+                  Term Sheet {{ existing_ts.status | title }}
+                </span>
+                <small class="text-secondary">Submitted for {{ company.name }}</small>
+              </div>
+              {% else %}
+              <a href="{{ url_for('create_term_sheet', company_id=company.id) }}"
+                 class="btn btn-warning text-dark fw-semibold">
+                <i class="bi bi-file-earmark-plus"></i> Create Term Sheet
+              </a>
+              <div class="form-text text-secondary mt-1">
+                Select a fund and set your deal terms to submit a term sheet.
+              </div>
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
+

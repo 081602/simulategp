@@ -1,0 +1,176 @@
+﻿{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-lg-11">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold mb-0">{{ current_user.firm_name }}</h2>
+      <span class="text-muted">{{ game.phase_label }} &nbsp;|&nbsp;
+        Market: <span class="fw-bold {% if game.market_condition >= 1 %}text-success{% else %}text-danger{% endif %}">
+          {{ "%.2f"|format(game.market_condition) }}x
+        </span>
+      </span>
+    </div>
+    <div class="text-end">
+      <span class="badge bg-secondary fs-6">
+        <i class="bi bi-star-fill text-warning"></i> Rep: {{ "%.1f"|format(current_user.reputation) }}
+      </span>
+      <span class="badge bg-info text-dark fs-6 ms-2">
+        <i class="bi bi-search"></i> {{ current_user.query_points }} QP
+      </span>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="row g-3 mb-4">
+    {% for fund in current_user.funds if fund.is_active %}
+    <div class="col-md-3">
+      <div class="card bg-dark border-secondary text-white h-100">
+        <div class="card-body">
+          <div class="text-muted small">{{ fund.name }}</div>
+          <div class="fs-4 fw-bold text-success">${{ "%.1f"|format(fund.available_capital) }}M</div>
+          <div class="text-muted small">Available Capital</div>
+          <div class="progress mt-2" style="height:4px">
+            <div class="progress-bar bg-warning" style="width:{{ fund.deployment_pct }}%"></div>
+          </div>
+          <div class="text-muted small mt-1">{{ fund.deployment_pct }}% deployed</div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    <div class="col-md-3">
+      <div class="card bg-dark border-secondary text-white h-100">
+        <div class="card-body">
+          <div class="text-muted small">Realized IRR</div>
+          <div class="fs-4 fw-bold {% if realized_irr > 0 %}text-success{% else %}text-danger{% endif %}">
+            {{ "%.1f"|format(realized_irr * 100) }}%
+          </div>
+          <div class="text-muted small">Unrealized IRR</div>
+          <div class="fs-5 fw-bold {% if unrealized_irr > 0 %}text-info{% else %}text-danger{% endif %}">
+            {{ "%.1f"|format(unrealized_irr * 100) }}%
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-dark border-secondary text-white h-100">
+        <div class="card-body">
+          <div class="text-muted small">Portfolio Companies</div>
+          <div class="fs-4 fw-bold text-primary">{{ active_deals | length }}</div>
+          <div class="text-muted small">Active investments</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Active Portfolio -->
+    <div class="col-lg-7">
+      <div class="card bg-dark border-secondary text-white">
+        <div class="card-header border-secondary d-flex justify-content-between">
+          <span><i class="bi bi-briefcase"></i> Active Portfolio</span>
+          <a href="{{ url_for('portfolio') }}" class="btn btn-sm btn-outline-secondary">View All</a>
+        </div>
+        <div class="card-body p-0">
+          {% if active_deals %}
+          <table class="table table-dark table-hover mb-0">
+            <thead><tr>
+              <th>Company</th><th>Sector</th><th>Your Stake</th><th>Current Val.</th><th></th>
+            </tr></thead>
+            <tbody>
+            {% for deal in active_deals %}
+            {% set company = deal.company %}
+            {% set my_stake = deal.equity_stakes | selectattr('team_id', 'eq', current_user.id) | first %}
+            <tr>
+              <td>
+                {{ company.name }}
+                {% if deal.marked_for_liquidation %}
+                <span class="badge bg-warning text-dark ms-1">For Sale</span>
+                {% endif %}
+              </td>
+              <td><small class="text-muted">{{ company.sector }}</small></td>
+              <td>{{ "%.1f"|format(my_stake.ownership_pct if my_stake else 0) }}%</td>
+              <td>${{ "%.1f"|format(company.current_valuation or 0) }}M</td>
+              <td><a href="{{ url_for('portfolio_company', company_id=company.id) }}"
+                     class="btn btn-sm btn-outline-primary">Manage</a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <div class="text-center text-muted py-5">
+            <i class="bi bi-briefcase fs-1"></i>
+            <p class="mt-2">No active investments yet.<br>
+              <a href="{{ url_for('dealflow') }}">Search for companies →</a></p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="col-lg-5">
+      <div class="card bg-dark border-secondary text-white">
+        <div class="card-header border-secondary d-flex justify-content-between">
+          <span><i class="bi bi-bell"></i> Notifications</span>
+          <form method="POST" action="{{ url_for('mark_notifications_read') }}" style="margin:0">
+            <button class="btn btn-sm btn-outline-secondary">Mark All Read</button>
+          </form>
+        </div>
+        <div class="card-body p-0" style="max-height:350px; overflow-y:auto">
+          {% if notifications %}
+          {% for n in notifications %}
+          <div class="border-bottom border-secondary px-3 py-2 {% if not n.is_read %}bg-dark{% else %}opacity-75{% endif %}">
+            {% if not n.is_read %}<span class="badge bg-warning text-dark me-1">New</span>{% endif %}
+            <small>{{ n.message }}</small>
+            <div class="text-muted" style="font-size:0.7rem">{{ n.created_at.strftime('%b %d, %H:%M') }}</div>
+          </div>
+          {% endfor %}
+          {% else %}
+          <div class="text-center text-muted py-4">No notifications yet.</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Tasks for current phase -->
+      <div class="card bg-dark border-secondary text-white mt-3">
+        <div class="card-header border-secondary"><i class="bi bi-list-check"></i> Your Tasks</div>
+        <ul class="list-group list-group-flush bg-dark">
+          {% if game.current_phase == 1 %}
+          <li class="list-group-item bg-dark text-white border-secondary">
+            <i class="bi bi-search text-warning"></i>
+            <a href="{{ url_for('search_companies') }}" class="text-warning">Search for companies</a>
+            ({{ current_user.query_points }} query points remaining)
+          </li>
+          <li class="list-group-item bg-dark text-white border-secondary">
+            <i class="bi bi-file-text text-info"></i>
+            <a href="{{ url_for('dealflow') }}" class="text-info">Submit term sheets</a>
+            on companies you've found
+          </li>
+          <li class="list-group-item bg-dark text-white border-secondary">
+            <i class="bi bi-building text-secondary"></i>
+            <a href="{{ url_for('firm_directory') }}" class="text-secondary">Network with other firms</a>
+            -- refer deals, form syndicates
+          </li>
+          {% else %}
+          <li class="list-group-item bg-dark text-white border-secondary">
+            <i class="bi bi-clock-history text-warning"></i>
+            <a href="{{ url_for('timeline') }}" class="text-warning">Check Timeline</a>
+            -- finalize deals where you're Lead
+          </li>
+          <li class="list-group-item bg-dark text-white border-secondary">
+            <i class="bi bi-briefcase text-info"></i>
+            <a href="{{ url_for('portfolio') }}" class="text-info">Manage your portfolio</a>
+            -- dividends, refinancing, or liquidation
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,310 @@
+﻿{% extends "base.html" %}
+{% block title %}Term Sheet â€" {{ company.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-9">
+
+    <div class="d-flex align-items-center mb-4">
+      <a href="{{ url_for('company_detail', company_id=company.id) }}" class="btn btn-sm btn-outline-secondary me-3">
+        <i class="bi bi-arrow-left"></i>
+      </a>
+      <div>
+        <h2 class="fw-bold mb-0"><i class="bi bi-file-earmark-text text-warning"></i> Create Term Sheet</h2>
+        <p class="text-secondary mb-0">{{ company.name }} &mdash; {{ company.sector }}
+          {% if company.stage == 'startup' %}<span class="badge bg-danger ms-1">Startup</span>
+          {% elif company.stage == 'developing' %}<span class="badge bg-warning text-dark ms-1">Developing</span>
+          {% elif company.stage == 'early_revenue' %}<span class="badge bg-info text-dark ms-1">Early Revenue</span>
+          {% elif company.stage == 'mature' %}<span class="badge bg-success ms-1">Mature</span>{% endif %}
+        </p>
+      </div>
+    </div>
+
+    <!-- Company Quick Stats -->
+    <div class="card border-secondary mb-4">
+      <div class="card-body py-3">
+        <div class="row g-3 text-center">
+          <div class="col-4 col-md-2">
+            <div class="text-secondary small">Suggested Valuation</div>
+            <div class="fw-bold">${{ "{:,.1f}M".format(company.current_valuation) }}</div>
+          </div>
+          <div class="col-4 col-md-2">
+            <div class="text-secondary small">Capital Requested</div>
+            <div class="fw-bold">${{ "{:,.1f}M".format(company.capital_requested) }}</div>
+          </div>
+          <div class="col-4 col-md-2">
+            <div class="text-secondary small">Expected Multiple</div>
+            <div class="fw-bold text-success">{{ "%.2f"|format(company.expected_multiple) }}x</div>
+          </div>
+          <div class="col-4 col-md-2">
+            <div class="text-secondary small">Rolled Equity</div>
+            <div class="fw-bold">{{ "%.0f"|format(company.rolled_equity_min * 100) }}%â€"{{ "%.0f"|format(company.rolled_equity_max * 100) }}%</div>
+          </div>
+          <div class="col-4 col-md-2">
+            <div class="text-secondary small">Debt Capacity</div>
+            <div class="fw-bold">{% if company.debt_capacity > 0 %}${{ "{:,.1f}M".format(company.debt_capacity) }}{% else %}None{% endif %}</div>
+          </div>
+          <div class="col-4 col-md-2">
+            <div class="text-secondary small">Aggressive Terms</div>
+            <div class="fw-bold">{% if company.allows_aggressive_terms %}<i class="bi bi-check-circle-fill text-success"></i>{% else %}<i class="bi bi-x-circle-fill text-danger"></i>{% endif %}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Form -->
+    <form method="POST" action="{{ url_for('create_term_sheet', company_id=company.id) }}" id="termSheetForm">
+
+      <!-- Section 1: Valuation & Investment -->
+      <div class="card border-secondary shadow mb-4">
+        <div class="card-header border-secondary">
+          <h6 class="mb-0 fw-semibold"><i class="bi bi-currency-dollar text-warning"></i> Valuation &amp; Investment</h6>
+        </div>
+        <div class="card-body p-4">
+          <div class="row g-3">
+
+            <div class="col-md-6">
+              <label for="pre_money_valuation" class="form-label fw-semibold">Pre-Money Valuation ($)</label>
+              <input type="number" class="form-control bg-dark text-white border-secondary"
+                     id="pre_money_valuation" name="pre_money_valuation"
+                     min="0" step="100000"
+                     value="{{ company.current_valuation }}" required>
+              <div class="form-text text-secondary">Suggested: ${{ "{:,.1f}M".format(company.current_valuation) }}</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="total_investment" class="form-label fw-semibold">Total Investment Size ($)</label>
+              <input type="number" class="form-control bg-dark text-white border-secondary"
+                     id="total_investment" name="total_investment"
+                     min="0" step="100000"
+                     value="{{ company.capital_requested }}" required>
+              <div class="form-text text-secondary">Company is asking for ${{ "{:,.1f}M".format(company.capital_requested) }}</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="rolled_equity_min" class="form-label fw-semibold">Rolled Equity Min (%)</label>
+              <input type="number" class="form-control bg-dark text-white border-secondary"
+                     id="rolled_equity_min" name="rolled_equity_min"
+                     min="{{ company.rolled_equity_min * 100 }}"
+                     max="{{ company.rolled_equity_max * 100 }}"
+                     step="1"
+                     value="{{ "%.0f"|format(company.rolled_equity_min * 100) }}" required>
+              <div class="form-text text-secondary">Minimum: {{ "%.0f"|format(company.rolled_equity_min * 100) }}%</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="rolled_equity_max" class="form-label fw-semibold">Rolled Equity Max (%)</label>
+              <input type="number" class="form-control bg-dark text-white border-secondary"
+                     id="rolled_equity_max" name="rolled_equity_max"
+                     min="{{ company.rolled_equity_min * 100 }}"
+                     max="{{ company.rolled_equity_max * 100 }}"
+                     step="1"
+                     value="{{ "%.0f"|format(company.rolled_equity_max * 100) }}" required>
+              <div class="form-text text-secondary">Maximum: {{ "%.0f"|format(company.rolled_equity_max * 100) }}%</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="fund_id" class="form-label fw-semibold">Fund</label>
+              <select class="form-select bg-dark text-white border-secondary" id="fund_id" name="fund_id" required>
+                <option value="">Select a fundâ€¦</option>
+                {% for fund in funds %}
+                <option value="{{ fund.id }}">
+                  {{ fund.name }} â€" ${{ "{:,.1f}M".format(fund.available_capital) }} available
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Fill Investor -->
+      <div class="card border-secondary shadow mb-4">
+        <div class="card-header border-secondary">
+          <h6 class="mb-0 fw-semibold"><i class="bi bi-people text-warning"></i> Fill Investor Options</h6>
+        </div>
+        <div class="card-body p-4">
+
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="willing_to_fill" name="willing_to_fill" value="1">
+            <label class="form-check-label fw-semibold" for="willing_to_fill">
+              Willing to be a Fill Investor
+            </label>
+            <div class="form-text text-secondary">Allow other teams to bring you in as a co-investor</div>
+          </div>
+
+          <div id="fillInvestorFields" class="d-none">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="min_reputation_for_lead" class="form-label fw-semibold">Minimum Lead Reputation (0â€"5)</label>
+                <input type="number" class="form-control bg-dark text-white border-secondary"
+                       id="min_reputation_for_lead" name="min_reputation_for_lead"
+                       min="0" max="5" step="0.5" value="3">
+                <div class="form-text text-secondary">Only accept fill positions from leads with this reputation or higher</div>
+              </div>
+              <div class="col-md-6">
+                <label for="max_fill_equity" class="form-label fw-semibold">Max Fill Equity Amount ($)</label>
+                <input type="number" class="form-control bg-dark text-white border-secondary"
+                       id="max_fill_equity" name="max_fill_equity"
+                       min="0" step="100000" placeholder="e.g. 5000000">
+                <div class="form-text text-secondary">Maximum amount you are willing to invest as a fill</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Section 3: Deal Terms -->
+      <div class="card border-secondary shadow mb-4">
+        <div class="card-header border-secondary">
+          <h6 class="mb-0 fw-semibold"><i class="bi bi-file-earmark-ruled text-warning"></i> Deal Terms</h6>
+        </div>
+        <div class="card-body p-4">
+          <div class="row g-4">
+
+            <!-- Liquidation Preference -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Liquidation Preference</label>
+              <div class="d-flex flex-column gap-2">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="liquidation_preference" id="liq_1x" value="1" checked>
+                  <label class="form-check-label" for="liq_1x">1x (Standard)</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="liquidation_preference" id="liq_2x" value="2"
+                    {% if not company.allows_aggressive_terms %}disabled{% endif %}>
+                  <label class="form-check-label {% if not company.allows_aggressive_terms %}text-secondary{% endif %}" for="liq_2x">
+                    2x {% if not company.allows_aggressive_terms %}<span class="badge bg-secondary ms-1">Not Allowed</span>{% endif %}
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="liquidation_preference" id="liq_3x" value="3" disabled>
+                  <label class="form-check-label text-secondary" for="liq_3x">
+                    3x <span class="badge bg-secondary ms-1">Disabled</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Participation -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Participation</label>
+              <div class="form-check form-switch mt-2">
+                <input class="form-check-input" type="checkbox" id="participation" name="participation" value="1"
+                  {% if not company.allows_aggressive_terms %}disabled{% endif %}>
+                <label class="form-check-label" for="participation">
+                  Participating Preferred
+                  {% if not company.allows_aggressive_terms %}
+                  <br><span class="badge bg-secondary">Not Allowed</span>
+                  {% endif %}
+                </label>
+              </div>
+            </div>
+
+            <!-- Anti-Dilution -->
+            <div class="col-md-4">
+              <label for="anti_dilution" class="form-label fw-semibold">Anti-Dilution Protection</label>
+              <select class="form-select bg-dark text-white border-secondary" id="anti_dilution" name="anti_dilution">
+                <option value="none">None</option>
+                <option value="weighted" {% if not company.allows_aggressive_terms %}disabled{% endif %}>
+                  Weighted Average {% if not company.allows_aggressive_terms %}(Not Allowed){% endif %}
+                </option>
+                <option value="full_ratchet" {% if not company.allows_aggressive_terms %}disabled{% endif %}>
+                  Full Ratchet {% if not company.allows_aggressive_terms %}(Not Allowed){% endif %}
+                </option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Syndicate -->
+      <div class="card border-secondary shadow mb-4">
+        <div class="card-header border-secondary">
+          <h6 class="mb-0 fw-semibold"><i class="bi bi-diagram-3 text-warning"></i> Syndicate Structure</h6>
+        </div>
+        <div class="card-body p-4">
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Term Sheet Type</label>
+            <div class="d-flex gap-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="ts_type" id="ts_solo" value="solo" checked>
+                <label class="form-check-label" for="ts_solo">
+                  <i class="bi bi-person-fill text-warning me-1"></i> Solo Deal
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="ts_type" id="ts_syndicate" value="syndicate">
+                <label class="form-check-label" for="ts_syndicate">
+                  <i class="bi bi-people-fill text-info me-1"></i> Syndicate
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div id="syndicatePartners" class="d-none">
+            <label class="form-label fw-semibold">Syndicate Partners</label>
+            <div class="form-text text-secondary mb-2">Select teams to invite as syndicate partners. They must approve to be included.</div>
+            <div class="row g-2">
+              {% for team in teams %}
+                {% if team.id != current_user.id %}
+                <div class="col-md-4">
+                  <div class="form-check card border-secondary p-2 ps-4">
+                    <input class="form-check-input" type="checkbox" name="syndicate_partners" value="{{ team.id }}" id="partner_{{ team.id }}">
+                    <label class="form-check-label" for="partner_{{ team.id }}">
+                      <strong>{{ team.firm_name }}</strong>
+                      <div class="text-secondary small">
+                        {% for i in range(1, 6) %}
+                          {% if i <= team.reputation %}
+                            <i class="bi bi-star-fill text-warning" style="font-size:0.65rem;"></i>
+                          {% else %}
+                            <i class="bi bi-star text-secondary" style="font-size:0.65rem;"></i>
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+                    </label>
+                  </div>
+                </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="d-flex gap-3 justify-content-end">
+        <a href="{{ url_for('company_detail', company_id=company.id) }}" class="btn btn-outline-secondary btn-lg">
+          <i class="bi bi-x-circle"></i> Cancel
+        </a>
+        <button type="submit" class="btn btn-warning text-dark fw-bold btn-lg">
+          <i class="bi bi-send"></i> Submit Term Sheet
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Fill investor toggle
+  document.getElementById('willing_to_fill').addEventListener('change', function() {
+    document.getElementById('fillInvestorFields').classList.toggle('d-none', !this.checked);
+  });
+
+  // Syndicate partner toggle
+  document.querySelectorAll('input[name="ts_type"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+      document.getElementById('syndicatePartners').classList.toggle('d-none', this.value !== 'syndicate');
+    });
+  });
+</script>
+{% endblock %}
+

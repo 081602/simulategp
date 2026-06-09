@@ -1,0 +1,88 @@
+﻿{% extends "base.html" %}
+{% block title %}Manage Teams{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-11">
+
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <div>
+        <h2 class="fw-bold mb-0"><i class="bi bi-people text-warning"></i> Manage Teams</h2>
+        <p class="text-secondary mb-0">{{ teams|length }} teams registered</p>
+      </div>
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Dashboard
+      </a>
+    </div>
+
+    <div class="card border-secondary shadow">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle mb-0">
+            <thead class="table-secondary text-dark">
+              <tr>
+                <th>Firm Name</th>
+                <th>Username</th>
+                <th class="text-center">Reputation</th>
+                <th class="text-center">Query Points</th>
+                <th class="text-end">Available Capital</th>
+                <th class="text-center"># Deals</th>
+                <th class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for team in teams %}
+              <tr>
+                <td>
+                  <div class="fw-bold">{{ team.firm_name }}</div>
+                  {% if team.about_us %}
+                  <div class="text-secondary small text-truncate" style="max-width:200px;">{{ team.about_us }}</div>
+                  {% endif %}
+                </td>
+                <td class="text-secondary font-monospace">{{ team.username }}</td>
+                <td class="text-center">
+                  <div>
+                    {% set rep = team.reputation | int %}
+                    {% for i in range(1, 6) %}
+                      {% if i <= rep %}
+                        <i class="bi bi-star-fill text-warning" style="font-size:0.8rem;"></i>
+                      {% else %}
+                        <i class="bi bi-star text-secondary" style="font-size:0.8rem;"></i>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                  <div class="text-secondary small">{{ "%.1f"|format(team.reputation) }}</div>
+                </td>
+                <td class="text-center">
+                  <span class="badge bg-info text-dark fs-6">{{ team.query_points }}</span>
+                </td>
+                <td class="text-end fw-bold text-success">
+                  ${{ "{:,.1f}M".format(team.total_available_capital) }}
+                </td>
+                <td class="text-center">
+                  <span class="badge bg-secondary">{{ team.deal_count if team.deal_count is defined else 0 }}</span>
+                </td>
+                <td class="text-center">
+                  <a href="{{ url_for('admin_edit_team', team_id=team.id) }}" class="btn btn-outline-warning btn-sm">
+                    <i class="bi bi-pencil"></i> Edit
+                  </a>
+                </td>
+              </tr>
+              {% else %}
+              <tr>
+                <td colspan="7" class="text-center text-secondary py-4">
+                  <i class="bi bi-people-slash fs-3 d-block mb-2"></i>
+                  No teams registered yet
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+

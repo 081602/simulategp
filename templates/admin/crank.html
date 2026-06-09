@@ -1,0 +1,172 @@
+﻿{% extends "base.html" %}
+{% block title %}Run Crank{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+
+    <div class="d-flex align-items-center mb-4">
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-sm btn-outline-secondary me-3">
+        <i class="bi bi-arrow-left"></i>
+      </a>
+      <div>
+        <h2 class="fw-bold mb-0"><i class="bi bi-gear-wide-connected text-warning"></i> Run Crank</h2>
+        <p class="text-secondary mb-0">Advance the simulation â€" irreversible action</p>
+      </div>
+    </div>
+
+    <!-- Current Phase Indicator -->
+    <div class="card border-info shadow mb-4" style="background:rgba(13,202,240,0.08) !important;">
+      <div class="card-body p-4 text-center">
+        <div class="text-secondary small mb-1">Current State</div>
+        <div class="fs-3 fw-bold">
+          <i class="bi bi-calendar3 text-info me-2"></i>
+          Year {{ game.current_year }} / {{ game.total_years }}
+          <span class="badge bg-info text-dark ms-2 fs-5">Phase {{ game.current_phase }} â€" {{ game.phase_label }}</span>
+        </div>
+        {% if game.status == 'paused' %}
+        <div class="mt-2">
+          <span class="badge bg-danger fs-6"><i class="bi bi-pause-circle-fill"></i> Game is Paused</span>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- PHASE 1 CRANK -->
+    <div class="card shadow mb-4
+      {% if game.current_phase == 1 and game.status != 'paused' %}border-warning{% else %}border-secondary opacity-50{% endif %}">
+      <div class="card-header
+        {% if game.current_phase == 1 and game.status != 'paused' %}border-warning{% else %}border-secondary{% endif %}"
+        style="{% if game.current_phase == 1 and game.status != 'paused' %}background:rgba(255,193,7,0.1) !important;{% endif %}">
+        <h5 class="mb-0 fw-bold {% if game.current_phase == 1 %}text-warning{% else %}text-secondary{% endif %}">
+          <i class="bi bi-1-circle-fill me-2"></i> Phase 1 Crank â€" Term Sheet Processing
+          {% if game.current_phase != 1 %}<span class="badge bg-secondary ms-2 fs-6">Not Active</span>{% endif %}
+        </h5>
+      </div>
+      <div class="card-body p-4">
+        {% if game.current_phase == 1 and game.status != 'paused' %}
+        <div class="row g-3 mb-4">
+          <div class="col-6">
+            <div class="card border-secondary text-center">
+              <div class="card-body py-3">
+                <div class="text-secondary small">Pending Term Sheets</div>
+                <div class="display-6 fw-bold text-warning">{{ pending_ts }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="card border-secondary text-center">
+              <div class="card-body py-3">
+                <div class="text-secondary small">Current Market</div>
+                <div class="display-6 fw-bold text-info">{{ "%.2f"|format(game.market_condition) }}x</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert border-warning text-warning mb-4" style="background:rgba(255,193,7,0.1);">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <strong>Warning:</strong> Running the Phase 1 Crank will evaluate all {{ pending_ts }} pending term sheets,
+          determine which deals advance to Phase 2, and move the simulation to the next phase.
+          <strong>This cannot be undone.</strong>
+        </div>
+
+        <form method="POST" action="{{ url_for('admin_crank') }}" id="phase1CrankForm">
+          <input type="hidden" name="crank_phase" value="1">
+          <div class="form-check mb-4">
+            <input class="form-check-input" type="checkbox" id="confirm_phase1" name="confirm" value="1" required>
+            <label class="form-check-label fw-semibold text-warning" for="confirm_phase1">
+              I understand this action is irreversible and will process all pending term sheets.
+            </label>
+          </div>
+          <button type="submit" class="btn btn-warning text-dark fw-bold btn-lg w-100 confirm-action"
+                  data-confirm="Run Phase 1 Crank? This will process {{ pending_ts }} term sheets and cannot be undone.">
+            <i class="bi bi-gear-wide-connected me-2"></i> Run Phase 1 Crank
+            <span class="badge bg-dark ms-2">{{ pending_ts }} term sheets</span>
+          </button>
+        </form>
+        {% else %}
+        <p class="text-secondary text-center py-3 mb-0">
+          {% if game.status == 'paused' %}
+            <i class="bi bi-pause-circle fs-3 d-block mb-2"></i>
+            Resume the game before running the crank.
+          {% else %}
+            <i class="bi bi-lock fs-3 d-block mb-2"></i>
+            Phase 1 Crank is only available during Phase 1.
+          {% endif %}
+        </p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- PHASE 2 CRANK -->
+    <div class="card shadow mb-4
+      {% if game.current_phase == 2 and game.status != 'paused' %}border-info{% else %}border-secondary opacity-50{% endif %}">
+      <div class="card-header
+        {% if game.current_phase == 2 and game.status != 'paused' %}border-info{% else %}border-secondary{% endif %}"
+        style="{% if game.current_phase == 2 and game.status != 'paused' %}background:rgba(13,202,240,0.1) !important;{% endif %}">
+        <h5 class="mb-0 fw-bold {% if game.current_phase == 2 %}text-info{% else %}text-secondary{% endif %}">
+          <i class="bi bi-2-circle-fill me-2"></i> Phase 2 Crank â€" Deal Finalization &amp; Year Advance
+          {% if game.current_phase != 2 %}<span class="badge bg-secondary ms-2 fs-6">Not Active</span>{% endif %}
+        </h5>
+      </div>
+      <div class="card-body p-4">
+        {% if game.current_phase == 2 and game.status != 'paused' %}
+        <div class="row g-3 mb-4">
+          <div class="col-6">
+            <div class="card border-secondary text-center">
+              <div class="card-body py-3">
+                <div class="text-secondary small">Pending Deals</div>
+                <div class="display-6 fw-bold text-info">{{ pending_deals }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="card border-secondary text-center">
+              <div class="card-body py-3">
+                <div class="text-secondary small">Next Year</div>
+                <div class="display-6 fw-bold text-success">Year {{ game.current_year + 1 }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert border-info text-info mb-4" style="background:rgba(13,202,240,0.1);">
+          <i class="bi bi-info-circle-fill me-2"></i>
+          <strong>Phase 2 Crank:</strong> This will finalize all pending deals, update portfolio valuations,
+          process management fees, advance to Year {{ game.current_year + 1 }}, and open Phase 1 for the new year.
+          <strong>This cannot be undone.</strong>
+        </div>
+
+        <form method="POST" action="{{ url_for('admin_crank') }}" id="phase2CrankForm">
+          <input type="hidden" name="crank_phase" value="2">
+          <div class="form-check mb-4">
+            <input class="form-check-input" type="checkbox" id="confirm_phase2" name="confirm" value="1" required>
+            <label class="form-check-label fw-semibold text-info" for="confirm_phase2">
+              I understand this action is irreversible and will advance the simulation to Year {{ game.current_year + 1 }}.
+            </label>
+          </div>
+          <button type="submit" class="btn btn-info text-dark fw-bold btn-lg w-100 confirm-action"
+                  data-confirm="Run Phase 2 Crank? This will close deals, update valuations, and advance to Year {{ game.current_year + 1 }}. Cannot be undone.">
+            <i class="bi bi-fast-forward-circle me-2"></i> Run Phase 2 Crank &amp; Advance Year
+          </button>
+        </form>
+        {% else %}
+        <p class="text-secondary text-center py-3 mb-0">
+          {% if game.status == 'paused' %}
+            <i class="bi bi-pause-circle fs-3 d-block mb-2"></i>
+            Resume the game before running the crank.
+          {% else %}
+            <i class="bi bi-lock fs-3 d-block mb-2"></i>
+            Phase 2 Crank is only available during Phase 2.
+          {% endif %}
+        </p>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+

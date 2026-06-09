@@ -1,0 +1,155 @@
+﻿{% extends "base.html" %}
+{% block title %}My Funds{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-11">
+
+    <div class="d-flex align-items-center mb-4">
+      <div>
+        <h2 class="fw-bold mb-0"><i class="bi bi-cash-stack text-warning"></i> Fund Performance</h2>
+        <p class="text-secondary mb-0">Year {{ game.current_year }} -- {{ game.phase_label }}</p>
+      </div>
+    </div>
+
+    <!-- IRR Summary -->
+    <div class="row g-4 mb-4">
+      <div class="col-md-6">
+        <div class="card border-success shadow text-center" style="background:rgba(25,135,84,0.1) !important;">
+          <div class="card-body py-4">
+            <div class="text-secondary small mb-1">
+              <i class="bi bi-check-circle-fill text-success me-1"></i> Realized IRR
+            </div>
+            <div class="display-4 fw-bold text-success irr-display">
+              {{ "%.1f"|format(realized_irr * 100) }}%
+            </div>
+            <div class="text-secondary small">From exited investments</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card border-info shadow text-center" style="background:rgba(13,202,240,0.1) !important;">
+          <div class="card-body py-4">
+            <div class="text-secondary small mb-1">
+              <i class="bi bi-graph-up-arrow text-info me-1"></i> Unrealized IRR
+            </div>
+            <div class="display-4 fw-bold text-info irr-display">
+              {{ "%.1f"|format(unrealized_irr * 100) }}%
+            </div>
+            <div class="text-secondary small">Based on current valuations</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fund Cards -->
+    <div class="row g-4 mb-4">
+      {% for fund in team_funds %}
+      {% set deployment_pct = (fund.deployed_capital / fund.total_capital * 100) if fund.total_capital > 0 else 0 %}
+      <div class="col-md-6 col-xl-4">
+        <div class="card border-secondary shadow h-100">
+          <div class="card-header border-secondary d-flex align-items-center justify-content-between">
+            <h6 class="mb-0 fw-semibold">
+              <i class="bi bi-wallet2 text-warning me-1"></i> {{ fund.name }}
+            </h6>
+            <span class="badge bg-secondary small">{{ "%.1f"|format(fund.management_fee_rate * 100) }}% Mgmt Fee</span>
+          </div>
+          <div class="card-body">
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <div class="text-secondary small">Total Capital</div>
+                <div class="fw-bold">${{ "{:,.1f}M".format(fund.total_capital) }}</div>
+              </div>
+              <div class="col-6">
+                <div class="text-secondary small">Available</div>
+                <div class="fw-bold text-success">${{ "{:,.1f}M".format(fund.available_capital) }}</div>
+              </div>
+              <div class="col-6">
+                <div class="text-secondary small">Deployed</div>
+                <div class="fw-bold text-warning">${{ "{:,.1f}M".format(fund.deployed_capital) }}</div>
+              </div>
+              <div class="col-6">
+                <div class="text-secondary small">Deployment</div>
+                <div class="fw-bold">{{ "%.1f"|format(deployment_pct) }}%</div>
+              </div>
+            </div>
+
+            <!-- Deployment Progress Bar -->
+            <div class="mb-1 d-flex justify-content-between">
+              <small class="text-secondary">Deployment Progress</small>
+              <small class="text-secondary">{{ "%.1f"|format(deployment_pct) }}%</small>
+            </div>
+            <div class="progress bg-secondary mb-2" style="height:10px;">
+              <div class="progress-bar {% if deployment_pct >= 90 %}bg-danger{% elif deployment_pct >= 70 %}bg-warning{% else %}bg-success{% endif %}"
+                   style="width:{{ [deployment_pct, 100]|min }}%"
+                   role="progressbar"></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div class="col-12">
+        <div class="card border-secondary text-center py-4">
+          <div class="card-body text-secondary">
+            <i class="bi bi-wallet2 fs-2 d-block mb-2"></i>
+            No funds created yet.
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Transaction History -->
+    <div class="card border-secondary shadow">
+      <div class="card-header border-secondary d-flex align-items-center justify-content-between">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-clock-history text-warning"></i> Transaction History</h6>
+        <span class="badge bg-secondary">{{ transactions|length }} transactions</span>
+      </div>
+      <div class="card-body p-0">
+        {% if transactions %}
+        <div class="table-responsive">
+          <table class="table table-dark table-hover mb-0">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th class="text-end">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for txn in transactions | sort(attribute='game_year', reverse=true) %}
+              <tr>
+                <td class="text-secondary">Year {{ txn.game_year }}</td>
+                <td>
+                  <span class="badge
+                    {% if txn.transaction_type in ['investment', 'management_fee'] %}bg-warning text-dark
+                    {% elif txn.transaction_type in ['dividend', 'exit_proceeds'] %}bg-success
+                    {% elif txn.transaction_type == 'capital_call' %}bg-info text-dark
+                    {% else %}bg-secondary{% endif %}">
+                    {{ txn.transaction_type | replace('_', ' ') | title }}
+                  </span>
+                </td>
+                <td class="text-secondary">{{ txn.description }}</td>
+                <td class="text-end fw-bold {% if txn.amount >= 0 %}text-success{% else %}text-danger{% endif %}">
+                  {% if txn.amount >= 0 %}+{% endif %}${{ "{:,.1f}M".format(txn.amount) }}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="text-center text-secondary py-4">
+          <i class="bi bi-receipt fs-3 d-block mb-2"></i>
+          No transactions recorded yet
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+

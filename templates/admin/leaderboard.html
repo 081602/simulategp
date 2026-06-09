@@ -1,0 +1,145 @@
+﻿{% extends "base.html" %}
+{% block title %}Leaderboard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-12">
+
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <div>
+        <h2 class="fw-bold mb-0"><i class="bi bi-trophy text-warning"></i> Leaderboard</h2>
+        <p class="text-secondary mb-0">Year {{ game.current_year }} â€" Ranked by Unrealized IRR</p>
+      </div>
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Dashboard
+      </a>
+    </div>
+
+    <!-- Top 3 Podium -->
+    {% if team_data | length >= 3 %}
+    <div class="row g-4 justify-content-center mb-4">
+      <!-- 2nd Place -->
+      <div class="col-md-3 order-md-1">
+        <div class="card border-secondary shadow text-center h-100" style="background:rgba(108,117,125,0.15) !important;">
+          <div class="card-body pt-4">
+            <div class="display-4 mb-2">ðŸ¥ˆ</div>
+            <div class="fw-bold fs-5">{{ team_data[1].team.firm_name }}</div>
+            <div class="text-secondary small mb-2">{{ "%.1f"|format(team_data[1].unrealized_irr) }}% IRR</div>
+            <div class="text-success fw-bold">${{ "{:,.1f}M".format(team_data[1].portfolio_value) }}</div>
+            <div class="text-secondary small">Portfolio Value</div>
+          </div>
+        </div>
+      </div>
+      <!-- 1st Place -->
+      <div class="col-md-3 order-md-2">
+        <div class="card shadow text-center h-100" style="background:rgba(255,193,7,0.15) !important; border-color:#ffc107 !important; margin-top:-1rem;">
+          <div class="card-body pt-4">
+            <div class="display-3 mb-2">ðŸ†</div>
+            <div class="fw-bold fs-4 text-warning">{{ team_data[0].team.firm_name }}</div>
+            <div class="text-warning mb-2">{{ "%.1f"|format(team_data[0].unrealized_irr) }}% IRR</div>
+            <div class="text-success fw-bold fs-5">${{ "{:,.1f}M".format(team_data[0].portfolio_value) }}</div>
+            <div class="text-secondary small">Portfolio Value</div>
+          </div>
+        </div>
+      </div>
+      <!-- 3rd Place -->
+      <div class="col-md-3 order-md-3">
+        <div class="card border-secondary shadow text-center h-100" style="background:rgba(205,127,50,0.15) !important;">
+          <div class="card-body pt-4">
+            <div class="display-4 mb-2">ðŸ¥‰</div>
+            <div class="fw-bold fs-5">{{ team_data[2].team.firm_name }}</div>
+            <div class="text-secondary small mb-2">{{ "%.1f"|format(team_data[2].unrealized_irr) }}% IRR</div>
+            <div class="text-success fw-bold">${{ "{:,.1f}M".format(team_data[2].portfolio_value) }}</div>
+            <div class="text-secondary small">Portfolio Value</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Full Rankings Table -->
+    <div class="card border-secondary shadow">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle mb-0">
+            <thead class="table-secondary text-dark">
+              <tr>
+                <th class="text-center" style="width:60px;">Rank</th>
+                <th>Firm Name</th>
+                <th class="text-center">Reputation</th>
+                <th class="text-end">Unrealized IRR</th>
+                <th class="text-end">Realized IRR</th>
+                <th class="text-end">Total Capital</th>
+                <th class="text-end">Available Capital</th>
+                <th class="text-end">Portfolio Value</th>
+                <th class="text-center"># Deals</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in team_data %}
+              <tr class="
+                {% if loop.index == 1 %}leaderboard-gold{% endif %}
+                {% if loop.index == 2 %}leaderboard-silver{% endif %}
+                {% if loop.index == 3 %}leaderboard-bronze{% endif %}
+              ">
+                <td class="text-center fw-bold">
+                  {% if loop.index == 1 %}
+                    <span class="text-warning fs-5">ðŸ¥‡</span>
+                  {% elif loop.index == 2 %}
+                    <span class="text-secondary fs-5">ðŸ¥ˆ</span>
+                  {% elif loop.index == 3 %}
+                    <span style="color:#cd7f32;" class="fs-5">ðŸ¥‰</span>
+                  {% else %}
+                    <span class="text-secondary">{{ loop.index }}</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <div class="fw-bold">{{ item.team.firm_name }}</div>
+                  <div class="text-secondary small font-monospace">{{ item.team.username }}</div>
+                </td>
+                <td class="text-center">
+                  {% set rep = item.reputation | int %}
+                  {% for i in range(1, 6) %}
+                    {% if i <= rep %}
+                      <i class="bi bi-star-fill text-warning" style="font-size:0.75rem;"></i>
+                    {% else %}
+                      <i class="bi bi-star text-secondary" style="font-size:0.75rem;"></i>
+                    {% endif %}
+                  {% endfor %}
+                  <div class="text-secondary" style="font-size:0.7rem;">{{ "%.1f"|format(item.reputation) }}</div>
+                </td>
+                <td class="text-end">
+                  <span class="fw-bold {% if item.unrealized_irr >= 20 %}text-success{% elif item.unrealized_irr >= 0 %}text-info{% else %}text-danger{% endif %} fs-5">
+                    {{ "%.1f"|format(item.unrealized_irr) }}%
+                  </span>
+                </td>
+                <td class="text-end">
+                  <span class="{% if item.realized_irr >= 20 %}text-success{% elif item.realized_irr >= 0 %}text-secondary{% else %}text-danger{% endif %}">
+                    {{ "%.1f"|format(item.realized_irr) }}%
+                  </span>
+                </td>
+                <td class="text-end">${{ "{:,.1f}M".format(item.total_capital) }}</td>
+                <td class="text-end text-success">${{ "{:,.1f}M".format(item.available_capital) }}</td>
+                <td class="text-end fw-bold">${{ "{:,.1f}M".format(item.portfolio_value) }}</td>
+                <td class="text-center">
+                  <span class="badge bg-secondary">{{ item.deal_count }}</span>
+                </td>
+              </tr>
+              {% else %}
+              <tr>
+                <td colspan="9" class="text-center text-secondary py-4">
+                  <i class="bi bi-trophy fs-3 d-block mb-2"></i>
+                  No team data available
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+

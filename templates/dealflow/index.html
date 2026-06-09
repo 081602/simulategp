@@ -1,0 +1,117 @@
+﻿{% extends "base.html" %}
+{% block title %}Deal Flow{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-11">
+
+    <!-- Header -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <div>
+        <h2 class="fw-bold mb-0"><i class="bi bi-search text-warning"></i> Deal Flow</h2>
+        <p class="text-secondary mb-0">Companies found through search or referred by other teams</p>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <div class="text-center">
+          <div class="badge bg-info text-dark fs-6 px-3 py-2">
+            <i class="bi bi-lightning-charge-fill"></i>
+            {{ current_user.query_points }} Query Points
+          </div>
+        </div>
+        <a href="{{ url_for('search_companies') }}" class="btn btn-warning text-dark fw-semibold">
+          <i class="bi bi-search"></i> Search for Companies
+        </a>
+      </div>
+    </div>
+
+    {% if not found_companies %}
+    <div class="card border-secondary text-center py-5">
+      <div class="card-body">
+        <i class="bi bi-binoculars fs-1 text-secondary mb-3 d-block"></i>
+        <h5 class="text-secondary">No Companies in Your Pipeline Yet</h5>
+        <p class="text-secondary mb-4">Use the search tool to find investment opportunities, or wait for referrals from other teams.</p>
+        <a href="{{ url_for('search_companies') }}" class="btn btn-warning text-dark">
+          <i class="bi bi-search"></i> Start Searching
+        </a>
+      </div>
+    </div>
+    {% else %}
+
+    <!-- Company Cards -->
+    <div class="row g-3">
+      {% for company in found_companies %}
+      {% set search = search_map.get(company.id) %}
+      <div class="col-md-6 col-xl-4">
+        <div class="card h-100 border-secondary shadow-sm company-card">
+          <div class="card-body">
+
+            <!-- Source Badge -->
+            <div class="d-flex align-items-start justify-content-between mb-2">
+              <h6 class="card-title fw-bold mb-0">{{ company.name }}</h6>
+              {% if search %}
+                <span class="badge bg-secondary ms-2" title="Found via search">
+                  <i class="bi bi-search"></i> Found
+                </span>
+              {% else %}
+                <span class="badge bg-info text-dark ms-2" title="Referred by another team">
+                  <i class="bi bi-person-check"></i> Referred
+                </span>
+              {% endif %}
+            </div>
+
+            <!-- Sector & Stage -->
+            <div class="d-flex gap-2 mb-3 flex-wrap">
+              <span class="badge bg-secondary">{{ company.sector }}</span>
+              {% if company.stage == 'startup' %}
+                <span class="badge bg-danger">Startup</span>
+              {% elif company.stage == 'developing' %}
+                <span class="badge bg-warning text-dark">Developing</span>
+              {% elif company.stage == 'early_revenue' %}
+                <span class="badge bg-info text-dark">Early Revenue</span>
+              {% elif company.stage == 'mature' %}
+                <span class="badge bg-success">Mature</span>
+              {% else %}
+                <span class="badge bg-secondary">{{ company.stage | title }}</span>
+              {% endif %}
+            </div>
+
+            <!-- Capital Requested -->
+            <div class="mb-3">
+              <small class="text-secondary d-block">Capital Requested</small>
+              <span class="fw-bold text-white fs-5">
+                ${{ "{:,.1f}M".format(company.capital_requested) }}
+              </span>
+            </div>
+
+            <!-- Referral info -->
+            {% if not search and company.referred_by %}
+            <div class="mb-3">
+              <small class="text-secondary">
+                <i class="bi bi-person-fill text-info"></i>
+                Referred by <strong>{{ company.referred_by.firm_name }}</strong>
+              </small>
+            </div>
+            {% endif %}
+
+          </div>
+          <div class="card-footer border-secondary bg-transparent">
+            <a href="{{ url_for('company_detail', company_id=company.id) }}" class="btn btn-outline-warning btn-sm w-100">
+              <i class="bi bi-eye"></i> View Details
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <p class="text-secondary text-end mt-3 small">
+      Showing {{ found_companies|length }} compan{{ 'y' if found_companies|length == 1 else 'ies' }} in your pipeline
+    </p>
+
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+
+

@@ -1,0 +1,398 @@
+/* ==========================================================
+   SimulateGP — Main Stylesheet
+   Dark-theme private equity simulation for Babson MBA
+   ========================================================== */
+
+/* ----------------------------------------------------------
+   Base & Body
+   ---------------------------------------------------------- */
+body {
+  background: #0f172a;
+  color: #e2e8f0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+/* ----------------------------------------------------------
+   Cards
+   ---------------------------------------------------------- */
+.card {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+.card-header {
+  background: #1a2744 !important;
+  color: #e2e8f0;
+}
+
+/* ----------------------------------------------------------
+   Tables
+   ---------------------------------------------------------- */
+.table-dark {
+  --bs-table-bg: #1e293b;
+  --bs-table-striped-bg: #243044;
+  --bs-table-hover-bg: #2d3f5a;
+  --bs-table-border-color: #334155;
+  color: #e2e8f0;
+}
+
+.table-dark td,
+.table-dark th {
+  border-color: #334155;
+}
+
+.table-secondary {
+  --bs-table-bg: #334155;
+  --bs-table-color: #e2e8f0;
+}
+
+/* ----------------------------------------------------------
+   Navbar
+   ---------------------------------------------------------- */
+.navbar {
+  border-bottom: 1px solid #334155;
+  background-color: #0f172a !important;
+}
+
+.navbar-brand {
+  font-size: 1.25rem;
+  letter-spacing: -0.3px;
+}
+
+.nav-link {
+  color: #94a3b8 !important;
+  transition: color 0.15s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #f8fafc !important;
+}
+
+.nav-link.active {
+  font-weight: 600;
+  border-bottom: 2px solid #fbbf24;
+  padding-bottom: calc(0.5rem - 2px);
+}
+
+/* Phase badge sticky */
+.navbar .badge.fs-6 {
+  font-size: 0.8rem !important;
+}
+
+/* ----------------------------------------------------------
+   Forms
+   ---------------------------------------------------------- */
+.form-control,
+.form-select {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: #0f172a !important;
+  border-color: #fbbf24 !important;
+  color: #f8fafc !important;
+  box-shadow: 0 0 0 0.2rem rgba(251, 191, 36, 0.2) !important;
+}
+
+.form-control::placeholder {
+  color: #475569 !important;
+}
+
+.form-check-input {
+  background-color: #334155;
+  border-color: #475569;
+}
+
+.form-check-input:checked {
+  background-color: #fbbf24;
+  border-color: #fbbf24;
+}
+
+.form-range::-webkit-slider-thumb {
+  background: #fbbf24;
+}
+
+.form-range::-moz-range-thumb {
+  background: #fbbf24;
+}
+
+.input-group-text {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #94a3b8;
+}
+
+/* ----------------------------------------------------------
+   Buttons
+   ---------------------------------------------------------- */
+.btn-warning {
+  --bs-btn-bg: #fbbf24;
+  --bs-btn-border-color: #fbbf24;
+  --bs-btn-hover-bg: #f59e0b;
+  --bs-btn-hover-border-color: #d97706;
+}
+
+.btn-outline-secondary {
+  --bs-btn-color: #94a3b8;
+  --bs-btn-border-color: #334155;
+  --bs-btn-hover-bg: #1e293b;
+  --bs-btn-hover-color: #e2e8f0;
+  --bs-btn-hover-border-color: #475569;
+}
+
+/* ----------------------------------------------------------
+   Stage Badges
+   ---------------------------------------------------------- */
+.badge-stage-startup {
+  background-color: #dc2626;
+  color: #fff;
+}
+
+.badge-stage-developing {
+  background-color: #d97706;
+  color: #fff;
+}
+
+.badge-stage-early-revenue {
+  background-color: #0891b2;
+  color: #fff;
+}
+
+.badge-stage-mature {
+  background-color: #16a34a;
+  color: #fff;
+}
+
+/* ----------------------------------------------------------
+   Distressed Row Animation
+   ---------------------------------------------------------- */
+@keyframes distressPulse {
+  0%   { box-shadow: inset 0 0 0 2px rgba(220, 53, 69, 0); }
+  50%  { box-shadow: inset 0 0 0 2px rgba(220, 53, 69, 0.6); }
+  100% { box-shadow: inset 0 0 0 2px rgba(220, 53, 69, 0); }
+}
+
+tr.distress-row {
+  animation: distressPulse 2s ease-in-out infinite;
+  background-color: rgba(220, 53, 69, 0.08) !important;
+}
+
+tr.distress-row td {
+  border-left: 3px solid #dc3545 !important;
+}
+
+tr.distress-row:first-child td:first-child {
+  border-left: 3px solid #dc3545 !important;
+}
+
+/* ----------------------------------------------------------
+   Leaderboard Row Highlights
+   ---------------------------------------------------------- */
+tr.leaderboard-gold {
+  background: rgba(251, 191, 36, 0.1) !important;
+}
+
+tr.leaderboard-silver {
+  background: rgba(148, 163, 184, 0.1) !important;
+}
+
+tr.leaderboard-bronze {
+  background: rgba(205, 127, 50, 0.1) !important;
+}
+
+/* ----------------------------------------------------------
+   Company Cards (deal flow)
+   ---------------------------------------------------------- */
+.company-card {
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.company-card:hover {
+  transform: translateY(-2px);
+  border-color: #fbbf24 !important;
+}
+
+/* ----------------------------------------------------------
+   Progress Bars
+   ---------------------------------------------------------- */
+.progress {
+  background-color: #334155;
+}
+
+/* ----------------------------------------------------------
+   Dropdowns
+   ---------------------------------------------------------- */
+.dropdown-menu {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+.dropdown-item {
+  color: #e2e8f0;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: #334155;
+  color: #f8fafc;
+}
+
+.dropdown-divider {
+  border-color: #334155;
+}
+
+/* ----------------------------------------------------------
+   Modals
+   ---------------------------------------------------------- */
+.modal-content {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+.modal-header,
+.modal-footer {
+  border-color: #334155;
+}
+
+/* ----------------------------------------------------------
+   Nav Tabs
+   ---------------------------------------------------------- */
+.nav-tabs {
+  border-bottom-color: #334155;
+}
+
+.nav-tabs .nav-link {
+  border-color: transparent;
+  color: #94a3b8 !important;
+}
+
+.nav-tabs .nav-link.active {
+  background-color: #1e293b;
+  border-color: #334155 #334155 #1e293b;
+  color: #e2e8f0 !important;
+  font-weight: 600;
+  border-bottom: none !important;
+}
+
+.nav-tabs .nav-link:hover {
+  border-color: #334155;
+  color: #e2e8f0 !important;
+}
+
+/* ----------------------------------------------------------
+   Alerts
+   ---------------------------------------------------------- */
+.alert {
+  border-width: 1px;
+}
+
+.alert-success {
+  background-color: rgba(25, 135, 84, 0.15);
+  border-color: #198754;
+  color: #75e6a7;
+}
+
+.alert-danger {
+  background-color: rgba(220, 53, 69, 0.15);
+  border-color: #dc3545;
+  color: #f1aeb5;
+}
+
+.alert-warning {
+  background-color: rgba(255, 193, 7, 0.15);
+  border-color: #ffc107;
+  color: #ffd966;
+}
+
+.alert-info {
+  background-color: rgba(13, 202, 240, 0.12);
+  border-color: #0dcaf0;
+  color: #6edff6;
+}
+
+/* ----------------------------------------------------------
+   Footer
+   ---------------------------------------------------------- */
+footer {
+  border-top: 1px solid #334155;
+  font-size: 0.85rem;
+}
+
+/* ----------------------------------------------------------
+   IRR Display (large numbers)
+   ---------------------------------------------------------- */
+.irr-display {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1px;
+}
+
+/* ----------------------------------------------------------
+   Scrollbar (Webkit)
+   ---------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* ----------------------------------------------------------
+   Utility
+   ---------------------------------------------------------- */
+.font-monospace {
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+}
+
+.text-truncate-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Subtle separator */
+.section-divider {
+  border: 0;
+  border-top: 1px solid #334155;
+  margin: 1.5rem 0;
+}
+
+/* Stat number highlight */
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Phase indicator in header */
+.phase-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  color: #fbbf24;
+}

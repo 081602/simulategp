@@ -1,0 +1,253 @@
+﻿{% extends "base.html" %}
+{% block title %}{{ company.name }} â€" Portfolio{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-11">
+
+    <div class="d-flex align-items-center mb-4">
+      <a href="{{ url_for('portfolio') }}" class="btn btn-sm btn-outline-secondary me-3">
+        <i class="bi bi-arrow-left"></i>
+      </a>
+      <div>
+        <h2 class="fw-bold mb-0">
+          {{ company.name }}
+          {% if is_lead %}<span class="badge bg-warning text-dark ms-2 fs-6"><i class="bi bi-star-fill"></i> Lead</span>
+          {% else %}<span class="badge bg-secondary ms-2 fs-6"><i class="bi bi-people"></i> Fill</span>{% endif %}
+        </h2>
+        <p class="text-secondary mb-0">{{ company.sector }} â€" Portfolio Management</p>
+      </div>
+    </div>
+
+    <!-- Company Header Card -->
+    <div class="card border-secondary shadow mb-4">
+      <div class="card-body p-4">
+        <div class="row g-4 text-center">
+          <div class="col-6 col-md-3">
+            <div class="text-secondary small mb-1">Current Valuation</div>
+            {% set is_distressed = company.current_valuation < company.post_money_valuation * 0.5 %}
+            <div class="fw-bold fs-4 {% if is_distressed %}text-danger{% else %}text-success{% endif %}">
+              ${{ "{:,.1f}M".format(company.current_valuation) }}
+            </div>
+            {% if is_distressed %}
+            <span class="badge bg-danger"><i class="bi bi-exclamation-triangle-fill"></i> Distressed</span>
+            {% endif %}
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="text-secondary small mb-1">Post-Money Valuation</div>
+            <div class="fw-bold fs-4">${{ "{:,.1f}M".format(company.post_money_valuation) }}</div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="text-secondary small mb-1">Debt Outstanding</div>
+            <div class="fw-bold fs-4 {% if company.debt_outstanding > 0 %}text-warning{% else %}text-secondary{% endif %}">
+              {% if company.debt_outstanding > 0 %}
+                ${{ "{:,.1f}M".format(company.debt_outstanding) }}
+              {% else %}
+                None
+              {% endif %}
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="text-secondary small mb-1">Company Cash</div>
+            <div class="fw-bold fs-4 text-info">${{ "{:,.1f}M".format(company.company_funds) }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Left: Ownership Table & Outcome Distribution -->
+      <div class="col-lg-6">
+
+        <!-- Ownership Table -->
+        <div class="card border-secondary shadow mb-4">
+          <div class="card-header border-secondary">
+            <h6 class="mb-0 fw-semibold"><i class="bi bi-pie-chart-fill text-warning"></i> Ownership Structure</h6>
+          </div>
+          <div class="card-body p-0">
+            <table class="table table-dark table-sm mb-0">
+              <thead>
+                <tr>
+                  <th>Team</th>
+                  <th class="text-end">Ownership %</th>
+                  <th class="text-end">Equity Invested</th>
+                  <th class="text-center">Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for eq in deal.equities %}
+                <tr {% if eq.team.id == current_user.id %}class="table-active"{% endif %}>
+                  <td>
+                    <strong>{{ eq.team.firm_name }}</strong>
+                    {% if eq.team.id == current_user.id %}<span class="badge bg-warning text-dark ms-1">You</span>{% endif %}
+                  </td>
+                  <td class="text-end fw-bold">{{ "%.1f"|format(eq.ownership_pct * 100) }}%</td>
+                  <td class="text-end text-secondary">${{ "{:,.1f}M".format(eq.equity_invested) }}</td>
+                  <td class="text-center">
+                    {% if eq.is_lead %}
+                      <span class="badge bg-warning text-dark">Lead</span>
+                    {% else %}
+                      <span class="badge bg-secondary">Fill</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+                <!-- Management / Option Pool if any -->
+                {% if company.mgmt_option_pct > 0 %}
+                <tr class="text-secondary">
+                  <td><em>Management Pool</em></td>
+                  <td class="text-end">{{ "%.1f"|format(company.mgmt_option_pct * 100) }}%</td>
+                  <td class="text-end">â€"</td>
+                  <td class="text-center"><span class="badge bg-secondary">Options</span></td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Outcome Distribution -->
+        {% if company.outcome_distribution %}
+        <div class="card border-secondary shadow mb-4">
+          <div class="card-header border-secondary">
+            <h6 class="mb-0 fw-semibold"><i class="bi bi-bar-chart-fill text-warning"></i> Outcome Distribution</h6>
+          </div>
+          <div class="card-body p-0">
+            <table class="table table-dark table-sm mb-0">
+              <thead>
+                <tr>
+                  <th>Scenario</th>
+                  <th class="text-end">Multiple</th>
+                  <th class="text-end">Prob.</th>
+                  <th>Distribution</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for outcome in company.outcome_distribution %}
+                <tr>
+                  <td class="small">{{ outcome.label if outcome.label is defined else 'Scenario ' + loop.index|string }}</td>
+                  <td class="text-end fw-bold">{{ "%.2f"|format(outcome.multiple) }}x</td>
+                  <td class="text-end">{{ "%.0f"|format(outcome.probability * 100) }}%</td>
+                  <td style="width:100px;">
+                    <div class="progress bg-secondary" style="height:8px;">
+                      <div class="progress-bar bg-warning" style="width:{{ (outcome.probability * 100)|int }}%"></div>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+
+      <!-- Right: Management Actions -->
+      <div class="col-lg-6">
+        {% if is_lead %}
+        <div class="card border-warning shadow mb-4">
+          <div class="card-header border-warning" style="background:rgba(255,193,7,0.1);">
+            <h6 class="mb-0 fw-semibold text-warning"><i class="bi bi-gear-fill"></i> Lead Investor Actions</h6>
+          </div>
+          <div class="card-body p-4">
+
+            <!-- Change Management -->
+            <div class="mb-4 pb-4 border-bottom border-secondary">
+              <h6 class="fw-semibold mb-1">
+                <i class="bi bi-person-gear text-info me-1"></i> Change Management
+              </h6>
+              <p class="text-secondary small mb-2">
+                Replace management team. Cost: <strong class="text-warning">${{ "{:,.1f}M".format(company.current_valuation * 0.1) }}</strong>
+                (10% of current valuation)
+              </p>
+              <div class="text-secondary small mb-3">
+                <span class="badge {% if company.management_quality == 'excellent' %}bg-success{% elif company.management_quality == 'good' %}bg-primary{% elif company.management_quality == 'average' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                  Current: {{ company.management_quality | title }}
+                </span>
+              </div>
+              <form method="POST" action="{{ url_for('change_management', deal_id=deal.id) }}">
+                <button type="button" class="btn btn-outline-info btn-sm confirm-action"
+                        data-confirm="Change management for {{ company.name }}? This will cost ${{ '{:,.1f}M'.format(company.current_valuation * 0.1) }} and cannot be undone."
+                        onclick="this.closest('form').submit()">
+                  <i class="bi bi-arrow-repeat"></i> Change Management Team
+                </button>
+              </form>
+            </div>
+
+            <!-- Issue Dividend -->
+            {% if company.dividend_eligible and company.is_cash_flow_positive %}
+            <div class="mb-4 pb-4 border-bottom border-secondary">
+              <h6 class="fw-semibold mb-1">
+                <i class="bi bi-cash-coin text-success me-1"></i> Issue Dividend
+              </h6>
+              <p class="text-secondary small mb-2">
+                Maximum: <strong class="text-success">${{ "{:,.1f}M".format(company.company_funds * 0.2) }}</strong>
+                (20% of ${{ "{:,.1f}M".format(company.company_funds) }} company cash)
+              </p>
+              <form method="POST" action="{{ url_for('issue_dividend', deal_id=deal.id) }}" class="d-flex gap-2">
+                <div class="input-group" style="max-width:300px;">
+                  <span class="input-group-text bg-dark border-secondary text-secondary">$</span>
+                  <input type="number" class="form-control bg-dark text-white border-secondary"
+                         name="dividend_amount"
+                         min="0" max="{{ company.company_funds * 0.2 }}" step="100000"
+                         placeholder="Amount">
+                </div>
+                <button type="submit" class="btn btn-success btn-sm">
+                  <i class="bi bi-send"></i> Issue
+                </button>
+              </form>
+            </div>
+            {% else %}
+            <div class="mb-4 pb-4 border-bottom border-secondary">
+              <h6 class="fw-semibold mb-1 text-secondary">
+                <i class="bi bi-cash-coin me-1"></i> Issue Dividend
+              </h6>
+              <p class="text-secondary small mb-0">
+                Not available â€"
+                {% if not company.dividend_eligible %}company is not dividend eligible{% endif %}
+                {% if not company.is_cash_flow_positive %}{% if not company.dividend_eligible %} and {% endif %}not cash flow positive{% endif %}.
+              </p>
+            </div>
+            {% endif %}
+
+            <!-- Mark for Liquidation -->
+            <div>
+              <h6 class="fw-semibold mb-1">
+                <i class="bi bi-box-arrow-up-right text-danger me-1"></i> Mark for Liquidation
+              </h6>
+              <p class="text-secondary small mb-2">
+                Set a reserve price. If achieved at next crank, company will be exited.
+              </p>
+              <form method="POST" action="{{ url_for('mark_liquidation', deal_id=deal.id) }}" class="d-flex gap-2">
+                <div class="input-group" style="max-width:300px;">
+                  <span class="input-group-text bg-dark border-secondary text-secondary">$</span>
+                  <input type="number" class="form-control bg-dark text-white border-secondary"
+                         name="reserve_price"
+                         min="0" step="100000"
+                         placeholder="Reserve price">
+                </div>
+                <button type="submit" class="btn btn-outline-danger btn-sm confirm-action"
+                        data-confirm="Mark {{ company.name }} for liquidation? This will signal an exit at or above your reserve price.">
+                  <i class="bi bi-flag"></i> Mark
+                </button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+        {% else %}
+        <div class="card border-secondary shadow mb-4">
+          <div class="card-body text-center py-5">
+            <i class="bi bi-people fs-3 text-secondary d-block mb-2"></i>
+            <p class="text-secondary mb-0">You are a <strong>Fill Investor</strong> in this company.<br>Only the Lead investor can take management actions.</p>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+

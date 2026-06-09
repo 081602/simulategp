@@ -1,0 +1,169 @@
+﻿{% extends "base.html" %}
+{% block title %}My Portfolio{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-11">
+
+    <div class="d-flex align-items-center mb-4">
+      <div>
+        <h2 class="fw-bold mb-0"><i class="bi bi-briefcase text-warning"></i> My Portfolio</h2>
+        <p class="text-secondary mb-0">Year {{ game.current_year }} â€" {{ game.phase_label }}</p>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs border-secondary mb-4" id="portfolioTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active text-white" id="active-tab" data-bs-toggle="tab" data-bs-target="#activePortfolio"
+                type="button" role="tab">
+          <i class="bi bi-activity text-success me-1"></i> Active Portfolio
+          <span class="badge bg-secondary ms-1">{{ stakes|length }}</span>
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link text-secondary" id="liquidated-tab" data-bs-toggle="tab" data-bs-target="#liquidatedPortfolio"
+                type="button" role="tab">
+          <i class="bi bi-box-arrow-right text-secondary me-1"></i> Liquidated / Exited
+          <span class="badge bg-secondary ms-1">{{ liquidated|length }}</span>
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="portfolioTabsContent">
+
+      <!-- Active Portfolio Tab -->
+      <div class="tab-pane fade show active" id="activePortfolio" role="tabpanel">
+        {% if stakes %}
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle">
+            <thead class="table-secondary text-dark">
+              <tr>
+                <th>Company</th>
+                <th>Sector</th>
+                <th>Stage</th>
+                <th class="text-end">Your Stake %</th>
+                <th class="text-end">Current Valuation</th>
+                <th class="text-end">Your Value</th>
+                <th class="text-center">Role</th>
+                <th class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for stake in stakes %}
+              {% set company = stake.deal.company %}
+              {% set is_distressed = company.current_valuation < company.post_money_valuation * 0.5 %}
+              <tr class="{% if is_distressed %}distress-row{% endif %}">
+                <td>
+                  <a href="{{ url_for('portfolio_company', deal_id=stake.deal.id) }}" class="text-warning fw-semibold text-decoration-none">
+                    {{ company.name }}
+                  </a>
+                  {% if is_distressed %}
+                  <span class="badge bg-danger ms-1"><i class="bi bi-exclamation-triangle-fill"></i> Distressed</span>
+                  {% endif %}
+                </td>
+                <td class="text-secondary">{{ company.sector }}</td>
+                <td>
+                  {% if company.stage == 'startup' %}<span class="badge bg-danger">Startup</span>
+                  {% elif company.stage == 'developing' %}<span class="badge bg-warning text-dark">Developing</span>
+                  {% elif company.stage == 'early_revenue' %}<span class="badge bg-info text-dark">Early Revenue</span>
+                  {% elif company.stage == 'mature' %}<span class="badge bg-success">Mature</span>
+                  {% else %}<span class="badge bg-secondary">{{ company.stage | title }}</span>{% endif %}
+                </td>
+                <td class="text-end fw-bold">{{ "%.1f"|format(stake.ownership_pct * 100) }}%</td>
+                <td class="text-end">
+                  <span class="{% if is_distressed %}text-danger{% else %}text-white{% endif %} fw-semibold">
+                    ${{ "{:,.1f}M".format(company.current_valuation) }}
+                  </span>
+                  {% if is_distressed %}
+                  <div class="text-danger" style="font-size:0.7rem;">
+                    Post-money: ${{ "{:,.1f}M".format(company.post_money_valuation) }}
+                  </div>
+                  {% endif %}
+                </td>
+                <td class="text-end fw-bold text-success">
+                  ${{ "{:,.1f}M".format(company.current_valuation * stake.ownership_pct) }}
+                </td>
+                <td class="text-center">
+                  {% if stake.is_lead %}
+                    <span class="badge bg-warning text-dark"><i class="bi bi-star-fill"></i> Lead</span>
+                  {% else %}
+                    <span class="badge bg-secondary"><i class="bi bi-people"></i> Fill</span>
+                  {% endif %}
+                </td>
+                <td class="text-center">
+                  <a href="{{ url_for('portfolio_company', deal_id=stake.deal.id) }}" class="btn btn-outline-warning btn-sm">
+                    <i class="bi bi-gear"></i> Manage
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="card border-secondary text-center py-5">
+          <div class="card-body">
+            <i class="bi bi-briefcase fs-1 text-secondary d-block mb-3"></i>
+            <h5 class="text-secondary">No Active Portfolio Companies</h5>
+            <p class="text-secondary mb-4">Close deals to build your portfolio.</p>
+            <a href="{{ url_for('dealflow') }}" class="btn btn-warning text-dark">
+              <i class="bi bi-search"></i> Explore Deal Flow
+            </a>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Liquidated Tab -->
+      <div class="tab-pane fade" id="liquidatedPortfolio" role="tabpanel">
+        {% if liquidated %}
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle">
+            <thead class="table-secondary text-dark">
+              <tr>
+                <th>Company</th>
+                <th>Sector</th>
+                <th class="text-end">Exit Year</th>
+                <th class="text-end">Your Stake %</th>
+                <th class="text-end">Equity Invested</th>
+                <th class="text-end">Proceeds Received</th>
+                <th class="text-end">Multiple</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in liquidated %}
+              <tr>
+                <td class="fw-semibold text-secondary">{{ item.company_name }}</td>
+                <td class="text-secondary">{{ item.sector }}</td>
+                <td class="text-end text-secondary">Year {{ item.exit_year }}</td>
+                <td class="text-end">{{ "%.1f"|format(item.ownership_pct * 100) }}%</td>
+                <td class="text-end text-secondary">${{ "{:,.1f}M".format(item.equity_invested) }}</td>
+                <td class="text-end fw-bold text-success">${{ "{:,.1f}M".format(item.proceeds) }}</td>
+                <td class="text-end">
+                  {% set multiple = item.proceeds / item.equity_invested if item.equity_invested > 0 else 0 %}
+                  <span class="fw-bold {% if multiple >= 2 %}text-success{% elif multiple >= 1 %}text-info{% else %}text-danger{% endif %}">
+                    {{ "%.2f"|format(multiple) }}x
+                  </span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="card border-secondary text-center py-5">
+          <div class="card-body">
+            <i class="bi bi-box-arrow-right fs-1 text-secondary d-block mb-3"></i>
+            <h5 class="text-secondary">No Exited Companies Yet</h5>
+            <p class="text-secondary mb-0">Exits will appear here once companies are liquidated.</p>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
