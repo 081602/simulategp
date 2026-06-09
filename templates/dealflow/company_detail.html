@@ -17,7 +17,7 @@
       <div class="card-body p-4">
         <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
           <div>
-            <h2 class="fw-bold mb-1">{{ company.name }}</h2>
+            <h2 class="fw-bold mb-1 text-white">{{ company.name }}</h2>
             <div class="d-flex gap-2 flex-wrap">
               <span class="badge bg-secondary fs-6">{{ company.sector }}</span>
 
@@ -49,7 +49,7 @@
         </div>
 
         {% if company.description %}
-        <p class="text-secondary mt-3 mb-0">{{ company.description }}</p>
+        <p class="text-light mt-3 mb-0">{{ company.description }}</p>
         {% endif %}
       </div>
     </div>
@@ -67,15 +67,15 @@
             <table class="table table-dark table-sm mb-0">
               <tbody>
                 <tr>
-                  <td class="text-secondary">Capital Requested</td>
+                  <td class="text-light">Capital Requested</td>
                   <td class="fw-bold text-white">${{ "{:,.1f}M".format(company.capital_requested) }}</td>
                 </tr>
                 <tr>
-                  <td class="text-secondary">Base Valuation</td>
+                  <td class="text-light">Base Valuation</td>
                   <td class="fw-bold text-white">${{ "{:,.1f}M".format(company.current_valuation) }}</td>
                 </tr>
                 <tr>
-                  <td class="text-secondary">Debt Capacity</td>
+                  <td class="text-light">Debt Capacity</td>
                   <td class="fw-bold text-white">
                     {% if company.debt_capacity > 0 %}
                       ${{ "{:,.1f}M".format(company.debt_capacity) }}
@@ -85,13 +85,13 @@
                   </td>
                 </tr>
                 <tr>
-                  <td class="text-secondary">Rolled Equity Range</td>
+                  <td class="text-light">Rolled Equity Range</td>
                   <td class="fw-bold text-white">
                     {{ "%.0f"|format(company.rolled_equity_min * 100) }}% -- {{ "%.0f"|format(company.rolled_equity_max * 100) }}%
                   </td>
                 </tr>
                 <tr>
-                  <td class="text-secondary">Management Quality</td>
+                  <td class="text-light">Management Quality</td>
                   <td>
                     {% if company.management_quality == 'excellent' %}
                       <span class="badge bg-success">Excellent</span>
@@ -107,7 +107,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td class="text-secondary">Cash Flow Positive</td>
+                  <td class="text-light">Cash Flow Positive</td>
                   <td>
                     {% if company.is_cash_flow_positive %}
                       <i class="bi bi-check-circle-fill text-success"></i> Yes
@@ -117,7 +117,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td class="text-secondary">Dividend Eligible</td>
+                  <td class="text-light">Dividend Eligible</td>
                   <td>
                     {% if company.dividend_eligible %}
                       <i class="bi bi-check-circle-fill text-success"></i> Yes
@@ -152,9 +152,9 @@
             <table class="table table-dark table-sm">
               <thead>
                 <tr>
-                  <th class="text-secondary">Multiple</th>
-                  <th class="text-secondary text-end">Probability</th>
-                  <th class="text-secondary">Bar</th>
+                  <th class="text-light">Multiple</th>
+                  <th class="text-light text-end">Probability</th>
+                  <th class="text-light">Bar</th>
                 </tr>
               </thead>
               <tbody>
@@ -163,7 +163,7 @@
                   <td class="fw-bold {% if o.multiple >= 2 %}text-success{% elif o.multiple >= 1 %}text-warning{% else %}text-danger{% endif %}">
                     {{ "%.1f"|format(o.multiple) }}x
                   </td>
-                  <td class="text-end">{{ "%.0f"|format(o.prob * 100) }}%</td>
+                  <td class="text-end text-white">{{ "%.0f"|format(o.prob * 100) }}%</td>
                   <td style="width:120px">
                     <div class="progress bg-secondary" style="height:8px;">
                       <div class="progress-bar {% if o.multiple >= 2 %}bg-success{% elif o.multiple >= 1 %}bg-warning{% else %}bg-danger{% endif %}"
