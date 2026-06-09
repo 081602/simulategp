@@ -34,7 +34,11 @@
         "multiple": 10.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "pre-commercial development and testing",
+    "available_cash": 0.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.121
   },
   {
     "name": "CloudStack Logistics",
@@ -71,7 +75,11 @@
         "multiple": 3.5,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "working capital and inventory build",
+    "available_cash": 4.6,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.052
   },
   {
     "name": "Apex Industrial Partners",
@@ -108,7 +116,11 @@
         "multiple": 1.8,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "management buyout financing",
+    "available_cash": 23.2,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.046
   },
   {
     "name": "GreenLeaf Consumer Brands",
@@ -145,7 +157,11 @@
         "multiple": 3.5,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "channel partnerships and distribution",
+    "available_cash": 5.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.103
   },
   {
     "name": "UrbanGrid Energy",
@@ -182,7 +198,11 @@
         "multiple": 4.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "working capital and inventory build",
+    "available_cash": 3.3,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.052
   },
   {
     "name": "HarborView Hotels",
@@ -219,7 +239,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "acquisition of a complementary business",
+    "available_cash": 22.7,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.032
   },
   {
     "name": "PulseCheck Health",
@@ -256,7 +280,11 @@
         "multiple": 5.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "brand building and customer acquisition",
+    "available_cash": 1.2,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.113
   },
   {
     "name": "BridgePoint Financial",
@@ -293,7 +321,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "succession planning and ownership transition",
+    "available_cash": 20.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.045
   },
   {
     "name": "Spectra AI",
@@ -330,7 +362,11 @@
         "multiple": 15.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "market validation and pilot customers",
+    "available_cash": 0.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.112
   },
   {
     "name": "MidWest Agri Solutions",
@@ -367,7 +403,11 @@
         "multiple": 3.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "accelerating sales team growth",
+    "available_cash": 7.6,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.072
   },
   {
     "name": "Ironclad Security Systems",
@@ -404,7 +444,11 @@
         "multiple": 4.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "brand building and customer acquisition",
+    "available_cash": 2.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.102
   },
   {
     "name": "Crestline Packaging",
@@ -441,7 +485,11 @@
         "multiple": 1.8,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "succession planning and ownership transition",
+    "available_cash": 29.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.034
   },
   {
     "name": "NexGen Mobility",
@@ -478,7 +526,11 @@
         "multiple": 8.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "founding team expansion and product build",
+    "available_cash": 0.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.123
   },
   {
     "name": "Summit Education Group",
@@ -515,7 +567,11 @@
         "multiple": 5.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "expanding into enterprise market segment",
+    "available_cash": 5.7,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.068
   },
   {
     "name": "Coastal Wealth Management",
@@ -552,7 +608,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "owner liquidity and partial exit",
+    "available_cash": 34.7,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.027
   },
   {
     "name": "Redwood Data Infrastructure",
@@ -589,7 +649,11 @@
         "multiple": 10.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "technology development and IP filing",
+    "available_cash": 2.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.107
   },
   {
     "name": "Vantage Dental Partners",
@@ -626,7 +690,11 @@
         "multiple": 2.2,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "management buyout financing",
+    "available_cash": 22.1,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.042
   },
   {
     "name": "TerraFirm Construction Tech",
@@ -663,7 +731,11 @@
         "multiple": 5.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "sales and marketing expansion",
+    "available_cash": 3.6,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.118
   },
   {
     "name": "LuminaLab Diagnostics",
@@ -700,7 +772,11 @@
         "multiple": 9.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "R&D and prototype completion",
+    "available_cash": 0.9,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.124
   },
   {
     "name": "Northgate Auto Services",
@@ -737,7 +813,11 @@
         "multiple": 1.8,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "dividend recapitalization",
+    "available_cash": 34.3,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.028
   },
   {
     "name": "BlueWave Aquaculture",
@@ -774,7 +854,11 @@
         "multiple": 5.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "sales and marketing expansion",
+    "available_cash": 3.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.081
   },
   {
     "name": "ClearPath Insurance Tech",
@@ -811,7 +895,11 @@
         "multiple": 4.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "strategic acquisitions of smaller competitors",
+    "available_cash": 10.7,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.093
   },
   {
     "name": "Meridian Waste Solutions",
@@ -848,7 +936,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "succession planning and ownership transition",
+    "available_cash": 7.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.049
   },
   {
     "name": "Onyx Media Group",
@@ -885,7 +977,11 @@
         "multiple": 4.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "operational scaling and infrastructure",
+    "available_cash": 3.3,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.107
   },
   {
     "name": "SkyBridge Telecom",
@@ -922,7 +1018,11 @@
         "multiple": 1.9,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "acquisition of a complementary business",
+    "available_cash": 12.6,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.049
   },
   {
     "name": "PixelForge Studios",
@@ -959,7 +1059,11 @@
         "multiple": 8.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "R&D and prototype completion",
+    "available_cash": 1.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.126
   },
   {
     "name": "Forge Analytics",
@@ -996,7 +1100,11 @@
         "multiple": 4.5,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "international expansion",
+    "available_cash": 2.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.097
   },
   {
     "name": "Prairie Home Care",
@@ -1033,7 +1141,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "succession planning and ownership transition",
+    "available_cash": 33.1,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.044
   },
   {
     "name": "Voltz Energy Storage",
@@ -1070,7 +1182,11 @@
         "multiple": 10.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "R&D and prototype completion",
+    "available_cash": 1.2,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.123
   },
   {
     "name": "Summit Beverage Co.",
@@ -1107,7 +1223,11 @@
         "multiple": 5.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "product line extension",
+    "available_cash": 1.2,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.107
   },
   {
     "name": "Keystone Title & Escrow",
@@ -1144,7 +1264,11 @@
         "multiple": 1.8,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "owner liquidity and partial exit",
+    "available_cash": 15.1,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.044
   },
   {
     "name": "DeepRoot Genomics",
@@ -1181,7 +1305,11 @@
         "multiple": 15.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "founding team expansion and product build",
+    "available_cash": 1.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.142
   },
   {
     "name": "Cascade Fitness Holdings",
@@ -1218,7 +1346,11 @@
         "multiple": 2.2,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "management buyout financing",
+    "available_cash": 12.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.027
   },
   {
     "name": "Nimbus Fleet Management",
@@ -1255,7 +1387,11 @@
         "multiple": 3.5,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "strategic acquisitions of smaller competitors",
+    "available_cash": 11.3,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.098
   },
   {
     "name": "Iron Horse Distillery",
@@ -1292,7 +1428,11 @@
         "multiple": 4.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "hiring senior leadership team",
+    "available_cash": 1.2,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.083
   },
   {
     "name": "Argent Metals Recycling",
@@ -1329,7 +1469,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "management buyout financing",
+    "available_cash": 10.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.034
   },
   {
     "name": "Pantheon Pharma Services",
@@ -1366,7 +1510,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "funding a strategic growth initiative",
+    "available_cash": 7.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.043
   },
   {
     "name": "OceanPath Logistics",
@@ -1403,7 +1551,11 @@
         "multiple": 3.5,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "accelerating sales team growth",
+    "available_cash": 7.1,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.1
   },
   {
     "name": "WillowBend Veterinary Group",
@@ -1440,7 +1592,11 @@
         "multiple": 2.1,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "owner liquidity and partial exit",
+    "available_cash": 33.8,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.034
   },
   {
     "name": "Synapse Neuro",
@@ -1477,7 +1633,11 @@
         "multiple": 9.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "clinical trials and regulatory filing",
+    "available_cash": 1.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.114
   },
   {
     "name": "Marquee Event Services",
@@ -1514,7 +1674,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "management buyout financing",
+    "available_cash": 11.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.026
   },
   {
     "name": "SparrowNet Cybersecurity",
@@ -1551,7 +1715,11 @@
         "multiple": 4.5,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "accelerating sales team growth",
+    "available_cash": 10.8,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.051
   },
   {
     "name": "WoodCraft Cabinetry",
@@ -1588,7 +1756,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "succession planning and ownership transition",
+    "available_cash": 8.2,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.042
   },
   {
     "name": "QuantumLeap Robotics",
@@ -1625,7 +1797,11 @@
         "multiple": 8.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "clinical trials and regulatory filing",
+    "available_cash": 0.6,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.149
   },
   {
     "name": "Silverline Business Process Outsourcing",
@@ -1662,7 +1838,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "owner liquidity and partial exit",
+    "available_cash": 23.6,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.025
   },
   {
     "name": "SkyRoot PropTech",
@@ -1699,7 +1879,11 @@
         "multiple": 5.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "hiring senior leadership team",
+    "available_cash": 3.8,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.11
   },
   {
     "name": "Lakeview Orthopedics Group",
@@ -1736,7 +1920,11 @@
         "multiple": 2.2,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "funding a strategic growth initiative",
+    "available_cash": 7.6,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.036
   },
   {
     "name": "Axiom Legal Tech",
@@ -1773,7 +1961,11 @@
         "multiple": 4.5,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "strategic acquisitions of smaller competitors",
+    "available_cash": 2.3,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.067
   },
   {
     "name": "PineCrest Timberlands",
@@ -1810,7 +2002,11 @@
         "multiple": 1.8,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "succession planning and ownership transition",
+    "available_cash": 12.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.048
   },
   {
     "name": "Glow Beauty Tech",
@@ -1847,7 +2043,11 @@
         "multiple": 5.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "channel partnerships and distribution",
+    "available_cash": 2.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.082
   },
   {
     "name": "TrueNorth Staffing Solutions",
@@ -1884,7 +2084,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "acquisition of a complementary business",
+    "available_cash": 15.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.032
   },
   {
     "name": "CarbonTrace Platform",
@@ -1921,7 +2125,11 @@
         "multiple": 7.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "technology development and IP filing",
+    "available_cash": 1.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.132
   },
   {
     "name": "Harrington Specialty Chemicals",
@@ -1958,7 +2166,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "acquisition of a complementary business",
+    "available_cash": 18.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.023
   },
   {
     "name": "EchoHealth Digital",
@@ -1995,7 +2207,11 @@
         "multiple": 4.5,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "marketing spend to capture market share",
+    "available_cash": 2.9,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.086
   },
   {
     "name": "Riverbend Power & Utilities",
@@ -2032,7 +2248,11 @@
         "multiple": 1.8,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "management buyout financing",
+    "available_cash": 26.7,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.044
   },
   {
     "name": "VoltArc Electric Vehicles",
@@ -2069,7 +2289,11 @@
         "multiple": 5.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "geographic expansion into new markets",
+    "available_cash": 2.2,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.098
   },
   {
     "name": "Pinstripe Capital Markets",
@@ -2106,7 +2330,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "dividend recapitalization",
+    "available_cash": 30.9,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.037
   },
   {
     "name": "Cortex Semiconductor",
@@ -2143,7 +2371,11 @@
         "multiple": 12.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "pre-commercial development and testing",
+    "available_cash": 1.7,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.123
   },
   {
     "name": "Granite Peak Mining Services",
@@ -2180,7 +2412,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "dividend recapitalization",
+    "available_cash": 21.6,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.044
   },
   {
     "name": "TidePool Marine Tech",
@@ -2217,7 +2453,11 @@
         "multiple": 5.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "brand building and customer acquisition",
+    "available_cash": 4.3,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.106
   },
   {
     "name": "Linchpin HR Platform",
@@ -2254,7 +2494,11 @@
         "multiple": 3.5,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "international expansion",
+    "available_cash": 7.2,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.053
   },
   {
     "name": "Ashford Private Schools",
@@ -2291,7 +2535,11 @@
         "multiple": 1.9,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "management buyout financing",
+    "available_cash": 20.6,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.045
   },
   {
     "name": "SpinOut Defense Systems",
@@ -2328,7 +2576,11 @@
         "multiple": 9.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "clinical trials and regulatory filing",
+    "available_cash": 1.3,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.14
   },
   {
     "name": "Copperfield Distribution",
@@ -2365,7 +2617,11 @@
         "multiple": 1.8,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "succession planning and ownership transition",
+    "available_cash": 17.1,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.05
   },
   {
     "name": "Meridian Crop Sciences",
@@ -2402,7 +2658,11 @@
         "multiple": 10.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "founding team expansion and product build",
+    "available_cash": 0.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.108
   },
   {
     "name": "Beacon Real Estate Software",
@@ -2439,7 +2699,11 @@
         "multiple": 3.8,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "working capital and inventory build",
+    "available_cash": 10.9,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.098
   },
   {
     "name": "National Urgent Care Network",
@@ -2476,7 +2740,11 @@
         "multiple": 2.2,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "management buyout financing",
+    "available_cash": 33.3,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.049
   },
   {
     "name": "Epoch Space Systems",
@@ -2513,7 +2781,11 @@
         "multiple": 15.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "founding team expansion and product build",
+    "available_cash": 0.6,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.131
   },
   {
     "name": "Alpine Food Distribution",
@@ -2550,7 +2822,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "management buyout financing",
+    "available_cash": 14.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.032
   },
   {
     "name": "Thornwood Print & Fulfillment",
@@ -2587,7 +2863,11 @@
         "multiple": 1.8,
         "prob": 0.05
       }
-    ]
+    ],
+    "reasons_for_funding": "succession planning and ownership transition",
+    "available_cash": 6.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.026
   },
   {
     "name": "BioReactor Systems",
@@ -2624,7 +2904,11 @@
         "multiple": 5.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "product line extension",
+    "available_cash": 2.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.091
   },
   {
     "name": "Clearwater Analytics Hub",
@@ -2661,7 +2945,11 @@
         "multiple": 4.5,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "accelerating sales team growth",
+    "available_cash": 9.8,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.064
   },
   {
     "name": "Rampart Security Group",
@@ -2698,7 +2986,11 @@
         "multiple": 1.8,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "owner liquidity and partial exit",
+    "available_cash": 28.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.033
   },
   {
     "name": "Aurora Imaging Systems",
@@ -2735,7 +3027,11 @@
         "multiple": 8.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "market validation and pilot customers",
+    "available_cash": 1.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.123
   },
   {
     "name": "Solara Green Buildings",
@@ -2772,7 +3068,11 @@
         "multiple": 2.1,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "succession planning and ownership transition",
+    "available_cash": 22.9,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.036
   },
   {
     "name": "GrowPath AgTech",
@@ -2809,7 +3109,11 @@
         "multiple": 3.5,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "product development and platform enhancements",
+    "available_cash": 11.6,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.092
   },
   {
     "name": "Veritas Legal Outsourcing",
@@ -2846,7 +3150,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "refinancing existing debt",
+    "available_cash": 13.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.042
   },
   {
     "name": "MindBridge Edtech",
@@ -2883,7 +3191,11 @@
         "multiple": 5.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "brand building and customer acquisition",
+    "available_cash": 5.9,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.08
   },
   {
     "name": "Polaris Cold Chain Logistics",
@@ -2920,7 +3232,11 @@
         "multiple": 2.1,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "acquisition of a complementary business",
+    "available_cash": 11.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.037
   },
   {
     "name": "Nexus Payments",
@@ -2957,7 +3273,11 @@
         "multiple": 5.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "strategic acquisitions of smaller competitors",
+    "available_cash": 4.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.081
   },
   {
     "name": "Valor Aerospace MRO",
@@ -2994,7 +3314,11 @@
         "multiple": 2.2,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "funding a strategic growth initiative",
+    "available_cash": 29.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.036
   },
   {
     "name": "StellarMind AI Tutor",
@@ -3031,7 +3355,11 @@
         "multiple": 8.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "product development and initial hiring",
+    "available_cash": 1.1,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.134
   },
   {
     "name": "GrandOak Senior Living",
@@ -3068,7 +3396,11 @@
         "multiple": 1.9,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "acquisition of a complementary business",
+    "available_cash": 6.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.038
   },
   {
     "name": "DraftLine Sports Analytics",
@@ -3105,7 +3437,11 @@
         "multiple": 5.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "hiring senior leadership team",
+    "available_cash": 3.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.093
   },
   {
     "name": "Borealis Energy Transition Fund Target",
@@ -3142,7 +3478,11 @@
         "multiple": 1.6,
         "prob": 0.05
       }
-    ]
+    ],
+    "reasons_for_funding": "owner liquidity and partial exit",
+    "available_cash": 33.8,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.047
   },
   {
     "name": "Highline E-Commerce Enablement",
@@ -3179,7 +3519,11 @@
         "multiple": 3.5,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "product development and platform enhancements",
+    "available_cash": 5.8,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.056
   },
   {
     "name": "OptiLens Eyecare",
@@ -3216,7 +3560,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "succession planning and ownership transition",
+    "available_cash": 18.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.029
   },
   {
     "name": "FortressNet Data Centers",
@@ -3253,7 +3601,11 @@
         "multiple": 2.2,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "funding a strategic growth initiative",
+    "available_cash": 21.9,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.028
   },
   {
     "name": "Terracycle Bio Materials",
@@ -3290,7 +3642,11 @@
         "multiple": 5.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "channel partnerships and distribution",
+    "available_cash": 3.3,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.113
   },
   {
     "name": "Paragon Market Research",
@@ -3327,7 +3683,11 @@
         "multiple": 2.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "management buyout financing",
+    "available_cash": 31.6,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.044
   },
   {
     "name": "HelixBio Cell Therapy",
@@ -3364,7 +3724,11 @@
         "multiple": 12.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "founding team expansion and product build",
+    "available_cash": 2.1,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.112
   },
   {
     "name": "Vega Supply Chain Software",
@@ -3401,7 +3765,11 @@
         "multiple": 4.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "expanding into enterprise market segment",
+    "available_cash": 5.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.057
   },
   {
     "name": "Marquis Dermatology Partners",
@@ -3438,7 +3806,11 @@
         "multiple": 2.2,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "management buyout financing",
+    "available_cash": 32.9,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.027
   },
   {
     "name": "Anchor Home Services",
@@ -3475,7 +3847,11 @@
         "multiple": 2.2,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "management buyout financing",
+    "available_cash": 12.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.049
   },
   {
     "name": "OpalStar E-Sports",
@@ -3512,7 +3888,11 @@
         "multiple": 5.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "sales and marketing expansion",
+    "available_cash": 5.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.118
   },
   {
     "name": "CapstoneEDU Prep",
@@ -3549,7 +3929,11 @@
         "multiple": 1.8,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "funding a strategic growth initiative",
+    "available_cash": 28.7,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.023
   },
   {
     "name": "Stormbridge Infrastructure",
@@ -3586,7 +3970,11 @@
         "multiple": 1.8,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "owner liquidity and partial exit",
+    "available_cash": 7.2,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.026
   },
   {
     "name": "Celeste Nutrition Science",
@@ -3623,7 +4011,11 @@
         "multiple": 5.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "sales and marketing expansion",
+    "available_cash": 4.1,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.119
   },
   {
     "name": "WaveForm Audio Tech",
@@ -3660,7 +4052,11 @@
         "multiple": 7.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "pre-commercial development and testing",
+    "available_cash": 2.7,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.103
   },
   {
     "name": "Cornerstone Pet Nutrition",
@@ -3697,6 +4093,10 @@
         "multiple": 4.0,
         "prob": 0.1
       }
-    ]
+    ],
+    "reasons_for_funding": "working capital and inventory build",
+    "available_cash": 8.3,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.076
   }
 ]

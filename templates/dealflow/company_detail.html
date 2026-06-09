@@ -18,7 +18,7 @@
         <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
           <div>
             <h2 class="fw-bold mb-1 text-white">{{ company.name }}</h2>
-            <div class="d-flex gap-2 flex-wrap">
+            <div class="d-flex gap-2 flex-wrap mb-2">
               <span class="badge bg-secondary fs-6">{{ company.sector }}</span>
 
               {% if company.stage == 'startup' %}
@@ -44,12 +44,43 @@
               {% else %}
                 <span class="badge bg-secondary fs-6">{{ company.status | title }}</span>
               {% endif %}
+
+              {% if company.in_distress %}
+                <span class="badge bg-danger fs-6"><i class="bi bi-exclamation-triangle-fill"></i> In Distress</span>
+              {% endif %}
+              {% if company.flagged_for_liquidation %}
+                <span class="badge bg-dark border border-danger fs-6"><i class="bi bi-flag-fill text-danger"></i> Flagged for Liquidation</span>
+              {% endif %}
+            </div>
+
+            <!-- Status pills row -->
+            <div class="d-flex gap-3 flex-wrap text-light small">
+              <span><span class="text-secondary">Management:</span>
+                {% if company.management_quality == 'strong' %}<span class="text-success fw-semibold">Strong</span>
+                {% elif company.management_quality == 'average' %}<span class="text-warning fw-semibold">Average</span>
+                {% elif company.management_quality == 'weak' %}<span class="text-danger fw-semibold">Weak</span>
+                {% else %}<span class="fw-semibold">{{ company.management_quality | title }}</span>{% endif %}
+              </span>
+              <span><span class="text-secondary">Year Available:</span> <span class="fw-semibold">{{ company.year_available }}</span></span>
+              <span><span class="text-secondary">In Distress:</span>
+                {% if company.in_distress %}<span class="text-danger fw-semibold">Yes</span>{% else %}<span class="fw-semibold">No</span>{% endif %}
+              </span>
+              <span><span class="text-secondary">Flagged for Liquidation:</span>
+                {% if company.flagged_for_liquidation %}<span class="text-danger fw-semibold">Yes</span>{% else %}<span class="fw-semibold">No</span>{% endif %}
+              </span>
             </div>
           </div>
         </div>
 
         {% if company.description %}
-        <p class="text-light mt-3 mb-0">{{ company.description }}</p>
+        <p class="text-light mt-3 mb-1">{{ company.description }}</p>
+        {% endif %}
+
+        {% if company.reasons_for_funding %}
+        <p class="mb-0 mt-2">
+          <span class="text-secondary small">Reasons for Seeking Funding:</span>
+          <span class="text-warning fw-semibold small"> {{ company.reasons_for_funding }}</span>
+        </p>
         {% endif %}
       </div>
     </div>
@@ -71,8 +102,14 @@
                   <td class="fw-bold text-white">${{ "{:,.1f}M".format(company.capital_requested) }}</td>
                 </tr>
                 <tr>
-                  <td class="text-light">Base Valuation</td>
+                  <td class="text-light">Pre-Money Valuation</td>
                   <td class="fw-bold text-white">${{ "{:,.1f}M".format(company.current_valuation) }}</td>
+                </tr>
+                <tr>
+                  <td class="text-light">Available Cash</td>
+                  <td class="fw-bold {% if company.available_cash < 2 %}text-danger{% elif company.available_cash < 5 %}text-warning{% else %}text-success{% endif %}">
+                    ${{ "{:,.1f}M".format(company.available_cash) }}
+                  </td>
                 </tr>
                 <tr>
                   <td class="text-light">Debt Capacity</td>
@@ -178,6 +215,67 @@
             <p class="text-secondary text-center small mt-3">No outcome data available.</p>
             {% endif %}
 
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cap Table -->
+    <div class="card border-secondary shadow mb-4">
+      <div class="card-header border-secondary">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-pie-chart text-warning"></i> Cap Table</h6>
+      </div>
+      <div class="card-body">
+        {% set mgmt_shares = (company.founder_shares * company.management_option_pct / (1 - company.management_option_pct)) | int %}
+        {% set total_shares = company.founder_shares + mgmt_shares %}
+        {% set founder_pct = (company.founder_shares / total_shares * 100) | round(1) %}
+        {% set mgmt_pct = (mgmt_shares / total_shares * 100) | round(1) %}
+        <div class="row g-4 align-items-center">
+          <div class="col-md-5">
+            <table class="table table-dark table-sm mb-0">
+              <thead>
+                <tr>
+                  <th class="text-light">Holder</th>
+                  <th class="text-light text-end">Shares</th>
+                  <th class="text-light text-end">%</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="text-white">Founders</td>
+                  <td class="text-end text-white">{{ "{:,.0f}".format(company.founder_shares) }}</td>
+                  <td class="text-end text-success fw-bold">{{ founder_pct }}%</td>
+                </tr>
+                <tr>
+                  <td class="text-white">Management Options</td>
+                  <td class="text-end text-white">{{ "{:,.0f}".format(mgmt_shares) }}</td>
+                  <td class="text-end text-warning fw-bold">{{ mgmt_pct }}%</td>
+                </tr>
+                <tr class="border-top border-secondary">
+                  <td class="text-light fw-semibold">Total Outstanding</td>
+                  <td class="text-end text-white fw-bold">{{ "{:,.0f}".format(total_shares) }}</td>
+                  <td class="text-end text-white fw-bold">100%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-md-7">
+            <div class="d-flex align-items-center gap-3 mb-2">
+              <span class="text-light small">Fully Diluted Shares: <strong class="text-white">{{ "{:,.0f}".format(total_shares) }}</strong></span>
+            </div>
+            <!-- Simple visual bar -->
+            <div class="progress" style="height:24px; border-radius:6px;">
+              <div class="progress-bar bg-success" style="width:{{ founder_pct }}%;" title="Founders {{ founder_pct }}%">
+                <span class="fw-semibold">{{ founder_pct }}% Founders</span>
+              </div>
+              <div class="progress-bar bg-warning" style="width:{{ mgmt_pct }}%;" title="Mgmt Options {{ mgmt_pct }}%">
+                <span class="fw-semibold text-dark">{{ mgmt_pct }}% Mgmt</span>
+              </div>
+            </div>
+            <div class="d-flex gap-3 mt-2 small">
+              <span><i class="bi bi-square-fill text-success"></i> Founders</span>
+              <span><i class="bi bi-square-fill text-warning"></i> Management Options</span>
+            </div>
           </div>
         </div>
       </div>

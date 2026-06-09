@@ -876,7 +876,11 @@ def admin_setup():
                 management_quality=cd['management_quality'],
                 outcome_distributions=json.dumps(cd['outcome_distributions']),
                 current_valuation=cd['base_valuation'],
-                year_available=cd.get('year_available', 1)
+                year_available=cd.get('year_available', 1),
+                reasons_for_funding=cd.get('reasons_for_funding'),
+                available_cash=cd.get('available_cash', 0.0),
+                founder_shares=cd.get('founder_shares', 10000000),
+                management_option_pct=cd.get('management_option_pct', 0.10),
             )
             db.session.add(gc)
 

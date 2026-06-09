@@ -153,6 +153,12 @@ class GameCompany(db.Model):
     lead_team_id = db.Column(db.Integer, db.ForeignKey('team.id'), nullable=True)
     liquidation_proceeds = db.Column(db.Float, nullable=True)
     company_funds = db.Column(db.Float, default=0.0)  # cash the company holds
+    reasons_for_funding = db.Column(db.String(200), nullable=True)
+    available_cash = db.Column(db.Float, default=0.0)
+    founder_shares = db.Column(db.Integer, default=10000000)
+    management_option_pct = db.Column(db.Float, default=0.10)
+    in_distress = db.Column(db.Boolean, default=False)
+    flagged_for_liquidation = db.Column(db.Boolean, default=False)
 
     template = db.relationship('CompanyTemplate')
     term_sheets = db.relationship('TermSheet', foreign_keys='TermSheet.company_id',
