@@ -64,7 +64,7 @@
           <div class="row g-3">
 
             <div class="col-md-6">
-              <label for="pre_money_valuation" class="form-label fw-semibold">Pre-Money Valuation ($)</label>
+              <label for="pre_money_valuation" class="form-label fw-semibold text-white">Pre-Money Value ($M)</label>
               <input type="number" class="form-control bg-dark text-white border-secondary"
                      id="pre_money_valuation" name="pre_money_valuation"
                      min="0" step="0.1"
@@ -73,7 +73,7 @@
             </div>
 
             <div class="col-md-6">
-              <label for="total_investment" class="form-label fw-semibold">Total Investment Size ($)</label>
+              <label for="total_investment" class="form-label fw-semibold text-white">Total Investment Amount ($M)</label>
               <input type="number" class="form-control bg-dark text-white border-secondary"
                      id="total_investment" name="total_investment"
                      min="0" step="0.1"
@@ -81,26 +81,30 @@
               <div class="form-text text-secondary">Company is asking for ${{ "{:,.1f}M".format(company.capital_requested) }}</div>
             </div>
 
-            <div class="col-md-6">
-              <label for="rolled_equity_min" class="form-label fw-semibold">Rolled Equity Min (%)</label>
-              <input type="number" class="form-control bg-dark text-white border-secondary"
-                     id="rolled_equity_min" name="rolled_equity_min"
-                     min="{{ company.rolled_equity_min * 100 }}"
-                     max="{{ company.rolled_equity_max * 100 }}"
-                     step="1"
-                     value="{{ "%.0f"|format(company.rolled_equity_min * 100) }}" required>
-              <div class="form-text text-secondary">Minimum: {{ "%.0f"|format(company.rolled_equity_min * 100) }}%</div>
-            </div>
-
-            <div class="col-md-6">
-              <label for="rolled_equity_max" class="form-label fw-semibold">Rolled Equity Max (%)</label>
-              <input type="number" class="form-control bg-dark text-white border-secondary"
-                     id="rolled_equity_max" name="rolled_equity_max"
-                     min="{{ company.rolled_equity_min * 100 }}"
-                     max="{{ company.rolled_equity_max * 100 }}"
-                     step="1"
-                     value="{{ "%.0f"|format(company.rolled_equity_max * 100) }}" required>
-              <div class="form-text text-secondary">Maximum: {{ "%.0f"|format(company.rolled_equity_max * 100) }}%</div>
+            <div class="col-12">
+              <label class="form-label fw-semibold text-white">Founder Rolled Equity Range (%)</label>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <input type="number" class="form-control bg-dark text-white border-secondary"
+                         id="rolled_equity_min" name="rolled_equity_min"
+                         min="{{ company.rolled_equity_min * 100 }}"
+                         max="{{ company.rolled_equity_max * 100 }}"
+                         step="1"
+                         value="{{ "%.0f"|format(company.rolled_equity_min * 100) }}" required
+                         placeholder="Min %">
+                  <div class="form-text text-secondary">Minimum: {{ "%.0f"|format(company.rolled_equity_min * 100) }}%</div>
+                </div>
+                <div class="col-md-6">
+                  <input type="number" class="form-control bg-dark text-white border-secondary"
+                         id="rolled_equity_max" name="rolled_equity_max"
+                         min="{{ company.rolled_equity_min * 100 }}"
+                         max="{{ company.rolled_equity_max * 100 }}"
+                         step="1"
+                         value="{{ "%.0f"|format(company.rolled_equity_max * 100) }}" required
+                         placeholder="Max %">
+                  <div class="form-text text-secondary">Maximum: {{ "%.0f"|format(company.rolled_equity_max * 100) }}%</div>
+                </div>
+              </div>
             </div>
 
             <div class="col-md-6">
