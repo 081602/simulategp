@@ -248,7 +248,7 @@
                   <td>
                     <div class="form-check">
                       <input class="form-check-input fill-include-check" type="checkbox"
-                             name="include_fill_{{ offer.id }}" value="1" id="fill_include_{{ offer.id }}">
+                             name="selected_fills" value="{{ offer.id }}" id="fill_include_{{ offer.id }}">
                     </div>
                   </td>
                   <td>
@@ -266,7 +266,7 @@
                   <td class="text-secondary">${{ "{:,.1f}M".format(offer.max_fill_equity) }}</td>
                   <td>
                     <input type="number" class="form-control form-control-sm bg-dark text-white border-secondary fill-amount-input"
-                           name="fill_amount_{{ offer.id }}"
+                           name="fill_equity_{{ offer.id }}"
                            min="0" max="{{ offer.max_fill_equity }}" step="0.1"
                            placeholder="Amount"
                            style="width:140px;"

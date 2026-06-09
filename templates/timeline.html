@@ -118,7 +118,7 @@
                 <td>${{ "{:,.1f}M".format(ts.pre_money_valuation) }}</td>
                 <td>${{ "{:,.1f}M".format(ts.total_investment) }}</td>
                 <td>
-                  {% if ts.ts_type == 'syndicate' %}
+                  {% if ts.term_sheet_type == 'syndicate' %}
                     <span class="badge bg-info text-dark">Syndicate</span>
                   {% else %}
                     <span class="badge bg-secondary">Solo</span>
@@ -137,7 +137,7 @@
                     <span class="badge bg-secondary">{{ ts.status | title }}</span>
                   {% endif %}
                 </td>
-                <td class="text-secondary">Year {{ ts.year }}</td>
+                <td class="text-secondary">Year {{ ts.game_year }}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -189,7 +189,7 @@
                   </div>
                   <div class="col-6">
                     <div class="text-secondary" style="font-size:0.75rem;">Type</div>
-                    <div class="fw-semibold small">{{ deal.lead_term_sheet.ts_type | title }}</div>
+                    <div class="fw-semibold small">{{ deal.lead_term_sheet.term_sheet_type | title }}</div>
                   </div>
                 </div>
                 {% endif %}

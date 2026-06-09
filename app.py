@@ -23,7 +23,13 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-change-in-pr
 _BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 _DB_PATH = os.path.join(_BASE_DIR, 'simulategp.db').replace('\\', '/')
 _DEFAULT_DB = f'sqlite:///{_DB_PATH}'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', _DEFAULT_DB)
+_db_url = os.environ.get('DATABASE_URL', _DEFAULT_DB)
+# Railway/Heroku provide postgres:// but SQLAlchemy 2.x requires postgresql+psycopg2://
+if _db_url.startswith('postgres://'):
+    _db_url = _db_url.replace('postgres://', 'postgresql+psycopg2://', 1)
+elif _db_url.startswith('postgresql://') and '+' not in _db_url.split('://')[0]:
+    _db_url = _db_url.replace('postgresql://', 'postgresql+psycopg2://', 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = _db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -496,12 +502,22 @@ def timeline():
 @login_required
 def approve_syndicate(ts_id):
     ts = TermSheet.query.get_or_404(ts_id)
-    approved_by = ts.get_syndicate_approved_by()
-    if current_user.id not in approved_by:
-        approved_by.append(current_user.id)
-        ts.syndicate_approved_by = json.dumps(approved_by)
-        db.session.commit()
-        flash('Syndicate term sheet approved.', 'success')
+    decision = request.form.get('decision', 'approve')
+    if decision == 'decline':
+        # Remove current user from syndicate partners list
+        partners = ts.get_syndicate_partners()
+        if current_user.id in partners:
+            partners.remove(current_user.id)
+            ts.syndicate_partners = json.dumps(partners)
+            db.session.commit()
+        flash('You have declined the syndicate invitation.', 'info')
+    else:
+        approved_by = ts.get_syndicate_approved_by()
+        if current_user.id not in approved_by:
+            approved_by.append(current_user.id)
+            ts.syndicate_approved_by = json.dumps(approved_by)
+            db.session.commit()
+            flash('Syndicate term sheet approved.', 'success')
     return redirect(url_for('timeline'))
 
 
