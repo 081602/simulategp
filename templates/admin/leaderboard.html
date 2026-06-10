@@ -1,4 +1,4 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 {% block title %}Leaderboard{% endblock %}
 
 {% block content %}
@@ -22,7 +22,7 @@
       <div class="col-md-3 order-md-1">
         <div class="card border-secondary shadow text-center h-100" style="background:rgba(108,117,125,0.15) !important;">
           <div class="card-body pt-4">
-            <div class="display-4 mb-2">ðŸ¥ˆ</div>
+            <div class="display-4 mb-2"><i class="bi bi-2-circle-fill text-secondary"></i></div>
             <div class="fw-bold fs-5">{{ team_data[1].team.firm_name }}</div>
             <div class="text-secondary small mb-2">{{ "%.1f"|format(team_data[1].unrealized_irr) }}% IRR</div>
             <div class="text-success fw-bold">${{ "{:,.1f}M".format(team_data[1].portfolio_value) }}</div>
@@ -34,7 +34,7 @@
       <div class="col-md-3 order-md-2">
         <div class="card shadow text-center h-100" style="background:rgba(255,193,7,0.15) !important; border-color:#ffc107 !important; margin-top:-1rem;">
           <div class="card-body pt-4">
-            <div class="display-3 mb-2">ðŸ†</div>
+            <div class="display-3 mb-2"><i class="bi bi-trophy-fill text-warning"></i></div>
             <div class="fw-bold fs-4 text-warning">{{ team_data[0].team.firm_name }}</div>
             <div class="text-warning mb-2">{{ "%.1f"|format(team_data[0].unrealized_irr) }}% IRR</div>
             <div class="text-success fw-bold fs-5">${{ "{:,.1f}M".format(team_data[0].portfolio_value) }}</div>
@@ -46,7 +46,7 @@
       <div class="col-md-3 order-md-3">
         <div class="card border-secondary shadow text-center h-100" style="background:rgba(205,127,50,0.15) !important;">
           <div class="card-body pt-4">
-            <div class="display-4 mb-2">ðŸ¥‰</div>
+            <div class="display-4 mb-2"><i class="bi bi-3-circle-fill" style="color:#cd7f32;"></i></div>
             <div class="fw-bold fs-5">{{ team_data[2].team.firm_name }}</div>
             <div class="text-secondary small mb-2">{{ "%.1f"|format(team_data[2].unrealized_irr) }}% IRR</div>
             <div class="text-success fw-bold">${{ "{:,.1f}M".format(team_data[2].portfolio_value) }}</div>
@@ -84,11 +84,11 @@
               ">
                 <td class="text-center fw-bold">
                   {% if loop.index == 1 %}
-                    <span class="text-warning fs-5">ðŸ¥‡</span>
+                    <i class="bi bi-trophy-fill text-warning fs-5"></i>
                   {% elif loop.index == 2 %}
-                    <span class="text-secondary fs-5">ðŸ¥ˆ</span>
+                    <i class="bi bi-2-circle-fill text-secondary fs-5"></i>
                   {% elif loop.index == 3 %}
-                    <span style="color:#cd7f32;" class="fs-5">ðŸ¥‰</span>
+                    <i class="bi bi-3-circle-fill fs-5" style="color:#cd7f32;"></i>
                   {% else %}
                     <span class="text-secondary">{{ loop.index }}</span>
                   {% endif %}
@@ -142,4 +142,3 @@
   </div>
 </div>
 {% endblock %}
-

@@ -17,9 +17,6 @@
       <span class="badge bg-secondary fs-6">
         <i class="bi bi-star-fill text-warning"></i> Rep: {{ "%.1f"|format(current_user.reputation) }}
       </span>
-      <span class="badge bg-info text-dark fs-6 ms-2">
-        <i class="bi bi-search"></i> {{ current_user.query_points }} QP
-      </span>
     </div>
   </div>
 
@@ -92,7 +89,7 @@
               </td>
               <td><small class="text-muted">{{ company.sector }}</small></td>
               <td>{{ "%.1f"|format(my_stake.ownership_pct if my_stake else 0) }}%</td>
-              <td>${{ "%.1f"|format(company.current_valuation or 0) }}M</td>
+              <td>${{ "%.1f"|format(company.latest_valuation or 0) }}M</td>
               <td><a href="{{ url_for('portfolio_company', company_id=company.id) }}"
                      class="btn btn-sm btn-outline-primary">Manage</a></td>
             </tr>
@@ -142,7 +139,6 @@
           <li class="list-group-item bg-dark text-white border-secondary">
             <i class="bi bi-search text-warning"></i>
             <a href="{{ url_for('search_companies') }}" class="text-warning">Search for companies</a>
-            ({{ current_user.query_points }} query points remaining)
           </li>
           <li class="list-group-item bg-dark text-white border-secondary">
             <i class="bi bi-file-text text-info"></i>

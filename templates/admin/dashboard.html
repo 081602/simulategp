@@ -19,7 +19,7 @@
       <div class="card-body p-4">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
           <div>
-            <h4 class="fw-bold mb-1">
+            <h4 class="fw-bold mb-1 text-white">
               {{ game.name }}
               {% if game.status == 'paused' %}
                 <span class="badge bg-danger ms-2">PAUSED</span>
@@ -174,8 +174,13 @@
 
     <!-- Recent Deals -->
     <div class="card border-secondary shadow">
-      <div class="card-header border-secondary">
+      <div class="card-header border-secondary d-flex align-items-center justify-content-between">
         <h6 class="mb-0 fw-semibold"><i class="bi bi-briefcase text-warning"></i> All Deals</h6>
+        {% if deals %}
+        <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDealsModal">
+          <i class="bi bi-trash me-1"></i> Delete All Deals
+        </button>
+        {% endif %}
       </div>
       <div class="card-body p-0">
         {% if deals %}
@@ -221,6 +226,31 @@
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- Delete All Deals Modal -->
+<div class="modal fade" id="deleteDealsModal" tabindex="-1" aria-labelledby="deleteDealsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark border-danger">
+      <div class="modal-header border-danger">
+        <h5 class="modal-title text-danger fw-bold" id="deleteDealsModalLabel">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>Delete All Deals
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-light">
+        This will <strong>permanently delete all deals</strong> and reset all companies to available. Team funds and capital are not affected.
+      </div>
+      <div class="modal-footer border-secondary">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form method="POST" action="{{ url_for('admin_delete_all_deals') }}">
+          <button type="submit" class="btn btn-danger fw-bold">
+            <i class="bi bi-trash me-1"></i> Delete All Deals
+          </button>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

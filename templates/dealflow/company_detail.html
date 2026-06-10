@@ -98,17 +98,18 @@
             <table class="table table-dark table-sm mb-0">
               <tbody>
                 <tr>
-                  <td class="text-light">Capital Requested</td>
+                  <td class="text-light">Pre-Money Valuation Wanted</td>
+                  <td class="fw-bold text-white">${{ "{:,.1f}M".format(company.initial_val_ask or 0) }}</td>
+                </tr>
+                <tr>
+                  <td class="text-light">Funds Wanted</td>
                   <td class="fw-bold text-white">${{ "{:,.1f}M".format(company.capital_requested) }}</td>
                 </tr>
                 <tr>
-                  <td class="text-light">Pre-Money Valuation</td>
-                  <td class="fw-bold text-white">${{ "{:,.1f}M".format(company.current_valuation) }}</td>
-                </tr>
-                <tr>
                   <td class="text-light">Available Cash</td>
-                  <td class="fw-bold {% if company.available_cash < 2 %}text-danger{% elif company.available_cash < 5 %}text-warning{% else %}text-success{% endif %}">
-                    ${{ "{:,.1f}M".format(company.available_cash) }}
+                  {% set avail_cash = company.available_cash|default(0.0) %}
+                  <td class="fw-bold {% if avail_cash < 2 %}text-danger{% elif avail_cash < 5 %}text-warning{% else %}text-success{% endif %}">
+                    ${{ "{:,.1f}M".format(avail_cash) }}
                   </td>
                 </tr>
                 <tr>
@@ -153,16 +154,24 @@
                     {% endif %}
                   </td>
                 </tr>
+                {% if company.stage == 'mature' and (company.revenue_growth_3yr is not none or company.ltm_ebitda_margin is not none) %}
                 <tr>
-                  <td class="text-light">Dividend Eligible</td>
-                  <td>
-                    {% if company.dividend_eligible %}
-                      <i class="bi bi-check-circle-fill text-success"></i> Yes
-                    {% else %}
-                      <i class="bi bi-x-circle-fill text-danger"></i> No
-                    {% endif %}
+                  <td class="text-light">3-Yr Revenue Growth</td>
+                  <td class="fw-bold text-white">
+                    {% if company.revenue_growth_3yr is not none %}
+                      {{ "%.1f"|format(company.revenue_growth_3yr * 100) }}%
+                    {% else %}<span class="text-secondary">—</span>{% endif %}
                   </td>
                 </tr>
+                <tr>
+                  <td class="text-light">LTM EBITDA Margin</td>
+                  <td class="fw-bold text-white">
+                    {% if company.ltm_ebitda_margin is not none %}
+                      {{ "%.1f"|format(company.ltm_ebitda_margin * 100) }}%
+                    {% else %}<span class="text-secondary">—</span>{% endif %}
+                  </td>
+                </tr>
+                {% endif %}
               </tbody>
             </table>
           </div>
@@ -177,42 +186,30 @@
           </div>
           <div class="card-body">
 
-            <!-- Expected Multiple Highlight -->
-            <div class="text-center mb-4 p-3 rounded" style="background:#0f2d1a;">
-              <div class="text-light small mb-1">Expected Return Multiple</div>
-              <div class="display-5 fw-bold text-success">{{ "%.2f"|format(company.expected_multiple) }}x</div>
+            {% if return_assumption %}
+            <div class="row g-3 text-center mb-3">
+              <div class="col-6">
+                <div class="p-3 rounded" style="background:#0f2d1a;">
+                  <div class="text-light small mb-1">Expected Annual Return</div>
+                  <div class="display-6 fw-bold {% if return_assumption.expected_return >= 0 %}text-success{% else %}text-danger{% endif %}">
+                    {{ "%.1f"|format(return_assumption.expected_return * 100) }}%
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="p-3 rounded" style="background:#1a1a2e;">
+                  <div class="text-light small mb-1">Std. Deviation</div>
+                  <div class="display-6 fw-bold text-warning">
+                    {{ "%.1f"|format(return_assumption.std_dev * 100) }}%
+                  </div>
+                </div>
+              </div>
             </div>
-
-            <!-- Outcome Distribution -->
-            {% set outcomes = company.get_outcomes() %}
-            {% if outcomes %}
-            <table class="table table-dark table-sm">
-              <thead>
-                <tr>
-                  <th class="text-light">Multiple</th>
-                  <th class="text-light text-end">Probability</th>
-                  <th class="text-light">Bar</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for o in outcomes %}
-                <tr>
-                  <td class="fw-bold {% if o.multiple >= 2 %}text-success{% elif o.multiple >= 1 %}text-warning{% else %}text-danger{% endif %}">
-                    {{ "%.1f"|format(o.multiple) }}x
-                  </td>
-                  <td class="text-end text-white">{{ "%.0f"|format(o.prob * 100) }}%</td>
-                  <td style="width:120px">
-                    <div class="progress bg-secondary" style="height:8px;">
-                      <div class="progress-bar {% if o.multiple >= 2 %}bg-success{% elif o.multiple >= 1 %}bg-warning{% else %}bg-danger{% endif %}"
-                           style="width:{{ (o.prob * 100)|int }}%"></div>
-                    </div>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
+            <p class="text-secondary small text-center mb-0">
+              Based on <strong class="text-white">{{ company.sector }} / {{ company.stage_label }}</strong> assumptions
+            </p>
             {% else %}
-            <p class="text-secondary text-center small mt-3">No outcome data available.</p>
+            <p class="text-secondary text-center small mt-3">No return data available for this sector/stage.</p>
             {% endif %}
 
           </div>
@@ -226,10 +223,14 @@
         <h6 class="mb-0 fw-semibold"><i class="bi bi-pie-chart text-warning"></i> Cap Table</h6>
       </div>
       <div class="card-body">
-        {% set mgmt_shares = (company.founder_shares * company.management_option_pct / (1 - company.management_option_pct)) | int %}
-        {% set total_shares = company.founder_shares + mgmt_shares %}
-        {% set founder_pct = (company.founder_shares / total_shares * 100) | round(1) %}
-        {% set mgmt_pct = (mgmt_shares / total_shares * 100) | round(1) %}
+        {% set _founder_shares = company.founder_shares|default(1000000) %}
+        {% set _mgmt_opt_pct = company.management_option_pct|default(0.1) %}
+        {% set _denom = (1 - _mgmt_opt_pct) if (1 - _mgmt_opt_pct) != 0 else 1 %}
+        {% set mgmt_shares = (_founder_shares * _mgmt_opt_pct / _denom) | int %}
+        {% set total_shares = _founder_shares + mgmt_shares %}
+        {% set _total_safe = total_shares if total_shares != 0 else 1 %}
+        {% set founder_pct = (_founder_shares / _total_safe * 100) | round(1) %}
+        {% set mgmt_pct = (mgmt_shares / _total_safe * 100) | round(1) %}
         <div class="row g-4 align-items-center">
           <div class="col-md-5">
             <table class="table table-dark table-sm mb-0">
@@ -243,7 +244,7 @@
               <tbody>
                 <tr>
                   <td class="text-white">Founders</td>
-                  <td class="text-end text-white">{{ "{:,.0f}".format(company.founder_shares) }}</td>
+                  <td class="text-end text-white">{{ "{:,.0f}".format(_founder_shares) }}</td>
                   <td class="text-end text-success fw-bold">{{ founder_pct }}%</td>
                 </tr>
                 <tr>

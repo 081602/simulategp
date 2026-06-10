@@ -38,9 +38,9 @@ class Team(db.Model, UserMixin):
     query_points = db.Column(db.Integer, default=10)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    funds = db.relationship('Fund', backref='team', lazy=True)
-    term_sheets = db.relationship('TermSheet', foreign_keys='TermSheet.team_id', backref='team', lazy=True)
-    notifications = db.relationship('Notification', backref='team', lazy=True)
+    funds = db.relationship('Fund', backref='team', lazy=True, cascade='all, delete-orphan')
+    term_sheets = db.relationship('TermSheet', foreign_keys='TermSheet.team_id', backref='team', lazy=True, cascade='all, delete-orphan')
+    notifications = db.relationship('Notification', backref='team', lazy=True, cascade='all, delete-orphan')
 
     def set_password(self, pw):
         self.password_hash = generate_password_hash(pw)
@@ -64,10 +64,11 @@ class Fund(db.Model):
     total_capital = db.Column(db.Float, nullable=False)   # $M committed by LPs
     available_capital = db.Column(db.Float, nullable=False)
     year_raised = db.Column(db.Integer, nullable=False, default=1)
-    management_fee_rate = db.Column(db.Float, default=0.02)
+    management_fee_rate = db.Column(db.Float, default=0.02)    # e.g. 0.02 = 2%
+    performance_fee_rate = db.Column(db.Float, default=0.20)   # e.g. 0.20 = 20% carried interest
     is_active = db.Column(db.Boolean, default=True)
 
-    transactions = db.relationship('FundTransaction', backref='fund', lazy=True)
+    transactions = db.relationship('FundTransaction', backref='fund', lazy=True, cascade='all, delete-orphan')
 
     @property
     def deployed_capital(self):
@@ -144,8 +145,15 @@ class GameCompany(db.Model):
     dividend_eligible = db.Column(db.Boolean, default=False)
     management_quality = db.Column(db.String(20), default='average')
     outcome_distributions = db.Column(db.Text, nullable=False)
-    current_valuation = db.Column(db.Float)           # updated each crank
-    post_money_valuation = db.Column(db.Float)         # set after deal closes
+    initial_val_ask = db.Column(db.Float)              # pre-money ask while listed
+    funded_valuation = db.Column(db.Float)             # post-money at deal close
+    year_1_val = db.Column(db.Float, nullable=True)    # valuation after each year's crank
+    year_2_val = db.Column(db.Float, nullable=True)
+    year_3_val = db.Column(db.Float, nullable=True)
+    year_4_val = db.Column(db.Float, nullable=True)
+    year_5_val = db.Column(db.Float, nullable=True)
+    year_6_val = db.Column(db.Float, nullable=True)
+    year_7_val = db.Column(db.Float, nullable=True)
     year_available = db.Column(db.Integer, default=1)
     year_funded = db.Column(db.Integer, nullable=True)
     status = db.Column(db.String(30), default='available')
@@ -159,16 +167,41 @@ class GameCompany(db.Model):
     management_option_pct = db.Column(db.Float, default=0.10)
     in_distress = db.Column(db.Boolean, default=False)
     flagged_for_liquidation = db.Column(db.Boolean, default=False)
+    revenue_growth_3yr = db.Column(db.Float, nullable=True)   # e.g. 0.12 = 12%
+    ltm_ebitda_margin = db.Column(db.Float, nullable=True)    # e.g. 0.20 = 20%
 
     template = db.relationship('CompanyTemplate')
+    lead_team = db.relationship('Team', foreign_keys=[lead_team_id])
     term_sheets = db.relationship('TermSheet', foreign_keys='TermSheet.company_id',
-                                   backref='company', lazy=True)
+                                   backref='company', lazy=True, cascade='all, delete-orphan')
     deal = db.relationship('Deal', backref='company', uselist=False,
-                            foreign_keys='Deal.company_id')
-    searches = db.relationship('CompanySearch', backref='company', lazy=True)
+                            foreign_keys='Deal.company_id', cascade='all, delete-orphan')
+    searches = db.relationship('CompanySearch', backref='company', lazy=True, cascade='all, delete-orphan')
 
     def get_outcomes(self):
         return json.loads(self.outcome_distributions) if self.outcome_distributions else []
+
+    MAX_TRACKED_YEARS = 7
+
+    def get_year_val(self, year):
+        if 1 <= year <= self.MAX_TRACKED_YEARS:
+            return getattr(self, f'year_{year}_val')
+        return None
+
+    def set_year_val(self, year, value):
+        if 1 <= year <= self.MAX_TRACKED_YEARS:
+            setattr(self, f'year_{year}_val', value)
+
+    @property
+    def latest_valuation(self):
+        """Most recent known valuation: latest year val, else funded, else initial ask."""
+        for y in range(self.MAX_TRACKED_YEARS, 0, -1):
+            v = getattr(self, f'year_{y}_val')
+            if v is not None:
+                return v
+        if self.funded_valuation is not None:
+            return self.funded_valuation
+        return self.initial_val_ask
 
     @property
     def expected_multiple(self):
@@ -209,6 +242,17 @@ class GameCompany(db.Model):
             'bankrupt': 'danger'
         }
         return colors.get(self.status, 'secondary')
+
+
+class ReturnAssumption(db.Model):
+    """Expected annual return and std dev by sector and stage."""
+    __tablename__ = 'return_assumption'
+    id = db.Column(db.Integer, primary_key=True)
+    sector = db.Column(db.String(50), nullable=False)
+    stage = db.Column(db.String(30), nullable=False)
+    expected_return = db.Column(db.Float, default=0.10)   # e.g. 0.10 = 10%
+    std_dev = db.Column(db.Float, default=0.20)            # e.g. 0.20 = 20%
+    __table_args__ = (db.UniqueConstraint('sector', 'stage', name='uq_sector_stage'),)
 
 
 class CompanySearch(db.Model):
@@ -297,7 +341,11 @@ class TermSheet(db.Model):
             score += 1
         elif self.anti_dilution == 'weighted':
             score += 0.5
-        score += self.total_investment / 10
+        # Shortfall penalty: up to -3 pts if team covers none of the funds wanted
+        capital_requested = self.company.capital_requested if self.company else 0
+        if capital_requested > 0:
+            shortfall_pct = max(0, (capital_requested - self.total_investment) / capital_requested)
+            score -= shortfall_pct * 3
         return score
 
 
@@ -328,7 +376,7 @@ class Deal(db.Model):
     marked_for_liquidation = db.Column(db.Boolean, default=False)
 
     lead_team = db.relationship('Team')
-    equity_stakes = db.relationship('DealEquity', backref='deal', lazy=True)
+    equity_stakes = db.relationship('DealEquity', backref='deal', lazy=True, cascade='all, delete-orphan')
     lead_term_sheet = db.relationship('TermSheet')
 
 

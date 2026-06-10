@@ -22,7 +22,7 @@
           <div class="card-body">
 
             <div class="d-flex align-items-start justify-content-between mb-2">
-              <h5 class="card-title fw-bold mb-0">{{ team.firm_name }}</h5>
+              <h5 class="card-title fw-bold mb-0 text-white">{{ team.firm_name }}</h5>
               {% if team.id == current_user.id %}
               <span class="badge bg-warning text-dark ms-2">You</span>
               {% endif %}
@@ -44,7 +44,7 @@
             </div>
 
             <!-- About Us -->
-            <p class="card-text text-secondary small mb-3">
+            <p class="card-text text-light small mb-3">
               {% if team.about_us %}
                 {{ team.about_us }}
               {% else %}
@@ -57,7 +57,7 @@
               <div class="d-flex align-items-center justify-content-between">
                 <span class="text-light small"><i class="bi bi-cash-stack"></i> Available Capital</span>
                 <span class="fw-bold text-success">
-                  ${{ "{:,.1f}M".format(team.total_available_capital) if team.total_available_capital >= 1_000_000 else "${:,.0f}K".format(team.total_available_capital / 1_000) }}
+                  ${{ "{:,.1f}M".format(team.total_available_capital) }}
                 </span>
               </div>
             </div>

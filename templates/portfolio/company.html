@@ -10,7 +10,7 @@
         <i class="bi bi-arrow-left"></i>
       </a>
       <div>
-        <h2 class="fw-bold mb-0">
+        <h2 class="fw-bold mb-0 text-white">
           {{ company.name }}
           {% if is_lead %}<span class="badge bg-warning text-dark ms-2 fs-6"><i class="bi bi-star-fill"></i> Lead</span>
           {% else %}<span class="badge bg-secondary ms-2 fs-6"><i class="bi bi-people"></i> Fill</span>{% endif %}
@@ -24,18 +24,18 @@
       <div class="card-body p-4">
         <div class="row g-4 text-center">
           <div class="col-6 col-md-3">
-            <div class="text-light small mb-1">Current Valuation</div>
-            {% set is_distressed = company.current_valuation < company.post_money_valuation * 0.5 %}
+            <div class="text-light small mb-1">Latest Valuation</div>
+            {% set is_distressed = (company.latest_valuation or 0) < (company.funded_valuation or 0) * 0.5 %}
             <div class="fw-bold fs-4 {% if is_distressed %}text-danger{% else %}text-success{% endif %}">
-              ${{ "{:,.1f}M".format(company.current_valuation) }}
+              ${{ "{:,.1f}M".format(company.latest_valuation or 0) }}
             </div>
             {% if is_distressed %}
             <span class="badge bg-danger"><i class="bi bi-exclamation-triangle-fill"></i> Distressed</span>
             {% endif %}
           </div>
           <div class="col-6 col-md-3">
-            <div class="text-light small mb-1">Post-Money Valuation</div>
-            <div class="fw-bold fs-4">${{ "{:,.1f}M".format(company.post_money_valuation) }}</div>
+            <div class="text-light small mb-1">Funded Valuation</div>
+            <div class="fw-bold fs-4">${{ "{:,.1f}M".format(company.funded_valuation or 0) }}</div>
           </div>
           <div class="col-6 col-md-3">
             <div class="text-light small mb-1">Debt Outstanding</div>
@@ -93,10 +93,10 @@
                 </tr>
                 {% endfor %}
                 <!-- Management / Option Pool if any -->
-                {% if company.mgmt_option_pct > 0 %}
+                {% if company.management_option_pct > 0 %}
                 <tr class="text-secondary">
                   <td><em>Management Pool</em></td>
-                  <td class="text-end">{{ "%.1f"|format(company.mgmt_option_pct * 100) }}%</td>
+                  <td class="text-end">{{ "%.1f"|format(company.management_option_pct * 100) }}%</td>
                   <td class="text-end">&mdash;</td>
                   <td class="text-center"><span class="badge bg-secondary">Options</span></td>
                 </tr>
@@ -158,8 +158,8 @@
                 <i class="bi bi-person-gear text-info me-1"></i> Change Management
               </h6>
               <p class="text-secondary small mb-2">
-                Replace management team. Cost: <strong class="text-warning">${{ "{:,.1f}M".format(company.current_valuation * 0.1) }}</strong>
-                (10% of current valuation)
+                Replace management team. Cost: <strong class="text-warning">${{ "{:,.1f}M".format((company.latest_valuation or 0) * 0.1) }}</strong>
+                (10% of latest valuation)
               </p>
               <div class="text-secondary small mb-3">
                 <span class="badge {% if company.management_quality == 'excellent' %}bg-success{% elif company.management_quality == 'good' %}bg-primary{% elif company.management_quality == 'average' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
@@ -168,7 +168,7 @@
               </div>
               <form method="POST" action="{{ url_for('change_management', company_id=company.id) }}">
                 <button type="button" class="btn btn-outline-info btn-sm confirm-action"
-                        data-confirm="Change management for {{ company.name }}? This will cost ${{ '{:,.1f}M'.format(company.current_valuation * 0.1) }} and cannot be undone."
+                        data-confirm="Change management for {{ company.name }}? This will cost ${{ '{:,.1f}M'.format((company.latest_valuation or 0) * 0.1) }} and cannot be undone."
                         onclick="this.closest('form').submit()">
                   <i class="bi bi-arrow-repeat"></i> Change Management Team
                 </button>
@@ -176,7 +176,7 @@
             </div>
 
             <!-- Issue Dividend -->
-            {% if company.dividend_eligible and company.is_cash_flow_positive %}
+            {% if company.is_cash_flow_positive %}
             <div class="mb-4 pb-4 border-bottom border-secondary">
               <h6 class="fw-semibold mb-1">
                 <i class="bi bi-cash-coin text-success me-1"></i> Issue Dividend
@@ -205,8 +205,7 @@
               </h6>
               <p class="text-secondary small mb-0">
                 Not available &mdash;
-                {% if not company.dividend_eligible %}company is not dividend eligible{% endif %}
-                {% if not company.is_cash_flow_positive %}{% if not company.dividend_eligible %} and {% endif %}not cash flow positive{% endif %}.
+                company is not cash flow positive.
               </p>
             </div>
             {% endif %}

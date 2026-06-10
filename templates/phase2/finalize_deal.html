@@ -20,7 +20,7 @@
       <div class="card-body p-4">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
           <div>
-            <h4 class="fw-bold mb-1">{{ company.name }}</h4>
+            <h4 class="fw-bold mb-1 text-white">{{ company.name }}</h4>
             <div class="d-flex gap-2 flex-wrap">
               <span class="badge bg-secondary">{{ company.sector }}</span>
               {% if company.stage == 'startup' %}<span class="badge bg-danger">Startup</span>
@@ -42,7 +42,7 @@
       <div class="card-header border-info" style="background:rgba(13,202,240,0.1);">
         <h6 class="mb-0 fw-semibold text-info"><i class="bi bi-file-earmark-text"></i> Original Term Sheet (Reference)</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body text-white">
         <div class="row g-3">
           <div class="col-6 col-md-3">
             <div class="text-light small">Pre-Money Val.</div>
@@ -74,7 +74,7 @@
       <!-- Section 1: Final Valuation & Equity -->
       <div class="card border-secondary shadow mb-4">
         <div class="card-header border-secondary">
-          <h6 class="mb-0 fw-semibold"><i class="bi bi-currency-dollar text-warning"></i> Final Valuation &amp; Equity</h6>
+          <h6 class="mb-0 fw-semibold text-white"><i class="bi bi-currency-dollar text-warning"></i> Final Valuation &amp; Equity</h6>
         </div>
         <div class="card-body p-4">
           <div class="row g-3">
@@ -128,7 +128,7 @@
       {% if company.debt_capacity > 0 %}
       <div class="card border-secondary shadow mb-4">
         <div class="card-header border-secondary d-flex align-items-center justify-content-between">
-          <h6 class="mb-0 fw-semibold"><i class="bi bi-bank text-warning"></i> Debt Financing</h6>
+          <h6 class="mb-0 fw-semibold text-white"><i class="bi bi-bank text-warning"></i> Debt Financing</h6>
           <div class="form-check form-switch mb-0">
             <input class="form-check-input" type="checkbox" id="include_debt" name="include_debt" value="1">
             <label class="form-check-label small text-secondary" for="include_debt">Include Debt</label>
@@ -159,7 +159,7 @@
       <!-- Section 3: Deal Terms -->
       <div class="card border-secondary shadow mb-4">
         <div class="card-header border-secondary">
-          <h6 class="mb-0 fw-semibold"><i class="bi bi-file-earmark-ruled text-warning"></i> Final Deal Terms</h6>
+          <h6 class="mb-0 fw-semibold text-white"><i class="bi bi-file-earmark-ruled text-warning"></i> Final Deal Terms</h6>
         </div>
         <div class="card-body p-4">
           <div class="row g-4">
@@ -228,7 +228,7 @@
       {% if fill_offers %}
       <div class="card border-secondary shadow mb-4">
         <div class="card-header border-secondary">
-          <h6 class="mb-0 fw-semibold"><i class="bi bi-people text-warning"></i> Fill Investors</h6>
+          <h6 class="mb-0 fw-semibold text-white"><i class="bi bi-people text-warning"></i> Fill Investors</h6>
         </div>
         <div class="card-body p-4">
           <p class="text-secondary small mb-3">Select which fill investors to include and confirm their equity contribution.</p>

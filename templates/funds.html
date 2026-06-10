@@ -52,7 +52,7 @@
             <h6 class="mb-0 fw-semibold">
               <i class="bi bi-wallet2 text-warning me-1"></i> {{ fund.name }}
             </h6>
-            <span class="badge bg-secondary small">{{ "%.1f"|format(fund.management_fee_rate * 100) }}% Mgmt Fee</span>
+            <span class="badge bg-secondary small">{{ "%.1f"|format(fund.management_fee_rate * 100) }}% / {{ "%.1f"|format(fund.performance_fee_rate * 100) }}% Carry</span>
           </div>
           <div class="card-body">
             <div class="row g-2 mb-3">

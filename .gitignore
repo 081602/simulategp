@@ -11,3 +11,4 @@ instance/
 *.egg-info/
 dist/
 build/
+*.log

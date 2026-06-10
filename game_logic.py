@@ -5,7 +5,8 @@ import random
 import math
 from datetime import datetime
 from models import (db, Game, Team, Fund, GameCompany, CompanySearch,
-                    TermSheet, Deal, DealEquity, FundTransaction, Notification)
+                    TermSheet, Deal, DealEquity, FundTransaction, Notification,
+                    ReturnAssumption)
 
 
 # ---------------------------------------------------------------------------
@@ -166,9 +167,9 @@ def run_phase2_crank(game: Game):
 
         # Roll outcome
         multiple = _roll_outcome(company, game.market_condition)
-        old_val = company.current_valuation or company.post_money_valuation or 10.0
+        old_val = company.latest_valuation or 10.0
         new_val = old_val * multiple
-        company.current_valuation = max(0.0, new_val)
+        company.set_year_val(year, max(0.0, new_val))
 
         # Debt payment
         if company.debt_outstanding > 0 and company.debt_years_remaining > 0:
@@ -179,7 +180,7 @@ def run_phase2_crank(game: Game):
             company.company_funds = max(0, company.company_funds - annual_payment - interest)
 
         # Check distress
-        if company.current_valuation <= 0 or company.company_funds < 0:
+        if (company.latest_valuation or 0) <= 0 or company.company_funds < 0:
             _process_bankruptcy(deal, company, year)
             continue
 
@@ -187,11 +188,7 @@ def run_phase2_crank(game: Game):
         if deal.marked_for_liquidation:
             _process_liquidation(deal, company, year)
 
-    # 3. Reset Phase 1 query points
-    for team in Team.query.filter_by(game_id=game.id, is_admin=False).all():
-        team.query_points = game.query_points_per_year
-
-    # 4. Advance year
+    # 3. Advance year
     game.current_year += 1
     game.current_phase = 1
     game.status = 'active'
@@ -205,17 +202,18 @@ def run_phase2_crank(game: Game):
 
 
 def _roll_outcome(company: GameCompany, market_condition: float) -> float:
-    """Pick a random outcome multiple based on the company's distribution."""
-    outcomes = company.get_outcomes()
-    if not outcomes:
-        return 1.0
-    rnd = random.random()
-    cumulative = 0.0
-    for o in outcomes:
-        cumulative += o['prob']
-        if rnd <= cumulative:
-            return o['multiple'] * market_condition
-    return outcomes[-1]['multiple'] * market_condition
+    """Sample annual return from N(expected_return, std_dev) for this company's sector/stage."""
+    assumption = ReturnAssumption.query.filter_by(
+        sector=company.sector, stage=company.stage
+    ).first()
+    if assumption:
+        mu = assumption.expected_return
+        sigma = assumption.std_dev
+    else:
+        mu, sigma = 0.10, 0.25
+    annual_return = random.gauss(mu, sigma)
+    multiple = max(0.0, 1.0 + annual_return) * market_condition
+    return multiple
 
 
 def _process_bankruptcy(deal: Deal, company: GameCompany, year: int):
@@ -230,7 +228,7 @@ def _process_bankruptcy(deal: Deal, company: GameCompany, year: int):
 
 def _process_liquidation(deal: Deal, company: GameCompany, year: int):
     """Distribute proceeds according to liquidation waterfall."""
-    proceeds = company.current_valuation
+    proceeds = company.latest_valuation or 0
     reserve = deal.reserve_price or 0
 
     if proceeds < reserve:
@@ -305,15 +303,21 @@ def calculate_irr(cash_flows: list) -> float:
         return sum(-yr * cf / ((1 + rate) ** (yr + 1)) for yr, cf in cash_flows)
 
     rate = 0.1
-    for _ in range(200):
-        f = npv(rate)
-        df = npv_deriv(rate)
-        if df == 0:
-            break
-        rate -= f / df
-        if abs(f) < 1e-6:
-            break
+    try:
+        for _ in range(200):
+            f = npv(rate)
+            df = npv_deriv(rate)
+            if df == 0:
+                break
+            rate -= f / df
+            rate = max(-0.999, min(rate, 100.0))  # clamp to prevent overflow
+            if abs(f) < 1e-6:
+                break
+    except (OverflowError, ZeroDivisionError):
+        return 0.0
 
+    if not (-0.999 < rate < 100.0):
+        return 0.0
     return round(rate, 4)
 
 
@@ -345,7 +349,7 @@ def team_irr(team_id: int, game: Game, unrealized: bool = False):
         )
         for stake in stakes:
             company = stake.deal.company
-            val = (company.current_valuation or company.post_money_valuation or 0)
+            val = (company.latest_valuation or 0)
             debt = company.debt_outstanding or 0
             net_val = max(0, val - debt)
             portfolio_value += net_val * (stake.ownership_pct / 100.0)
@@ -397,6 +401,13 @@ def finalize_deal(deal: Deal, final_pre_money: float, equity_stakes_data: list,
     equity_stakes_data: [{'team_id':..., 'fund_id':..., 'equity_invested':...}, ...]
     """
     total_equity = sum(s['equity_invested'] for s in equity_stakes_data)
+    # Cap total equity at funds wanted; scale each stake down proportionally
+    cap = deal.company.capital_requested
+    if total_equity > cap:
+        scale = cap / total_equity
+        for s in equity_stakes_data:
+            s['equity_invested'] = round(s['equity_invested'] * scale, 4)
+        total_equity = cap
     post_money = final_pre_money + total_equity + debt_amount
 
     deal.pre_money_valuation = final_pre_money
@@ -437,8 +448,8 @@ def finalize_deal(deal: Deal, final_pre_money: float, equity_stakes_data: list,
 
     # Update company
     company = deal.company
-    company.post_money_valuation = post_money
-    company.current_valuation = post_money
+    company.funded_valuation = post_money
+    company.management_option_pct = mgmt_option_pct / 100.0
     company.debt_outstanding = debt_amount
     company.debt_interest_rate = debt_rate
     company.debt_years_remaining = 3 if debt_amount > 0 else 0

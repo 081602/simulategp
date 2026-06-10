@@ -25,16 +25,12 @@
       <div class="card-body py-3">
         <div class="row g-3 text-center">
           <div class="col-4 col-md-2">
-            <div class="text-light small">Suggested Valuation</div>
-            <div class="fw-bold text-white">${{ "{:,.1f}M".format(company.current_valuation) }}</div>
+            <div class="text-light small">Pre-Valuation Wanted</div>
+            <div class="fw-bold text-white">${{ "{:,.1f}M".format(company.initial_val_ask or 0) }}</div>
           </div>
           <div class="col-4 col-md-2">
-            <div class="text-light small">Capital Requested</div>
+            <div class="text-light small">Funds Wanted</div>
             <div class="fw-bold text-white">${{ "{:,.1f}M".format(company.capital_requested) }}</div>
-          </div>
-          <div class="col-4 col-md-2">
-            <div class="text-light small">Expected Multiple</div>
-            <div class="fw-bold text-success">{{ "%.2f"|format(company.expected_multiple) }}x</div>
           </div>
           <div class="col-4 col-md-2">
             <div class="text-light small">Rolled Equity</div>
@@ -68,8 +64,8 @@
               <input type="number" class="form-control bg-dark text-white border-secondary"
                      id="pre_money_valuation" name="pre_money_valuation"
                      min="0" step="0.1"
-                     value="{{ company.current_valuation }}" required>
-              <div class="form-text text-light">Suggested: ${{ "{:,.1f}M".format(company.current_valuation) }}</div>
+                     value="{{ company.initial_val_ask }}" required>
+              <div class="form-text text-light">Pre-Valuation Wanted: ${{ "{:,.1f}M".format(company.initial_val_ask or 0) }}</div>
             </div>
 
             <div class="col-md-6">
@@ -78,7 +74,7 @@
                      id="total_investment" name="total_investment"
                      min="0" step="0.1"
                      value="{{ company.capital_requested }}" required>
-              <div class="form-text text-light">Company is asking for ${{ "{:,.1f}M".format(company.capital_requested) }}</div>
+              <div class="form-text text-light">Funds Wanted: ${{ "{:,.1f}M".format(company.capital_requested) }}</div>
             </div>
 
             <div class="col-12">

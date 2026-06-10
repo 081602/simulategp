@@ -1,9 +1,9 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 {% block title %}Edit Company -- {{ company.name }}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-  <div class="col-lg-7">
+  <div class="col-lg-8">
 
     <div class="d-flex align-items-center mb-4">
       <a href="{{ url_for('admin_companies') }}" class="btn btn-sm btn-outline-secondary me-3">
@@ -11,11 +11,11 @@
       </a>
       <div>
         <h2 class="fw-bold mb-0"><i class="bi bi-pencil-square text-warning"></i> Edit Company</h2>
-        <p class="text-secondary mb-0">{{ company.name }} -- {{ company.sector }}</p>
+        <p class="text-secondary mb-0">{{ company.name }} &mdash; {{ company.sector }}</p>
       </div>
     </div>
 
-    <form method="POST" action="{{ url_for('admin_edit_company', company_id=company.id) }}">
+    <form method="POST" action="{{ url_for('admin_edit_company', company_id=company.id) }}" id="companyForm">
 
       <!-- Basic Info -->
       <div class="card border-secondary shadow mb-4">
@@ -35,30 +35,58 @@
             <div class="col-12">
               <label for="description" class="form-label fw-semibold text-white">Description</label>
               <textarea class="form-control bg-dark text-white border-secondary"
-                        id="description" name="description" rows="4"
+                        id="description" name="description" rows="3"
                         maxlength="1000">{{ company.description or '' }}</textarea>
             </div>
 
             <div class="col-md-6">
-              <label for="current_valuation" class="form-label fw-semibold text-white">Current Valuation ($)</label>
+              <label for="initial_val_ask" class="form-label fw-semibold text-white">Initial Valuation Ask ($M)</label>
               <div class="input-group">
                 <span class="input-group-text bg-dark border-secondary text-secondary">$</span>
                 <input type="number" class="form-control bg-dark text-white border-secondary"
-                       id="current_valuation" name="current_valuation"
+                       id="initial_val_ask" name="initial_val_ask"
                        min="0" step="0.1"
-                       value="{{ company.current_valuation }}" required>
+                       value="{{ company.initial_val_ask }}" required>
               </div>
+              <div class="form-text text-light">Pre-money valuation wanted while listed</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="funded_valuation" class="form-label fw-semibold text-white">Funded Valuation ($M)</label>
+              <div class="input-group">
+                <span class="input-group-text bg-dark border-secondary text-secondary">$</span>
+                <input type="number" class="form-control bg-dark text-white border-secondary"
+                       id="funded_valuation" name="funded_valuation"
+                       min="0" step="0.1"
+                       value="{{ company.funded_valuation if company.funded_valuation is not none }}">
+              </div>
+              <div class="form-text text-light">Post-money at deal close (blank if not funded)</div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label fw-semibold text-white">Year-End Valuations ($M)</label>
+              <div class="row g-2">
+                {% for y in range(1, 8) %}
+                <div class="col-6 col-md-3 col-lg-auto">
+                  <label for="year_{{ y }}_val" class="form-label small text-light mb-1">Year {{ y }}</label>
+                  <input type="number" class="form-control form-control-sm bg-dark text-white border-secondary"
+                         id="year_{{ y }}_val" name="year_{{ y }}_val"
+                         min="0" step="0.1"
+                         value="{{ company.get_year_val(y) if company.get_year_val(y) is not none }}">
+                </div>
+                {% endfor %}
+              </div>
+              <div class="form-text text-light">Set by each Phase 2 crank; blank = year not yet played</div>
             </div>
 
             <div class="col-md-6">
               <label for="status" class="form-label fw-semibold text-white">Status</label>
               <select class="form-select bg-dark text-white border-secondary" id="status" name="status">
-                <option value="available"            {% if company.status == 'available' %}selected{% endif %}>Available</option>
-                <option value="term_sheet_submitted" {% if company.status == 'term_sheet_submitted' %}selected{% endif %}>Term Sheet Submitted</option>
-                <option value="in_deal"              {% if company.status == 'in_deal' %}selected{% endif %}>In Deal</option>
-                <option value="acquired"             {% if company.status == 'acquired' %}selected{% endif %}>Acquired</option>
-                <option value="exited"               {% if company.status == 'exited' %}selected{% endif %}>Exited</option>
-                <option value="distressed"           {% if company.status == 'distressed' %}selected{% endif %}>Distressed</option>
+                <option value="available"   {% if company.status == 'available' %}selected{% endif %}>Available</option>
+                <option value="funded"      {% if company.status == 'funded' %}selected{% endif %}>Funded</option>
+                <option value="refinancing" {% if company.status == 'refinancing' %}selected{% endif %}>Refinancing</option>
+                <option value="liquidated"  {% if company.status == 'liquidated' %}selected{% endif %}>Liquidated</option>
+                <option value="bankrupt"    {% if company.status == 'bankrupt' %}selected{% endif %}>Bankrupt</option>
               </select>
             </div>
 
@@ -81,17 +109,59 @@
                   <i class="bi bi-graph-up-arrow text-success me-1"></i> Cash Flow Positive
                 </label>
               </div>
-              <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="dividend_eligible"
-                       name="dividend_eligible" value="1"
-                       {% if company.dividend_eligible %}checked{% endif %}>
-                <label class="form-check-label text-white" for="dividend_eligible">
-                  <i class="bi bi-cash-coin text-success me-1"></i> Dividend Eligible
-                </label>
-              </div>
             </div>
 
           </div>
+        </div>
+      </div>
+
+
+      <!-- Mature-only fields -->
+      {% if company.stage == 'mature' %}
+      <div class="card border-secondary shadow mb-4">
+        <div class="card-header border-secondary">
+          <h6 class="mb-0 fw-semibold"><i class="bi bi-bar-chart-line text-warning"></i> Mature Company Metrics</h6>
+        </div>
+        <div class="card-body p-4">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="revenue_growth_3yr" class="form-label fw-semibold text-white">3-Year Revenue Growth Rate (%)</label>
+              <div class="input-group">
+                <input type="number" class="form-control bg-dark text-white border-secondary"
+                       id="revenue_growth_3yr" name="revenue_growth_3yr"
+                       min="-100" max="500" step="0.1"
+                       value="{{ '%.1f'|format(company.revenue_growth_3yr * 100) if company.revenue_growth_3yr is not none else '' }}"
+                       placeholder="e.g. 12.5">
+                <span class="input-group-text bg-dark border-secondary text-secondary">%</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="ltm_ebitda_margin" class="form-label fw-semibold text-white">LTM EBITDA Margin (%)</label>
+              <div class="input-group">
+                <input type="number" class="form-control bg-dark text-white border-secondary"
+                       id="ltm_ebitda_margin" name="ltm_ebitda_margin"
+                       min="-100" max="100" step="0.1"
+                       value="{{ '%.1f'|format(company.ltm_ebitda_margin * 100) if company.ltm_ebitda_margin is not none else '' }}"
+                       placeholder="e.g. 22.0">
+                <span class="input-group-text bg-dark border-secondary text-secondary">%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Return Assumption info -->
+      <div class="card border-secondary shadow mb-4">
+        <div class="card-body py-3 px-4 d-flex align-items-center justify-content-between">
+          <div class="text-secondary small">
+            <i class="bi bi-info-circle text-warning me-1"></i>
+            Annual return is drawn from <strong class="text-white">N(μ, σ)</strong> based on
+            <strong class="text-white">{{ company.sector }} / {{ company.stage_label }}</strong> assumptions.
+          </div>
+          <a href="{{ url_for('admin_return_assumptions') }}" class="btn btn-outline-warning btn-sm">
+            <i class="bi bi-graph-up me-1"></i> Edit Return Assumptions
+          </a>
         </div>
       </div>
 

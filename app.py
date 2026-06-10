@@ -8,7 +8,7 @@ from flask_login import (LoginManager, login_user, logout_user,
                          login_required, current_user)
 from models import (db, Game, Team, Fund, CompanyTemplate, GameCompany,
                     CompanySearch, TermSheet, Deal, DealEquity,
-                    FundTransaction, Notification)
+                    FundTransaction, Notification, ReturnAssumption)
 from game_logic import (run_phase1_crank, run_phase2_crank,
                         team_irr, finalize_deal, _notify, _record_transaction)
 
@@ -212,24 +212,6 @@ def search_companies():
         if max_capital:
             cost += 0
 
-        if current_user.query_points < cost:
-            # Charge search fee to fund
-            fee = 0.1  # $0.1M per extra search
-            primary_fund = Fund.query.filter_by(
-                team_id=current_user.id, is_active=True).first()
-            if primary_fund and primary_fund.available_capital >= fee:
-                primary_fund.available_capital -= fee
-                _record_transaction(primary_fund.id, 'search_fee', -fee,
-                                    'Additional company search fee', game.current_year)
-                db.session.commit()
-                flash(f'Query points exhausted. Search fee of ${fee}M charged.', 'warning')
-            else:
-                flash('No query points remaining and insufficient funds to search.', 'danger')
-                return redirect(url_for('dealflow'))
-        else:
-            current_user.query_points -= cost
-            db.session.commit()
-
         # Build query
         query = GameCompany.query.filter_by(
             game_id=game.id, status='available').filter(
@@ -314,12 +296,16 @@ def company_detail(company_id):
     teams = Team.query.filter_by(game_id=game.id, is_admin=False).all()
     funds = Fund.query.filter_by(team_id=current_user.id, is_active=True).all()
 
+    db.session.refresh(company)
+    return_assumption = ReturnAssumption.query.filter_by(
+        sector=company.sector, stage=company.stage).first()
     return render_template('dealflow/company_detail.html',
                            game=game,
                            company=company,
                            existing_ts=existing_ts,
                            teams=teams,
-                           funds=funds)
+                           funds=funds,
+                           return_assumption=return_assumption)
 
 
 @app.route('/company/<int:company_id>/refer', methods=['POST'])
@@ -702,7 +688,7 @@ def change_management(company_id):
         flash('Management can only be changed after at least 1 year in portfolio.', 'warning')
         return redirect(url_for('portfolio_company', company_id=company_id))
 
-    cost = (company.current_valuation or 10.0) * 0.10
+    cost = (company.latest_valuation or 10.0) * 0.10
     primary_fund = Fund.query.filter_by(
         team_id=current_user.id, is_active=True).first()
 
@@ -734,7 +720,7 @@ def issue_dividend(company_id):
 
     if deal.lead_team_id != current_user.id:
         abort(403)
-    if not company.dividend_eligible or not company.is_cash_flow_positive:
+    if not company.is_cash_flow_positive:
         flash('This company is not eligible for dividends.', 'warning')
         return redirect(url_for('portfolio_company', company_id=company_id))
 
@@ -833,89 +819,66 @@ def admin_dashboard():
                            companies=companies, deals=deals)
 
 
+@app.route('/admin/delete-all-deals', methods=['POST'])
+@login_required
+@admin_required
+def admin_delete_all_deals():
+    from sqlalchemy import text
+    db.session.execute(text('DELETE FROM deal_equity'))
+    db.session.execute(text('DELETE FROM deal'))
+    db.session.execute(text(
+        "UPDATE game_company SET status='available', year_funded=NULL, "
+        "lead_team_id=NULL, in_distress=0, flagged_for_liquidation=0"
+    ))
+    db.session.commit()
+    flash('All deals have been deleted and companies reset to available.', 'success')
+    return redirect(url_for('admin_dashboard'))
+
+
 @app.route('/admin/setup', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def admin_setup():
     if request.method == 'POST':
-        # Create game
-        game_name = request.form.get('game_name', 'PE Simulation')
-        total_years = int(request.form.get('total_years', 7))
-        qp = int(request.form.get('query_points', 10))
-        starting_capital = float(request.form.get('starting_capital', 100.0))
-
-        # Delete existing game data if re-setting up
-        existing = Game.query.first()
-        if existing:
-            db.session.delete(existing)
-            db.session.commit()
-
-        game = Game(name=game_name, total_years=total_years,
-                    query_points_per_year=qp)
-        db.session.add(game)
-        db.session.flush()
-
-        # Load companies from JSON
-        companies_path = os.path.join(os.path.dirname(__file__), 'data', 'companies.json')
-        with open(companies_path) as f:
-            company_data = json.load(f)
-
-        for cd in company_data:
-            gc = GameCompany(
-                game_id=game.id,
-                name=cd['name'],
-                sector=cd['sector'],
-                stage=cd['stage'],
-                description=cd['description'],
-                capital_requested=cd['capital_requested'],
-                rolled_equity_min=cd['rolled_equity_min'],
-                rolled_equity_max=cd['rolled_equity_max'],
-                debt_capacity=cd['debt_capacity'],
-                is_cash_flow_positive=cd['is_cash_flow_positive'],
-                dividend_eligible=cd.get('dividend_eligible', False),
-                management_quality=cd['management_quality'],
-                outcome_distributions=json.dumps(cd['outcome_distributions']),
-                current_valuation=cd['base_valuation'],
-                year_available=cd.get('year_available', 1),
-                reasons_for_funding=cd.get('reasons_for_funding'),
-                available_cash=cd.get('available_cash', 0.0),
-                founder_shares=cd.get('founder_shares', 10000000),
-                management_option_pct=cd.get('management_option_pct', 0.10),
-            )
-            db.session.add(gc)
-
-        # Create teams from form
-        team_count = int(request.form.get('team_count', 5))
-        for i in range(1, team_count + 1):
-            tname = request.form.get(f'team_{i}_name', f'Team {i}')
-            tuname = request.form.get(f'team_{i}_username', f'team{i}')
-            tpw = request.form.get(f'team_{i}_password', f'team{i}pass')
-            team = Team(
-                game_id=game.id,
-                username=tuname,
-                firm_name=tname,
-                reputation=2.0,
-                query_points=qp
-            )
-            team.set_password(tpw)
-            db.session.add(team)
-            db.session.flush()
-
-            fund = Fund(
-                team_id=team.id,
-                name=f'{tname} Fund I',
-                total_capital=starting_capital,
-                available_capital=starting_capital,
-                year_raised=1
-            )
-            db.session.add(fund)
-
+        from sqlalchemy import text
+        db.session.expire_all()
+        db.session.execute(text('DELETE FROM deal_equity'))
+        db.session.execute(text('DELETE FROM deal'))
+        db.session.execute(text('DELETE FROM company_search'))
+        db.session.execute(text('DELETE FROM term_sheet'))
+        db.session.execute(text('DELETE FROM fund_transaction'))
+        db.session.execute(text('DELETE FROM notification'))
+        db.session.execute(text('DELETE FROM fund'))
+        db.session.execute(text('DELETE FROM team WHERE is_admin = 0'))
+        db.session.execute(text(
+            "UPDATE game_company SET status='available', year_funded=NULL, "
+            "lead_team_id=NULL, in_distress=0, flagged_for_liquidation=0, "
+            "funded_valuation=NULL, year_1_val=NULL, year_2_val=NULL, "
+            "year_3_val=NULL, year_4_val=NULL, year_5_val=NULL, "
+            "year_6_val=NULL, year_7_val=NULL"
+        ))
         db.session.commit()
-        flash(f'Game "{game_name}" created with {team_count} teams and '
-              f'{len(company_data)} companies!', 'success')
-        return redirect(url_for('admin_dashboard'))
+        db.session.expire_all()
+        flash('All teams and their data have been removed.', 'success')
+        return redirect(url_for('admin_teams'))
 
     return render_template('admin/setup.html')
+
+
+@app.route('/admin/reset-clock', methods=['POST'])
+@login_required
+@admin_required
+def admin_reset_clock():
+    game = Game.query.first()
+    if game:
+        game.current_year = 1
+        game.current_phase = 1
+        game.status = 'active'
+        db.session.commit()
+        flash('Game clock reset to Year 1, Phase 1.', 'success')
+    else:
+        flash('No game found.', 'warning')
+    return redirect(url_for('admin_setup'))
 
 
 @app.route('/admin/teams')
@@ -954,22 +917,78 @@ def admin_create_team():
         username=username,
         firm_name=firm_name,
         reputation=2.0,
-        query_points=game.query_points_per_year
     )
     team.set_password(password)
     db.session.add(team)
     db.session.flush()
 
+    management_fee = float(request.form.get('management_fee', 2.0)) / 100
+    performance_fee = float(request.form.get('performance_fee', 20.0)) / 100
     fund = Fund(
         team_id=team.id,
         name=f'{firm_name} Fund I',
         total_capital=starting_capital,
         available_capital=starting_capital,
-        year_raised=game.current_year
+        year_raised=game.current_year,
+        management_fee_rate=management_fee,
+        performance_fee_rate=performance_fee,
     )
     db.session.add(fund)
     db.session.commit()
     flash(f'Team "{firm_name}" created successfully.', 'success')
+    return redirect(url_for('admin_teams'))
+
+
+@app.route('/admin/team/<int:team_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def admin_delete_team(team_id):
+    team = Team.query.get_or_404(team_id)
+    firm_name = team.firm_name
+
+    # Remove the team's dealflow history so a recycled team id doesn't inherit it
+    CompanySearch.query.filter_by(team_id=team.id).delete()
+    CompanySearch.query.filter_by(referred_by_team_id=team.id).update(
+        {'referred_by_team_id': None})
+
+    # Unwind deals the team leads: refund co-investors, relist the company
+    led_deals = Deal.query.filter_by(lead_team_id=team.id).all()
+    for deal in led_deals:
+        for stake in deal.equity_stakes:
+            if stake.team_id != team.id and deal.status in ('pending_finalization', 'active'):
+                fund = Fund.query.get(stake.fund_id)
+                if fund:
+                    fund.available_capital += stake.equity_invested
+                    _record_transaction(fund.id, 'refund', stake.equity_invested,
+                                        f"Refund: {deal.company.name} deal unwound "
+                                        f"(lead team deleted)", deal.game_year,
+                                        deal.company_id)
+                _notify(stake.team_id,
+                        f'The deal on {deal.company.name} was unwound because the '
+                        f'lead investor was removed. Your investment was refunded.',
+                        'deal_lost', deal.company_id)
+        company = deal.company
+        company.status = 'available'
+        company.lead_team_id = None
+        company.funded_valuation = None
+        for y in range(1, GameCompany.MAX_TRACKED_YEARS + 1):
+            company.set_year_val(y, None)
+        company.year_funded = None
+        company.debt_outstanding = 0.0
+        company.debt_years_remaining = 0
+        company.debt_interest_rate = 0.0
+        company.company_funds = 0.0
+        db.session.delete(deal)  # cascades to equity stakes
+
+    # Fill stakes in deals led by other teams: just remove the stake
+    DealEquity.query.filter_by(team_id=team.id).delete()
+
+    # Companies still pointing at this team as lead (e.g. pre-finalization)
+    GameCompany.query.filter_by(lead_team_id=team.id).update({'lead_team_id': None})
+
+    db.session.delete(team)  # cascades: funds, term sheets, notifications
+    db.session.commit()
+    flash(f'Team "{firm_name}" has been deleted.', 'success')
     return redirect(url_for('admin_teams'))
 
 
@@ -982,7 +1001,6 @@ def admin_edit_team(team_id):
     if request.method == 'POST':
         team.firm_name = request.form.get('firm_name', team.firm_name)
         team.reputation = float(request.form.get('reputation', team.reputation))
-        team.query_points = int(request.form.get('query_points', team.query_points))
         new_pw = request.form.get('new_password', '').strip()
         if new_pw:
             team.set_password(new_pw)
@@ -998,6 +1016,39 @@ def admin_edit_team(team_id):
         flash(f'{team.firm_name} updated.', 'success')
         return redirect(url_for('admin_teams'))
     return render_template('admin/edit_team.html', team=team, game=game)
+
+
+SECTORS = ['Consumer', 'Energy', 'Healthcare', 'Industrials', 'Technology']
+STAGES = ['startup', 'developing', 'early_revenue', 'mature']
+STAGE_LABELS = {'startup': 'Startup', 'developing': 'Developing',
+                'early_revenue': 'Early Revenue', 'mature': 'Mature'}
+
+
+@app.route('/admin/return-assumptions', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def admin_return_assumptions():
+    if request.method == 'POST':
+        for sector in SECTORS:
+            for stage in STAGES:
+                key = f'{sector}__{stage}'
+                er = request.form.get(f'er_{key}')
+                sd = request.form.get(f'sd_{key}')
+                if er is not None and sd is not None:
+                    ra = ReturnAssumption.query.filter_by(sector=sector, stage=stage).first()
+                    if not ra:
+                        ra = ReturnAssumption(sector=sector, stage=stage)
+                        db.session.add(ra)
+                    ra.expected_return = float(er) / 100
+                    ra.std_dev = float(sd) / 100
+        db.session.commit()
+        flash('Return assumptions saved.', 'success')
+        return redirect(url_for('admin_return_assumptions'))
+
+    assumptions = {(ra.sector, ra.stage): ra for ra in ReturnAssumption.query.all()}
+    return render_template('admin/return_assumptions.html',
+                           sectors=SECTORS, stages=STAGES, stage_labels=STAGE_LABELS,
+                           assumptions=assumptions)
 
 
 @app.route('/admin/companies')
@@ -1018,13 +1069,35 @@ def admin_edit_company(company_id):
     if request.method == 'POST':
         company.name = request.form.get('name', company.name)
         company.description = request.form.get('description', company.description)
-        company.current_valuation = float(request.form.get('current_valuation',
-                                                            company.current_valuation))
+        iva = request.form.get('initial_val_ask')
+        if iva:
+            company.initial_val_ask = float(iva)
+        fv = request.form.get('funded_valuation')
+        company.funded_valuation = float(fv) if fv else None
+        for y in range(1, GameCompany.MAX_TRACKED_YEARS + 1):
+            yv = request.form.get(f'year_{y}_val')
+            company.set_year_val(y, float(yv) if yv else None)
         company.status = request.form.get('status', company.status)
         company.management_quality = request.form.get('management_quality',
                                                        company.management_quality)
         company.is_cash_flow_positive = 'is_cash_flow_positive' in request.form
-        company.dividend_eligible = 'dividend_eligible' in request.form
+
+        if company.stage == 'mature':
+            rg = request.form.get('revenue_growth_3yr')
+            em = request.form.get('ltm_ebitda_margin')
+            company.revenue_growth_3yr = float(rg) / 100 if rg else None
+            company.ltm_ebitda_margin = float(em) / 100 if em else None
+
+        outcomes = []
+        for i in range(12):
+            multiple = request.form.get(f'multiple_{i}')
+            prob = request.form.get(f'prob_{i}')
+            if multiple is not None and prob is not None:
+                outcomes.append({'multiple': float(multiple), 'prob': round(float(prob) / 100, 6)})
+        if outcomes:
+            import json as _json
+            company.outcome_distributions = _json.dumps(outcomes)
+
         db.session.commit()
         flash(f'{company.name} updated.', 'success')
         return redirect(url_for('admin_companies'))
@@ -1123,7 +1196,7 @@ def admin_leaderboard():
                   .filter(DealEquity.team_id == team.id, Deal.status == 'active')
                   .all())
         for s in stakes:
-            val = s.deal.company.current_valuation or 0
+            val = s.deal.company.latest_valuation or 0
             portfolio_val += val * (s.ownership_pct / 100.0)
 
         team_data.append({
@@ -1180,7 +1253,6 @@ def init_db():
                 username='admin',
                 firm_name='Administrator',
                 is_admin=True,
-                query_points=999,
                 reputation=5.0
             )
             admin.set_password(os.environ.get('ADMIN_PASSWORD', 'admin123'))
