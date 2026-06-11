@@ -24,7 +24,7 @@
               {% if game.status == 'paused' %}
                 <span class="badge bg-danger ms-2">PAUSED</span>
               {% elif game.status == 'in_crank' %}
-                <span class="badge bg-warning text-dark ms-2">CRANK IN PROGRESS</span>
+                <span class="badge bg-warning text-dark ms-2">PROCESS IN PROGRESS</span>
               {% else %}
                 <span class="badge bg-success ms-2">RUNNING</span>
               {% endif %}
@@ -110,7 +110,7 @@
           <div class="card-body">
             <div class="d-grid gap-2">
               <a href="{{ url_for('admin_crank') }}" class="btn btn-outline-warning text-start">
-                <i class="bi bi-gear-wide-connected me-2"></i> Run Crank
+                <i class="bi bi-gear-wide-connected me-2"></i> Run Process
               </a>
               <a href="{{ url_for('admin_teams') }}" class="btn btn-outline-info text-start">
                 <i class="bi bi-people me-2"></i> Manage Teams
@@ -137,8 +137,8 @@
           </div>
           <div class="card-body">
             <p class="text-secondary small mb-3">
-              Multiplier applied to company outcome distributions at each Phase 2 crank.
-              1.0 = neutral market. Set before running the crank.
+              Multiplier applied to company outcome distributions at each Deal &amp; Return Process.
+              1.0 = neutral market. Set before running the process.
             </p>
             <form method="POST" action="{{ url_for('admin_set_market') }}" class="d-flex gap-3 align-items-end">
               <div class="flex-grow-1">
@@ -220,7 +220,7 @@
         {% else %}
         <div class="text-center text-secondary py-5">
           <i class="bi bi-briefcase-x fs-2 d-block mb-2"></i>
-          No deals yet -- run a crank after teams submit term sheets.
+          No deals yet -- run the Deal Process after teams submit term sheets.
         </div>
         {% endif %}
       </div>

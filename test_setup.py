@@ -54,6 +54,8 @@ with app.test_request_context('/admin/setup', method='POST'):
                 available_cash=cd.get('available_cash', 0.0),
                 founder_shares=cd.get('founder_shares', 10000000),
                 management_option_pct=cd.get('management_option_pct', 0.10),
+                revenue_growth_3yr=cd.get('revenue_growth_3yr'),
+                ltm_ebitda_margin=cd.get('ltm_ebitda_margin'),
             )
             db.session.add(gc)
         print('Companies added to session', flush=True)

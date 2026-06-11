@@ -1,5 +1,5 @@
 ﻿{% extends "base.html" %}
-{% block title %}Run Crank{% endblock %}
+{% block title %}Run Process{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -10,7 +10,7 @@
         <i class="bi bi-arrow-left"></i>
       </a>
       <div>
-        <h2 class="fw-bold mb-0"><i class="bi bi-gear-wide-connected text-warning"></i> Run Crank</h2>
+        <h2 class="fw-bold mb-0"><i class="bi bi-gear-wide-connected text-warning"></i> Run Process</h2>
         <p class="text-secondary mb-0">Advance the simulation &mdash; irreversible action</p>
       </div>
     </div>
@@ -32,14 +32,14 @@
       </div>
     </div>
 
-    <!-- PHASE 1 CRANK -->
+    <!-- DEAL PROCESS (Phase 1) -->
     <div class="card shadow mb-4
       {% if game.current_phase == 1 and game.status != 'paused' %}border-warning{% else %}border-secondary opacity-50{% endif %}">
       <div class="card-header
         {% if game.current_phase == 1 and game.status != 'paused' %}border-warning{% else %}border-secondary{% endif %}"
         style="{% if game.current_phase == 1 and game.status != 'paused' %}background:rgba(255,193,7,0.1) !important;{% endif %}">
         <h5 class="mb-0 fw-bold {% if game.current_phase == 1 %}text-warning{% else %}text-secondary{% endif %}">
-          <i class="bi bi-1-circle-fill me-2"></i> Phase 1 Crank &mdash; Term Sheet Processing
+          <i class="bi bi-1-circle-fill me-2"></i> Deal Process &mdash; Term Sheet Processing
           {% if game.current_phase != 1 %}<span class="badge bg-secondary ms-2 fs-6">Not Active</span>{% endif %}
         </h5>
       </div>
@@ -66,7 +66,7 @@
 
         <div class="alert border-warning text-warning mb-4" style="background:rgba(255,193,7,0.1);">
           <i class="bi bi-exclamation-triangle-fill me-2"></i>
-          <strong>Warning:</strong> Running the Phase 1 Crank will evaluate all {{ pending_ts }} pending term sheets,
+          <strong>Warning:</strong> Running the Deal Process will evaluate all {{ pending_ts }} pending term sheets,
           determine which deals advance to Phase 2, and move the simulation to the next phase.
           <strong>This cannot be undone.</strong>
         </div>
@@ -80,8 +80,8 @@
             </label>
           </div>
           <button type="submit" class="btn btn-warning text-dark fw-bold btn-lg w-100 confirm-action"
-                  data-confirm="Run Phase 1 Crank? This will process {{ pending_ts }} term sheets and cannot be undone.">
-            <i class="bi bi-gear-wide-connected me-2"></i> Run Phase 1 Crank
+                  data-confirm="Run the Deal Process? This will process {{ pending_ts }} term sheets and cannot be undone.">
+            <i class="bi bi-gear-wide-connected me-2"></i> Run Deal Process
             <span class="badge bg-dark ms-2">{{ pending_ts }} term sheets</span>
           </button>
         </form>
@@ -89,24 +89,24 @@
         <p class="text-secondary text-center py-3 mb-0">
           {% if game.status == 'paused' %}
             <i class="bi bi-pause-circle fs-3 d-block mb-2"></i>
-            Resume the game before running the crank.
+            Resume the game before running the process.
           {% else %}
             <i class="bi bi-lock fs-3 d-block mb-2"></i>
-            Phase 1 Crank is only available during Phase 1.
+            The Deal Process is only available during Phase 1.
           {% endif %}
         </p>
         {% endif %}
       </div>
     </div>
 
-    <!-- PHASE 2 CRANK -->
+    <!-- DEAL & RETURN PROCESS (Phase 2) -->
     <div class="card shadow mb-4
       {% if game.current_phase == 2 and game.status != 'paused' %}border-info{% else %}border-secondary opacity-50{% endif %}">
       <div class="card-header
         {% if game.current_phase == 2 and game.status != 'paused' %}border-info{% else %}border-secondary{% endif %}"
         style="{% if game.current_phase == 2 and game.status != 'paused' %}background:rgba(13,202,240,0.1) !important;{% endif %}">
         <h5 class="mb-0 fw-bold {% if game.current_phase == 2 %}text-info{% else %}text-secondary{% endif %}">
-          <i class="bi bi-2-circle-fill me-2"></i> Phase 2 Crank &mdash; Deal Finalization &amp; Year Advance
+          <i class="bi bi-2-circle-fill me-2"></i> Deal &amp; Return Process &mdash; Deal Finalization &amp; Year Advance
           {% if game.current_phase != 2 %}<span class="badge bg-secondary ms-2 fs-6">Not Active</span>{% endif %}
         </h5>
       </div>
@@ -133,7 +133,7 @@
 
         <div class="alert border-info text-info mb-4" style="background:rgba(13,202,240,0.1);">
           <i class="bi bi-info-circle-fill me-2"></i>
-          <strong>Phase 2 Crank:</strong> This will finalize all pending deals, update portfolio valuations,
+          <strong>Deal &amp; Return Process:</strong> This will finalize all pending deals, update portfolio valuations,
           process management fees, advance to Year {{ game.current_year + 1 }}, and open Phase 1 for the new year.
           <strong>This cannot be undone.</strong>
         </div>
@@ -147,18 +147,18 @@
             </label>
           </div>
           <button type="submit" class="btn btn-info text-dark fw-bold btn-lg w-100 confirm-action"
-                  data-confirm="Run Phase 2 Crank? This will close deals, update valuations, and advance to Year {{ game.current_year + 1 }}. Cannot be undone.">
-            <i class="bi bi-fast-forward-circle me-2"></i> Run Phase 2 Crank &amp; Advance Year
+                  data-confirm="Run the Deal & Return Process? This will close deals, update valuations, and advance to Year {{ game.current_year + 1 }}. Cannot be undone.">
+            <i class="bi bi-fast-forward-circle me-2"></i> Run Deal &amp; Return Process &amp; Advance Year
           </button>
         </form>
         {% else %}
         <p class="text-secondary text-center py-3 mb-0">
           {% if game.status == 'paused' %}
             <i class="bi bi-pause-circle fs-3 d-block mb-2"></i>
-            Resume the game before running the crank.
+            Resume the game before running the process.
           {% else %}
             <i class="bi bi-lock fs-3 d-block mb-2"></i>
-            Phase 2 Crank is only available during Phase 2.
+            The Deal &amp; Return Process is only available during Phase 2.
           {% endif %}
         </p>
         {% endif %}

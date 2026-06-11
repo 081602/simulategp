@@ -29,10 +29,6 @@
               {% elif company.stage == 'mature' %}<span class="badge bg-success">Mature</span>{% endif %}
             </div>
           </div>
-          <div class="text-end">
-            <div class="text-light small">Expected Multiple</div>
-            <div class="fw-bold text-success fs-4">{{ "%.2f"|format(company.expected_multiple) }}x</div>
-          </div>
         </div>
       </div>
     </div>
@@ -253,15 +249,6 @@
                   </td>
                   <td>
                     <strong>{{ offer.team.firm_name }}</strong>
-                    <div class="text-light small">
-                      {% for i in range(1, 6) %}
-                        {% if i <= offer.team.reputation %}
-                          <i class="bi bi-star-fill text-warning" style="font-size:0.65rem;"></i>
-                        {% else %}
-                          <i class="bi bi-star text-secondary" style="font-size:0.65rem;"></i>
-                        {% endif %}
-                      {% endfor %}
-                    </div>
                   </td>
                   <td class="text-secondary">${{ "{:,.1f}M".format(offer.max_fill_equity) }}</td>
                   <td>

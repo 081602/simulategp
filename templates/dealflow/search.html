@@ -24,7 +24,7 @@
         <form method="POST" action="{{ url_for('search_companies') }}">
           <div class="row g-3 align-items-end">
 
-            <div class="col-md-4">
+            <div class="col-md-3">
               <label for="sector" class="form-label fw-semibold text-white">Sector</label>
               <select class="form-select bg-dark text-white border-secondary" id="sector" name="sector">
                 <option value="">All Sectors</option>
@@ -47,16 +47,28 @@
               </select>
             </div>
 
-            <div class="col-md-3">
-              <label for="max_capital" class="form-label fw-semibold text-white">Max Capital ($M)</label>
+            <div class="col-md-2">
+              <label for="min_funds" class="form-label fw-semibold text-white">Min Funds Wanted ($M)</label>
               <input type="number"
                      class="form-control bg-dark text-white border-secondary"
-                     id="max_capital"
-                     name="max_capital"
+                     id="min_funds"
+                     name="min_funds"
                      min="0"
                      step="0.5"
-                     placeholder="No limit"
-                     value="{{ request.form.get('max_capital', '') }}">
+                     placeholder="No min"
+                     value="{{ request.form.get('min_funds', '') }}">
+            </div>
+
+            <div class="col-md-2">
+              <label for="max_funds" class="form-label fw-semibold text-white">Max Funds Wanted ($M)</label>
+              <input type="number"
+                     class="form-control bg-dark text-white border-secondary"
+                     id="max_funds"
+                     name="max_funds"
+                     min="0"
+                     step="0.5"
+                     placeholder="No max"
+                     value="{{ request.form.get('max_funds', '') }}">
             </div>
 
             <div class="col-md-2">
@@ -71,7 +83,7 @@
     </div>
 
     <!-- Results -->
-    {% if results is defined %}
+    {% if results is not none %}
       {% if results %}
       <div class="d-flex align-items-center justify-content-between mb-3">
         <h5 class="mb-0">
@@ -105,12 +117,8 @@
 
               <div class="row g-2 mb-2">
                 <div class="col-6">
-                  <small class="text-light d-block">Capital Requested</small>
+                  <small class="text-light d-block">Funds Wanted</small>
                   <span class="fw-bold">${{ "{:,.1f}M".format(company.capital_requested) }}</span>
-                </div>
-                <div class="col-6">
-                  <small class="text-light d-block">Expected Multiple</small>
-                  <span class="fw-bold text-success">{{ "%.2f"|format(company.expected_multiple) }}x</span>
                 </div>
               </div>
 

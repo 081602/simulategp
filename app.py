@@ -140,7 +140,7 @@ def firm_directory():
     game = Game.query.get(current_user.game_id)
     teams = (Team.query
              .filter_by(game_id=game.id, is_admin=False)
-             .order_by(Team.reputation.desc())
+             .order_by(Team.firm_name)
              .all())
     return render_template('firms.html', teams=teams, game=game)
 
@@ -186,6 +186,9 @@ def dealflow():
                            search_map=search_map)
 
 
+MAX_SEARCH_RESULTS = 15  # cap on new companies found per search
+
+
 @app.route('/dealflow/search', methods=['GET', 'POST'])
 @login_required
 def search_companies():
@@ -198,20 +201,13 @@ def search_companies():
         game_id=game.id).distinct().all()
     sectors = sorted(set(s[0].split('/')[0].strip() for s in all_sectors))
 
-    results = []
+    results = None  # None = no search submitted yet; searches are free/unlimited
     if request.method == 'POST':
+        results = []
         sector_filter = request.form.get('sector', '')
         stage_filter = request.form.get('stage', '')
-        max_capital = request.form.get('max_capital', '')
-
-        # Cost in query points
-        cost = 1
-        if sector_filter:
-            cost = 1
-        if stage_filter:
-            cost += 0
-        if max_capital:
-            cost += 0
+        min_funds = request.form.get('min_funds', '')
+        max_funds = request.form.get('max_funds', '')
 
         # Build query
         query = GameCompany.query.filter_by(
@@ -222,10 +218,16 @@ def search_companies():
             query = query.filter(GameCompany.sector == sector_filter)
         if stage_filter:
             query = query.filter(GameCompany.stage == stage_filter)
-        if max_capital:
+        if min_funds:
             try:
                 query = query.filter(
-                    GameCompany.capital_requested <= float(max_capital))
+                    GameCompany.capital_requested >= float(min_funds))
+            except ValueError:
+                pass
+        if max_funds:
+            try:
+                query = query.filter(
+                    GameCompany.capital_requested <= float(max_funds))
             except ValueError:
                 pass
 
@@ -236,16 +238,22 @@ def search_companies():
             s.company_id for s in CompanySearch.query.filter_by(
                 team_id=current_user.id, game_year=game.current_year).all())
 
-        for c in companies:
-            if c.id not in already_found:
-                cs = CompanySearch(
-                    team_id=current_user.id,
-                    company_id=c.id,
-                    game_year=game.current_year,
-                    found_by_search=True
-                )
-                db.session.add(cs)
-                results.append(c)
+        new_matches = [c for c in companies if c.id not in already_found]
+        if len(new_matches) > MAX_SEARCH_RESULTS:
+            new_matches = random.sample(new_matches, MAX_SEARCH_RESULTS)
+            flash(f'Your search matched more companies than your analysts '
+                  f'could evaluate — showing {MAX_SEARCH_RESULTS}. '
+                  f'Narrow your criteria to see specific targets.', 'info')
+
+        for c in new_matches:
+            cs = CompanySearch(
+                team_id=current_user.id,
+                company_id=c.id,
+                game_year=game.current_year,
+                found_by_search=True
+            )
+            db.session.add(cs)
+            results.append(c)
 
         # Shamrock: small chance of finding one extra company outside criteria
         all_available = GameCompany.query.filter_by(
@@ -550,7 +558,7 @@ def finalize_deal_route(deal_id):
             # Reputation hit
             current_user.reputation = max(1.0, current_user.reputation - 0.5)
             _notify(current_user.id,
-                    f'You dropped the deal on {company.name}. Reputation affected.',
+                    f'You dropped the deal on {company.name}.',
                     'deal_lost', company.id)
             db.session.commit()
             flash(f'Deal on {company.name} dropped.', 'warning')
@@ -928,7 +936,7 @@ def admin_create_team():
         game_id=game.id,
         username=username,
         firm_name=firm_name,
-        reputation=2.0,
+        reputation=5.0,
         sector_focus=sector_focus,
         fund_type=fund_type,
         num_partners=num_partners,
@@ -1016,14 +1024,13 @@ def admin_edit_team(team_id):
     game = Game.query.get(team.game_id)
     if request.method == 'POST':
         team.firm_name = request.form.get('firm_name', team.firm_name)
-        team.reputation = float(request.form.get('reputation', team.reputation))
         new_pw = request.form.get('new_password', '').strip()
         if new_pw:
             team.set_password(new_pw)
 
         # Fund adjustments
         for fund in team.funds:
-            key = f'fund_{fund.id}_capital'
+            key = f'fund_cap_{fund.id}'
             if key in request.form:
                 adj = float(request.form[key])
                 fund.available_capital = adj
@@ -1147,14 +1154,14 @@ def admin_crank():
             game.status = 'in_crank'
             db.session.commit()
             run_phase1_crank(game)
-            flash(f'Phase 1 Crank complete. Year {game.current_year} Phase 2 is now open.', 'success')
+            flash(f'Deal Process complete. Year {game.current_year} Phase 2 is now open.', 'success')
         elif crank_type == 'phase2' and game.current_phase == 2:
             game.status = 'in_crank'
             db.session.commit()
             run_phase2_crank(game)
-            flash(f'Phase 2 Crank complete. Year {game.current_year} Phase 1 is now open.', 'success')
+            flash(f'Deal & Return Process complete. Year {game.current_year} Phase 1 is now open.', 'success')
         else:
-            flash('Invalid crank for current phase.', 'danger')
+            flash('Invalid process for current phase.', 'danger')
 
         return redirect(url_for('admin_crank'))
 

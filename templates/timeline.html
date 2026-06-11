@@ -46,15 +46,6 @@
                 </td>
                 <td>
                   <span class="fw-semibold">{{ ts.lead_team.firm_name }}</span>
-                  <div class="text-light small">
-                    {% for i in range(1, 6) %}
-                      {% if i <= ts.lead_team.reputation %}
-                        <i class="bi bi-star-fill text-warning" style="font-size:0.65rem;"></i>
-                      {% else %}
-                        <i class="bi bi-star text-secondary" style="font-size:0.65rem;"></i>
-                      {% endif %}
-                    {% endfor %}
-                  </div>
                 </td>
                 <td>${{ "{:,.1f}M".format(ts.pre_money_valuation) }}</td>
                 <td>${{ "{:,.1f}M".format(ts.total_investment) }}</td>

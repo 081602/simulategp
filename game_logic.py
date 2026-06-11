@@ -40,10 +40,10 @@ def run_phase1_crank(game: Game):
             continue
 
         # Score each term sheet from the company's perspective
+        # (reputation currently unused in scoring)
         scored = []
         for ts in term_sheets:
-            lead_team = Team.query.get(ts.team_id)
-            score = ts.company_score + (lead_team.reputation * 0.5)
+            score = ts.company_score
             scored.append((score, ts))
 
         # Sort descending — highest score wins lead
@@ -54,21 +54,13 @@ def run_phase1_crank(game: Game):
         # Mark lead
         lead_ts.status = 'lead'
 
-        # Find compatible fills (willing_to_fill, compatible terms, reputation threshold)
+        # Find compatible fills (willing_to_fill, compatible terms)
+        # (reputation threshold currently unused)
         for score, ts in scored[1:]:
             if not ts.willing_to_fill:
                 ts.status = 'rejected'
                 _notify(ts.team_id,
                         f"Your term sheet on {company.name} was not selected as lead.",
-                        'deal_lost', company.id)
-                continue
-
-            team = Team.query.get(ts.team_id)
-            if team.reputation < ts.min_lead_reputation:
-                # Fill's own threshold wasn't met by lead
-                ts.status = 'rejected'
-                _notify(ts.team_id,
-                        f"Your term sheet on {company.name} was not selected.",
                         'deal_lost', company.id)
                 continue
 
@@ -201,8 +193,49 @@ def run_phase2_crank(game: Game):
                 'crank_complete')
 
 
+# Stage-typical fundamentals: deviations from these tilt a company's return profile.
+STAGE_TYPICAL_FUNDAMENTALS = {
+    #                 (3yr revenue growth, LTM EBITDA margin)
+    'startup':        (1.50, -0.60),
+    'developing':     (0.50, -0.10),
+    'early_revenue':  (0.45,  0.05),
+    'mature':         (0.07,  0.18),
+}
+GROWTH_RETURN_WEIGHT = 0.10   # 10 pts of above-typical growth -> +1% expected return
+MARGIN_RETURN_WEIGHT = 0.20   # 10 pts of above-typical margin -> +2% expected return
+MAX_FUNDAMENTALS_TILT = 0.05  # cap on total expected-return shift (+/- 5%)
+MARGIN_VOL_WEIGHT = 0.6       # 10 pts of above-typical margin -> -6% relative volatility
+VOL_FACTOR_RANGE = (0.75, 1.25)
+
+
+def _fundamentals_adjustment(company: GameCompany, mu: float, sigma: float):
+    """Tilt (mu, sigma) by how the company's growth/margin compare to stage-typical values.
+
+    Above-typical revenue growth or EBITDA margin raises expected return;
+    above-typical margin also dampens volatility (steadier businesses), and
+    below-typical margin amplifies it. Companies without metrics are unaffected.
+    """
+    typical_growth, typical_margin = STAGE_TYPICAL_FUNDAMENTALS.get(
+        company.stage, (0.20, 0.10))
+
+    tilt = 0.0
+    if company.revenue_growth_3yr is not None:
+        tilt += GROWTH_RETURN_WEIGHT * (company.revenue_growth_3yr - typical_growth)
+    if company.ltm_ebitda_margin is not None:
+        tilt += MARGIN_RETURN_WEIGHT * (company.ltm_ebitda_margin - typical_margin)
+    tilt = max(-MAX_FUNDAMENTALS_TILT, min(MAX_FUNDAMENTALS_TILT, tilt))
+
+    vol_factor = 1.0
+    if company.ltm_ebitda_margin is not None:
+        vol_factor = 1.0 - MARGIN_VOL_WEIGHT * (company.ltm_ebitda_margin - typical_margin)
+        vol_factor = max(VOL_FACTOR_RANGE[0], min(VOL_FACTOR_RANGE[1], vol_factor))
+
+    return mu + tilt, sigma * vol_factor
+
+
 def _roll_outcome(company: GameCompany, market_condition: float) -> float:
-    """Sample annual return from N(expected_return, std_dev) for this company's sector/stage."""
+    """Sample annual return from N(expected_return, std_dev) for this company's
+    sector/stage, tilted by the company's fundamentals (growth, EBITDA margin)."""
     assumption = ReturnAssumption.query.filter_by(
         sector=company.sector, stage=company.stage
     ).first()
@@ -211,6 +244,7 @@ def _roll_outcome(company: GameCompany, market_condition: float) -> float:
         sigma = assumption.std_dev
     else:
         mu, sigma = 0.10, 0.25
+    mu, sigma = _fundamentals_adjustment(company, mu, sigma)
     annual_return = random.gauss(mu, sigma)
     multiple = max(0.0, 1.0 + annual_return) * market_condition
     return multiple

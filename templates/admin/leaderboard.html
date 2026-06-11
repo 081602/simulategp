@@ -66,7 +66,6 @@
               <tr>
                 <th class="text-center" style="width:60px;">Rank</th>
                 <th>Firm Name</th>
-                <th class="text-center">Reputation</th>
                 <th class="text-end">Unrealized IRR</th>
                 <th class="text-end">Realized IRR</th>
                 <th class="text-end">Total Capital</th>
@@ -97,17 +96,6 @@
                 <td>
                   <div class="fw-bold">{{ item.team.firm_name }}</div>
                   <div class="text-secondary small font-monospace">{{ item.team.username }}</div>
-                </td>
-                <td class="text-center">
-                  {% set rep = item.reputation | int %}
-                  {% for i in range(1, 6) %}
-                    {% if i <= rep %}
-                      <i class="bi bi-star-fill text-warning" style="font-size:0.75rem;"></i>
-                    {% else %}
-                      <i class="bi bi-star text-secondary" style="font-size:0.75rem;"></i>
-                    {% endif %}
-                  {% endfor %}
-                  <div class="text-secondary" style="font-size:0.7rem;">{{ "%.1f"|format(item.reputation) }}</div>
                 </td>
                 <td class="text-end">
                   <span class="fw-bold {% if item.unrealized_irr >= 20 %}text-success{% elif item.unrealized_irr >= 0 %}text-info{% else %}text-danger{% endif %} fs-5">

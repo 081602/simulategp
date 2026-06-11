@@ -15,6 +15,71 @@
       </div>
     </div>
 
+    <!-- Team Profile (read-only) -->
+    <div class="card border-secondary shadow mb-4">
+      <div class="card-header border-secondary">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-person-vcard text-warning"></i> Team Profile</h6>
+      </div>
+      <div class="card-body p-4">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <div class="text-secondary small">Username</div>
+            <code class="text-info fs-6">{{ team.username }}</code>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Current Password</div>
+            <code class="text-warning fs-6">{{ team.password_plain or 'unknown (reset below)' }}</code>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Mandate</div>
+            <span class="badge {% if team.fund_type == 'vc' %}bg-info text-dark{% else %}bg-primary{% endif %}">
+              {{ 'VC' if team.fund_type == 'vc' else 'PE' }}
+            </span>
+            <span class="badge bg-secondary">{{ team.sector_focus | title }}</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Partners</div>
+            <span class="text-white">{{ team.num_partners }}</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Available Capital</div>
+            <span class="text-success fw-bold">${{ "{:,.1f}M".format(team.total_available_capital) }}</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Created</div>
+            <span class="text-white">{{ team.created_at.strftime('%b %d, %Y') }}</span>
+          </div>
+          {% if team.about_us %}
+          <div class="col-12">
+            <div class="text-secondary small">About</div>
+            <span class="text-light">{{ team.about_us }}</span>
+          </div>
+          {% endif %}
+        </div>
+        {% for fund in team.funds %}
+        <hr class="border-secondary">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <div class="text-secondary small">{{ fund.name }}</div>
+            <span class="text-white">${{ "{:,.0f}M".format(fund.total_capital) }} committed</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Deployed</div>
+            <span class="text-white">${{ "{:,.1f}M".format(fund.deployed_capital) }}</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Mgmt / Perf Fee</div>
+            <span class="text-white">{{ "%.1f"|format(fund.management_fee_rate * 100) }}% / {{ "%.0f"|format(fund.performance_fee_rate * 100) }}%</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Operating Cost</div>
+            <span class="text-white">{{ "%.2f"|format(fund.operating_cost_rate * 100) }}%/yr</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
     <form method="POST" action="{{ url_for('admin_edit_team', team_id=team.id) }}">
 
       <!-- Basic Info -->
@@ -32,32 +97,6 @@
                      value="{{ team.firm_name }}" maxlength="100" required>
             </div>
 
-            <div class="col-12">
-              <label for="reputation" class="form-label fw-semibold d-flex align-items-center justify-content-between">
-                <span>Reputation</span>
-                <span class="badge bg-warning text-dark" id="rep_display">{{ "%.1f"|format(team.reputation) }} / 5.0</span>
-              </label>
-              <input type="range" class="form-range" id="reputation" name="reputation"
-                     min="0" max="5" step="0.5"
-                     value="{{ team.reputation }}">
-              <div class="d-flex justify-content-between text-secondary small">
-                <span>0 &mdash; No Reputation</span>
-                <span>5 &mdash; Elite</span>
-              </div>
-              <!-- Star preview -->
-              <div class="mt-2" id="rep_stars">
-                {% for i in range(1, 6) %}
-                  {% if i <= team.reputation %}
-                    <i class="bi bi-star-fill text-warning fs-5"></i>
-                  {% elif i <= team.reputation + 0.5 %}
-                    <i class="bi bi-star-half text-warning fs-5"></i>
-                  {% else %}
-                    <i class="bi bi-star text-secondary fs-5"></i>
-                  {% endif %}
-                {% endfor %}
-              </div>
-            </div>
-
           </div>
         </div>
       </div>
@@ -69,10 +108,10 @@
         </div>
         <div class="card-body p-4">
           <div class="col-md-8">
-            <label for="new_password" class="form-label fw-semibold text-white">New Password <span class="text-secondary small fw-normal">(leave blank to keep current)</span></label>
-            <input type="password" class="form-control bg-dark text-white border-secondary"
+            <label for="new_password" class="form-label fw-semibold text-white">New Password <span class="text-secondary small fw-normal">(leave blank to keep current: <code class="text-warning">{{ team.password_plain or '?' }}</code>)</span></label>
+            <input type="text" class="form-control bg-dark text-white border-secondary"
                    id="new_password" name="new_password"
-                   autocomplete="new-password"
+                   autocomplete="off"
                    placeholder="Enter new password to change&hellip;">
           </div>
         </div>
@@ -128,28 +167,4 @@
 </div>
 {% endblock %}
 
-{% block scripts %}
-<script>
-  var repSlider = document.getElementById('reputation');
-  var repDisplay = document.getElementById('rep_display');
-  var repStars = document.getElementById('rep_stars');
-
-  function updateReputation() {
-    var val = parseFloat(repSlider.value);
-    repDisplay.textContent = val.toFixed(1) + ' / 5.0';
-    var starsHtml = '';
-    for (var i = 1; i <= 5; i++) {
-      if (i <= val) {
-        starsHtml += '<i class="bi bi-star-fill text-warning fs-5"></i>';
-      } else if (i <= val + 0.5) {
-        starsHtml += '<i class="bi bi-star-half text-warning fs-5"></i>';
-      } else {
-        starsHtml += '<i class="bi bi-star text-secondary fs-5"></i>';
-      }
-    }
-    repStars.innerHTML = starsHtml;
-  }
-  repSlider.addEventListener('input', updateReputation);
-</script>
-{% endblock %}
 

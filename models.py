@@ -14,7 +14,7 @@ class Game(db.Model):
     current_phase = db.Column(db.Integer, default=1)  # 1 or 2
     status = db.Column(db.String(20), default='active')  # active, paused, in_crank
     market_condition = db.Column(db.Float, default=1.0)  # multiplier on outcome distributions
-    query_points_per_year = db.Column(db.Integer, default=10)
+    query_points_per_year = db.Column(db.Integer, default=10)  # unused — searches are free
     total_years = db.Column(db.Integer, default=7)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -31,11 +31,12 @@ class Team(db.Model, UserMixin):
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'), nullable=False)
     username = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
+    password_plain = db.Column(db.String(100), default='')  # shown to admin; classroom tool, not sensitive
     firm_name = db.Column(db.String(100), nullable=False)
     about_us = db.Column(db.Text, default='')
-    reputation = db.Column(db.Float, default=2.0)  # 1–5 scale
+    reputation = db.Column(db.Float, default=5.0)  # 1–5 scale (currently unused in UI/logic)
     is_admin = db.Column(db.Boolean, default=False)
-    query_points = db.Column(db.Integer, default=10)
+    query_points = db.Column(db.Integer, default=10)  # unused — searches are free
     sector_focus = db.Column(db.String(30), default='generalist')  # generalist or a sector name
     fund_type = db.Column(db.String(10), default='pe')             # 'vc' or 'pe'
     num_partners = db.Column(db.Integer, default=5)                # set by fund size at creation
@@ -47,6 +48,7 @@ class Team(db.Model, UserMixin):
 
     def set_password(self, pw):
         self.password_hash = generate_password_hash(pw)
+        self.password_plain = pw
 
     def check_password(self, pw):
         return check_password_hash(self.password_hash, pw)
