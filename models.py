@@ -36,6 +36,9 @@ class Team(db.Model, UserMixin):
     reputation = db.Column(db.Float, default=2.0)  # 1–5 scale
     is_admin = db.Column(db.Boolean, default=False)
     query_points = db.Column(db.Integer, default=10)
+    sector_focus = db.Column(db.String(30), default='generalist')  # generalist or a sector name
+    fund_type = db.Column(db.String(10), default='pe')             # 'vc' or 'pe'
+    num_partners = db.Column(db.Integer, default=5)                # set by fund size at creation
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     funds = db.relationship('Fund', backref='team', lazy=True, cascade='all, delete-orphan')
@@ -56,6 +59,28 @@ class Team(db.Model, UserMixin):
     def unread_notifications(self):
         return sum(1 for n in self.notifications if not n.is_read)
 
+    @property
+    def allowed_stages(self):
+        """VC funds invest in startup/developing; PE funds in early_revenue/mature."""
+        if self.fund_type == 'vc':
+            return ('startup', 'developing')
+        return ('early_revenue', 'mature')
+
+    @property
+    def fund_type_label(self):
+        return 'Venture Capital' if self.fund_type == 'vc' else 'Private Equity'
+
+    def investment_block_reason(self, company):
+        """Return None if this team may invest in the company, else a human-readable reason."""
+        if company.stage not in self.allowed_stages:
+            return (f'{company.name} is a {company.stage_label} company. As a '
+                    f'{self.fund_type_label} fund you can only invest in '
+                    f'{" and ".join(s.replace("_", " ").title() for s in self.allowed_stages)} companies.')
+        if self.sector_focus != 'generalist' and company.sector != self.sector_focus:
+            return (f'{company.name} is in {company.sector}. Your fund mandate '
+                    f'is limited to {self.sector_focus}.')
+        return None
+
 
 class Fund(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -66,6 +91,7 @@ class Fund(db.Model):
     year_raised = db.Column(db.Integer, nullable=False, default=1)
     management_fee_rate = db.Column(db.Float, default=0.02)    # e.g. 0.02 = 2%
     performance_fee_rate = db.Column(db.Float, default=0.20)   # e.g. 0.20 = 20% carried interest
+    operating_cost_rate = db.Column(db.Float, default=0.01)    # GP opex, % of committed capital/yr
     is_active = db.Column(db.Boolean, default=True)
 
     transactions = db.relationship('FundTransaction', backref='fund', lazy=True, cascade='all, delete-orphan')

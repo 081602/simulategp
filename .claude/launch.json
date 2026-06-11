@@ -6,7 +6,8 @@
       "runtimeExecutable": "C:\\Users\\JaimeDalmeida\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
       "runtimeArgs": ["app.py"],
       "cwd": "C:\\Users\\JaimeDalmeida\\OneDrive - d'Almeida Consulting LLC\\_Teaching\\Babson\\SimulateGP Website",
-      "port": 5000
+      "port": 5000,
+      "autoPort": false
     }
   ]
 }

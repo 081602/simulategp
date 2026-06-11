@@ -28,6 +28,7 @@
               <tr>
                 <th>Firm Name</th>
                 <th>Username</th>
+                <th class="text-center">Mandate</th>
                 <th class="text-center">Reputation</th>
                 <th class="text-end">Available Capital</th>
                 <th class="text-center"># Deals</th>
@@ -44,6 +45,13 @@
                   {% endif %}
                 </td>
                 <td class="text-secondary font-monospace">{{ team.username }}</td>
+                <td class="text-center">
+                  <span class="badge {% if team.fund_type == 'vc' %}bg-info text-dark{% else %}bg-primary{% endif %}">
+                    {{ 'VC' if team.fund_type == 'vc' else 'PE' }}
+                  </span>
+                  <span class="badge bg-secondary">{{ team.sector_focus | title }}</span>
+                  <div class="text-light small mt-1">{{ team.num_partners }} partners</div>
+                </td>
                 <td class="text-center">
                   <div>
                     {% set rep = team.reputation | int %}
@@ -144,9 +152,31 @@
                    name="password" required placeholder="e.g. pass4">
           </div>
           <div class="mb-3">
-            <label class="form-label fw-semibold text-white">Starting Capital ($M)</label>
-            <input type="number" class="form-control bg-dark text-white border-secondary"
-                   name="starting_capital" value="100" min="1" step="1" required>
+            <label class="form-label fw-semibold text-white">Fund Size</label>
+            <select class="form-select bg-dark text-white border-secondary" name="fund_size" required>
+              <option value="500" selected>$500M &mdash; 5 partners &middot; 1.00% opex</option>
+              <option value="750">$750M &mdash; 8 partners &middot; 0.80% opex</option>
+              <option value="1000">$1B &mdash; 12 partners &middot; 0.75% opex</option>
+            </select>
+          </div>
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="form-label fw-semibold text-white">Fund Type</label>
+              <select class="form-select bg-dark text-white border-secondary" name="fund_type" required>
+                <option value="pe" selected>Private Equity</option>
+                <option value="vc">Venture Capital</option>
+              </select>
+              <div class="form-text text-light small">VC: Startup &amp; Developing. PE: Early Revenue &amp; Mature.</div>
+            </div>
+            <div class="col-6">
+              <label class="form-label fw-semibold text-white">Sector Focus</label>
+              <select class="form-select bg-dark text-white border-secondary" name="sector_focus" required>
+                <option value="generalist" selected>Generalist (any sector)</option>
+                {% for s in sectors %}
+                <option value="{{ s }}">{{ s }}</option>
+                {% endfor %}
+              </select>
+            </div>
           </div>
           <div class="row g-2 mb-3">
             <div class="col-6">

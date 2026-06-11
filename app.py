@@ -10,7 +10,8 @@ from models import (db, Game, Team, Fund, CompanyTemplate, GameCompany,
                     CompanySearch, TermSheet, Deal, DealEquity,
                     FundTransaction, Notification, ReturnAssumption)
 from game_logic import (run_phase1_crank, run_phase2_crank,
-                        team_irr, finalize_deal, _notify, _record_transaction)
+                        team_irr, team_gp_income, finalize_deal,
+                        _notify, _record_transaction)
 
 # ---------------------------------------------------------------------------
 # App Setup
@@ -358,9 +359,16 @@ def create_term_sheet(company_id):
         flash('This company is no longer available for new term sheets.', 'warning')
         return redirect(url_for('company_detail', company_id=company_id))
 
+    block_reason = current_user.investment_block_reason(company)
+    if block_reason:
+        flash(block_reason, 'danger')
+        return redirect(url_for('company_detail', company_id=company_id))
+
     funds = Fund.query.filter_by(team_id=current_user.id, is_active=True).all()
-    teams = Team.query.filter_by(game_id=game.id, is_admin=False).filter(
-        Team.id != current_user.id).all()
+    # Only offer syndicate partners whose mandate also allows this company
+    teams = [t for t in Team.query.filter_by(game_id=game.id, is_admin=False)
+             .filter(Team.id != current_user.id).all()
+             if t.investment_block_reason(company) is None]
 
     if request.method == 'POST':
         try:
@@ -887,7 +895,8 @@ def admin_reset_clock():
 def admin_teams():
     game = Game.query.first()
     teams = Team.query.filter_by(game_id=game.id, is_admin=False).all() if game else []
-    return render_template('admin/teams.html', game=game, teams=teams)
+    return render_template('admin/teams.html', game=game, teams=teams,
+                           sectors=SECTORS, fund_sizes=FUND_SIZE_PARTNERS)
 
 
 @app.route('/admin/teams/create', methods=['POST'])
@@ -902,7 +911,10 @@ def admin_create_team():
     firm_name = request.form.get('firm_name', '').strip()
     username = request.form.get('username', '').strip()
     password = request.form.get('password', '').strip()
-    starting_capital = float(request.form.get('starting_capital', 100))
+    fund_size = float(request.form.get('fund_size', 500))
+    num_partners = FUND_SIZE_PARTNERS.get(int(fund_size), 5)
+    sector_focus = request.form.get('sector_focus', 'generalist')
+    fund_type = request.form.get('fund_type', 'pe')
 
     if not firm_name or not username or not password:
         flash('Firm name, username, and password are required.', 'danger')
@@ -917,6 +929,9 @@ def admin_create_team():
         username=username,
         firm_name=firm_name,
         reputation=2.0,
+        sector_focus=sector_focus,
+        fund_type=fund_type,
+        num_partners=num_partners,
     )
     team.set_password(password)
     db.session.add(team)
@@ -927,11 +942,12 @@ def admin_create_team():
     fund = Fund(
         team_id=team.id,
         name=f'{firm_name} Fund I',
-        total_capital=starting_capital,
-        available_capital=starting_capital,
+        total_capital=fund_size,
+        available_capital=fund_size,
         year_raised=game.current_year,
         management_fee_rate=management_fee,
         performance_fee_rate=performance_fee,
+        operating_cost_rate=FUND_SIZE_OPEX.get(int(fund_size), 0.01),
     )
     db.session.add(fund)
     db.session.commit()
@@ -1020,6 +1036,8 @@ def admin_edit_team(team_id):
 
 SECTORS = ['Consumer', 'Energy', 'Healthcare', 'Industrials', 'Technology']
 STAGES = ['startup', 'developing', 'early_revenue', 'mature']
+FUND_SIZE_PARTNERS = {500: 5, 750: 8, 1000: 12}        # fund size ($M) -> total partners
+FUND_SIZE_OPEX = {500: 0.01, 750: 0.008, 1000: 0.0075}  # fund size ($M) -> GP operating cost %/yr
 STAGE_LABELS = {'startup': 'Startup', 'developing': 'Developing',
                 'early_revenue': 'Early Revenue', 'mature': 'Mature'}
 
@@ -1199,6 +1217,7 @@ def admin_leaderboard():
             val = s.deal.company.latest_valuation or 0
             portfolio_val += val * (s.ownership_pct / 100.0)
 
+        gp_income = team_gp_income(team)
         team_data.append({
             'team': team,
             'unrealized_irr': u_irr,
@@ -1208,7 +1227,8 @@ def admin_leaderboard():
             'deployed': total_deployed,
             'portfolio_value': portfolio_val,
             'reputation': team.reputation,
-            'deal_count': len(stakes)
+            'deal_count': len(stakes),
+            'gp_income': gp_income,
         })
 
     team_data.sort(key=lambda x: x['unrealized_irr'], reverse=True)

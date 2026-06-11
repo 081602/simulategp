@@ -296,6 +296,14 @@ def calculate_irr(cash_flows: list) -> float:
     if not cash_flows:
         return 0.0
 
+    # IRR needs at least one outflow and one inflow to be defined
+    has_outflow = any(cf < 0 for _, cf in cash_flows)
+    has_inflow = any(cf > 0 for _, cf in cash_flows)
+    if not has_outflow:
+        return 0.0
+    if not has_inflow:
+        return -1.0  # invested with nothing back = total loss
+
     def npv(rate):
         return sum(cf / ((1 + rate) ** yr) for yr, cf in cash_flows)
 
@@ -306,13 +314,13 @@ def calculate_irr(cash_flows: list) -> float:
     try:
         for _ in range(200):
             f = npv(rate)
-            df = npv_deriv(rate)
-            if df == 0:
-                break
-            rate -= f / df
-            rate = max(-0.999, min(rate, 100.0))  # clamp to prevent overflow
             if abs(f) < 1e-6:
                 break
+            df = npv_deriv(rate)
+            if df == 0:
+                return 0.0  # can't converge; don't report the initial guess
+            rate -= f / df
+            rate = max(-0.999, min(rate, 100.0))  # clamp to prevent overflow
     except (OverflowError, ZeroDivisionError):
         return 0.0
 
@@ -354,9 +362,10 @@ def team_irr(team_id: int, game: Game, unrealized: bool = False):
             net_val = max(0, val - debt)
             portfolio_value += net_val * (stake.ownership_pct / 100.0)
 
-        flows_by_year[game.current_year] = (
-            flows_by_year.get(game.current_year, 0) + portfolio_value
-        )
+        if portfolio_value > 0:
+            flows_by_year[game.current_year] = (
+                flows_by_year.get(game.current_year, 0) + portfolio_value
+            )
 
     if not flows_by_year:
         return 0.0
@@ -366,6 +375,58 @@ def team_irr(team_id: int, game: Game, unrealized: bool = False):
     base_year = cf_list[0][0]
     normalized = [(yr - base_year, amt) for yr, amt in cf_list]
     return calculate_irr(normalized)
+
+
+def team_gp_income(team):
+    """
+    GP income earned by the firm (not the fund):
+    - Management fees charged to their funds each year (on committed capital)
+    - minus operating costs (fund-size-based %, accrued each year fees are charged)
+    - plus carried interest on a NET basis per fund: performance fee rate x
+      max(0, total realized proceeds - total invested in realized deals),
+      so losses (incl. bankruptcies) offset gains.
+    Returns dict with mgmt_fees, operating_costs, carried_interest, total,
+    per_partner ($M).
+    """
+    mgmt_fees = 0.0
+    operating_costs = 0.0
+    carried_interest = 0.0
+
+    for fund in team.funds:
+        fee_txs = (FundTransaction.query
+                   .filter_by(fund_id=fund.id, transaction_type='management_fee')
+                   .all())
+        mgmt_fees += sum(abs(tx.amount) for tx in fee_txs)
+        # Opex accrues for each year the fund operated (one fee charge per year)
+        years_operated = len(fee_txs)
+        operating_costs += fund.total_capital * (fund.operating_cost_rate or 0) * years_operated
+
+        # Net realized result across this fund's exited deals
+        stakes = (DealEquity.query
+                  .join(Deal, DealEquity.deal_id == Deal.id)
+                  .filter(DealEquity.fund_id == fund.id,
+                          Deal.status.in_(['liquidated', 'bankrupt']))
+                  .all())
+        net_realized = 0.0
+        for stake in stakes:
+            payout_txs = (FundTransaction.query
+                          .filter_by(fund_id=fund.id,
+                                     transaction_type='liquidation_proceeds',
+                                     company_id=stake.deal.company_id)
+                          .all())
+            payout = sum(tx.amount for tx in payout_txs)
+            net_realized += payout - stake.equity_invested
+        carried_interest += max(0.0, net_realized) * (fund.performance_fee_rate or 0.20)
+
+    total = mgmt_fees - operating_costs + carried_interest
+    partners = team.num_partners or 1
+    return {
+        'mgmt_fees': mgmt_fees,
+        'operating_costs': operating_costs,
+        'carried_interest': carried_interest,
+        'total': total,
+        'per_partner': total / partners,
+    }
 
 
 # ---------------------------------------------------------------------------

@@ -357,6 +357,24 @@ footer {
 /* ----------------------------------------------------------
    Utility
    ---------------------------------------------------------- */
+/* Bootstrap's text-* utilities keep their light-mode colors even under
+   data-bs-theme="dark"; lighten them for contrast on the navy background */
+.text-primary {
+  color: #6ea8fe !important;
+}
+
+.text-secondary {
+  color: #94a3b8 !important;
+}
+
+.text-success {
+  color: #4ade80 !important;
+}
+
+.text-danger {
+  color: #f87171 !important;
+}
+
 .font-monospace {
   font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
 }

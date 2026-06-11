@@ -28,6 +28,15 @@
               {% endif %}
             </div>
 
+            <!-- Mandate -->
+            <div class="mb-2">
+              <span class="badge {% if team.fund_type == 'vc' %}bg-info text-dark{% else %}bg-primary{% endif %}">
+                {{ team.fund_type_label }}
+              </span>
+              <span class="badge bg-secondary">{{ team.sector_focus | title }}</span>
+              <span class="badge bg-dark border border-secondary">{{ team.num_partners }} partners</span>
+            </div>
+
             <!-- Reputation Stars -->
             <div class="mb-3">
               {% set rep = team.reputation | int %}
