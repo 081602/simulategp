@@ -117,16 +117,39 @@
 
               <div class="row g-2 mb-2">
                 <div class="col-6">
+                  {% if company.stage == 'mature' %}
+                  <small class="text-light d-block">Valuation Wanted</small>
+                  <span class="fw-bold">${{ "{:,.1f}M".format(company.initial_val_ask or 0) }}</span>
+                  {% else %}
                   <small class="text-light d-block">Funds Wanted</small>
-                  <span class="fw-bold">{% if company.stage == 'mature' %}<span class="text-secondary">N/A</span>{% else %}${{ "{:,.1f}M".format(company.capital_requested) }}{% endif %}</span>
+                  <span class="fw-bold">${{ "{:,.1f}M".format(company.capital_requested) }}</span>
+                  {% endif %}
+                </div>
+                <div class="col-6">
+                  <small class="text-light d-block">LTM Revenue</small>
+                  <span class="fw-bold">{% if company.ltm_revenue is not none %}${{ "{:,.1f}M".format(company.ltm_revenue) }}{% else %}&mdash;{% endif %}</span>
+                </div>
+                <div class="col-6">
+                  <small class="text-light d-block">3-Yr Rev Growth</small>
+                  <span>{% if company.revenue_growth_3yr is not none %}{{ "%.0f"|format(company.revenue_growth_3yr * 100) }}%{% else %}&mdash;{% endif %}</span>
+                </div>
+                <div class="col-6">
+                  <small class="text-light d-block">EBITDA Margin</small>
+                  <span class="{% if company.ltm_ebitda_margin is not none and company.ltm_ebitda_margin < 0 %}text-danger{% endif %}">
+                    {% if company.ltm_ebitda_margin is not none %}{{ "%.0f"|format(company.ltm_ebitda_margin * 100) }}%{% else %}&mdash;{% endif %}
+                  </span>
                 </div>
               </div>
 
             </div>
-            <div class="card-footer border-secondary bg-transparent">
-              <a href="{{ url_for('company_detail', company_id=company.id) }}" class="btn btn-outline-warning btn-sm w-100">
+            <div class="card-footer border-secondary bg-transparent d-flex gap-2">
+              <a href="{{ url_for('company_detail', company_id=company.id) }}" class="btn btn-outline-warning btn-sm flex-fill">
                 <i class="bi bi-eye"></i> View Details
               </a>
+              <button type="button" class="btn btn-outline-info btn-sm flex-fill watchlist-add-btn"
+                      data-company-id="{{ company.id }}">
+                <i class="bi bi-bookmark-plus"></i> Add to Watchlist
+              </button>
             </div>
           </div>
         </div>
@@ -146,6 +169,27 @@
 
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.watchlist-add-btn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    btn.disabled = true;
+    fetch('/company/' + btn.dataset.companyId + '/watchlist', {
+      method: 'POST',
+      headers: { 'X-Requested-With': 'fetch' }
+    }).then(function (r) {
+      if (!r.ok) throw new Error();
+      btn.classList.remove('btn-outline-info');
+      btn.classList.add('btn-success');
+      btn.innerHTML = '<i class="bi bi-bookmark-check-fill"></i> On Watchlist';
+    }).catch(function () {
+      btn.disabled = false;
+    });
+  });
+});
+</script>
 {% endblock %}
 
 

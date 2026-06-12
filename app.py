@@ -4,7 +4,7 @@ import random
 from datetime import datetime
 from sqlalchemy import or_, and_
 from flask import (Flask, render_template, request, redirect, url_for,
-                   flash, jsonify, abort)
+                   flash, jsonify, abort, session)
 from flask_login import (LoginManager, login_user, logout_user,
                          login_required, current_user)
 from models import (db, Game, Team, Fund, CompanyTemplate, GameCompany,
@@ -170,21 +170,23 @@ def edit_firm():
 @login_required
 def dealflow():
     game = Game.query.get(current_user.game_id)
-    # Companies this team has already found this year
-    found_searches = (CompanySearch.query
-                      .filter_by(team_id=current_user.id,
-                                 game_year=game.current_year)
-                      .all())
-    found_company_ids = [s.company_id for s in found_searches]
-    found_companies = GameCompany.query.filter(
-        GameCompany.id.in_(found_company_ids)).all() if found_company_ids else []
+    rows = CompanySearch.query.filter_by(team_id=current_user.id).all()
 
-    # Categorize: searched vs referred
-    search_map = {s.company_id: s for s in found_searches}
+    watchlist_ids = [r.company_id for r in rows if r.on_watchlist]
+    watchlist_companies = (GameCompany.query.filter(
+        GameCompany.id.in_(watchlist_ids)).all() if watchlist_ids else [])
+
+    # Inbound referrals not yet promoted to the watchlist
+    referral_map = {r.company_id: r for r in rows
+                    if not r.on_watchlist and not r.found_by_search}
+    referral_companies = (GameCompany.query.filter(
+        GameCompany.id.in_(list(referral_map))).all() if referral_map else [])
+
     return render_template('dealflow/index.html',
                            game=game,
-                           found_companies=found_companies,
-                           search_map=search_map)
+                           watchlist_companies=watchlist_companies,
+                           referral_companies=referral_companies,
+                           referral_map=referral_map)
 
 
 MAX_SEARCH_RESULTS = 15  # cap on new companies found per search
@@ -244,47 +246,33 @@ def search_companies():
 
         companies = query.all()
 
-        # Already found companies
-        already_found = set(
+        # Companies already on the watchlist or in referrals don't reappear;
+        # everything else can resurface in later searches (results are not saved)
+        known_ids = set(
             s.company_id for s in CompanySearch.query.filter_by(
-                team_id=current_user.id, game_year=game.current_year).all())
+                team_id=current_user.id).all())
 
-        new_matches = [c for c in companies if c.id not in already_found]
-        if len(new_matches) > MAX_SEARCH_RESULTS:
-            new_matches = random.sample(new_matches, MAX_SEARCH_RESULTS)
+        results = [c for c in companies if c.id not in known_ids]
+        if len(results) > MAX_SEARCH_RESULTS:
+            results = random.sample(results, MAX_SEARCH_RESULTS)
             flash(f'Your search matched more companies than your analysts '
                   f'could evaluate — showing {MAX_SEARCH_RESULTS}. '
                   f'Narrow your criteria to see specific targets.', 'info')
-
-        for c in new_matches:
-            cs = CompanySearch(
-                team_id=current_user.id,
-                company_id=c.id,
-                game_year=game.current_year,
-                found_by_search=True
-            )
-            db.session.add(cs)
-            results.append(c)
 
         # Shamrock: small chance of finding one extra company outside criteria
         all_available = GameCompany.query.filter_by(
             game_id=game.id, status='available').filter(
             GameCompany.year_available <= game.current_year).all()
         unseen = [c for c in all_available
-                  if c.id not in already_found and c not in results]
+                  if c.id not in known_ids and c not in results]
         if unseen and random.random() < 0.3:
             bonus = random.choice(unseen)
-            cs = CompanySearch(
-                team_id=current_user.id,
-                company_id=bonus.id,
-                game_year=game.current_year,
-                found_by_search=True
-            )
-            db.session.add(cs)
             results.append(bonus)
             flash(f'Your analysts stumbled upon an additional opportunity: {bonus.name}!', 'info')
 
-        db.session.commit()
+        # Grant view access to this result set until the next search
+        session['last_search_ids'] = [c.id for c in results]
+
         if not results:
             flash('No new companies found matching your criteria. Try relaxing your search parameters.', 'info')
 
@@ -300,12 +288,12 @@ def company_detail(company_id):
     game = Game.query.get(current_user.game_id)
     company = GameCompany.query.filter_by(id=company_id, game_id=game.id).first_or_404()
 
-    # Confirm team has found this company
+    # Viewable if on the watchlist / referred, in the latest search results,
+    # or by the admin
     search_record = CompanySearch.query.filter_by(
-        team_id=current_user.id, company_id=company_id,
-        game_year=game.current_year).first()
-    # Admin can always view
-    if not search_record and not current_user.is_admin:
+        team_id=current_user.id, company_id=company_id).first()
+    in_last_search = company_id in session.get('last_search_ids', [])
+    if not search_record and not in_last_search and not current_user.is_admin:
         abort(403)
 
     # Check if team already submitted a term sheet this year
@@ -325,7 +313,43 @@ def company_detail(company_id):
                            existing_ts=existing_ts,
                            teams=teams,
                            funds=funds,
+                           on_watchlist=bool(search_record and search_record.on_watchlist),
                            return_assumption=return_assumption)
+
+
+@app.route('/company/<int:company_id>/watchlist', methods=['POST'])
+@login_required
+def add_to_watchlist(company_id):
+    game = Game.query.get(current_user.game_id)
+    company = GameCompany.query.filter_by(id=company_id, game_id=game.id).first_or_404()
+    row = CompanySearch.query.filter_by(
+        team_id=current_user.id, company_id=company_id).first()
+    if row:
+        row.on_watchlist = True
+    else:
+        db.session.add(CompanySearch(
+            team_id=current_user.id, company_id=company_id,
+            game_year=game.current_year, found_by_search=True,
+            on_watchlist=True))
+    db.session.commit()
+    if request.headers.get('X-Requested-With') == 'fetch':
+        return jsonify({'ok': True, 'company': company.name})
+    flash(f'{company.name} added to your watchlist.', 'success')
+    return redirect(request.referrer or url_for('dealflow'))
+
+
+@app.route('/company/<int:company_id>/watchlist/remove', methods=['POST'])
+@login_required
+def remove_from_watchlist(company_id):
+    row = CompanySearch.query.filter_by(
+        team_id=current_user.id, company_id=company_id).first_or_404()
+    if row.found_by_search:
+        db.session.delete(row)       # forget it; future searches may resurface it
+    else:
+        row.on_watchlist = False     # referral: demote back to the referrals list
+    db.session.commit()
+    flash('Removed from watchlist.', 'info')
+    return redirect(url_for('dealflow'))
 
 
 @app.route('/company/<int:company_id>/refer', methods=['POST'])
@@ -454,6 +478,17 @@ def create_term_sheet(company_id):
                         f'{current_user.firm_name} has invited you to join a syndicate '
                         f'term sheet on {company.name}. Please review and approve on the Timeline.',
                         'fill_offered', company_id)
+
+            # Keep active deals visible: auto-add the company to the watchlist
+            cs = CompanySearch.query.filter_by(
+                team_id=current_user.id, company_id=company_id).first()
+            if cs:
+                cs.on_watchlist = True
+            else:
+                db.session.add(CompanySearch(
+                    team_id=current_user.id, company_id=company_id,
+                    game_year=game.current_year, found_by_search=True,
+                    on_watchlist=True))
 
             db.session.commit()
             flash('Term sheet submitted successfully!', 'success')

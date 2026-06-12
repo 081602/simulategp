@@ -62,7 +62,7 @@
           <div class="col-md-3">
             <div class="text-secondary small">Initial Valuation Ask</div>
             <span class="text-white fw-bold">${{ "{:,.1f}M".format(company.initial_val_ask or 0) }}</span>
-            <small class="text-secondary d-block">pre-money</small>
+            <small class="text-secondary d-block">{% if company.stage == 'mature' %}whole company{% else %}pre-money{% endif %}</small>
           </div>
           {% if company.status != 'available' %}
           <div class="col-md-3">
@@ -179,7 +179,7 @@
                        min="0" step="0.1"
                        value="{{ company.initial_val_ask }}" required>
               </div>
-              <div class="form-text text-light">Pre-money valuation wanted while listed</div>
+              <div class="form-text text-light">{% if company.stage == 'mature' %}Asking valuation for the whole company while listed{% else %}Pre-money valuation wanted while listed{% endif %}</div>
             </div>
 
             <div class="col-md-6">
@@ -238,10 +238,9 @@
             <div class="col-md-6">
               <label for="management_quality" class="form-label fw-semibold text-white">Management Quality</label>
               <select class="form-select bg-dark text-white border-secondary" id="management_quality" name="management_quality">
-                <option value="excellent" {% if company.management_quality == 'excellent' %}selected{% endif %}>Excellent</option>
-                <option value="good"      {% if company.management_quality == 'good' %}selected{% endif %}>Good</option>
-                <option value="average"   {% if company.management_quality == 'average' %}selected{% endif %}>Average</option>
-                <option value="poor"      {% if company.management_quality == 'poor' %}selected{% endif %}>Poor</option>
+                <option value="strong"  {% if company.management_quality == 'strong' %}selected{% endif %}>Strong</option>
+                <option value="average" {% if company.management_quality == 'average' %}selected{% endif %}>Average</option>
+                <option value="weak"    {% if company.management_quality == 'weak' %}selected{% endif %}>Weak</option>
               </select>
             </div>
 

@@ -28,7 +28,7 @@
               <tr>
                 <th>Company</th>
                 <th>Lead Team</th>
-                <th>Pre-Money Val.</th>
+                <th>Valuation</th>
                 <th>Investment Size</th>
                 <th>Type</th>
                 <th>Liq. Pref.</th>
@@ -90,7 +90,7 @@
             <thead>
               <tr>
                 <th>Company</th>
-                <th>Pre-Money Val.</th>
+                <th>Valuation</th>
                 <th>Total Investment</th>
                 <th>Type</th>
                 <th>Status</th>
@@ -167,7 +167,7 @@
                 {% if deal.lead_term_sheet %}
                 <div class="row g-1 mb-3">
                   <div class="col-6">
-                    <div class="text-secondary" style="font-size:0.75rem;">Pre-Money</div>
+                    <div class="text-secondary" style="font-size:0.75rem;">{% if deal.company.stage == 'mature' %}Purchase Val.{% else %}Pre-Money{% endif %}</div>
                     <div class="fw-semibold small">${{ "{:,.1f}M".format(deal.lead_term_sheet.pre_money_valuation) }}</div>
                   </div>
                   <div class="col-6">

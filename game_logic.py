@@ -96,7 +96,10 @@ def run_phase1_crank(game: Game):
             lead_term_sheet_id=lead_ts.id,
             game_year=game.current_year,
             pre_money_valuation=lead_ts.pre_money_valuation,
-            post_money_valuation=lead_ts.pre_money_valuation + lead_ts.total_investment,
+            # Buyouts: the price IS the company value; VC: price + new money
+            post_money_valuation=(lead_ts.pre_money_valuation
+                                  if company.stage == 'mature'
+                                  else lead_ts.pre_money_valuation + lead_ts.total_investment),
             total_equity_invested=lead_ts.total_investment,
             rolled_equity_pct=(lead_ts.rolled_equity_min + lead_ts.rolled_equity_max) / 2,
             liquidation_preference=lead_ts.liquidation_preference,
@@ -163,18 +166,37 @@ def run_phase2_crank(game: Game):
         new_val = old_val * multiple
         company.set_year_val(year, max(0.0, new_val))
 
-        # Debt payment
+        # Cash engine: EBITDA accrues (or burns) before debt service
+        if company.ltm_ebitda is not None:
+            company.company_funds += company.ltm_ebitda
+
+        # Debt service
         if company.debt_outstanding > 0 and company.debt_years_remaining > 0:
             annual_payment = company.debt_outstanding / company.debt_years_remaining
             interest = company.debt_outstanding * company.debt_interest_rate
             company.debt_outstanding = max(0, company.debt_outstanding - annual_payment)
             company.debt_years_remaining -= 1
-            company.company_funds = max(0, company.company_funds - annual_payment - interest)
+            company.company_funds -= (annual_payment + interest)
 
-        # Check distress
-        if (company.latest_valuation or 0) <= 0 or company.company_funds < 0:
+        # Valuation wipeout -> immediate bankruptcy
+        if (company.latest_valuation or 0) <= 0:
             _process_bankruptcy(deal, company, year)
             continue
+
+        # Cash exhausted: first year = distress warning, second year = bankrupt
+        if company.company_funds < 0:
+            if company.in_distress:
+                _process_bankruptcy(deal, company, year)
+                continue
+            company.in_distress = True
+            company.company_funds = 0.0
+            for stake in deal.equity_stakes:
+                _notify(stake.team_id,
+                        f"{company.name} is in financial distress — cash exhausted. "
+                        f"Without action it will go bankrupt next year.",
+                        'distress', company.id)
+        else:
+            company.in_distress = False
 
         # Liquidation check
         if deal.marked_for_liquidation:
@@ -206,6 +228,8 @@ MARGIN_RETURN_WEIGHT = 0.20   # 10 pts of above-typical margin -> +2% expected r
 MAX_FUNDAMENTALS_TILT = 0.05  # cap on total expected-return shift (+/- 5%)
 MARGIN_VOL_WEIGHT = 0.6       # 10 pts of above-typical margin -> -6% relative volatility
 VOL_FACTOR_RANGE = (0.75, 1.25)
+# Management quality tilts expected return (weak destroys more than strong adds)
+MANAGEMENT_RETURN_TILT = {'strong': 0.02, 'average': 0.0, 'weak': -0.03}
 
 
 def _fundamentals_adjustment(company: GameCompany, mu: float, sigma: float):
@@ -235,7 +259,8 @@ def _fundamentals_adjustment(company: GameCompany, mu: float, sigma: float):
 
 def _roll_outcome(company: GameCompany, market_condition: float) -> float:
     """Sample annual return from N(expected_return, std_dev) for this company's
-    sector/stage, tilted by the company's fundamentals (growth, EBITDA margin)."""
+    sector/stage, tilted by fundamentals (growth, EBITDA margin) and
+    management quality."""
     assumption = ReturnAssumption.query.filter_by(
         sector=company.sector, stage=company.stage
     ).first()
@@ -245,6 +270,7 @@ def _roll_outcome(company: GameCompany, market_condition: float) -> float:
     else:
         mu, sigma = 0.10, 0.25
     mu, sigma = _fundamentals_adjustment(company, mu, sigma)
+    mu += MANAGEMENT_RETURN_TILT.get(company.management_quality, 0.0)
     annual_return = random.gauss(mu, sigma)
     multiple = max(0.0, 1.0 + annual_return) * market_condition
     return multiple
@@ -489,21 +515,38 @@ def _record_transaction(fund_id, tx_type, amount, description, year, company_id=
     db.session.add(tx)
 
 
+DEBT_TERM_YEARS = 5  # amortization horizon for deal debt
+
+
 def finalize_deal(deal: Deal, final_pre_money: float, equity_stakes_data: list,
                   rolled_equity_pct: float, debt_amount: float = 0.0,
                   debt_rate: float = 0.0, mgmt_option_pct: float = 0.0):
     """
     equity_stakes_data: [{'team_id':..., 'fund_id':..., 'equity_invested':...}, ...]
+
+    Two deal structures:
+    - VC (startup/developing/early_revenue): final_pre_money is pre-money;
+      equity + debt are NEW money injected into the company;
+      post-money = pre + equity + debt.
+    - Buyout (mature): final_pre_money is the purchase valuation paid to the
+      SELLERS; equity + debt fund the purchase, nothing is injected;
+      company value stays the purchase price.
     """
+    is_buyout = deal.company.stage == 'mature'
     total_equity = sum(s['equity_invested'] for s in equity_stakes_data)
-    # Cap total equity at funds wanted; scale each stake down proportionally
-    cap = deal.company.capital_requested
+    if is_buyout:
+        # Equity can't exceed what the purchase needs beyond the debt
+        cap = max(0.0, final_pre_money - debt_amount)
+    else:
+        # Cap total equity at funds wanted
+        cap = deal.company.capital_requested
     if total_equity > cap:
         scale = cap / total_equity
         for s in equity_stakes_data:
             s['equity_invested'] = round(s['equity_invested'] * scale, 4)
         total_equity = cap
-    post_money = final_pre_money + total_equity + debt_amount
+    post_money = (final_pre_money if is_buyout
+                  else final_pre_money + total_equity + debt_amount)
 
     deal.pre_money_valuation = final_pre_money
     deal.post_money_valuation = post_money
@@ -547,8 +590,13 @@ def finalize_deal(deal: Deal, final_pre_money: float, equity_stakes_data: list,
     company.management_option_pct = mgmt_option_pct / 100.0
     company.debt_outstanding = debt_amount
     company.debt_interest_rate = debt_rate
-    company.debt_years_remaining = 3 if debt_amount > 0 else 0
-    company.company_funds = total_equity + debt_amount
+    company.debt_years_remaining = DEBT_TERM_YEARS if debt_amount > 0 else 0
+    if is_buyout:
+        # Purchase price went to the sellers; company keeps only its own cash
+        company.company_funds = company.available_cash or 0.0
+    else:
+        # New money lands on the balance sheet alongside existing cash
+        company.company_funds = (company.available_cash or 0.0) + total_equity + debt_amount
     company.year_funded = deal.game_year
 
     db.session.commit()

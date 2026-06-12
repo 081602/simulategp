@@ -315,6 +315,7 @@ class CompanySearch(db.Model):
     company_id = db.Column(db.Integer, db.ForeignKey('game_company.id'), nullable=False)
     game_year = db.Column(db.Integer, nullable=False)
     found_by_search = db.Column(db.Boolean, default=True)
+    on_watchlist = db.Column(db.Boolean, default=False)  # team explicitly saved it
     referred_by_team_id = db.Column(db.Integer, db.ForeignKey('team.id'), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 

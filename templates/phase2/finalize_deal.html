@@ -41,7 +41,7 @@
       <div class="card-body text-white">
         <div class="row g-3">
           <div class="col-6 col-md-3">
-            <div class="text-light small">Pre-Money Val.</div>
+            <div class="text-light small">{% if company.stage == 'mature' %}Purchase Val.{% else %}Pre-Money Val.{% endif %}</div>
             <div class="fw-bold">${{ "{:,.1f}M".format(lead_ts.pre_money_valuation) }}</div>
           </div>
           <div class="col-6 col-md-3">
@@ -76,7 +76,7 @@
           <div class="row g-3">
 
             <div class="col-md-6">
-              <label for="final_pre_money" class="form-label fw-semibold text-white">Final Pre-Money Valuation ($)</label>
+              <label for="final_pre_money" class="form-label fw-semibold text-white">{% if company.stage == 'mature' %}Final Purchase Valuation ($){% else %}Final Pre-Money Valuation ($){% endif %}</label>
               <input type="number" class="form-control bg-dark text-white border-secondary"
                      id="final_pre_money" name="final_pre_money"
                      min="0" step="0.1"
@@ -85,6 +85,13 @@
                 <i class="bi bi-info-circle text-info"></i>
                 Cannot be less than 90% of original (${{ "{:,.1f}M".format(lead_ts.pre_money_valuation * 0.9) }})
               </div>
+              {% if company.stage == 'mature' %}
+              <div class="form-text text-warning">
+                <i class="bi bi-cash-stack"></i>
+                Buyout: the price goes to the sellers — equity + debt together should cover it.
+                Nothing is injected into the company; debt is serviced from its earnings.
+              </div>
+              {% endif %}
             </div>
 
             <div class="col-md-6">

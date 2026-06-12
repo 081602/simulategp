@@ -162,7 +162,7 @@
                 (10% of latest valuation)
               </p>
               <div class="text-secondary small mb-3">
-                <span class="badge {% if company.management_quality == 'excellent' %}bg-success{% elif company.management_quality == 'good' %}bg-primary{% elif company.management_quality == 'average' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                <span class="badge {% if company.management_quality == 'strong' %}bg-success{% elif company.management_quality == 'average' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
                   Current: {{ company.management_quality | title }}
                 </span>
               </div>

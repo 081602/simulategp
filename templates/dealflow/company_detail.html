@@ -5,11 +5,26 @@
 <div class="row justify-content-center">
   <div class="col-lg-11">
 
-    <!-- Back nav -->
-    <div class="mb-3">
+    <!-- Back nav + watchlist toggle -->
+    <div class="mb-3 d-flex justify-content-between align-items-center">
       <a href="{{ url_for('dealflow') }}" class="btn btn-sm btn-outline-secondary">
         <i class="bi bi-arrow-left"></i> Back to Deal Flow
       </a>
+      {% if not current_user.is_admin %}
+        {% if on_watchlist %}
+        <form method="POST" action="{{ url_for('remove_from_watchlist', company_id=company.id) }}">
+          <button type="submit" class="btn btn-sm btn-success">
+            <i class="bi bi-bookmark-check-fill"></i> On Watchlist &mdash; Remove
+          </button>
+        </form>
+        {% else %}
+        <form method="POST" action="{{ url_for('add_to_watchlist', company_id=company.id) }}">
+          <button type="submit" class="btn btn-sm btn-outline-info">
+            <i class="bi bi-bookmark-plus"></i> Add to Watchlist
+          </button>
+        </form>
+        {% endif %}
+      {% endif %}
     </div>
 
     <!-- Company Header -->
@@ -98,7 +113,7 @@
             <table class="table table-dark table-sm mb-0">
               <tbody>
                 <tr>
-                  <td class="text-light">Pre-Money Valuation Wanted</td>
+                  <td class="text-light">{% if company.stage == 'mature' %}Valuation Wanted{% else %}Pre-Money Valuation Wanted{% endif %}</td>
                   <td class="fw-bold text-white">${{ "{:,.1f}M".format(company.initial_val_ask or 0) }}</td>
                 </tr>
                 <tr>
@@ -131,14 +146,12 @@
                 <tr>
                   <td class="text-light">Management Quality</td>
                   <td>
-                    {% if company.management_quality == 'excellent' %}
-                      <span class="badge bg-success">Excellent</span>
-                    {% elif company.management_quality == 'good' %}
-                      <span class="badge bg-primary">Good</span>
+                    {% if company.management_quality == 'strong' %}
+                      <span class="badge bg-success">Strong</span>
                     {% elif company.management_quality == 'average' %}
                       <span class="badge bg-warning text-dark">Average</span>
-                    {% elif company.management_quality == 'poor' %}
-                      <span class="badge bg-danger">Poor</span>
+                    {% elif company.management_quality == 'weak' %}
+                      <span class="badge bg-danger">Weak</span>
                     {% else %}
                       <span class="badge bg-secondary">{{ company.management_quality | title }}</span>
                     {% endif %}

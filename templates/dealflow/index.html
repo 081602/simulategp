@@ -1,5 +1,47 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 {% block title %}Deal Flow{% endblock %}
+
+{% macro stage_badge(company) %}
+  {% if company.stage == 'startup' %}
+    <span class="badge bg-danger">Startup</span>
+  {% elif company.stage == 'developing' %}
+    <span class="badge bg-warning text-dark">Developing</span>
+  {% elif company.stage == 'early_revenue' %}
+    <span class="badge bg-info text-dark">Early Revenue</span>
+  {% elif company.stage == 'mature' %}
+    <span class="badge bg-success">Mature</span>
+  {% else %}
+    <span class="badge bg-secondary">{{ company.stage | title }}</span>
+  {% endif %}
+{% endmacro %}
+
+{% macro company_stats(company) %}
+<div class="row g-2 mb-2">
+  <div class="col-6">
+    {% if company.stage == 'mature' %}
+    <small class="text-light d-block">Valuation Wanted</small>
+    <span class="fw-bold text-white">${{ "{:,.1f}M".format(company.initial_val_ask or 0) }}</span>
+    {% else %}
+    <small class="text-light d-block">Funds Wanted</small>
+    <span class="fw-bold text-white">${{ "{:,.1f}M".format(company.capital_requested) }}</span>
+    {% endif %}
+  </div>
+  <div class="col-6">
+    <small class="text-light d-block">LTM Revenue</small>
+    <span class="fw-bold text-white">{% if company.ltm_revenue is not none %}${{ "{:,.1f}M".format(company.ltm_revenue) }}{% else %}&mdash;{% endif %}</span>
+  </div>
+  <div class="col-6">
+    <small class="text-light d-block">3-Yr Rev Growth</small>
+    <span class="text-white">{% if company.revenue_growth_3yr is not none %}{{ "%.0f"|format(company.revenue_growth_3yr * 100) }}%{% else %}&mdash;{% endif %}</span>
+  </div>
+  <div class="col-6">
+    <small class="text-light d-block">EBITDA Margin</small>
+    <span class="{% if company.ltm_ebitda_margin is not none and company.ltm_ebitda_margin < 0 %}text-danger{% else %}text-white{% endif %}">
+      {% if company.ltm_ebitda_margin is not none %}{{ "%.0f"|format(company.ltm_ebitda_margin * 100) }}%{% else %}&mdash;{% endif %}
+    </span>
+  </div>
+</div>
+{% endmacro %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -8,8 +50,8 @@
     <!-- Header -->
     <div class="d-flex align-items-center justify-content-between mb-4">
       <div>
-        <h2 class="fw-bold mb-0"><i class="bi bi-search text-warning"></i> Deal Flow</h2>
-        <p class="text-secondary mb-0">Companies found through search or referred by other teams</p>
+        <h2 class="fw-bold mb-0"><i class="bi bi-bookmark-star text-warning"></i> Deal Flow</h2>
+        <p class="text-secondary mb-0">Your watchlist and inbound referrals</p>
       </div>
       <div class="d-flex align-items-center gap-3">
         <a href="{{ url_for('search_companies') }}" class="btn btn-warning text-dark fw-semibold">
@@ -18,94 +60,103 @@
       </div>
     </div>
 
-    {% if not found_companies %}
-    <div class="card border-secondary text-center py-5">
+    <!-- Watchlist -->
+    <h5 class="fw-semibold mb-3"><i class="bi bi-bookmark-check text-info"></i> Watchlist
+      <span class="badge bg-secondary ms-1">{{ watchlist_companies|length }}</span>
+    </h5>
+    {% if not watchlist_companies %}
+    <div class="card border-secondary text-center py-4 mb-4">
       <div class="card-body">
-        <i class="bi bi-binoculars fs-1 text-secondary mb-3 d-block"></i>
-        <h5 class="text-secondary">No Companies in Your Pipeline Yet</h5>
-        <p class="text-secondary mb-4">Use the search tool to find investment opportunities, or wait for referrals from other teams.</p>
+        <i class="bi bi-bookmark fs-1 text-secondary mb-2 d-block"></i>
+        <p class="text-secondary mb-3">Nothing on your watchlist yet. Search for companies and save the interesting ones.</p>
         <a href="{{ url_for('search_companies') }}" class="btn btn-warning text-dark">
           <i class="bi bi-search"></i> Start Searching
         </a>
       </div>
     </div>
     {% else %}
-
-    <!-- Company Cards -->
-    <div class="row g-3">
-      {% for company in found_companies %}
-      {% set search = search_map.get(company.id) %}
+    <div class="row g-3 mb-4">
+      {% for company in watchlist_companies %}
       <div class="col-md-6 col-xl-4">
         <div class="card h-100 border-secondary shadow-sm company-card">
           <div class="card-body">
-
-            <!-- Source Badge -->
             <div class="d-flex align-items-start justify-content-between mb-2">
               <h6 class="card-title fw-bold mb-0 text-white">{{ company.name }}</h6>
-              {% if search %}
-                <span class="badge bg-secondary ms-2" title="Found via search">
-                  <i class="bi bi-search"></i> Found
-                </span>
-              {% else %}
-                <span class="badge bg-info text-dark ms-2" title="Referred by another team">
-                  <i class="bi bi-person-check"></i> Referred
-                </span>
+              {% if company.status != 'available' %}
+              <span class="badge bg-secondary ms-2">{{ company.status | title }}</span>
               {% endif %}
             </div>
-
-            <!-- Sector & Stage -->
             <div class="d-flex gap-2 mb-3 flex-wrap">
               <span class="badge bg-secondary">{{ company.sector }}</span>
-              {% if company.stage == 'startup' %}
-                <span class="badge bg-danger">Startup</span>
-              {% elif company.stage == 'developing' %}
-                <span class="badge bg-warning text-dark">Developing</span>
-              {% elif company.stage == 'early_revenue' %}
-                <span class="badge bg-info text-dark">Early Revenue</span>
-              {% elif company.stage == 'mature' %}
-                <span class="badge bg-success">Mature</span>
-              {% else %}
-                <span class="badge bg-secondary">{{ company.stage | title }}</span>
-              {% endif %}
+              {{ stage_badge(company) }}
             </div>
-
-            <!-- Funds Wanted -->
-            <div class="mb-3">
-              <small class="text-light d-block">Funds Wanted</small>
-              <span class="fw-bold text-white fs-5">
-                {% if company.stage == 'mature' %}<span class="text-secondary">N/A</span>{% else %}${{ "{:,.1f}M".format(company.capital_requested) }}{% endif %}
-              </span>
-            </div>
-
-            <!-- Referral info -->
-            {% if not search and company.referred_by %}
-            <div class="mb-3">
-              <small class="text-secondary">
-                <i class="bi bi-person-fill text-info"></i>
-                Referred by <strong>{{ company.referred_by.firm_name }}</strong>
-              </small>
-            </div>
-            {% endif %}
-
+            {{ company_stats(company) }}
           </div>
-          <div class="card-footer border-secondary bg-transparent">
-            <a href="{{ url_for('company_detail', company_id=company.id) }}" class="btn btn-outline-warning btn-sm w-100">
+          <div class="card-footer border-secondary bg-transparent d-flex gap-2">
+            <a href="{{ url_for('company_detail', company_id=company.id) }}" class="btn btn-outline-warning btn-sm flex-fill">
               <i class="bi bi-eye"></i> View Details
             </a>
+            <form method="POST" action="{{ url_for('remove_from_watchlist', company_id=company.id) }}" class="flex-fill">
+              <button type="submit" class="btn btn-outline-secondary btn-sm w-100">
+                <i class="bi bi-bookmark-x"></i> Remove
+              </button>
+            </form>
           </div>
         </div>
       </div>
       {% endfor %}
     </div>
-
-    <p class="text-secondary text-end mt-3 small">
-      Showing {{ found_companies|length }} compan{{ 'y' if found_companies|length == 1 else 'ies' }} in your pipeline
-    </p>
-
     {% endif %}
+
+    <!-- Referrals -->
+    <h5 class="fw-semibold mb-3"><i class="bi bi-person-check text-info"></i> Referrals
+      <span class="badge bg-secondary ms-1">{{ referral_companies|length }}</span>
+    </h5>
+    {% if not referral_companies %}
+    <div class="card border-secondary text-center py-4">
+      <div class="card-body">
+        <p class="text-secondary mb-0">No inbound referrals. Other firms can refer companies to you from a company's detail page.</p>
+      </div>
+    </div>
+    {% else %}
+    <div class="row g-3">
+      {% for company in referral_companies %}
+      {% set ref = referral_map.get(company.id) %}
+      <div class="col-md-6 col-xl-4">
+        <div class="card h-100 border-info shadow-sm company-card">
+          <div class="card-body">
+            <div class="d-flex align-items-start justify-content-between mb-2">
+              <h6 class="card-title fw-bold mb-0 text-white">{{ company.name }}</h6>
+              <span class="badge bg-info text-dark ms-2"><i class="bi bi-person-check"></i> Referred</span>
+            </div>
+            <div class="d-flex gap-2 mb-3 flex-wrap">
+              <span class="badge bg-secondary">{{ company.sector }}</span>
+              {{ stage_badge(company) }}
+            </div>
+            {{ company_stats(company) }}
+            {% if ref and ref.referring_team %}
+            <small class="text-secondary">
+              <i class="bi bi-person-fill text-info"></i>
+              Referred by <strong>{{ ref.referring_team.firm_name }}</strong>
+            </small>
+            {% endif %}
+          </div>
+          <div class="card-footer border-secondary bg-transparent d-flex gap-2">
+            <a href="{{ url_for('company_detail', company_id=company.id) }}" class="btn btn-outline-warning btn-sm flex-fill">
+              <i class="bi bi-eye"></i> View Details
+            </a>
+            <form method="POST" action="{{ url_for('add_to_watchlist', company_id=company.id) }}" class="flex-fill">
+              <button type="submit" class="btn btn-outline-info btn-sm w-100">
+                <i class="bi bi-bookmark-plus"></i> Add to Watchlist
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
   </div>
 </div>
 {% endblock %}
-
-
-
