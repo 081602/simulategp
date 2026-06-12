@@ -377,7 +377,7 @@ def remove_from_watchlist(company_id):
 def refer_company(company_id):
     game = Game.query.get(current_user.game_id)
     company = GameCompany.query.filter_by(id=company_id, game_id=game.id).first_or_404()
-    target_team_id = request.form.get('target_team_id', type=int)
+    target_team_id = request.form.get('team_id', type=int)
     target_team = Team.query.get_or_404(target_team_id)
 
     if game.current_phase != 1:
