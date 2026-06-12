@@ -354,6 +354,7 @@ class TermSheet(db.Model):
     # Result
     status = db.Column(db.String(30), default='pending')
     # pending, lead, fill_offered, fill_accepted, fill_declined, rejected, withdrawn
+    rejection_reason = db.Column(db.String(300), nullable=True)  # set when status -> rejected
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     fund = db.relationship('Fund')

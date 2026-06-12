@@ -172,6 +172,71 @@
       </div>
     </div>
 
+    <!-- Term Sheets (current year, by company) -->
+    <div class="card border-secondary shadow mb-4">
+      <div class="card-header border-secondary">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-file-earmark-text text-warning"></i>
+          Term Sheets &mdash; Year {{ game.current_year }}
+          <span class="badge bg-secondary ms-1">{{ term_sheet_groups | map(attribute='1') | map('length') | sum }}</span>
+        </h6>
+      </div>
+      <div class="card-body p-0">
+        {% if term_sheet_groups %}
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle mb-0">
+            <thead><tr>
+              <th>Company</th>
+              <th>Team</th>
+              <th>Type</th>
+              <th class="text-end">Valuation</th>
+              <th class="text-end">Investment</th>
+              <th class="text-center">Terms</th>
+              <th>Status</th>
+            </tr></thead>
+            <tbody>
+            {% for company, sheets in term_sheet_groups %}
+              {% for ts in sheets %}
+              <tr>
+                {% if loop.first %}
+                <td class="fw-semibold" rowspan="{{ sheets|length }}">
+                  {{ company.name }}
+                  <div class="text-secondary small fw-normal">{{ company.sector }} &middot; {{ company.stage_label }}</div>
+                </td>
+                {% endif %}
+                <td>{{ ts.team.firm_name }}</td>
+                <td>
+                  {% if ts.term_sheet_type == 'syndicate' %}
+                  <span class="badge bg-info text-dark">Syndicate</span>
+                  {% else %}
+                  <span class="badge bg-secondary">Solo</span>
+                  {% endif %}
+                </td>
+                <td class="text-end">${{ "{:,.1f}M".format(ts.pre_money_valuation) }}</td>
+                <td class="text-end">${{ "{:,.1f}M".format(ts.total_investment) }}</td>
+                <td class="text-center text-secondary small">
+                  {{ ts.liquidation_preference }}x{% if ts.participation %} &middot; part.{% endif %}{% if ts.anti_dilution and ts.anti_dilution != 'none' %} &middot; {{ ts.anti_dilution }}{% endif %}
+                </td>
+                <td>
+                  {% if ts.status == 'pending' %}<span class="badge bg-warning text-dark">Pending</span>
+                  {% elif ts.status == 'lead' %}<span class="badge bg-success">Lead</span>
+                  {% elif ts.status == 'rejected' %}<span class="badge bg-danger">Rejected</span>
+                  {% elif ts.status in ('fill_offered', 'fill_accepted') %}<span class="badge bg-info text-dark">{{ ts.status | replace('_', ' ') | title }}</span>
+                  {% else %}<span class="badge bg-secondary">{{ ts.status | title }}</span>{% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="text-center text-secondary py-4">
+          No term sheets submitted this year yet.
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
     <!-- Recent Deals -->
     <div class="card border-secondary shadow">
       <div class="card-header border-secondary d-flex align-items-center justify-content-between">

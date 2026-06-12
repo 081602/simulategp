@@ -157,6 +157,41 @@
     </div>
     {% endif %}
 
+    <!-- Rejected Term Sheets -->
+    {% if rejected_sheets %}
+    <h5 class="fw-semibold mb-3 mt-4"><i class="bi bi-x-octagon text-danger"></i> Rejected Term Sheets
+      <span class="badge bg-secondary ms-1">{{ rejected_sheets|length }}</span>
+    </h5>
+    <div class="card border-secondary">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle mb-0">
+            <thead><tr>
+              <th>Company</th>
+              <th class="text-center">Year</th>
+              <th class="text-end">Valuation</th>
+              <th class="text-end">Investment</th>
+              <th>Reason</th>
+            </tr></thead>
+            <tbody>
+            {% for ts in rejected_sheets %}
+            <tr>
+              <td class="fw-semibold">{{ ts.company.name }}
+                <div class="text-secondary small fw-normal">{{ ts.company.sector }} &middot; {{ ts.company.stage_label }}</div>
+              </td>
+              <td class="text-center text-secondary">{{ ts.game_year }}</td>
+              <td class="text-end">${{ "{:,.1f}M".format(ts.pre_money_valuation) }}</td>
+              <td class="text-end">${{ "{:,.1f}M".format(ts.total_investment) }}</td>
+              <td class="text-light small">{{ ts.rejection_reason or '—' }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
   </div>
 </div>
 {% endblock %}

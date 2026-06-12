@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}GP Economics{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+
+    <div class="d-flex align-items-center mb-4">
+      <div>
+        <h2 class="fw-bold mb-0"><i class="bi bi-briefcase-fill text-warning"></i> GP Economics</h2>
+        <p class="text-secondary mb-0">Your firm's P&amp;L &mdash; separate from the fund's capital</p>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="card border-secondary shadow mb-4">
+      <div class="card-body p-4">
+        <div class="row g-3 text-center">
+          <div class="col-6 col-md-3">
+            <div class="text-light small">Management Fees Earned</div>
+            <div class="fs-4 fw-bold text-success">${{ "{:,.1f}M".format(gp.mgmt_fees) }}</div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="text-light small">Operating Costs</div>
+            <div class="fs-4 fw-bold text-danger">&minus;${{ "{:,.1f}M".format(gp.operating_costs) }}</div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="text-light small">Carried Interest (realized)</div>
+            <div class="fs-4 fw-bold {% if gp.carried_interest > 0 %}text-success{% else %}text-white{% endif %}">${{ "{:,.1f}M".format(gp.carried_interest) }}</div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="text-light small">Net GP Income</div>
+            <div class="fs-4 fw-bold {% if gp.total >= 0 %}text-success{% else %}text-danger{% endif %}">${{ "{:,.1f}M".format(gp.total) }}</div>
+            <div class="text-secondary small">${{ "{:,.2f}M".format(gp.per_partner) }} / partner ({{ current_user.num_partners }})</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GP Ledger -->
+    <div class="card border-secondary shadow mb-4">
+      <div class="card-header border-secondary">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-journal-text text-warning"></i> GP Ledger</h6>
+      </div>
+      <div class="card-body p-0">
+        {% if gp.ledger %}
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle mb-0">
+            <thead><tr>
+              <th style="width:80px;">Year</th>
+              <th>Item</th>
+              <th class="text-end">Amount</th>
+            </tr></thead>
+            <tbody>
+            {% for item in gp.ledger %}
+            <tr>
+              <td class="text-secondary">{{ item.year }}</td>
+              <td>
+                {% if item.kind == 'fee' %}<span class="badge bg-success me-1">Fee</span>
+                {% elif item.kind == 'opex' %}<span class="badge bg-danger me-1">Opex</span>
+                {% elif item.kind == 'carry' %}<span class="badge bg-warning text-dark me-1">Carry</span>{% endif %}
+                {{ item.description }}
+              </td>
+              <td class="text-end fw-bold {% if item.amount >= 0 %}text-success{% else %}text-danger{% endif %}">
+                {{ '+' if item.amount >= 0 else '−' }}${{ "{:,.1f}M".format(item.amount | abs) }}
+              </td>
+            </tr>
+            {% endfor %}
+            <tr style="background:rgba(251,191,36,0.12);">
+              <td></td>
+              <td class="fw-bold text-white">Net GP Income to date</td>
+              <td class="text-end fw-bold {% if gp.total >= 0 %}text-success{% else %}text-danger{% endif %}">${{ "{:,.1f}M".format(gp.total) }}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="text-center text-secondary py-4">
+          No GP activity yet &mdash; management fees post at each Deal &amp; Return Process.
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Carry Basis -->
+    <div class="card border-secondary shadow">
+      <div class="card-header border-secondary">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-trophy text-warning"></i> Carry Basis &mdash; Realized Exits</h6>
+      </div>
+      <div class="card-body p-0">
+        {% if gp.exits %}
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle mb-0">
+            <thead><tr>
+              <th style="width:80px;">Year</th>
+              <th>Company</th>
+              <th>Outcome</th>
+              <th class="text-end">Invested</th>
+              <th class="text-end">Proceeds</th>
+              <th class="text-end">Net Gain / (Loss)</th>
+            </tr></thead>
+            <tbody>
+            {% for e in gp.exits %}
+            <tr>
+              <td class="text-secondary">{{ e.year }}</td>
+              <td class="fw-semibold">{{ e.company }}
+                <div class="text-secondary small fw-normal">{{ e.fund }}</div>
+              </td>
+              <td>
+                {% if e.outcome == 'liquidated' %}<span class="badge bg-success">Exited</span>
+                {% else %}<span class="badge bg-danger">Bankrupt</span>{% endif %}
+              </td>
+              <td class="text-end">${{ "{:,.1f}M".format(e.invested) }}</td>
+              <td class="text-end">${{ "{:,.1f}M".format(e.proceeds) }}</td>
+              <td class="text-end fw-bold {% if e.net >= 0 %}text-success{% else %}text-danger{% endif %}">
+                {{ '+' if e.net >= 0 else '−' }}${{ "{:,.1f}M".format(e.net | abs) }}
+              </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="px-3 py-2 text-secondary small border-top border-secondary">
+          Carry is computed per fund on a <strong class="text-light">net basis</strong>:
+          performance fee &times; max(0, total proceeds &minus; total invested) across realized deals,
+          so losses and bankruptcies offset gains before any carry is earned.
+        </div>
+        {% else %}
+        <div class="text-center text-secondary py-4">
+          No realized exits yet &mdash; exits and bankruptcies will appear here and form the basis for carried interest.
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

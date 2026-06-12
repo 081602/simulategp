@@ -65,16 +65,35 @@
                      id="pre_money_valuation" name="pre_money_valuation"
                      min="0" step="0.1"
                      value="{{ company.initial_val_ask }}" required>
-              <div class="form-text text-light">{% if company.stage == 'mature' %}Valuation Wanted{% else %}Pre-Valuation Wanted{% endif %}: ${{ "{:,.1f}M".format(company.initial_val_ask or 0) }}</div>
+              {% set multiple_label = 'EV/EBITDA' if company.stage == 'mature' else 'EV/Revenue' %}
+              {% set wanted_multiple = company.ev_ebitda_multiple if company.stage == 'mature' else company.ev_revenue_multiple %}
+              <div class="form-text text-light">
+                {% if company.stage == 'mature' %}Valuation Wanted{% else %}Pre-Valuation Wanted{% endif %}:
+                ${{ "{:,.1f}M".format(company.initial_val_ask or 0) }}
+                ({{ multiple_label }} wanted:
+                {% if wanted_multiple is not none %}{{ "%.1f"|format(wanted_multiple) }}x{% else %}N/A{% endif %})
+              </div>
+              <div class="form-text">
+                <i class="bi bi-calculator text-info"></i>
+                <span class="text-info">Implied {{ multiple_label }} at your offer:
+                  <strong id="implied_multiple">&mdash;</strong></span>
+              </div>
             </div>
 
             <div class="col-md-6">
-              <label for="total_investment" class="form-label fw-semibold text-white">Total Investment Amount ($M)</label>
+              <label for="total_investment" class="form-label fw-semibold text-white">{% if company.stage == 'mature' %}Equity Investment ($M){% else %}Total Investment Amount ($M){% endif %}</label>
               <input type="number" class="form-control bg-dark text-white border-secondary"
                      id="total_investment" name="total_investment"
                      min="0" step="0.1"
-                     value="{{ company.capital_requested }}" required>
-              <div class="form-text text-light">{% if company.stage == 'mature' %}Suggested deal size: ${{ "{:,.1f}M".format(company.capital_requested) }}{% else %}Funds Wanted: ${{ "{:,.1f}M".format(company.capital_requested) }}{% endif %}</div>
+                     value="{{ "%.1f"|format([company.initial_val_ask - company.debt_capacity, 0]|max) if company.stage == 'mature' else company.capital_requested }}" required>
+              <div class="form-text text-light">
+                {% if company.stage == 'mature' %}
+                Your equity check. Debt (up to ${{ "{:,.1f}M".format(company.debt_capacity) }} capacity)
+                and seller rollover cover the rest of the price at finalization.
+                {% else %}
+                Funds Wanted: ${{ "{:,.1f}M".format(company.capital_requested) }}
+                {% endif %}
+              </div>
             </div>
 
             <div class="col-12">
@@ -289,6 +308,22 @@
       document.getElementById('syndicatePartners').classList.toggle('d-none', this.value !== 'syndicate');
     });
   });
+
+  // Live implied multiple: EV = offer + debt - cash, over EBITDA (mature) or revenue
+  (function () {
+    var input = document.getElementById('pre_money_valuation');
+    var out = document.getElementById('implied_multiple');
+    var debt = {{ company.debt_outstanding or 0 }};
+    var cash = {{ company.available_cash or 0 }};
+    var denom = {{ (company.ltm_ebitda if company.stage == 'mature' else company.ltm_revenue) or 0 }};
+    function update() {
+      var v = parseFloat(input.value);
+      if (!isFinite(v) || denom <= 0) { out.textContent = 'N/A'; return; }
+      out.textContent = ((v + debt - cash) / denom).toFixed(1) + 'x';
+    }
+    input.addEventListener('input', update);
+    update();
+  })();
 </script>
 {% endblock %}
 

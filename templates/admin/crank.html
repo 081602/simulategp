@@ -79,7 +79,7 @@
               I understand this action is irreversible and will process all pending term sheets.
             </label>
           </div>
-          <button type="submit" class="btn btn-warning text-dark fw-bold btn-lg w-100 confirm-action"
+          <button type="submit" class="btn btn-warning text-dark fw-bold btn-lg w-100"
                   data-confirm="Run the Deal Process? This will process {{ pending_ts }} term sheets and cannot be undone.">
             <i class="bi bi-gear-wide-connected me-2"></i> Run Deal Process
             <span class="badge bg-dark ms-2">{{ pending_ts }} term sheets</span>
@@ -146,7 +146,7 @@
               I understand this action is irreversible and will advance the simulation to Year {{ game.current_year + 1 }}.
             </label>
           </div>
-          <button type="submit" class="btn btn-info text-dark fw-bold btn-lg w-100 confirm-action"
+          <button type="submit" class="btn btn-info text-dark fw-bold btn-lg w-100"
                   data-confirm="Run the Deal & Return Process? This will close deals, update valuations, and advance to Year {{ game.current_year + 1 }}. Cannot be undone.">
             <i class="bi bi-fast-forward-circle me-2"></i> Run Deal &amp; Return Process &amp; Advance Year
           </button>

@@ -172,21 +172,36 @@ def dealflow():
     game = Game.query.get(current_user.game_id)
     rows = CompanySearch.query.filter_by(team_id=current_user.id).all()
 
-    watchlist_ids = [r.company_id for r in rows if r.on_watchlist]
+    rejected_sheets = (TermSheet.query
+                       .filter_by(team_id=current_user.id, status='rejected')
+                       .order_by(TermSheet.game_year.desc(), TermSheet.id.desc())
+                       .all())
+    # A company that rejected this team's term sheet drops off the
+    # watchlist/referrals; it lives in the Rejected Term Sheets section
+    rejected_ids = {ts.company_id for ts in rejected_sheets}
+
+    # Only companies still on the market belong in deal flow lists —
+    # funded ones live in the owner's Portfolio instead
+    watchlist_ids = [r.company_id for r in rows
+                     if r.on_watchlist and r.company_id not in rejected_ids]
     watchlist_companies = (GameCompany.query.filter(
-        GameCompany.id.in_(watchlist_ids)).all() if watchlist_ids else [])
+        GameCompany.id.in_(watchlist_ids),
+        GameCompany.status == 'available').all() if watchlist_ids else [])
 
     # Inbound referrals not yet promoted to the watchlist
     referral_map = {r.company_id: r for r in rows
-                    if not r.on_watchlist and not r.found_by_search}
+                    if not r.on_watchlist and not r.found_by_search
+                    and r.company_id not in rejected_ids}
     referral_companies = (GameCompany.query.filter(
-        GameCompany.id.in_(list(referral_map))).all() if referral_map else [])
+        GameCompany.id.in_(list(referral_map)),
+        GameCompany.status == 'available').all() if referral_map else [])
 
     return render_template('dealflow/index.html',
                            game=game,
                            watchlist_companies=watchlist_companies,
                            referral_companies=referral_companies,
-                           referral_map=referral_map)
+                           referral_map=referral_map,
+                           rejected_sheets=rejected_sheets)
 
 
 MAX_SEARCH_RESULTS = 15  # cap on new companies found per search
@@ -402,16 +417,11 @@ def create_term_sheet(company_id):
         flash('This company is no longer available for new term sheets.', 'warning')
         return redirect(url_for('company_detail', company_id=company_id))
 
-    block_reason = current_user.investment_block_reason(company)
-    if block_reason:
-        flash(block_reason, 'danger')
-        return redirect(url_for('company_detail', company_id=company_id))
-
+    # Mandate is NOT checked here: any team may submit, but the company
+    # rejects off-mandate term sheets at the Deal Process
     funds = Fund.query.filter_by(team_id=current_user.id, is_active=True).all()
-    # Only offer syndicate partners whose mandate also allows this company
-    teams = [t for t in Team.query.filter_by(game_id=game.id, is_admin=False)
-             .filter(Team.id != current_user.id).all()
-             if t.investment_block_reason(company) is None]
+    teams = (Team.query.filter_by(game_id=game.id, is_admin=False)
+             .filter(Team.id != current_user.id).all())
 
     if request.method == 'POST':
         try:
@@ -854,6 +864,14 @@ def funds():
                            unrealized_irr=unrealized_irr)
 
 
+@app.route('/gp-economics')
+@login_required
+def gp_economics():
+    game = Game.query.get(current_user.game_id)
+    gp = team_gp_income(current_user)
+    return render_template('gp_economics.html', game=game, gp=gp)
+
+
 # ---------------------------------------------------------------------------
 # Admin Routes
 # ---------------------------------------------------------------------------
@@ -876,9 +894,25 @@ def admin_dashboard():
     teams = Team.query.filter_by(is_admin=False).all() if game else []
     companies = GameCompany.query.filter_by(game_id=game.id).all() if game else []
     deals = Deal.query.all() if game else []
+
+    # Current-year term sheets grouped by company (sorted by company name)
+    term_sheet_groups = []
+    if game:
+        sheets = (TermSheet.query
+                  .join(GameCompany, TermSheet.company_id == GameCompany.id)
+                  .filter(GameCompany.game_id == game.id,
+                          TermSheet.game_year == game.current_year)
+                  .order_by(GameCompany.name)
+                  .all())
+        by_company = {}
+        for ts in sheets:
+            by_company.setdefault(ts.company, []).append(ts)
+        term_sheet_groups = sorted(by_company.items(), key=lambda x: x[0].name)
+
     return render_template('admin/dashboard.html',
                            game=game, teams=teams,
-                           companies=companies, deals=deals)
+                           companies=companies, deals=deals,
+                           term_sheet_groups=term_sheet_groups)
 
 
 @app.route('/admin/delete-all-deals', methods=['POST'])
@@ -1070,6 +1104,12 @@ def admin_edit_team(team_id):
     game = Game.query.get(team.game_id)
     if request.method == 'POST':
         team.firm_name = request.form.get('firm_name', team.firm_name)
+        if request.form.get('fund_type') in ('pe', 'vc'):
+            team.fund_type = request.form.get('fund_type')
+        if 'sector_focus' in request.form:
+            sf = request.form.get('sector_focus')
+            if sf == 'generalist' or sf in SECTORS:
+                team.sector_focus = sf
         new_pw = request.form.get('new_password', '').strip()
         if new_pw:
             team.set_password(new_pw)
@@ -1077,20 +1117,26 @@ def admin_edit_team(team_id):
         # Fund adjustments
         for fund in team.funds:
             key = f'fund_cap_{fund.id}'
-            if key in request.form:
-                adj = float(request.form[key])
-                fund.available_capital = adj
+            if key in request.form and request.form[key]:
+                fund.available_capital = float(request.form[key])
+            mkey = f'fund_mgmt_{fund.id}'
+            if mkey in request.form and request.form[mkey]:
+                fund.management_fee_rate = float(request.form[mkey]) / 100
+            pkey = f'fund_perf_{fund.id}'
+            if pkey in request.form and request.form[pkey]:
+                fund.performance_fee_rate = float(request.form[pkey]) / 100
 
         db.session.commit()
         flash(f'{team.firm_name} updated.', 'success')
         return redirect(url_for('admin_teams'))
-    return render_template('admin/edit_team.html', team=team, game=game)
+    return render_template('admin/edit_team.html', team=team, game=game,
+                           sectors=SECTORS)
 
 
 SECTORS = ['Consumer', 'Energy', 'Healthcare', 'Industrials', 'Technology']
 STAGES = ['startup', 'developing', 'early_revenue', 'mature']
-FUND_SIZE_PARTNERS = {500: 5, 750: 8, 1000: 12}        # fund size ($M) -> total partners
-FUND_SIZE_OPEX = {500: 0.01, 750: 0.008, 1000: 0.0075}  # fund size ($M) -> GP operating cost %/yr
+FUND_SIZE_PARTNERS = {200: 3, 500: 7, 1000: 12}          # fund size ($M) -> total partners
+FUND_SIZE_OPEX = {200: 0.015, 500: 0.01, 1000: 0.0075}   # fund size ($M) -> GP operating cost %/yr
 STAGE_LABELS = {'startup': 'Startup', 'developing': 'Developing',
                 'early_revenue': 'Early Revenue', 'mature': 'Mature'}
 

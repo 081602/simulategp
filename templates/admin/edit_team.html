@@ -97,6 +97,26 @@
                      value="{{ team.firm_name }}" maxlength="100" required>
             </div>
 
+            <div class="col-md-4">
+              <label for="fund_type" class="form-label fw-semibold text-white">Fund Type</label>
+              <select class="form-select bg-dark text-white border-secondary" id="fund_type" name="fund_type">
+                <option value="pe" {% if team.fund_type == 'pe' %}selected{% endif %}>Private Equity</option>
+                <option value="vc" {% if team.fund_type == 'vc' %}selected{% endif %}>Venture Capital</option>
+              </select>
+              <div class="form-text text-light small">VC: Startup &amp; Developing. PE: Early Revenue &amp; Mature.</div>
+            </div>
+
+            <div class="col-md-4">
+              <label for="sector_focus" class="form-label fw-semibold text-white">Sector Focus</label>
+              <select class="form-select bg-dark text-white border-secondary" id="sector_focus" name="sector_focus">
+                <option value="generalist" {% if team.sector_focus == 'generalist' %}selected{% endif %}>Generalist (any sector)</option>
+                {% for s in sectors %}
+                <option value="{{ s }}" {% if team.sector_focus == s %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+              </select>
+              <div class="form-text text-light small">Off-mandate term sheets get declined at the Deal Process.</div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -117,17 +137,17 @@
         </div>
       </div>
 
-      <!-- Fund Capital Adjustments -->
+      <!-- Fund Adjustments -->
       {% if team.funds %}
       <div class="card border-secondary shadow mb-4">
         <div class="card-header border-secondary">
-          <h6 class="mb-0 fw-semibold"><i class="bi bi-wallet2 text-warning"></i> Fund Capital Adjustments</h6>
+          <h6 class="mb-0 fw-semibold"><i class="bi bi-wallet2 text-warning"></i> Fund Adjustments</h6>
         </div>
         <div class="card-body p-4">
-          <p class="text-secondary small mb-3">Adjust available capital for each fund. Be careful &mdash; this does not automatically reconcile deployed capital.</p>
-          <div class="row g-3">
-            {% for fund in team.funds %}
-            <div class="col-md-6">
+          <p class="text-secondary small mb-3">Adjust available capital and fee terms for each fund. Capital changes do not automatically reconcile deployed capital.</p>
+          {% for fund in team.funds %}
+          <div class="row g-3 {% if not loop.last %}mb-3 pb-3 border-bottom border-secondary{% endif %}">
+            <div class="col-md-4">
               <label for="fund_cap_{{ fund.id }}" class="form-label fw-semibold text-white">
                 {{ fund.name }}
                 <span class="text-secondary small fw-normal">($M)</span>
@@ -147,8 +167,34 @@
                 Deployed: ${{ "{:,.1f}M".format(fund.deployed_capital) }}
               </div>
             </div>
-            {% endfor %}
+            <div class="col-md-4">
+              <label for="fund_mgmt_{{ fund.id }}" class="form-label fw-semibold text-white">Management Fee (%)</label>
+              <div class="input-group">
+                <input type="number"
+                       class="form-control bg-dark text-white border-secondary"
+                       id="fund_mgmt_{{ fund.id }}"
+                       name="fund_mgmt_{{ fund.id }}"
+                       min="0" max="10" step="0.1"
+                       value="{{ "%.1f"|format(fund.management_fee_rate * 100) }}">
+                <span class="input-group-text bg-dark border-secondary text-secondary">%</span>
+              </div>
+              <div class="form-text text-secondary">Charged on committed capital each year</div>
+            </div>
+            <div class="col-md-4">
+              <label for="fund_perf_{{ fund.id }}" class="form-label fw-semibold text-white">Performance Fee (%)</label>
+              <div class="input-group">
+                <input type="number"
+                       class="form-control bg-dark text-white border-secondary"
+                       id="fund_perf_{{ fund.id }}"
+                       name="fund_perf_{{ fund.id }}"
+                       min="0" max="50" step="0.1"
+                       value="{{ "%.1f"|format(fund.performance_fee_rate * 100) }}">
+                <span class="input-group-text bg-dark border-secondary text-secondary">%</span>
+              </div>
+              <div class="form-text text-secondary">Carried interest on gains</div>
+            </div>
           </div>
+          {% endfor %}
         </div>
       </div>
       {% endif %}

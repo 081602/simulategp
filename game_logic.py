@@ -39,10 +39,32 @@ def run_phase1_crank(game: Game):
         if not term_sheets:
             continue
 
+        # The company declines offers from funds whose mandate doesn't
+        # cover it (teams aren't warned up front — they find out here)
+        in_mandate = []
+        for ts in term_sheets:
+            team = Team.query.get(ts.team_id)
+            if team.investment_block_reason(company):
+                ts.status = 'rejected'
+                ts.rejection_reason = (
+                    f"{company.name} declined to take capital from a fund whose "
+                    f"mandate does not include {company.stage_label} "
+                    f"{company.sector} companies.")
+                _notify(ts.team_id,
+                        f"{company.name} declined your term sheet. The company "
+                        f"chose not to take capital from a fund whose mandate "
+                        f"does not include {company.stage_label} {company.sector} "
+                        f"companies.",
+                        'deal_lost', company.id)
+            else:
+                in_mandate.append(ts)
+        if not in_mandate:
+            continue
+
         # Score each term sheet from the company's perspective
         # (reputation currently unused in scoring)
         scored = []
-        for ts in term_sheets:
+        for ts in in_mandate:
             score = ts.company_score
             scored.append((score, ts))
 
@@ -59,6 +81,10 @@ def run_phase1_crank(game: Game):
         for score, ts in scored[1:]:
             if not ts.willing_to_fill:
                 ts.status = 'rejected'
+                ts.rejection_reason = (
+                    f"{company.name} selected {lead_team.firm_name}'s term sheet "
+                    f"as lead; yours was not chosen and you did not offer to "
+                    f"participate as a fill investor.")
                 _notify(ts.team_id,
                         f"Your term sheet on {company.name} was not selected as lead.",
                         'deal_lost', company.id)
@@ -451,23 +477,36 @@ def team_gp_income(team):
     mgmt_fees = 0.0
     operating_costs = 0.0
     carried_interest = 0.0
+    ledger = []   # line items: {'year', 'kind', 'description', 'amount'} (GP view)
+    exits = []    # realized exits feeding the carry basis
 
     for fund in team.funds:
+        opex_rate = fund.operating_cost_rate or 0
         fee_txs = (FundTransaction.query
                    .filter_by(fund_id=fund.id, transaction_type='management_fee')
+                   .order_by(FundTransaction.game_year)
                    .all())
-        mgmt_fees += sum(abs(tx.amount) for tx in fee_txs)
-        # Opex accrues for each year the fund operated (one fee charge per year)
-        years_operated = len(fee_txs)
-        operating_costs += fund.total_capital * (fund.operating_cost_rate or 0) * years_operated
+        for tx in fee_txs:
+            mgmt_fees += abs(tx.amount)
+            ledger.append({'year': tx.game_year, 'kind': 'fee',
+                           'description': f'Management fee earned — {fund.name}',
+                           'amount': abs(tx.amount)})
+            # Opex accrues for each year the fund operated
+            opex = fund.total_capital * opex_rate
+            operating_costs += opex
+            ledger.append({'year': tx.game_year, 'kind': 'opex',
+                           'description': f'Operating costs — {fund.name} '
+                                          f'({opex_rate * 100:.2f}% of committed)',
+                           'amount': -opex})
 
-        # Net realized result across this fund's exited deals
+        # Net realized result across this fund's exited deals (carry basis)
         stakes = (DealEquity.query
                   .join(Deal, DealEquity.deal_id == Deal.id)
                   .filter(DealEquity.fund_id == fund.id,
                           Deal.status.in_(['liquidated', 'bankrupt']))
                   .all())
         net_realized = 0.0
+        last_exit_year = None
         for stake in stakes:
             payout_txs = (FundTransaction.query
                           .filter_by(fund_id=fund.id,
@@ -475,9 +514,26 @@ def team_gp_income(team):
                                      company_id=stake.deal.company_id)
                           .all())
             payout = sum(tx.amount for tx in payout_txs)
-            net_realized += payout - stake.equity_invested
-        carried_interest += max(0.0, net_realized) * (fund.performance_fee_rate or 0.20)
+            net = payout - stake.equity_invested
+            net_realized += net
+            exit_year = payout_txs[0].game_year if payout_txs else stake.deal.game_year
+            last_exit_year = max(last_exit_year or 0, exit_year)
+            exits.append({'year': exit_year, 'fund': fund.name,
+                          'company': stake.deal.company.name,
+                          'outcome': stake.deal.status,
+                          'invested': stake.equity_invested,
+                          'proceeds': payout, 'net': net})
+        fund_carry = max(0.0, net_realized) * (fund.performance_fee_rate or 0.20)
+        if fund_carry > 0:
+            carried_interest += fund_carry
+            ledger.append({'year': last_exit_year, 'kind': 'carry',
+                           'description': f'Carried interest — {fund.name} '
+                                          f'({(fund.performance_fee_rate or 0.20) * 100:.0f}% of '
+                                          f'${net_realized:,.1f}M net realized gains)',
+                           'amount': fund_carry})
 
+    ledger.sort(key=lambda x: (x['year'] or 0))
+    exits.sort(key=lambda x: x['year'])
     total = mgmt_fees - operating_costs + carried_interest
     partners = team.num_partners or 1
     return {
@@ -486,6 +542,8 @@ def team_gp_income(team):
         'carried_interest': carried_interest,
         'total': total,
         'per_partner': total / partners,
+        'ledger': ledger,
+        'exits': exits,
     }
 
 

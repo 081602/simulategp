@@ -375,13 +375,6 @@
                 <small class="text-secondary">Submitted for {{ company.name }}</small>
               </div>
               {% else %}
-              {% set block_reason = current_user.investment_block_reason(company) %}
-              {% if block_reason %}
-              <div class="alert alert-warning py-2 mb-0">
-                <i class="bi bi-shield-exclamation"></i> <strong>Outside your mandate:</strong>
-                {{ block_reason }}
-              </div>
-              {% else %}
               <a href="{{ url_for('create_term_sheet', company_id=company.id) }}"
                  class="btn btn-warning text-dark fw-semibold">
                 <i class="bi bi-file-earmark-plus"></i> Create Term Sheet
@@ -389,7 +382,6 @@
               <div class="form-text text-secondary mt-1">
                 Select a fund and set your deal terms to submit a term sheet.
               </div>
-              {% endif %}
               {% endif %}
             </div>
           </div>

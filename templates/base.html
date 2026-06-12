@@ -37,10 +37,6 @@
              href="{{ url_for('dealflow') }}"><i class="bi bi-search"></i> Deal Flow</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if request.endpoint == 'firm_directory' %}active{% endif %}"
-             href="{{ url_for('firm_directory') }}"><i class="bi bi-building"></i> Firms</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link {% if request.endpoint == 'portfolio' %}active{% endif %}"
              href="{{ url_for('portfolio') }}"><i class="bi bi-briefcase"></i> Portfolio</a>
         </li>
@@ -49,8 +45,16 @@
              href="{{ url_for('funds') }}"><i class="bi bi-cash-stack"></i> Funds</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link {% if request.endpoint == 'gp_economics' %}active{% endif %}"
+             href="{{ url_for('gp_economics') }}"><i class="bi bi-briefcase-fill"></i> GP Economics</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link {% if request.endpoint == 'timeline' %}active{% endif %}"
              href="{{ url_for('timeline') }}"><i class="bi bi-clock-history"></i> Timeline</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint == 'firm_directory' %}active{% endif %}"
+             href="{{ url_for('firm_directory') }}"><i class="bi bi-building"></i> Firms</a>
         </li>
       </ul>
       <ul class="navbar-nav">
