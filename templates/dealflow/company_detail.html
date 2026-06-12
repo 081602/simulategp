@@ -103,7 +103,7 @@
                 </tr>
                 <tr>
                   <td class="text-light">Funds Wanted</td>
-                  <td class="fw-bold text-white">${{ "{:,.1f}M".format(company.capital_requested) }}</td>
+                  <td class="fw-bold text-white">{% if company.stage == 'mature' %}<span class="text-secondary">N/A</span>{% else %}${{ "{:,.1f}M".format(company.capital_requested) }}{% endif %}</td>
                 </tr>
                 <tr>
                   <td class="text-light">Available Cash</td>
@@ -169,6 +169,38 @@
                     {% if company.ltm_ebitda_margin is not none %}
                       {{ "%.1f"|format(company.ltm_ebitda_margin * 100) }}%
                     {% else %}<span class="text-secondary">—</span>{% endif %}
+                  </td>
+                </tr>
+                {% endif %}
+                {% if company.ltm_revenue is not none %}
+                <tr>
+                  <td class="text-light">LTM Revenue</td>
+                  <td class="fw-bold text-white">${{ "{:,.1f}M".format(company.ltm_revenue) }}</td>
+                </tr>
+                {% endif %}
+                {% if company.ltm_ebitda is not none %}
+                <tr>
+                  <td class="text-light">LTM EBITDA</td>
+                  <td class="fw-bold {% if company.ltm_ebitda < 0 %}text-danger{% else %}text-white{% endif %}">
+                    ${{ "{:,.1f}M".format(company.ltm_ebitda) }}
+                  </td>
+                </tr>
+                {% endif %}
+                {% if company.ltm_revenue is not none or company.ltm_ebitda is not none %}
+                <tr>
+                  <td class="text-light">Implied EV / Revenue</td>
+                  <td class="fw-bold text-white">
+                    {% if company.ev_revenue_multiple is not none %}
+                      {{ "%.1f"|format(company.ev_revenue_multiple) }}x
+                    {% else %}<span class="text-secondary">N/A</span>{% endif %}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-light">Implied EV / EBITDA</td>
+                  <td class="fw-bold text-white">
+                    {% if company.ev_ebitda_multiple is not none %}
+                      {{ "%.1f"|format(company.ev_ebitda_multiple) }}x
+                    {% else %}<span class="text-secondary">N/A</span>{% endif %}
                   </td>
                 </tr>
                 {% endif %}

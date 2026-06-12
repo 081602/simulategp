@@ -48,27 +48,27 @@
             </div>
 
             <div class="col-md-2">
-              <label for="min_funds" class="form-label fw-semibold text-white">Min Funds Wanted ($M)</label>
+              <label for="min_deal_size" class="form-label fw-semibold text-white">Min Deal Size ($M)</label>
               <input type="number"
                      class="form-control bg-dark text-white border-secondary"
-                     id="min_funds"
-                     name="min_funds"
+                     id="min_deal_size"
+                     name="min_deal_size"
                      min="0"
                      step="0.5"
                      placeholder="No min"
-                     value="{{ request.form.get('min_funds', '') }}">
+                     value="{{ request.form.get('min_deal_size', '') }}">
             </div>
 
             <div class="col-md-2">
-              <label for="max_funds" class="form-label fw-semibold text-white">Max Funds Wanted ($M)</label>
+              <label for="max_deal_size" class="form-label fw-semibold text-white">Max Deal Size ($M)</label>
               <input type="number"
                      class="form-control bg-dark text-white border-secondary"
-                     id="max_funds"
-                     name="max_funds"
+                     id="max_deal_size"
+                     name="max_deal_size"
                      min="0"
                      step="0.5"
                      placeholder="No max"
-                     value="{{ request.form.get('max_funds', '') }}">
+                     value="{{ request.form.get('max_deal_size', '') }}">
             </div>
 
             <div class="col-md-2">
@@ -118,7 +118,7 @@
               <div class="row g-2 mb-2">
                 <div class="col-6">
                   <small class="text-light d-block">Funds Wanted</small>
-                  <span class="fw-bold">${{ "{:,.1f}M".format(company.capital_requested) }}</span>
+                  <span class="fw-bold">{% if company.stage == 'mature' %}<span class="text-secondary">N/A</span>{% else %}${{ "{:,.1f}M".format(company.capital_requested) }}{% endif %}</span>
                 </div>
               </div>
 

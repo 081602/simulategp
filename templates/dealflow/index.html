@@ -73,7 +73,7 @@
             <div class="mb-3">
               <small class="text-light d-block">Funds Wanted</small>
               <span class="fw-bold text-white fs-5">
-                ${{ "{:,.1f}M".format(company.capital_requested) }}
+                {% if company.stage == 'mature' %}<span class="text-secondary">N/A</span>{% else %}${{ "{:,.1f}M".format(company.capital_requested) }}{% endif %}
               </span>
             </div>
 

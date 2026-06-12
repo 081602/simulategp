@@ -56,6 +56,8 @@ with app.test_request_context('/admin/setup', method='POST'):
                 management_option_pct=cd.get('management_option_pct', 0.10),
                 revenue_growth_3yr=cd.get('revenue_growth_3yr'),
                 ltm_ebitda_margin=cd.get('ltm_ebitda_margin'),
+                ltm_revenue=cd.get('ltm_revenue'),
+                ltm_ebitda=cd.get('ltm_ebitda'),
             )
             db.session.add(gc)
         print('Companies added to session', flush=True)

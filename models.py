@@ -197,6 +197,8 @@ class GameCompany(db.Model):
     flagged_for_liquidation = db.Column(db.Boolean, default=False)
     revenue_growth_3yr = db.Column(db.Float, nullable=True)   # e.g. 0.12 = 12%
     ltm_ebitda_margin = db.Column(db.Float, nullable=True)    # e.g. 0.20 = 20%
+    ltm_revenue = db.Column(db.Float, nullable=True)          # $M
+    ltm_ebitda = db.Column(db.Float, nullable=True)           # $M (negative = burn)
 
     template = db.relationship('CompanyTemplate')
     lead_team = db.relationship('Team', foreign_keys=[lead_team_id])
@@ -230,6 +232,29 @@ class GameCompany(db.Model):
         if self.funded_valuation is not None:
             return self.funded_valuation
         return self.initial_val_ask
+
+    @property
+    def enterprise_value(self):
+        """Implied EV: equity value (latest valuation / ask) + debt - cash."""
+        if self.latest_valuation is None:
+            return None
+        return (self.latest_valuation + (self.debt_outstanding or 0)
+                - (self.available_cash or 0))
+
+    @property
+    def ev_revenue_multiple(self):
+        ev = self.enterprise_value
+        if ev is None or not self.ltm_revenue or self.ltm_revenue <= 0:
+            return None
+        return ev / self.ltm_revenue
+
+    @property
+    def ev_ebitda_multiple(self):
+        """None when EBITDA is zero/negative (multiple not meaningful)."""
+        ev = self.enterprise_value
+        if ev is None or not self.ltm_ebitda or self.ltm_ebitda <= 0:
+            return None
+        return ev / self.ltm_ebitda
 
     @property
     def expected_multiple(self):

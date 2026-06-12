@@ -30,7 +30,7 @@
           </div>
           <div class="col-4 col-md-2">
             <div class="text-light small">Funds Wanted</div>
-            <div class="fw-bold text-white">${{ "{:,.1f}M".format(company.capital_requested) }}</div>
+            <div class="fw-bold text-white">{% if company.stage == 'mature' %}<span class="text-secondary">N/A</span>{% else %}${{ "{:,.1f}M".format(company.capital_requested) }}{% endif %}</div>
           </div>
           <div class="col-4 col-md-2">
             <div class="text-light small">Rolled Equity</div>
@@ -74,7 +74,7 @@
                      id="total_investment" name="total_investment"
                      min="0" step="0.1"
                      value="{{ company.capital_requested }}" required>
-              <div class="form-text text-light">Funds Wanted: ${{ "{:,.1f}M".format(company.capital_requested) }}</div>
+              <div class="form-text text-light">{% if company.stage == 'mature' %}Suggested deal size: ${{ "{:,.1f}M".format(company.capital_requested) }}{% else %}Funds Wanted: ${{ "{:,.1f}M".format(company.capital_requested) }}{% endif %}</div>
             </div>
 
             <div class="col-12">

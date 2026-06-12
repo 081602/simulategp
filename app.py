@@ -2,6 +2,7 @@ import os
 import json
 import random
 from datetime import datetime
+from sqlalchemy import or_, and_
 from flask import (Flask, render_template, request, redirect, url_for,
                    flash, jsonify, abort)
 from flask_login import (LoginManager, login_user, logout_user,
@@ -206,8 +207,8 @@ def search_companies():
         results = []
         sector_filter = request.form.get('sector', '')
         stage_filter = request.form.get('stage', '')
-        min_funds = request.form.get('min_funds', '')
-        max_funds = request.form.get('max_funds', '')
+        min_deal_size = request.form.get('min_deal_size', '')
+        max_deal_size = request.form.get('max_deal_size', '')
 
         # Build query
         query = GameCompany.query.filter_by(
@@ -218,16 +219,26 @@ def search_companies():
             query = query.filter(GameCompany.sector == sector_filter)
         if stage_filter:
             query = query.filter(GameCompany.stage == stage_filter)
-        if min_funds:
+        # Deal size = funds wanted for growth-stage companies, but the whole
+        # company's asking valuation for mature ones (you buy the business)
+        if min_deal_size:
             try:
-                query = query.filter(
-                    GameCompany.capital_requested >= float(min_funds))
+                v = float(min_deal_size)
+                query = query.filter(or_(
+                    and_(GameCompany.stage == 'mature',
+                         GameCompany.initial_val_ask >= v),
+                    and_(GameCompany.stage != 'mature',
+                         GameCompany.capital_requested >= v)))
             except ValueError:
                 pass
-        if max_funds:
+        if max_deal_size:
             try:
-                query = query.filter(
-                    GameCompany.capital_requested <= float(max_funds))
+                v = float(max_deal_size)
+                query = query.filter(or_(
+                    and_(GameCompany.stage == 'mature',
+                         GameCompany.initial_val_ask <= v),
+                    and_(GameCompany.stage != 'mature',
+                         GameCompany.capital_requested <= v)))
             except ValueError:
                 pass
 
@@ -1107,11 +1118,18 @@ def admin_edit_company(company_id):
                                                        company.management_quality)
         company.is_cash_flow_positive = 'is_cash_flow_positive' in request.form
 
-        if company.stage == 'mature':
+        if 'revenue_growth_3yr' in request.form:
             rg = request.form.get('revenue_growth_3yr')
-            em = request.form.get('ltm_ebitda_margin')
             company.revenue_growth_3yr = float(rg) / 100 if rg else None
+        if 'ltm_ebitda_margin' in request.form:
+            em = request.form.get('ltm_ebitda_margin')
             company.ltm_ebitda_margin = float(em) / 100 if em else None
+        if 'ltm_revenue' in request.form:
+            lr = request.form.get('ltm_revenue')
+            company.ltm_revenue = float(lr) if lr else None
+        if 'ltm_ebitda' in request.form:
+            le = request.form.get('ltm_ebitda')
+            company.ltm_ebitda = float(le) if le else None
 
         outcomes = []
         for i in range(12):

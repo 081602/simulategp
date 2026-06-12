@@ -41,7 +41,9 @@
     "management_option_pct": 0.121,
     "subsector": "Healthcare / Biotech",
     "revenue_growth_3yr": 1.5,
-    "ltm_ebitda_margin": -0.9
+    "ltm_ebitda_margin": -0.9,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -4.0
   },
   {
     "name": "CloudStack Logistics",
@@ -85,7 +87,9 @@
     "management_option_pct": 0.052,
     "subsector": "Technology / SaaS",
     "revenue_growth_3yr": 0.8,
-    "ltm_ebitda_margin": -0.1
+    "ltm_ebitda_margin": -0.1,
+    "ltm_revenue": 2.0,
+    "ltm_ebitda": -0.2
   },
   {
     "name": "Apex Industrial Partners",
@@ -129,7 +133,9 @@
     "management_option_pct": 0.046,
     "subsector": "Industrials / Manufacturing",
     "revenue_growth_3yr": 0.04,
-    "ltm_ebitda_margin": 0.22
+    "ltm_ebitda_margin": 0.22,
+    "ltm_revenue": 50.0,
+    "ltm_ebitda": 11.0
   },
   {
     "name": "GreenLeaf Consumer Brands",
@@ -173,7 +179,9 @@
     "management_option_pct": 0.103,
     "subsector": "Consumer / Retail",
     "revenue_growth_3yr": 0.45,
-    "ltm_ebitda_margin": -0.12
+    "ltm_ebitda_margin": -0.12,
+    "ltm_revenue": 8.0,
+    "ltm_ebitda": -0.96
   },
   {
     "name": "UrbanGrid Energy",
@@ -217,7 +225,9 @@
     "management_option_pct": 0.052,
     "subsector": "Energy / CleanTech",
     "revenue_growth_3yr": 0.55,
-    "ltm_ebitda_margin": 0.02
+    "ltm_ebitda_margin": 0.02,
+    "ltm_revenue": 5.0,
+    "ltm_ebitda": 0.1
   },
   {
     "name": "HarborView Hotels",
@@ -261,7 +271,9 @@
     "management_option_pct": 0.032,
     "subsector": "Hospitality / Real Estate",
     "revenue_growth_3yr": 0.05,
-    "ltm_ebitda_margin": 0.24
+    "ltm_ebitda_margin": 0.24,
+    "ltm_revenue": 55.0,
+    "ltm_ebitda": 13.2
   },
   {
     "name": "PulseCheck Health",
@@ -305,7 +317,9 @@
     "management_option_pct": 0.113,
     "subsector": "Healthcare / Digital Health",
     "revenue_growth_3yr": 0.6,
-    "ltm_ebitda_margin": -0.35
+    "ltm_ebitda_margin": -0.35,
+    "ltm_revenue": 1.0,
+    "ltm_ebitda": -0.35
   },
   {
     "name": "BridgePoint Financial",
@@ -349,7 +363,9 @@
     "management_option_pct": 0.045,
     "subsector": "Financial Services",
     "revenue_growth_3yr": 0.08,
-    "ltm_ebitda_margin": 0.3
+    "ltm_ebitda_margin": 0.3,
+    "ltm_revenue": 28.0,
+    "ltm_ebitda": 8.4
   },
   {
     "name": "Spectra AI",
@@ -393,7 +409,9 @@
     "management_option_pct": 0.112,
     "subsector": "Technology / AI",
     "revenue_growth_3yr": 1.5,
-    "ltm_ebitda_margin": -1.0
+    "ltm_ebitda_margin": -1.0,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -6.5
   },
   {
     "name": "MidWest Agri Solutions",
@@ -437,7 +455,9 @@
     "management_option_pct": 0.072,
     "subsector": "Agriculture / Food Tech",
     "revenue_growth_3yr": 0.5,
-    "ltm_ebitda_margin": -0.08
+    "ltm_ebitda_margin": -0.08,
+    "ltm_revenue": 3.0,
+    "ltm_ebitda": -0.24
   },
   {
     "name": "Ironclad Security Systems",
@@ -481,7 +501,9 @@
     "management_option_pct": 0.102,
     "subsector": "Technology / Cybersecurity",
     "revenue_growth_3yr": 0.35,
-    "ltm_ebitda_margin": -0.4
+    "ltm_ebitda_margin": -0.4,
+    "ltm_revenue": 1.5,
+    "ltm_ebitda": -0.6
   },
   {
     "name": "Crestline Packaging",
@@ -525,7 +547,9 @@
     "management_option_pct": 0.034,
     "subsector": "Industrials / Packaging",
     "revenue_growth_3yr": 0.06,
-    "ltm_ebitda_margin": 0.18
+    "ltm_ebitda_margin": 0.18,
+    "ltm_revenue": 120.0,
+    "ltm_ebitda": 21.6
   },
   {
     "name": "NexGen Mobility",
@@ -569,7 +593,9 @@
     "management_option_pct": 0.123,
     "subsector": "Transportation / EV",
     "revenue_growth_3yr": 1.2,
-    "ltm_ebitda_margin": -0.8
+    "ltm_ebitda_margin": -0.8,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -5.0
   },
   {
     "name": "Summit Education Group",
@@ -613,7 +639,9 @@
     "management_option_pct": 0.068,
     "subsector": "Education / EdTech",
     "revenue_growth_3yr": 0.6,
-    "ltm_ebitda_margin": 0.05
+    "ltm_ebitda_margin": 0.05,
+    "ltm_revenue": 1.5,
+    "ltm_ebitda": 0.08
   },
   {
     "name": "Coastal Wealth Management",
@@ -657,7 +685,9 @@
     "management_option_pct": 0.027,
     "subsector": "Financial Services / RIA",
     "revenue_growth_3yr": 0.07,
-    "ltm_ebitda_margin": 0.32
+    "ltm_ebitda_margin": 0.32,
+    "ltm_revenue": 22.0,
+    "ltm_ebitda": 7.04
   },
   {
     "name": "Redwood Data Infrastructure",
@@ -701,7 +731,9 @@
     "management_option_pct": 0.107,
     "subsector": "Technology / SaaS",
     "revenue_growth_3yr": 1.5,
-    "ltm_ebitda_margin": -1.0
+    "ltm_ebitda_margin": -1.0,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -2.5
   },
   {
     "name": "Vantage Dental Partners",
@@ -745,7 +777,9 @@
     "management_option_pct": 0.042,
     "subsector": "Healthcare / Dental",
     "revenue_growth_3yr": 0.12,
-    "ltm_ebitda_margin": 0.22
+    "ltm_ebitda_margin": 0.22,
+    "ltm_revenue": 48.0,
+    "ltm_ebitda": 10.56
   },
   {
     "name": "TerraFirm Construction Tech",
@@ -789,7 +823,9 @@
     "management_option_pct": 0.118,
     "subsector": "Technology / ConTech",
     "revenue_growth_3yr": 0.65,
-    "ltm_ebitda_margin": -0.15
+    "ltm_ebitda_margin": -0.15,
+    "ltm_revenue": 4.0,
+    "ltm_ebitda": -0.6
   },
   {
     "name": "LuminaLab Diagnostics",
@@ -833,7 +869,9 @@
     "management_option_pct": 0.124,
     "subsector": "Healthcare / Medical Devices",
     "revenue_growth_3yr": 1.5,
-    "ltm_ebitda_margin": -0.85
+    "ltm_ebitda_margin": -0.85,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -3.5
   },
   {
     "name": "Northgate Auto Services",
@@ -877,7 +915,9 @@
     "management_option_pct": 0.028,
     "subsector": "Consumer / Auto Services",
     "revenue_growth_3yr": 0.04,
-    "ltm_ebitda_margin": 0.2
+    "ltm_ebitda_margin": 0.2,
+    "ltm_revenue": 30.0,
+    "ltm_ebitda": 6.0
   },
   {
     "name": "BlueWave Aquaculture",
@@ -921,7 +961,9 @@
     "management_option_pct": 0.081,
     "subsector": "Agriculture / Food Tech",
     "revenue_growth_3yr": 0.3,
-    "ltm_ebitda_margin": -0.5
+    "ltm_ebitda_margin": -0.5,
+    "ltm_revenue": 0.3,
+    "ltm_ebitda": -0.15
   },
   {
     "name": "ClearPath Insurance Tech",
@@ -965,7 +1007,9 @@
     "management_option_pct": 0.093,
     "subsector": "Financial Services / InsurTech",
     "revenue_growth_3yr": 0.55,
-    "ltm_ebitda_margin": -0.05
+    "ltm_ebitda_margin": -0.05,
+    "ltm_revenue": 4.0,
+    "ltm_ebitda": -0.2
   },
   {
     "name": "Meridian Waste Solutions",
@@ -1009,7 +1053,9 @@
     "management_option_pct": 0.049,
     "subsector": "Industrials / Environmental Services",
     "revenue_growth_3yr": 0.08,
-    "ltm_ebitda_margin": 0.24
+    "ltm_ebitda_margin": 0.24,
+    "ltm_revenue": 45.0,
+    "ltm_ebitda": 10.8
   },
   {
     "name": "Onyx Media Group",
@@ -1053,7 +1099,9 @@
     "management_option_pct": 0.107,
     "subsector": "Media / Digital Content",
     "revenue_growth_3yr": 0.4,
-    "ltm_ebitda_margin": -0.15
+    "ltm_ebitda_margin": -0.15,
+    "ltm_revenue": 6.0,
+    "ltm_ebitda": -0.9
   },
   {
     "name": "SkyBridge Telecom",
@@ -1097,7 +1145,9 @@
     "management_option_pct": 0.049,
     "subsector": "Technology / Telecom",
     "revenue_growth_3yr": 0.06,
-    "ltm_ebitda_margin": 0.3
+    "ltm_ebitda_margin": 0.3,
+    "ltm_revenue": 30.0,
+    "ltm_ebitda": 9.0
   },
   {
     "name": "PixelForge Studios",
@@ -1141,7 +1191,9 @@
     "management_option_pct": 0.126,
     "subsector": "Media / Gaming",
     "revenue_growth_3yr": 2.0,
-    "ltm_ebitda_margin": 0.1
+    "ltm_ebitda_margin": 0.1,
+    "ltm_revenue": 4.0,
+    "ltm_ebitda": 0.4
   },
   {
     "name": "Forge Analytics",
@@ -1185,7 +1237,9 @@
     "management_option_pct": 0.097,
     "subsector": "Technology / AI",
     "revenue_growth_3yr": 0.6,
-    "ltm_ebitda_margin": -0.05
+    "ltm_ebitda_margin": -0.05,
+    "ltm_revenue": 5.0,
+    "ltm_ebitda": -0.25
   },
   {
     "name": "Prairie Home Care",
@@ -1229,7 +1283,9 @@
     "management_option_pct": 0.044,
     "subsector": "Healthcare / Home Health",
     "revenue_growth_3yr": 0.09,
-    "ltm_ebitda_margin": 0.12
+    "ltm_ebitda_margin": 0.12,
+    "ltm_revenue": 60.0,
+    "ltm_ebitda": 7.2
   },
   {
     "name": "Voltz Energy Storage",
@@ -1273,7 +1329,9 @@
     "management_option_pct": 0.123,
     "subsector": "Energy / CleanTech",
     "revenue_growth_3yr": 1.5,
-    "ltm_ebitda_margin": -0.95
+    "ltm_ebitda_margin": -0.95,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -5.0
   },
   {
     "name": "Summit Beverage Co.",
@@ -1317,7 +1375,9 @@
     "management_option_pct": 0.107,
     "subsector": "Consumer / CPG",
     "revenue_growth_3yr": 0.4,
-    "ltm_ebitda_margin": -0.2
+    "ltm_ebitda_margin": -0.2,
+    "ltm_revenue": 12.0,
+    "ltm_ebitda": -2.4
   },
   {
     "name": "Keystone Title & Escrow",
@@ -1361,7 +1421,9 @@
     "management_option_pct": 0.044,
     "subsector": "Financial Services / Real Estate",
     "revenue_growth_3yr": 0.03,
-    "ltm_ebitda_margin": 0.18
+    "ltm_ebitda_margin": 0.18,
+    "ltm_revenue": 28.0,
+    "ltm_ebitda": 5.04
   },
   {
     "name": "DeepRoot Genomics",
@@ -1405,7 +1467,9 @@
     "management_option_pct": 0.142,
     "subsector": "Healthcare / Biotech",
     "revenue_growth_3yr": 1.5,
-    "ltm_ebitda_margin": -1.0
+    "ltm_ebitda_margin": -1.0,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -6.0
   },
   {
     "name": "Cascade Fitness Holdings",
@@ -1449,7 +1513,9 @@
     "management_option_pct": 0.027,
     "subsector": "Consumer / Fitness",
     "revenue_growth_3yr": 0.1,
-    "ltm_ebitda_margin": 0.22
+    "ltm_ebitda_margin": 0.22,
+    "ltm_revenue": 32.0,
+    "ltm_ebitda": 7.04
   },
   {
     "name": "Nimbus Fleet Management",
@@ -1493,7 +1559,9 @@
     "management_option_pct": 0.098,
     "subsector": "Technology / SaaS",
     "revenue_growth_3yr": 0.45,
-    "ltm_ebitda_margin": 0.05
+    "ltm_ebitda_margin": 0.05,
+    "ltm_revenue": 7.0,
+    "ltm_ebitda": 0.35
   },
   {
     "name": "Iron Horse Distillery",
@@ -1537,7 +1605,9 @@
     "management_option_pct": 0.083,
     "subsector": "Consumer / Spirits",
     "revenue_growth_3yr": 0.35,
-    "ltm_ebitda_margin": -0.1
+    "ltm_ebitda_margin": -0.1,
+    "ltm_revenue": 5.0,
+    "ltm_ebitda": -0.5
   },
   {
     "name": "Argent Metals Recycling",
@@ -1581,7 +1651,9 @@
     "management_option_pct": 0.034,
     "subsector": "Industrials / Metals",
     "revenue_growth_3yr": 0.02,
-    "ltm_ebitda_margin": 0.1
+    "ltm_ebitda_margin": 0.1,
+    "ltm_revenue": 75.0,
+    "ltm_ebitda": 7.5
   },
   {
     "name": "Pantheon Pharma Services",
@@ -1625,7 +1697,9 @@
     "management_option_pct": 0.043,
     "subsector": "Healthcare / Life Sciences",
     "revenue_growth_3yr": 0.09,
-    "ltm_ebitda_margin": 0.2
+    "ltm_ebitda_margin": 0.2,
+    "ltm_revenue": 80.0,
+    "ltm_ebitda": 16.0
   },
   {
     "name": "OceanPath Logistics",
@@ -1669,7 +1743,9 @@
     "management_option_pct": 0.1,
     "subsector": "Transportation / Logistics",
     "revenue_growth_3yr": 0.65,
-    "ltm_ebitda_margin": -0.03
+    "ltm_ebitda_margin": -0.03,
+    "ltm_revenue": 10.0,
+    "ltm_ebitda": -0.3
   },
   {
     "name": "WillowBend Veterinary Group",
@@ -1713,7 +1789,9 @@
     "management_option_pct": 0.034,
     "subsector": "Healthcare / Veterinary",
     "revenue_growth_3yr": 0.11,
-    "ltm_ebitda_margin": 0.21
+    "ltm_ebitda_margin": 0.21,
+    "ltm_revenue": 42.0,
+    "ltm_ebitda": 8.82
   },
   {
     "name": "Synapse Neuro",
@@ -1757,7 +1835,9 @@
     "management_option_pct": 0.114,
     "subsector": "Healthcare / Medical Devices",
     "revenue_growth_3yr": 1.5,
-    "ltm_ebitda_margin": -1.0
+    "ltm_ebitda_margin": -1.0,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -4.5
   },
   {
     "name": "Marquee Event Services",
@@ -1801,7 +1881,9 @@
     "management_option_pct": 0.026,
     "subsector": "Business Services / Events",
     "revenue_growth_3yr": 0.1,
-    "ltm_ebitda_margin": 0.14
+    "ltm_ebitda_margin": 0.14,
+    "ltm_revenue": 40.0,
+    "ltm_ebitda": 5.6
   },
   {
     "name": "SparrowNet Cybersecurity",
@@ -1845,7 +1927,9 @@
     "management_option_pct": 0.051,
     "subsector": "Technology / Cybersecurity",
     "revenue_growth_3yr": 0.7,
-    "ltm_ebitda_margin": 0.0
+    "ltm_ebitda_margin": 0.0,
+    "ltm_revenue": 8.0,
+    "ltm_ebitda": 0.0
   },
   {
     "name": "WoodCraft Cabinetry",
@@ -1889,7 +1973,9 @@
     "management_option_pct": 0.042,
     "subsector": "Industrials / Home Products",
     "revenue_growth_3yr": 0.05,
-    "ltm_ebitda_margin": 0.13
+    "ltm_ebitda_margin": 0.13,
+    "ltm_revenue": 65.0,
+    "ltm_ebitda": 8.45
   },
   {
     "name": "QuantumLeap Robotics",
@@ -1933,7 +2019,9 @@
     "management_option_pct": 0.149,
     "subsector": "Technology / Robotics",
     "revenue_growth_3yr": 1.3,
-    "ltm_ebitda_margin": -0.9
+    "ltm_ebitda_margin": -0.9,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -6.0
   },
   {
     "name": "Silverline Business Process Outsourcing",
@@ -1977,7 +2065,9 @@
     "management_option_pct": 0.025,
     "subsector": "Business Services / BPO",
     "revenue_growth_3yr": 0.07,
-    "ltm_ebitda_margin": 0.23
+    "ltm_ebitda_margin": 0.23,
+    "ltm_revenue": 55.0,
+    "ltm_ebitda": 12.65
   },
   {
     "name": "SkyRoot PropTech",
@@ -2021,7 +2111,9 @@
     "management_option_pct": 0.11,
     "subsector": "Technology / PropTech",
     "revenue_growth_3yr": 0.7,
-    "ltm_ebitda_margin": -0.25
+    "ltm_ebitda_margin": -0.25,
+    "ltm_revenue": 3.0,
+    "ltm_ebitda": -0.75
   },
   {
     "name": "Lakeview Orthopedics Group",
@@ -2065,7 +2157,9 @@
     "management_option_pct": 0.036,
     "subsector": "Healthcare / Physician Practices",
     "revenue_growth_3yr": 0.06,
-    "ltm_ebitda_margin": 0.19
+    "ltm_ebitda_margin": 0.19,
+    "ltm_revenue": 48.0,
+    "ltm_ebitda": 9.12
   },
   {
     "name": "Axiom Legal Tech",
@@ -2109,7 +2203,9 @@
     "management_option_pct": 0.067,
     "subsector": "Technology / LegalTech",
     "revenue_growth_3yr": 0.6,
-    "ltm_ebitda_margin": -0.05
+    "ltm_ebitda_margin": -0.05,
+    "ltm_revenue": 6.0,
+    "ltm_ebitda": -0.3
   },
   {
     "name": "PineCrest Timberlands",
@@ -2153,7 +2249,9 @@
     "management_option_pct": 0.048,
     "subsector": "Industrials / Forestry",
     "revenue_growth_3yr": 0.03,
-    "ltm_ebitda_margin": 0.4
+    "ltm_ebitda_margin": 0.4,
+    "ltm_revenue": 28.0,
+    "ltm_ebitda": 11.2
   },
   {
     "name": "Glow Beauty Tech",
@@ -2197,7 +2295,9 @@
     "management_option_pct": 0.082,
     "subsector": "Consumer / Beauty",
     "revenue_growth_3yr": 0.55,
-    "ltm_ebitda_margin": -0.1
+    "ltm_ebitda_margin": -0.1,
+    "ltm_revenue": 9.0,
+    "ltm_ebitda": -0.9
   },
   {
     "name": "TrueNorth Staffing Solutions",
@@ -2241,7 +2341,9 @@
     "management_option_pct": 0.032,
     "subsector": "Business Services / Staffing",
     "revenue_growth_3yr": 0.1,
-    "ltm_ebitda_margin": 0.08
+    "ltm_ebitda_margin": 0.08,
+    "ltm_revenue": 90.0,
+    "ltm_ebitda": 7.2
   },
   {
     "name": "CarbonTrace Platform",
@@ -2285,7 +2387,9 @@
     "management_option_pct": 0.132,
     "subsector": "Energy / CleanTech",
     "revenue_growth_3yr": 1.8,
-    "ltm_ebitda_margin": -0.7
+    "ltm_ebitda_margin": -0.7,
+    "ltm_revenue": 0.4,
+    "ltm_ebitda": -0.28
   },
   {
     "name": "Harrington Specialty Chemicals",
@@ -2329,7 +2433,9 @@
     "management_option_pct": 0.023,
     "subsector": "Industrials / Chemicals",
     "revenue_growth_3yr": 0.05,
-    "ltm_ebitda_margin": 0.25
+    "ltm_ebitda_margin": 0.25,
+    "ltm_revenue": 75.0,
+    "ltm_ebitda": 18.75
   },
   {
     "name": "EchoHealth Digital",
@@ -2373,7 +2479,9 @@
     "management_option_pct": 0.086,
     "subsector": "Healthcare / Digital Health",
     "revenue_growth_3yr": 0.55,
-    "ltm_ebitda_margin": 0.0
+    "ltm_ebitda_margin": 0.0,
+    "ltm_revenue": 9.0,
+    "ltm_ebitda": 0.0
   },
   {
     "name": "Riverbend Power & Utilities",
@@ -2417,7 +2525,9 @@
     "management_option_pct": 0.044,
     "subsector": "Energy / Utilities",
     "revenue_growth_3yr": 0.0,
-    "ltm_ebitda_margin": 0.35
+    "ltm_ebitda_margin": 0.35,
+    "ltm_revenue": 40.0,
+    "ltm_ebitda": 14.0
   },
   {
     "name": "VoltArc Electric Vehicles",
@@ -2461,7 +2571,9 @@
     "management_option_pct": 0.098,
     "subsector": "Transportation / EV",
     "revenue_growth_3yr": 0.8,
-    "ltm_ebitda_margin": -0.3
+    "ltm_ebitda_margin": -0.3,
+    "ltm_revenue": 2.0,
+    "ltm_ebitda": -0.6
   },
   {
     "name": "Pinstripe Capital Markets",
@@ -2505,7 +2617,9 @@
     "management_option_pct": 0.037,
     "subsector": "Financial Services / Capital Markets",
     "revenue_growth_3yr": 0.06,
-    "ltm_ebitda_margin": 0.28
+    "ltm_ebitda_margin": 0.28,
+    "ltm_revenue": 30.0,
+    "ltm_ebitda": 8.4
   },
   {
     "name": "Cortex Semiconductor",
@@ -2549,7 +2663,9 @@
     "management_option_pct": 0.123,
     "subsector": "Technology / Semiconductors",
     "revenue_growth_3yr": 1.5,
-    "ltm_ebitda_margin": -1.0
+    "ltm_ebitda_margin": -1.0,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -8.0
   },
   {
     "name": "Granite Peak Mining Services",
@@ -2593,7 +2709,9 @@
     "management_option_pct": 0.044,
     "subsector": "Industrials / Mining",
     "revenue_growth_3yr": 0.05,
-    "ltm_ebitda_margin": 0.15
+    "ltm_ebitda_margin": 0.15,
+    "ltm_revenue": 100.0,
+    "ltm_ebitda": 15.0
   },
   {
     "name": "TidePool Marine Tech",
@@ -2637,7 +2755,9 @@
     "management_option_pct": 0.106,
     "subsector": "Technology / Maritime",
     "revenue_growth_3yr": 0.55,
-    "ltm_ebitda_margin": -0.3
+    "ltm_ebitda_margin": -0.3,
+    "ltm_revenue": 2.0,
+    "ltm_ebitda": -0.6
   },
   {
     "name": "Linchpin HR Platform",
@@ -2681,7 +2801,9 @@
     "management_option_pct": 0.053,
     "subsector": "Technology / HRTech",
     "revenue_growth_3yr": 0.4,
-    "ltm_ebitda_margin": 0.08
+    "ltm_ebitda_margin": 0.08,
+    "ltm_revenue": 11.0,
+    "ltm_ebitda": 0.88
   },
   {
     "name": "Ashford Private Schools",
@@ -2725,7 +2847,9 @@
     "management_option_pct": 0.045,
     "subsector": "Education / Private Schools",
     "revenue_growth_3yr": 0.05,
-    "ltm_ebitda_margin": 0.25
+    "ltm_ebitda_margin": 0.25,
+    "ltm_revenue": 38.0,
+    "ltm_ebitda": 9.5
   },
   {
     "name": "SpinOut Defense Systems",
@@ -2769,7 +2893,9 @@
     "management_option_pct": 0.14,
     "subsector": "Technology / Defense",
     "revenue_growth_3yr": 1.4,
-    "ltm_ebitda_margin": -0.8
+    "ltm_ebitda_margin": -0.8,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -4.0
   },
   {
     "name": "Copperfield Distribution",
@@ -2813,7 +2939,9 @@
     "management_option_pct": 0.05,
     "subsector": "Industrials / Distribution",
     "revenue_growth_3yr": 0.03,
-    "ltm_ebitda_margin": 0.08
+    "ltm_ebitda_margin": 0.08,
+    "ltm_revenue": 110.0,
+    "ltm_ebitda": 8.8
   },
   {
     "name": "Meridian Crop Sciences",
@@ -2857,7 +2985,9 @@
     "management_option_pct": 0.108,
     "subsector": "Agriculture / Biotech",
     "revenue_growth_3yr": 1.5,
-    "ltm_ebitda_margin": -1.0
+    "ltm_ebitda_margin": -1.0,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -5.0
   },
   {
     "name": "Beacon Real Estate Software",
@@ -2901,7 +3031,9 @@
     "management_option_pct": 0.098,
     "subsector": "Technology / PropTech",
     "revenue_growth_3yr": 0.5,
-    "ltm_ebitda_margin": 0.12
+    "ltm_ebitda_margin": 0.12,
+    "ltm_revenue": 14.0,
+    "ltm_ebitda": 1.68
   },
   {
     "name": "National Urgent Care Network",
@@ -2945,7 +3077,9 @@
     "management_option_pct": 0.049,
     "subsector": "Healthcare / Urgent Care",
     "revenue_growth_3yr": 0.13,
-    "ltm_ebitda_margin": 0.17
+    "ltm_ebitda_margin": 0.17,
+    "ltm_revenue": 70.0,
+    "ltm_ebitda": 11.9
   },
   {
     "name": "Epoch Space Systems",
@@ -2989,7 +3123,9 @@
     "management_option_pct": 0.131,
     "subsector": "Technology / Space",
     "revenue_growth_3yr": 1.6,
-    "ltm_ebitda_margin": -0.95
+    "ltm_ebitda_margin": -0.95,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -10.0
   },
   {
     "name": "Alpine Food Distribution",
@@ -3033,7 +3169,9 @@
     "management_option_pct": 0.032,
     "subsector": "Consumer / Food Distribution",
     "revenue_growth_3yr": 0.05,
-    "ltm_ebitda_margin": 0.06
+    "ltm_ebitda_margin": 0.06,
+    "ltm_revenue": 85.0,
+    "ltm_ebitda": 5.1
   },
   {
     "name": "Thornwood Print & Fulfillment",
@@ -3077,7 +3215,9 @@
     "management_option_pct": 0.026,
     "subsector": "Industrials / Print & Fulfillment",
     "revenue_growth_3yr": -0.02,
-    "ltm_ebitda_margin": 0.12
+    "ltm_ebitda_margin": 0.12,
+    "ltm_revenue": 50.0,
+    "ltm_ebitda": 6.0
   },
   {
     "name": "BioReactor Systems",
@@ -3121,7 +3261,9 @@
     "management_option_pct": 0.091,
     "subsector": "Healthcare / Biotech",
     "revenue_growth_3yr": 0.65,
-    "ltm_ebitda_margin": -0.15
+    "ltm_ebitda_margin": -0.15,
+    "ltm_revenue": 6.0,
+    "ltm_ebitda": -0.9
   },
   {
     "name": "Clearwater Analytics Hub",
@@ -3165,7 +3307,9 @@
     "management_option_pct": 0.064,
     "subsector": "Technology / FinTech",
     "revenue_growth_3yr": 0.6,
-    "ltm_ebitda_margin": 0.02
+    "ltm_ebitda_margin": 0.02,
+    "ltm_revenue": 8.0,
+    "ltm_ebitda": 0.16
   },
   {
     "name": "Rampart Security Group",
@@ -3209,7 +3353,9 @@
     "management_option_pct": 0.033,
     "subsector": "Business Services / Security",
     "revenue_growth_3yr": 0.06,
-    "ltm_ebitda_margin": 0.07
+    "ltm_ebitda_margin": 0.07,
+    "ltm_revenue": 70.0,
+    "ltm_ebitda": 4.9
   },
   {
     "name": "Aurora Imaging Systems",
@@ -3253,7 +3399,9 @@
     "management_option_pct": 0.123,
     "subsector": "Healthcare / Medical Imaging",
     "revenue_growth_3yr": 1.6,
-    "ltm_ebitda_margin": -0.75
+    "ltm_ebitda_margin": -0.75,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -3.5
   },
   {
     "name": "Solara Green Buildings",
@@ -3297,7 +3445,9 @@
     "management_option_pct": 0.036,
     "subsector": "Industrials / Construction",
     "revenue_growth_3yr": 0.14,
-    "ltm_ebitda_margin": 0.12
+    "ltm_ebitda_margin": 0.12,
+    "ltm_revenue": 60.0,
+    "ltm_ebitda": 7.2
   },
   {
     "name": "GrowPath AgTech",
@@ -3341,7 +3491,9 @@
     "management_option_pct": 0.092,
     "subsector": "Agriculture / Food Tech",
     "revenue_growth_3yr": 0.5,
-    "ltm_ebitda_margin": -0.15
+    "ltm_ebitda_margin": -0.15,
+    "ltm_revenue": 12.0,
+    "ltm_ebitda": -1.8
   },
   {
     "name": "Veritas Legal Outsourcing",
@@ -3385,7 +3537,9 @@
     "management_option_pct": 0.042,
     "subsector": "Business Services / Legal",
     "revenue_growth_3yr": 0.08,
-    "ltm_ebitda_margin": 0.22
+    "ltm_ebitda_margin": 0.22,
+    "ltm_revenue": 45.0,
+    "ltm_ebitda": 9.9
   },
   {
     "name": "MindBridge Edtech",
@@ -3429,7 +3583,9 @@
     "management_option_pct": 0.08,
     "subsector": "Education / EdTech",
     "revenue_growth_3yr": 0.5,
-    "ltm_ebitda_margin": -0.12
+    "ltm_ebitda_margin": -0.12,
+    "ltm_revenue": 7.0,
+    "ltm_ebitda": -0.84
   },
   {
     "name": "Polaris Cold Chain Logistics",
@@ -3473,7 +3629,9 @@
     "management_option_pct": 0.037,
     "subsector": "Transportation / Cold Chain",
     "revenue_growth_3yr": 0.09,
-    "ltm_ebitda_margin": 0.25
+    "ltm_ebitda_margin": 0.25,
+    "ltm_revenue": 80.0,
+    "ltm_ebitda": 20.0
   },
   {
     "name": "Nexus Payments",
@@ -3517,7 +3675,9 @@
     "management_option_pct": 0.081,
     "subsector": "Industrials",
     "revenue_growth_3yr": 1.0,
-    "ltm_ebitda_margin": -0.1
+    "ltm_ebitda_margin": -0.1,
+    "ltm_revenue": 0.5,
+    "ltm_ebitda": -0.05
   },
   {
     "name": "Valor Aerospace MRO",
@@ -3561,7 +3721,9 @@
     "management_option_pct": 0.036,
     "subsector": "Industrials / Aerospace",
     "revenue_growth_3yr": 0.09,
-    "ltm_ebitda_margin": 0.16
+    "ltm_ebitda_margin": 0.16,
+    "ltm_revenue": 90.0,
+    "ltm_ebitda": 14.4
   },
   {
     "name": "StellarMind AI Tutor",
@@ -3605,7 +3767,9 @@
     "management_option_pct": 0.134,
     "subsector": "Education / AI",
     "revenue_growth_3yr": 2.5,
-    "ltm_ebitda_margin": -0.6
+    "ltm_ebitda_margin": -0.6,
+    "ltm_revenue": 0.5,
+    "ltm_ebitda": -0.3
   },
   {
     "name": "GrandOak Senior Living",
@@ -3649,7 +3813,9 @@
     "management_option_pct": 0.038,
     "subsector": "Healthcare / Senior Living",
     "revenue_growth_3yr": 0.06,
-    "ltm_ebitda_margin": 0.22
+    "ltm_ebitda_margin": 0.22,
+    "ltm_revenue": 50.0,
+    "ltm_ebitda": 11.0
   },
   {
     "name": "DraftLine Sports Analytics",
@@ -3693,7 +3859,9 @@
     "management_option_pct": 0.093,
     "subsector": "Media / Sports Tech",
     "revenue_growth_3yr": 0.55,
-    "ltm_ebitda_margin": 0.0
+    "ltm_ebitda_margin": 0.0,
+    "ltm_revenue": 3.6,
+    "ltm_ebitda": 0.0
   },
   {
     "name": "Borealis Energy Transition Fund Target",
@@ -3737,7 +3905,9 @@
     "management_option_pct": 0.047,
     "subsector": "Energy / Oil & Gas",
     "revenue_growth_3yr": 0.01,
-    "ltm_ebitda_margin": 0.45
+    "ltm_ebitda_margin": 0.45,
+    "ltm_revenue": 32.0,
+    "ltm_ebitda": 14.4
   },
   {
     "name": "Highline E-Commerce Enablement",
@@ -3781,7 +3951,9 @@
     "management_option_pct": 0.056,
     "subsector": "Technology / E-Commerce",
     "revenue_growth_3yr": 0.55,
-    "ltm_ebitda_margin": 0.35
+    "ltm_ebitda_margin": 0.35,
+    "ltm_revenue": 15.0,
+    "ltm_ebitda": 5.25
   },
   {
     "name": "OptiLens Eyecare",
@@ -3825,7 +3997,9 @@
     "management_option_pct": 0.029,
     "subsector": "Healthcare / Eyecare",
     "revenue_growth_3yr": 0.05,
-    "ltm_ebitda_margin": 0.16
+    "ltm_ebitda_margin": 0.16,
+    "ltm_revenue": 45.0,
+    "ltm_ebitda": 7.2
   },
   {
     "name": "FortressNet Data Centers",
@@ -3869,7 +4043,9 @@
     "management_option_pct": 0.028,
     "subsector": "Technology / Infrastructure",
     "revenue_growth_3yr": 0.07,
-    "ltm_ebitda_margin": 0.45
+    "ltm_ebitda_margin": 0.45,
+    "ltm_revenue": 20.0,
+    "ltm_ebitda": 9.0
   },
   {
     "name": "Terracycle Bio Materials",
@@ -3913,7 +4089,9 @@
     "management_option_pct": 0.113,
     "subsector": "Industrials / Sustainability",
     "revenue_growth_3yr": 0.5,
-    "ltm_ebitda_margin": -0.18
+    "ltm_ebitda_margin": -0.18,
+    "ltm_revenue": 5.0,
+    "ltm_ebitda": -0.9
   },
   {
     "name": "Paragon Market Research",
@@ -3957,7 +4135,9 @@
     "management_option_pct": 0.044,
     "subsector": "Business Services / Research",
     "revenue_growth_3yr": 0.07,
-    "ltm_ebitda_margin": 0.2
+    "ltm_ebitda_margin": 0.2,
+    "ltm_revenue": 35.0,
+    "ltm_ebitda": 7.0
   },
   {
     "name": "HelixBio Cell Therapy",
@@ -4001,7 +4181,9 @@
     "management_option_pct": 0.112,
     "subsector": "Healthcare / Biotech",
     "revenue_growth_3yr": 1.5,
-    "ltm_ebitda_margin": -1.0
+    "ltm_ebitda_margin": -1.0,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -6.0
   },
   {
     "name": "Vega Supply Chain Software",
@@ -4045,7 +4227,9 @@
     "management_option_pct": 0.057,
     "subsector": "Technology / Supply Chain",
     "revenue_growth_3yr": 0.55,
-    "ltm_ebitda_margin": -0.02
+    "ltm_ebitda_margin": -0.02,
+    "ltm_revenue": 9.0,
+    "ltm_ebitda": -0.18
   },
   {
     "name": "Marquis Dermatology Partners",
@@ -4089,7 +4273,9 @@
     "management_option_pct": 0.027,
     "subsector": "Healthcare / Dermatology",
     "revenue_growth_3yr": 0.07,
-    "ltm_ebitda_margin": 0.2
+    "ltm_ebitda_margin": 0.2,
+    "ltm_revenue": 40.0,
+    "ltm_ebitda": 8.0
   },
   {
     "name": "Anchor Home Services",
@@ -4133,7 +4319,9 @@
     "management_option_pct": 0.049,
     "subsector": "Consumer / Home Services",
     "revenue_growth_3yr": 0.12,
-    "ltm_ebitda_margin": 0.15
+    "ltm_ebitda_margin": 0.15,
+    "ltm_revenue": 42.0,
+    "ltm_ebitda": 6.3
   },
   {
     "name": "OpalStar E-Sports",
@@ -4177,7 +4365,9 @@
     "management_option_pct": 0.118,
     "subsector": "Media / E-Sports",
     "revenue_growth_3yr": 0.45,
-    "ltm_ebitda_margin": -0.2
+    "ltm_ebitda_margin": -0.2,
+    "ltm_revenue": 8.0,
+    "ltm_ebitda": -1.6
   },
   {
     "name": "CapstoneEDU Prep",
@@ -4221,7 +4411,9 @@
     "management_option_pct": 0.023,
     "subsector": "Education / Test Prep",
     "revenue_growth_3yr": 0.04,
-    "ltm_ebitda_margin": 0.21
+    "ltm_ebitda_margin": 0.21,
+    "ltm_revenue": 28.0,
+    "ltm_ebitda": 5.88
   },
   {
     "name": "Stormbridge Infrastructure",
@@ -4265,7 +4457,9 @@
     "management_option_pct": 0.026,
     "subsector": "Industrials / Infrastructure Services",
     "revenue_growth_3yr": 0.08,
-    "ltm_ebitda_margin": 0.18
+    "ltm_ebitda_margin": 0.18,
+    "ltm_revenue": 45.0,
+    "ltm_ebitda": 8.1
   },
   {
     "name": "Celeste Nutrition Science",
@@ -4309,7 +4503,9 @@
     "management_option_pct": 0.119,
     "subsector": "Healthcare / Nutrition",
     "revenue_growth_3yr": 0.5,
-    "ltm_ebitda_margin": -0.08
+    "ltm_ebitda_margin": -0.08,
+    "ltm_revenue": 10.0,
+    "ltm_ebitda": -0.8
   },
   {
     "name": "WaveForm Audio Tech",
@@ -4353,7 +4549,9 @@
     "management_option_pct": 0.103,
     "subsector": "Technology / Audio",
     "revenue_growth_3yr": 1.2,
-    "ltm_ebitda_margin": -0.4
+    "ltm_ebitda_margin": -0.4,
+    "ltm_revenue": 1.5,
+    "ltm_ebitda": -0.6
   },
   {
     "name": "Cornerstone Pet Nutrition",
@@ -4397,6 +4595,8 @@
     "management_option_pct": 0.076,
     "subsector": "Consumer / Pet Care",
     "revenue_growth_3yr": 0.45,
-    "ltm_ebitda_margin": 0.06
+    "ltm_ebitda_margin": 0.06,
+    "ltm_revenue": 11.0,
+    "ltm_ebitda": 0.66
   }
 ]

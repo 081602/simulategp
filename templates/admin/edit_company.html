@@ -116,11 +116,10 @@
       </div>
 
 
-      <!-- Mature-only fields -->
-      {% if company.stage == 'mature' %}
+      <!-- Company fundamentals (all stages; tilt return rolls) -->
       <div class="card border-secondary shadow mb-4">
         <div class="card-header border-secondary">
-          <h6 class="mb-0 fw-semibold"><i class="bi bi-bar-chart-line text-warning"></i> Mature Company Metrics</h6>
+          <h6 class="mb-0 fw-semibold"><i class="bi bi-bar-chart-line text-warning"></i> Company Fundamentals</h6>
         </div>
         <div class="card-body p-4">
           <div class="row g-3">
@@ -146,10 +145,34 @@
                 <span class="input-group-text bg-dark border-secondary text-secondary">%</span>
               </div>
             </div>
+            <div class="col-md-6">
+              <label for="ltm_revenue" class="form-label fw-semibold text-white">LTM Revenue ($M)</label>
+              <div class="input-group">
+                <span class="input-group-text bg-dark border-secondary text-secondary">$</span>
+                <input type="number" class="form-control bg-dark text-white border-secondary"
+                       id="ltm_revenue" name="ltm_revenue"
+                       min="0" step="0.1"
+                       value="{{ '%.1f'|format(company.ltm_revenue) if company.ltm_revenue is not none else '' }}"
+                       placeholder="e.g. 50.0">
+                <span class="input-group-text bg-dark border-secondary text-secondary">M</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="ltm_ebitda" class="form-label fw-semibold text-white">LTM EBITDA ($M)</label>
+              <div class="input-group">
+                <span class="input-group-text bg-dark border-secondary text-secondary">$</span>
+                <input type="number" class="form-control bg-dark text-white border-secondary"
+                       id="ltm_ebitda" name="ltm_ebitda"
+                       step="0.1"
+                       value="{{ '%.1f'|format(company.ltm_ebitda) if company.ltm_ebitda is not none else '' }}"
+                       placeholder="negative = burn">
+                <span class="input-group-text bg-dark border-secondary text-secondary">M</span>
+              </div>
+              <div class="form-text text-light">Implied multiples shown to teams: EV/Revenue and EV/EBITDA (N/A if EBITDA &le; 0)</div>
+            </div>
           </div>
         </div>
       </div>
-      {% endif %}
 
       <!-- Return Assumption info -->
       <div class="card border-secondary shadow mb-4">
