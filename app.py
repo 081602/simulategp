@@ -583,14 +583,20 @@ def timeline():
 @login_required
 def approve_syndicate(ts_id):
     ts = TermSheet.query.get_or_404(ts_id)
+    if current_user.id not in ts.get_syndicate_partners():
+        flash('You are not an invited partner on this term sheet.', 'warning')
+        return redirect(url_for('timeline'))
     decision = request.form.get('decision', 'approve')
     if decision == 'decline':
         # Remove current user from syndicate partners list
         partners = ts.get_syndicate_partners()
-        if current_user.id in partners:
-            partners.remove(current_user.id)
-            ts.syndicate_partners = json.dumps(partners)
-            db.session.commit()
+        partners.remove(current_user.id)
+        ts.syndicate_partners = json.dumps(partners)
+        _notify(ts.team_id,
+                f'{current_user.firm_name} declined your syndicate invitation '
+                f'on {ts.company.name}.',
+                'deal_lost', ts.company_id)
+        db.session.commit()
         flash('You have declined the syndicate invitation.', 'info')
     else:
         approved_by = ts.get_syndicate_approved_by()
