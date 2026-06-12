@@ -33,7 +33,7 @@
           {% if company.is_cash_flow_positive %}<span class="badge bg-success">Cash Flow +</span>{% endif %}
           {% if company.dividend_eligible %}<span class="badge bg-info text-dark">Dividend Eligible</span>{% endif %}
           {% if company.in_distress %}<span class="badge bg-danger">In Distress</span>{% endif %}
-          {% if company.flagged_for_liquidation %}<span class="badge bg-warning text-dark">Flagged for Liquidation</span>{% endif %}
+          {% if company.flagged_for_liquidation %}<span class="badge bg-warning text-dark">Marked for Exit</span>{% endif %}
         </div>
         <div class="row g-3">
           <div class="col-md-3">
@@ -124,7 +124,7 @@
           {% endif %}
           {% if company.liquidation_proceeds is not none %}
           <div class="col-md-3">
-            <div class="text-secondary small">Liquidation Proceeds</div>
+            <div class="text-secondary small">Exit Proceeds</div>
             <span class="text-white">${{ "{:,.1f}M".format(company.liquidation_proceeds) }}</span>
           </div>
           {% endif %}
@@ -230,7 +230,7 @@
                 <option value="available"   {% if company.status == 'available' %}selected{% endif %}>Available</option>
                 <option value="funded"      {% if company.status == 'funded' %}selected{% endif %}>Funded</option>
                 <option value="refinancing" {% if company.status == 'refinancing' %}selected{% endif %}>Refinancing</option>
-                <option value="liquidated"  {% if company.status == 'liquidated' %}selected{% endif %}>Liquidated</option>
+                <option value="liquidated"  {% if company.status == 'liquidated' %}selected{% endif %}>Exited</option>
                 <option value="bankrupt"    {% if company.status == 'bankrupt' %}selected{% endif %}>Bankrupt</option>
               </select>
             </div>

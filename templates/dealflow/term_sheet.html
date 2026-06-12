@@ -96,29 +96,20 @@
               </div>
             </div>
 
-            <div class="col-12">
-              <label class="form-label fw-semibold text-white">Founder Rolled Equity Range (%)</label>
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <input type="number" class="form-control bg-dark text-white border-secondary"
-                         id="rolled_equity_min" name="rolled_equity_min"
-                         min="{{ company.rolled_equity_min * 100 }}"
-                         max="{{ company.rolled_equity_max * 100 }}"
-                         step="1"
-                         value="{{ "%.0f"|format(company.rolled_equity_min * 100) }}" required
-                         placeholder="Min %">
-                  <div class="form-text text-light">Minimum: {{ "%.0f"|format(company.rolled_equity_min * 100) }}%</div>
-                </div>
-                <div class="col-md-6">
-                  <input type="number" class="form-control bg-dark text-white border-secondary"
-                         id="rolled_equity_max" name="rolled_equity_max"
-                         min="{{ company.rolled_equity_min * 100 }}"
-                         max="{{ company.rolled_equity_max * 100 }}"
-                         step="1"
-                         value="{{ "%.0f"|format(company.rolled_equity_max * 100) }}" required
-                         placeholder="Max %">
-                  <div class="form-text text-light">Maximum: {{ "%.0f"|format(company.rolled_equity_max * 100) }}%</div>
-                </div>
+            <div class="col-md-6">
+              <label for="rolled_equity" class="form-label fw-semibold text-white">Founder Rolled Equity (%)</label>
+              <div class="input-group">
+                <input type="number" class="form-control bg-dark text-white border-secondary"
+                       id="rolled_equity" name="rolled_equity"
+                       min="{{ company.rolled_equity_min * 100 }}"
+                       max="{{ company.rolled_equity_max * 100 }}"
+                       step="1"
+                       value="{{ "%.0f"|format(company.rolled_equity_min * 100) }}" required>
+                <span class="input-group-text bg-dark border-secondary text-secondary">%</span>
+              </div>
+              <div class="form-text text-light">
+                Founders keep this share of the company. They will accept
+                {{ "%.0f"|format(company.rolled_equity_min * 100) }}%&ndash;{{ "%.0f"|format(company.rolled_equity_max * 100) }}%.
               </div>
             </div>
 

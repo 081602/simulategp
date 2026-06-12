@@ -48,7 +48,9 @@
                 <span class="badge bg-secondary fs-6">{{ company.stage | title }}</span>
               {% endif %}
 
-              {% if company.status == 'available' %}
+              {% if company.status == 'available' and company.year_available != game.current_year %}
+                <span class="badge bg-secondary fs-6"><i class="bi bi-calendar-x"></i> Off Market (was Year {{ company.year_available }})</span>
+              {% elif company.status == 'available' %}
                 <span class="badge bg-success fs-6"><i class="bi bi-check-circle"></i> Available</span>
               {% elif company.status == 'term_sheet_submitted' %}
                 <span class="badge bg-warning text-dark fs-6"><i class="bi bi-file-earmark-text"></i> Term Sheet Submitted</span>
@@ -64,7 +66,7 @@
                 <span class="badge bg-danger fs-6"><i class="bi bi-exclamation-triangle-fill"></i> In Distress</span>
               {% endif %}
               {% if company.flagged_for_liquidation %}
-                <span class="badge bg-dark border border-danger fs-6"><i class="bi bi-flag-fill text-danger"></i> Flagged for Liquidation</span>
+                <span class="badge bg-dark border border-danger fs-6"><i class="bi bi-flag-fill text-danger"></i> Marked for Exit</span>
               {% endif %}
             </div>
 
@@ -80,7 +82,7 @@
               <span><span class="text-secondary">In Distress:</span>
                 {% if company.in_distress %}<span class="text-danger fw-semibold">Yes</span>{% else %}<span class="fw-semibold">No</span>{% endif %}
               </span>
-              <span><span class="text-secondary">Flagged for Liquidation:</span>
+              <span><span class="text-secondary">Marked for Exit:</span>
                 {% if company.flagged_for_liquidation %}<span class="text-danger fw-semibold">Yes</span>{% else %}<span class="fw-semibold">No</span>{% endif %}
               </span>
             </div>

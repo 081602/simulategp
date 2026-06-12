@@ -12,7 +12,7 @@ from models import (db, Game, Team, Fund, CompanyTemplate, GameCompany,
                     FundTransaction, Notification, ReturnAssumption)
 from game_logic import (run_phase1_crank, run_phase2_crank,
                         team_irr, team_gp_income, finalize_deal,
-                        _notify, _record_transaction)
+                        exit_waterfall, _notify, _record_transaction)
 
 # ---------------------------------------------------------------------------
 # App Setup
@@ -186,7 +186,9 @@ def dealflow():
                      if r.on_watchlist and r.company_id not in rejected_ids]
     watchlist_companies = (GameCompany.query.filter(
         GameCompany.id.in_(watchlist_ids),
-        GameCompany.status == 'available').all() if watchlist_ids else [])
+        GameCompany.status == 'available',
+        GameCompany.year_available == game.current_year).all()
+        if watchlist_ids else [])
 
     # Inbound referrals not yet promoted to the watchlist
     referral_map = {r.company_id: r for r in rows
@@ -194,7 +196,9 @@ def dealflow():
                     and r.company_id not in rejected_ids}
     referral_companies = (GameCompany.query.filter(
         GameCompany.id.in_(list(referral_map)),
-        GameCompany.status == 'available').all() if referral_map else [])
+        GameCompany.status == 'available',
+        GameCompany.year_available == game.current_year).all()
+        if referral_map else [])
 
     return render_template('dealflow/index.html',
                            game=game,
@@ -227,10 +231,10 @@ def search_companies():
         min_deal_size = request.form.get('min_deal_size', '')
         max_deal_size = request.form.get('max_deal_size', '')
 
-        # Build query
+        # Build query — companies are only on the market in their designated year
         query = GameCompany.query.filter_by(
             game_id=game.id, status='available').filter(
-            GameCompany.year_available <= game.current_year)
+            GameCompany.year_available == game.current_year)
 
         if sector_filter:
             query = query.filter(GameCompany.sector == sector_filter)
@@ -277,7 +281,7 @@ def search_companies():
         # Shamrock: small chance of finding one extra company outside criteria
         all_available = GameCompany.query.filter_by(
             game_id=game.id, status='available').filter(
-            GameCompany.year_available <= game.current_year).all()
+            GameCompany.year_available == game.current_year).all()
         unseen = [c for c in all_available
                   if c.id not in known_ids and c not in results]
         if unseen and random.random() < 0.3:
@@ -417,6 +421,11 @@ def create_term_sheet(company_id):
         flash('This company is no longer available for new term sheets.', 'warning')
         return redirect(url_for('company_detail', company_id=company_id))
 
+    if company.year_available != game.current_year:
+        flash(f'{company.name} is not on the market this year — its window '
+              f'was Year {company.year_available}.', 'warning')
+        return redirect(url_for('company_detail', company_id=company_id))
+
     # Mandate is NOT checked here: any team may submit, but the company
     # rejects off-mandate term sheets at the Deal Process
     funds = Fund.query.filter_by(team_id=current_user.id, is_active=True).all()
@@ -427,8 +436,10 @@ def create_term_sheet(company_id):
         try:
             pre_money = float(request.form['pre_money_valuation'])
             total_investment = float(request.form['total_investment'])
-            rolled_min = float(request.form['rolled_equity_min']) / 100
-            rolled_max = float(request.form['rolled_equity_max']) / 100
+            # Single rolled-equity number offered (stored in both legacy columns)
+            rolled_val = float(request.form.get('rolled_equity')
+                               or request.form.get('rolled_equity_min')) / 100
+            rolled_min = rolled_max = rolled_val
             fund_id = int(request.form['fund_id'])
             liq_pref = int(request.form.get('liquidation_preference', 1))
             participation = 'participation' in request.form
@@ -707,11 +718,28 @@ def portfolio():
               .join(Deal, DealEquity.deal_id == Deal.id)
               .filter(Deal.status.in_(['active', 'pending_finalization']))
               .all())
-    liquidated = (DealEquity.query
-                  .filter_by(team_id=current_user.id)
-                  .join(Deal, DealEquity.deal_id == Deal.id)
-                  .filter(Deal.status.in_(['liquidated', 'bankrupt']))
-                  .all())
+    exited_stakes = (DealEquity.query
+                     .filter_by(team_id=current_user.id)
+                     .join(Deal, DealEquity.deal_id == Deal.id)
+                     .filter(Deal.status.in_(['liquidated', 'bankrupt']))
+                     .all())
+    liquidated = []
+    for s in exited_stakes:
+        comp = s.deal.company
+        proceeds_txs = (FundTransaction.query
+                        .filter_by(fund_id=s.fund_id,
+                                   transaction_type='liquidation_proceeds',
+                                   company_id=comp.id)
+                        .all())
+        liquidated.append({
+            'company_id': comp.id,
+            'company_name': comp.name,
+            'sector': comp.sector,
+            'exit_year': proceeds_txs[0].game_year if proceeds_txs else s.deal.game_year,
+            'ownership_pct': s.ownership_pct,
+            'equity_invested': s.equity_invested,
+            'proceeds': sum(t.amount for t in proceeds_txs),
+        })
     return render_template('portfolio/index.html',
                            game=game,
                            stakes=stakes,
@@ -736,12 +764,14 @@ def portfolio_company(company_id):
     is_lead = (deal.lead_team_id == current_user.id)
     funds = Fund.query.filter_by(team_id=current_user.id, is_active=True).all() if is_lead else []
     all_teams = Team.query.filter_by(game_id=game.id, is_admin=False).all() if is_lead else []
+    waterfall = exit_waterfall(deal) if deal.status == 'liquidated' else None
 
     return render_template('portfolio/company.html',
                            game=game,
                            company=company,
                            deal=deal,
                            stake=stake,
+                           waterfall=waterfall,
                            is_lead=is_lead,
                            funds=funds,
                            all_teams=all_teams)
@@ -836,7 +866,7 @@ def mark_liquidation(company_id):
     deal.marked_for_liquidation = True
     deal.reserve_price = reserve_price
     db.session.commit()
-    flash(f'{company.name} marked for liquidation with reserve price ${reserve_price:.1f}M.', 'success')
+    flash(f'{company.name} marked for exit with reserve price ${reserve_price:.1f}M.', 'success')
     return redirect(url_for('portfolio_company', company_id=company_id))
 
 
@@ -849,11 +879,14 @@ def mark_liquidation(company_id):
 def funds():
     game = Game.query.get(current_user.game_id)
     team_funds = Fund.query.filter_by(team_id=current_user.id).all()
+    # Chronological, oldest first — reads like a ledger (same as GP Economics)
     transactions = (FundTransaction.query
                     .join(Fund, FundTransaction.fund_id == Fund.id)
                     .filter(Fund.team_id == current_user.id)
-                    .order_by(FundTransaction.created_at.desc())
-                    .limit(50).all())
+                    .order_by(FundTransaction.game_year,
+                              FundTransaction.created_at,
+                              FundTransaction.id)
+                    .all())
     realized_irr = team_irr(current_user.id, game, unrealized=False)
     unrealized_irr = team_irr(current_user.id, game, unrealized=True)
     return render_template('funds.html',

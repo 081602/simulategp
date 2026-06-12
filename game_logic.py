@@ -312,6 +312,60 @@ def _process_bankruptcy(deal: Deal, company: GameCompany, year: int):
     db.session.commit()
 
 
+def exit_waterfall(deal: Deal):
+    """Read-only breakdown of how an exit's proceeds were (or would be)
+    distributed — mirrors _process_liquidation step by step for display."""
+    company = deal.company
+    sale_price = company.liquidation_proceeds if company.liquidation_proceeds is not None \
+        else (company.latest_valuation or 0)
+    debt_repaid = min(sale_price, company.debt_outstanding or 0)
+    distributable = max(0, sale_price - debt_repaid)
+
+    invested = deal.total_equity_invested or 0
+    pref_multiple = deal.liquidation_preference or 1
+    liq_pref_amount = invested * pref_multiple
+    investor_ownership = sum(s.ownership_pct for s in deal.equity_stakes)
+    as_converted = distributable * (investor_ownership / 100.0)
+
+    if distributable >= liq_pref_amount:
+        if deal.participation:
+            investor_payout = liq_pref_amount + \
+                (distributable - liq_pref_amount) * (investor_ownership / 100.0)
+            method = 'participation'
+        elif as_converted > liq_pref_amount:
+            investor_payout = as_converted
+            method = 'converted'
+        else:
+            investor_payout = liq_pref_amount
+            method = 'preference'
+    else:
+        investor_payout = distributable
+        method = 'underwater'
+
+    stakes = []
+    for s in deal.equity_stakes:
+        share = investor_payout * (s.ownership_pct / investor_ownership) \
+            if investor_ownership > 0 else 0
+        stakes.append({'team': s.team, 'ownership_pct': s.ownership_pct,
+                       'invested': s.equity_invested, 'share': share})
+
+    return {
+        'sale_price': sale_price,
+        'debt_repaid': debt_repaid,
+        'distributable': distributable,
+        'invested': invested,
+        'pref_multiple': pref_multiple,
+        'liq_pref_amount': liq_pref_amount,
+        'investor_ownership': investor_ownership,
+        'as_converted': as_converted,
+        'participation': deal.participation,
+        'investor_payout': investor_payout,
+        'method': method,
+        'founders_payout': max(0, distributable - investor_payout),
+        'stakes': stakes,
+    }
+
+
 def _process_liquidation(deal: Deal, company: GameCompany, year: int):
     """Distribute proceeds according to liquidation waterfall."""
     proceeds = company.latest_valuation or 0
@@ -360,9 +414,9 @@ def _process_liquidation(deal: Deal, company: GameCompany, year: int):
         fund = Fund.query.get(stake.fund_id)
         fund.available_capital += stake_share
         _record_transaction(stake.fund_id, 'liquidation_proceeds', stake_share,
-                            f"Liquidation of {company.name}", year, company.id)
+                            f"Exit of {company.name}", year, company.id)
         _notify(stake.team_id,
-                f"{company.name} has been liquidated for ${proceeds:.1f}M. "
+                f"{company.name} has been sold for ${proceeds:.1f}M. "
                 f"Your share: ${stake_share:.2f}M.",
                 'liquidation', company.id)
 

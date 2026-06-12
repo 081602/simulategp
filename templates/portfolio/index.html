@@ -24,7 +24,7 @@
       <li class="nav-item" role="presentation">
         <button class="nav-link text-secondary" id="liquidated-tab" data-bs-toggle="tab" data-bs-target="#liquidatedPortfolio"
                 type="button" role="tab">
-          <i class="bi bi-box-arrow-right text-secondary me-1"></i> Liquidated / Exited
+          <i class="bi bi-box-arrow-right text-secondary me-1"></i> Exited
           <span class="badge bg-secondary ms-1">{{ liquidated|length }}</span>
         </button>
       </li>
@@ -134,7 +134,11 @@
             <tbody>
               {% for item in liquidated %}
               <tr>
-                <td class="fw-semibold text-secondary">{{ item.company_name }}</td>
+                <td class="fw-semibold">
+                  {% if item.company_id is defined %}
+                  <a href="{{ url_for('portfolio_company', company_id=item.company_id) }}" class="text-warning text-decoration-none">{{ item.company_name }}</a>
+                  {% else %}{{ item.company_name }}{% endif %}
+                </td>
                 <td class="text-secondary">{{ item.sector }}</td>
                 <td class="text-end text-secondary">Year {{ item.exit_year }}</td>
                 <td class="text-end">{{ "%.1f"|format(item.ownership_pct) }}%</td>
@@ -156,7 +160,7 @@
           <div class="card-body">
             <i class="bi bi-box-arrow-right fs-1 text-secondary d-block mb-3"></i>
             <h5 class="text-secondary">No Exited Companies Yet</h5>
-            <p class="text-secondary mb-0">Exits will appear here once companies are liquidated.</p>
+            <p class="text-secondary mb-0">Exits will appear here once portfolio companies are sold.</p>
           </div>
         </div>
         {% endif %}
