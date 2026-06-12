@@ -401,6 +401,13 @@ class TermSheet(db.Model):
         if capital_requested > 0:
             shortfall_pct = max(0, (capital_requested - self.total_investment) / capital_requested)
             score -= shortfall_pct * 3
+        # Founders prefer keeping more: up to +2 pts at the top of the
+        # company's acceptable rolled-equity range
+        if self.company:
+            span = (self.company.rolled_equity_max or 0) - (self.company.rolled_equity_min or 0)
+            if span > 0:
+                position = (self.rolled_equity_min - self.company.rolled_equity_min) / span
+                score += max(0.0, min(1.0, position)) * 2
         return score
 
 

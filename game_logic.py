@@ -13,6 +13,40 @@ from models import (db, Game, Team, Fund, GameCompany, CompanySearch,
 # Lead Selection Algorithm (Phase 1 Crank)
 # ---------------------------------------------------------------------------
 
+def _lead_loss_reason(company, losing_ts, winning_ts, winning_team):
+    """Spell out the concrete term-sheet differences that cost a team the lead."""
+    edges = []
+    if winning_ts.pre_money_valuation > losing_ts.pre_money_valuation:
+        edges.append(f"a higher valuation (${winning_ts.pre_money_valuation:,.1f}M "
+                     f"vs your ${losing_ts.pre_money_valuation:,.1f}M)")
+    if winning_ts.liquidation_preference < losing_ts.liquidation_preference:
+        edges.append(f"a lighter liquidation preference "
+                     f"({winning_ts.liquidation_preference}x vs your "
+                     f"{losing_ts.liquidation_preference}x)")
+    if losing_ts.participation and not winning_ts.participation:
+        edges.append("no participation rights (yours demanded participation)")
+    ad_rank = {'none': 0, 'weighted': 1, 'full_ratchet': 2}
+    if ad_rank.get(winning_ts.anti_dilution, 0) < ad_rank.get(losing_ts.anti_dilution, 0):
+        edges.append(f"lighter anti-dilution terms ({winning_ts.anti_dilution} "
+                     f"vs your {losing_ts.anti_dilution})")
+    cap = company.capital_requested or 0
+    if (cap > 0 and losing_ts.total_investment < cap
+            and winning_ts.total_investment > losing_ts.total_investment):
+        edges.append(f"more of the funding need covered "
+                     f"(${winning_ts.total_investment:,.1f}M vs your "
+                     f"${losing_ts.total_investment:,.1f}M of ${cap:,.1f}M sought)")
+    if winning_ts.rolled_equity_min > losing_ts.rolled_equity_min:
+        edges.append(f"founders keeping more equity "
+                     f"({winning_ts.rolled_equity_min * 100:.0f}% vs your "
+                     f"{losing_ts.rolled_equity_min * 100:.0f}%)")
+
+    if edges:
+        return (f"{company.name} chose {winning_team.firm_name}'s term sheet, "
+                f"which offered {'; '.join(edges)}.")
+    return (f"{company.name} chose {winning_team.firm_name}'s term sheet — "
+            f"the offers were close, but theirs scored marginally better overall.")
+
+
 def run_phase1_crank(game: Game):
     """
     For each company that has pending term sheets, select a Lead Investor.
@@ -81,12 +115,13 @@ def run_phase1_crank(game: Game):
         for score, ts in scored[1:]:
             if not ts.willing_to_fill:
                 ts.status = 'rejected'
+                reason = _lead_loss_reason(company, ts, lead_ts, lead_team)
                 ts.rejection_reason = (
-                    f"{company.name} selected {lead_team.firm_name}'s term sheet "
-                    f"as lead; yours was not chosen and you did not offer to "
-                    f"participate as a fill investor.")
+                    f"{reason} You did not offer to participate as a fill "
+                    f"investor, so your term sheet was rejected.")
                 _notify(ts.team_id,
-                        f"Your term sheet on {company.name} was not selected as lead.",
+                        f"Your term sheet on {company.name} was not selected as "
+                        f"lead. {reason}",
                         'deal_lost', company.id)
                 continue
 
@@ -627,7 +662,8 @@ def _record_transaction(fund_id, tx_type, amount, description, year, company_id=
     db.session.add(tx)
 
 
-DEBT_TERM_YEARS = 5  # amortization horizon for deal debt
+DEBT_TERM_YEARS = 5         # amortization horizon for deal debt
+DEBT_INTEREST_RATE = 0.08   # fixed market rate applied to all deal debt
 
 
 def finalize_deal(deal: Deal, final_pre_money: float, equity_stakes_data: list,
@@ -704,8 +740,10 @@ def finalize_deal(deal: Deal, final_pre_money: float, equity_stakes_data: list,
     company.debt_interest_rate = debt_rate
     company.debt_years_remaining = DEBT_TERM_YEARS if debt_amount > 0 else 0
     if is_buyout:
-        # Purchase price went to the sellers; company keeps only its own cash
-        company.company_funds = company.available_cash or 0.0
+        # Cash-free close: sellers take the balance-sheet cash along with the
+        # price; the new owners start at $0 and live off the company's earnings
+        company.company_funds = 0.0
+        company.available_cash = 0.0
     else:
         # New money lands on the balance sheet alongside existing cash
         company.company_funds = (company.available_cash or 0.0) + total_equity + debt_amount

@@ -12,7 +12,8 @@ from models import (db, Game, Team, Fund, CompanyTemplate, GameCompany,
                     FundTransaction, Notification, ReturnAssumption)
 from game_logic import (run_phase1_crank, run_phase2_crank,
                         team_irr, team_gp_income, finalize_deal,
-                        exit_waterfall, _notify, _record_transaction)
+                        exit_waterfall, DEBT_INTEREST_RATE,
+                        _notify, _record_transaction)
 
 # ---------------------------------------------------------------------------
 # App Setup
@@ -471,6 +472,17 @@ def create_term_sheet(company_id):
                       f'{company.rolled_equity_max*100:.0f}%.', 'danger')
                 return redirect(request.url)
 
+            # Buyouts must be financeable: the debt the structure implies
+            # cannot exceed the company's capacity (terms are binding)
+            if company.stage == 'mature' and rolled_val < 1:
+                implied_debt = pre_money - total_investment / (1 - rolled_val)
+                if implied_debt > company.debt_capacity + 1e-6:
+                    flash(f'This structure implies ${implied_debt:,.1f}M of debt — '
+                          f'above {company.name}\'s ${company.debt_capacity:,.1f}M '
+                          f'capacity. Raise your equity check or lower the price.',
+                          'danger')
+                    return redirect(request.url)
+
             ts = TermSheet(
                 team_id=current_user.id,
                 company_id=company_id,
@@ -632,44 +644,54 @@ def finalize_deal_route(deal_id):
             return redirect(url_for('timeline'))
 
         try:
-            final_pre_money = float(request.form.get('pre_money_valuation') or request.form.get('final_pre_money', lead_ts.pre_money_valuation))
-            # Validate: can't go below 90% of original bid
-            min_allowed = lead_ts.pre_money_valuation * 0.90
-            if final_pre_money < min_allowed:
-                flash(f'Final valuation cannot be less than ${min_allowed:.1f}M '
-                      f'(90% of your original bid).', 'danger')
-                return redirect(request.url)
+            # All deal economics are LOCKED from the accepted term sheet;
+            # finalization only decides who funds the equity
+            final_pre_money = lead_ts.pre_money_valuation
+            rolled_pct = lead_ts.rolled_equity_min
+            mgmt_options = (company.management_option_pct or 0.0) * 100
 
-            my_equity = float(request.form.get('my_equity') or request.form.get('my_equity_contribution', 0))
-            rolled_pct = float(request.form.get('rolled_equity_pct') or 90) / 100
-            debt_amount = float(request.form.get('debt_amount') or 0)
-            debt_rate = float(request.form.get('debt_rate') or request.form.get('interest_rate') or 0) / 100
-            mgmt_options = float(request.form.get('mgmt_option_pct') or 0)
+            if company.stage == 'mature' and rolled_pct < 1:
+                # Sources & uses: debt fills the gap the equity check and
+                # seller rollover leave (validated <= capacity at submission)
+                implied = final_pre_money - lead_ts.total_investment / (1 - rolled_pct)
+                debt_amount = max(0.0, min(implied, company.debt_capacity))
+            else:
+                debt_amount = 0.0
+            debt_rate = DEBT_INTEREST_RATE if debt_amount > 0 else 0.0
 
-            # Validate debt capacity
-            if debt_amount > company.debt_capacity:
-                flash(f'Debt cannot exceed company capacity of ${company.debt_capacity:.1f}M.', 'danger')
+            # Fills carve out of the locked equity total; lead backstops the rest
+            total_equity = lead_ts.total_investment
+            fill_stakes = []
+            fill_total = 0.0
+            selected_fills = request.form.getlist('selected_fills')
+            for fill_ts_id in selected_fills:
+                fts = TermSheet.query.get(int(fill_ts_id))
+                if not fts:
+                    continue
+                fill_equity = min(float(request.form.get(f'fill_equity_{fill_ts_id}')
+                                        or fts.max_fill_equity),
+                                  fts.max_fill_equity)
+                if fill_equity <= 0:
+                    continue
+                fill_total += fill_equity
+                fill_stakes.append((fts, fill_equity))
+
+            if fill_total > total_equity:
+                flash(f'Fill investors cannot exceed the ${total_equity:.1f}M '
+                      f'equity committed in your term sheet.', 'danger')
                 return redirect(request.url)
 
             stakes = [{'team_id': current_user.id,
                        'fund_id': lead_ts.fund_id,
-                       'equity_invested': my_equity}]
-
-            # Include selected fills
-            selected_fills = request.form.getlist('selected_fills')
-            for fill_ts_id in selected_fills:
-                fts = TermSheet.query.get(int(fill_ts_id))
-                if fts:
-                    fill_equity = min(float(request.form.get(f'fill_equity_{fill_ts_id}',
-                                                              fts.max_fill_equity)),
-                                      fts.max_fill_equity)
-                    stakes.append({'team_id': fts.team_id,
-                                   'fund_id': fts.fund_id,
-                                   'equity_invested': fill_equity})
-                    fts.status = 'fill_accepted'
-                    _notify(fts.team_id,
-                            f'Your fill investment in {company.name} has been accepted!',
-                            'deal_won', company.id)
+                       'equity_invested': total_equity - fill_total}]
+            for fts, fill_equity in fill_stakes:
+                stakes.append({'team_id': fts.team_id,
+                               'fund_id': fts.fund_id,
+                               'equity_invested': fill_equity})
+                fts.status = 'fill_accepted'
+                _notify(fts.team_id,
+                        f'Your fill investment in {company.name} has been accepted!',
+                        'deal_won', company.id)
 
             # Reject non-selected fills
             for fts in fill_offers:
@@ -679,10 +701,8 @@ def finalize_deal_route(deal_id):
                             f'Your fill offer on {company.name} was not included in the final deal.',
                             'deal_lost', company.id)
 
-            deal.liquidation_preference = int(request.form.get('liquidation_preference',
-                                                                lead_ts.liquidation_preference))
-            deal.participation = 'participation' in request.form
-            deal.anti_dilution = request.form.get('anti_dilution', lead_ts.anti_dilution)
+            # Liq pref / participation / anti-dilution stay as accepted
+            # (copied from the lead term sheet when the deal was created)
 
             finalize_deal(deal, final_pre_money, stakes,
                           rolled_pct, debt_amount, debt_rate, mgmt_options)
@@ -701,6 +721,7 @@ def finalize_deal_route(deal_id):
                            deal=deal,
                            company=company,
                            lead_ts=lead_ts,
+                           debt_rate=DEBT_INTEREST_RATE,
                            fill_offers=fill_offers,
                            funds=funds)
 
@@ -766,12 +787,29 @@ def portfolio_company(company_id):
     all_teams = Team.query.filter_by(game_id=game.id, is_admin=False).all() if is_lead else []
     waterfall = exit_waterfall(deal) if deal.status == 'liquidated' else None
 
+    # Year-by-year valuation bridge from the funded valuation, with the
+    # realized annual return at each crank
+    return_assumption = ReturnAssumption.query.filter_by(
+        sector=company.sector, stage=company.stage).first()
+    val_history = []
+    if company.year_funded and company.funded_valuation:
+        prev = company.funded_valuation
+        for y in range(company.year_funded, GameCompany.MAX_TRACKED_YEARS + 1):
+            v = company.get_year_val(y)
+            if v is None:
+                continue
+            val_history.append({'year': y, 'value': v,
+                                'ret': (v / prev - 1) if prev else None})
+            prev = v
+
     return render_template('portfolio/company.html',
                            game=game,
                            company=company,
                            deal=deal,
                            stake=stake,
                            waterfall=waterfall,
+                           return_assumption=return_assumption,
+                           val_history=val_history,
                            is_lead=is_lead,
                            funds=funds,
                            all_teams=all_teams)

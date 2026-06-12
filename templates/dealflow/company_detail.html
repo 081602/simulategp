@@ -125,9 +125,15 @@
                 <tr>
                   <td class="text-light">Available Cash</td>
                   {% set avail_cash = company.available_cash|default(0.0) %}
+                  {% if company.stage == 'mature' %}
+                  <td class="fw-bold text-white">
+                    $0.0M <small class="text-secondary fw-normal">(cash-free sale &mdash; sellers keep the cash)</small>
+                  </td>
+                  {% else %}
                   <td class="fw-bold {% if avail_cash < 2 %}text-danger{% elif avail_cash < 5 %}text-warning{% else %}text-success{% endif %}">
                     ${{ "{:,.1f}M".format(avail_cash) }}
                   </td>
+                  {% endif %}
                 </tr>
                 <tr>
                   <td class="text-light">Debt Capacity</td>

@@ -19,6 +19,48 @@
       </div>
     </div>
 
+    {% if val_history %}
+    <!-- Valuation History -->
+    <div class="card border-secondary shadow mb-4">
+      <div class="card-header border-secondary d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-graph-up text-warning"></i> Valuation History</h6>
+        {% if return_assumption %}
+        <span class="text-secondary small">
+          Each year's return is drawn from
+          <strong class="text-white">N(&mu; = {{ "%.0f"|format(return_assumption.expected_return * 100) }}%,
+          &sigma; = {{ "%.0f"|format(return_assumption.std_dev * 100) }}%)</strong>
+          &mdash; the {{ company.sector }} / {{ company.stage_label }} benchmark
+        </span>
+        {% endif %}
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-dark align-middle mb-0">
+          <thead><tr>
+            <th>Year</th>
+            <th class="text-end">Valuation</th>
+            <th class="text-end">Annual Return</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td class="text-secondary">Year {{ company.year_funded }} &mdash; deal closed</td>
+              <td class="text-end fw-bold">${{ "{:,.1f}M".format(company.funded_valuation) }}</td>
+              <td class="text-end text-secondary">&mdash;</td>
+            </tr>
+            {% for row in val_history %}
+            <tr>
+              <td class="text-secondary">Year {{ row.year }}</td>
+              <td class="text-end fw-bold">${{ "{:,.1f}M".format(row.value) }}</td>
+              <td class="text-end fw-bold {% if row.ret is not none and row.ret >= 0 %}text-success{% elif row.ret is not none %}text-danger{% endif %}">
+                {% if row.ret is not none %}{{ '+' if row.ret >= 0 }}{{ "%.1f"|format(row.ret * 100) }}%{% else %}&mdash;{% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
     {% if waterfall %}
     <!-- Exit Waterfall -->
     <div class="card border-success shadow mb-4">

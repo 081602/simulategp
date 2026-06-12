@@ -94,6 +94,16 @@
                 Funds Wanted: ${{ "{:,.1f}M".format(company.capital_requested) }}
                 {% endif %}
               </div>
+              {% if company.stage == 'mature' %}
+              <div class="form-text">
+                <i class="bi bi-bank text-info"></i>
+                <span class="text-info">Implied debt: <strong id="implied_debt">&mdash;</strong>
+                  (<strong id="implied_debt_pct">&mdash;</strong> of enterprise value)</span>
+                <span id="implied_debt_warning" class="text-danger fw-semibold d-none">
+                  &mdash; exceeds the company's ${{ "{:,.1f}M".format(company.debt_capacity) }} debt capacity!
+                </span>
+              </div>
+              {% endif %}
             </div>
 
             <div class="col-md-6">
@@ -313,6 +323,39 @@
       out.textContent = ((v + debt - cash) / denom).toFixed(1) + 'x';
     }
     input.addEventListener('input', update);
+    update();
+  })();
+
+  // Live implied debt for buyouts. Sources must cover the price:
+  //   price = equity + debt + rollover, rollover = roll% x (price - debt)
+  //   => debt = price - equity / (1 - roll%)
+  (function () {
+    var debtOut = document.getElementById('implied_debt');
+    if (!debtOut) return;  // non-mature company
+    var priceInput = document.getElementById('pre_money_valuation');
+    var equityInput = document.getElementById('total_investment');
+    var rollInput = document.getElementById('rolled_equity');
+    var pctOut = document.getElementById('implied_debt_pct');
+    var warning = document.getElementById('implied_debt_warning');
+    var capacity = {{ company.debt_capacity or 0 }};
+    function update() {
+      var p = parseFloat(priceInput.value);
+      var e = parseFloat(equityInput.value);
+      var roll = rollInput ? parseFloat(rollInput.value) / 100 : 0;
+      if (!isFinite(roll)) roll = 0;
+      if (!isFinite(p) || !isFinite(e) || p <= 0 || roll >= 1) {
+        debtOut.textContent = '—'; pctOut.textContent = '—';
+        warning.classList.add('d-none');
+        return;
+      }
+      var implied = Math.max(0, p - e / (1 - roll));
+      debtOut.textContent = '$' + implied.toFixed(1) + 'M';
+      pctOut.textContent = (implied / p * 100).toFixed(0) + '%';
+      warning.classList.toggle('d-none', implied <= capacity);
+    }
+    priceInput.addEventListener('input', update);
+    equityInput.addEventListener('input', update);
+    if (rollInput) rollInput.addEventListener('input', update);
     update();
   })();
 </script>
