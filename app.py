@@ -1108,6 +1108,9 @@ def admin_edit_company(company_id):
         iva = request.form.get('initial_val_ask')
         if iva:
             company.initial_val_ask = float(iva)
+        cr = request.form.get('capital_requested')
+        if cr:
+            company.capital_requested = float(cr)
         fv = request.form.get('funded_valuation')
         company.funded_valuation = float(fv) if fv else None
         for y in range(1, GameCompany.MAX_TRACKED_YEARS + 1):

@@ -15,6 +15,137 @@
       </div>
     </div>
 
+    <!-- Company Snapshot (read-only; full picture for the admin) -->
+    <div class="card border-secondary shadow mb-4">
+      <div class="card-header border-secondary">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-eye text-warning"></i> Company Snapshot</h6>
+      </div>
+      <div class="card-body p-4">
+        <div class="mb-3">
+          <span class="badge bg-secondary">{{ company.sector }}</span>
+          {% if company.stage == 'startup' %}<span class="badge bg-danger">Startup</span>
+          {% elif company.stage == 'developing' %}<span class="badge bg-warning text-dark">Developing</span>
+          {% elif company.stage == 'early_revenue' %}<span class="badge bg-info text-dark">Early Revenue</span>
+          {% elif company.stage == 'mature' %}<span class="badge bg-success">Mature</span>{% endif %}
+          {% if company.status == 'available' %}<span class="badge bg-success">Available</span>
+          {% elif company.status == 'funded' %}<span class="badge bg-primary">Funded</span>
+          {% else %}<span class="badge bg-secondary">{{ company.status | title }}</span>{% endif %}
+          {% if company.is_cash_flow_positive %}<span class="badge bg-success">Cash Flow +</span>{% endif %}
+          {% if company.dividend_eligible %}<span class="badge bg-info text-dark">Dividend Eligible</span>{% endif %}
+          {% if company.in_distress %}<span class="badge bg-danger">In Distress</span>{% endif %}
+          {% if company.flagged_for_liquidation %}<span class="badge bg-warning text-dark">Flagged for Liquidation</span>{% endif %}
+        </div>
+        <div class="row g-3">
+          <div class="col-md-3">
+            <div class="text-secondary small">LTM Revenue</div>
+            <span class="text-white fw-bold">{% if company.ltm_revenue is not none %}${{ "{:,.1f}M".format(company.ltm_revenue) }}{% else %}—{% endif %}</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">LTM EBITDA</div>
+            <span class="fw-bold {% if company.ltm_ebitda is not none and company.ltm_ebitda < 0 %}text-danger{% else %}text-white{% endif %}">
+              {% if company.ltm_ebitda is not none %}${{ "{:,.1f}M".format(company.ltm_ebitda) }}{% else %}—{% endif %}
+            </span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">LTM EBITDA Margin</div>
+            <span class="text-white">{% if company.ltm_ebitda_margin is not none %}{{ "%.1f"|format(company.ltm_ebitda_margin * 100) }}%{% else %}—{% endif %}</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">3-Yr Revenue Growth</div>
+            <span class="text-white">{% if company.revenue_growth_3yr is not none %}{{ "%.1f"|format(company.revenue_growth_3yr * 100) }}%{% else %}—{% endif %}</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Funds Wanted</div>
+            <span class="text-white fw-bold">${{ "{:,.1f}M".format(company.capital_requested) }}</span>
+            {% if company.stage == 'mature' %}<small class="text-secondary d-block">teams see N/A (buyout)</small>{% endif %}
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Initial Valuation Ask</div>
+            <span class="text-white fw-bold">${{ "{:,.1f}M".format(company.initial_val_ask or 0) }}</span>
+            <small class="text-secondary d-block">pre-money</small>
+          </div>
+          {% if company.status != 'available' %}
+          <div class="col-md-3">
+            <div class="text-secondary small">Latest Valuation</div>
+            <span class="text-white fw-bold">${{ "{:,.1f}M".format(company.latest_valuation or 0) }}</span>
+          </div>
+          {% endif %}
+          <div class="col-md-3">
+            <div class="text-secondary small">Implied EV</div>
+            <span class="text-white fw-bold">{% if company.enterprise_value is not none %}${{ "{:,.1f}M".format(company.enterprise_value) }}{% else %}—{% endif %}</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">EV / Revenue</div>
+            <span class="text-white">{% if company.ev_revenue_multiple is not none %}{{ "%.1f"|format(company.ev_revenue_multiple) }}x{% else %}N/A{% endif %}</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">EV / EBITDA</div>
+            <span class="text-white">{% if company.ev_ebitda_multiple is not none %}{{ "%.1f"|format(company.ev_ebitda_multiple) }}x{% else %}N/A{% endif %}</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Available Cash</div>
+            <span class="text-white">${{ "{:,.1f}M".format(company.available_cash or 0) }}</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Post-Deal Cash <span title="Equity + debt proceeds injected at deal finalization; pays debt service and funds dividends">&#9432;</span></div>
+            <span class="text-white">${{ "{:,.1f}M".format(company.company_funds or 0) }}</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Debt Outstanding</div>
+            <span class="text-white">${{ "{:,.1f}M".format(company.debt_outstanding or 0) }}
+              {% if company.debt_outstanding %}<small class="text-secondary">({{ "%.1f"|format((company.debt_interest_rate or 0) * 100) }}%, {{ company.debt_years_remaining }} yrs left)</small>{% endif %}
+            </span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Debt Capacity</div>
+            <span class="text-white">{% if company.debt_capacity %}${{ "{:,.1f}M".format(company.debt_capacity) }}{% else %}None{% endif %}</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Rolled Equity Range</div>
+            <span class="text-white">{{ "%.0f"|format(company.rolled_equity_min * 100) }}% &ndash; {{ "%.0f"|format(company.rolled_equity_max * 100) }}%</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Founder Shares</div>
+            <span class="text-white">{{ "{:,}".format(company.founder_shares or 0) }}</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Mgmt Option Pool</div>
+            <span class="text-white">{{ "%.0f"|format((company.management_option_pct or 0) * 100) }}%</span>
+          </div>
+          <div class="col-md-3">
+            <div class="text-secondary small">Year Available / Funded</div>
+            <span class="text-white">Year {{ company.year_available }}{% if company.year_funded %} / funded Yr {{ company.year_funded }}{% else %} / not funded{% endif %}</span>
+          </div>
+          {% if company.lead_team %}
+          <div class="col-md-3">
+            <div class="text-secondary small">Lead Team</div>
+            <span class="text-warning fw-bold">{{ company.lead_team.firm_name }}</span>
+          </div>
+          {% endif %}
+          {% if company.liquidation_proceeds is not none %}
+          <div class="col-md-3">
+            <div class="text-secondary small">Liquidation Proceeds</div>
+            <span class="text-white">${{ "{:,.1f}M".format(company.liquidation_proceeds) }}</span>
+          </div>
+          {% endif %}
+          {% if company.reasons_for_funding %}
+          <div class="col-md-6">
+            <div class="text-secondary small">Reasons for Seeking Funding</div>
+            <span class="text-light">{{ company.reasons_for_funding }}</span>
+          </div>
+          {% endif %}
+          {% if company.searches %}
+          <div class="col-12">
+            <div class="text-secondary small">In Pipeline Of</div>
+            {% for s in company.searches %}
+            <span class="badge bg-dark border border-secondary">{{ s.team.firm_name if s.team else '?' }}{% if not s.found_by_search %} (referred){% endif %}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
     <form method="POST" action="{{ url_for('admin_edit_company', company_id=company.id) }}" id="companyForm">
 
       <!-- Basic Info -->
@@ -49,6 +180,20 @@
                        value="{{ company.initial_val_ask }}" required>
               </div>
               <div class="form-text text-light">Pre-money valuation wanted while listed</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="capital_requested" class="form-label fw-semibold text-white">Funds Wanted ($M)</label>
+              <div class="input-group">
+                <span class="input-group-text bg-dark border-secondary text-secondary">$</span>
+                <input type="number" class="form-control bg-dark text-white border-secondary"
+                       id="capital_requested" name="capital_requested"
+                       min="0" step="0.1"
+                       value="{{ company.capital_requested }}" required>
+              </div>
+              <div class="form-text text-light">
+                {% if company.stage == 'mature' %}Shown to teams as N/A (buyout); used as suggested deal size{% else %}Capital the company is raising{% endif %}
+              </div>
             </div>
 
             <div class="col-md-6">
