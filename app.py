@@ -115,12 +115,21 @@ def dashboard():
                     .filter(DealEquity.team_id == current_user.id,
                             Deal.status == 'active')
                     .all())
+    # In-flight bids this year: where each term sheet stands in the deal
+    # process (submitted / won lead / fill candidate / co-invest offer pending)
+    bid_activity = (TermSheet.query
+                    .filter_by(team_id=current_user.id,
+                               game_year=game.current_year)
+                    .filter(TermSheet.status.in_(
+                        ['pending', 'lead', 'fill_offered', 'coinvest_offered']))
+                    .all())
     realized_irr = team_irr(current_user.id, game, unrealized=False)
     unrealized_irr = team_irr(current_user.id, game, unrealized=True)
     return render_template('dashboard.html',
                            game=game,
                            notifications=notifications,
                            active_deals=active_deals,
+                           bid_activity=bid_activity,
                            realized_irr=realized_irr,
                            unrealized_irr=unrealized_irr)
 

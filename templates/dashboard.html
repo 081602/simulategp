@@ -15,6 +15,46 @@
     </div>
   </div>
 
+  <!-- Deal Activity: where your bids stand in the deal process -->
+  {% if bid_activity %}
+  <div class="card bg-dark border-warning text-white mb-4">
+    <div class="card-header border-warning d-flex justify-content-between align-items-center">
+      <span><i class="bi bi-megaphone-fill text-warning"></i> Deal Activity &mdash; Year {{ game.current_year }}</span>
+      <a href="{{ url_for('timeline') }}" class="btn btn-sm btn-outline-warning">Go to Timeline</a>
+    </div>
+    <ul class="list-group list-group-flush">
+      {% for ts in bid_activity %}
+      {% set lead = ts.company.lead_team %}
+      <li class="list-group-item bg-dark text-white border-secondary d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+          {% if ts.status == 'pending' %}
+            <span class="badge bg-secondary me-1">Submitted</span>
+            Your term sheet on <strong>{{ ts.company.name }}</strong> is in for the Deal Process &mdash; awaiting results.
+          {% elif ts.status == 'lead' %}
+            <span class="badge bg-warning text-dark me-1">You Won Lead</span>
+            You were selected as <strong>lead investor</strong> on <strong>{{ ts.company.name }}</strong> &mdash; finalize the deal and choose any co-investors.
+          {% elif ts.status == 'fill_offered' %}
+            <span class="badge bg-info text-dark me-1">Fill Candidate</span>
+            {{ lead.firm_name if lead else 'Another firm' }} won the lead on <strong>{{ ts.company.name }}</strong>.
+            You offered to co-invest &mdash; <em>wait to see if they invite you</em>. If they do, an offer will appear on your Timeline to accept or reject.
+          {% elif ts.status == 'coinvest_offered' %}
+            <span class="badge bg-success me-1">Action Needed</span>
+            {{ lead.firm_name if lead else 'The lead investor' }} offered you a
+            <strong>${{ "%.1f"|format(ts.proposed_coinvest_amount or 0) }}M</strong> co-investment in
+            <strong>{{ ts.company.name }}</strong> &mdash; accept or reject it.
+          {% endif %}
+        </div>
+        {% if ts.status in ['lead', 'coinvest_offered'] %}
+        <a href="{{ url_for('timeline') }}" class="btn btn-sm btn-warning text-dark text-nowrap">
+          {% if ts.status == 'lead' %}<i class="bi bi-check2-square"></i> Finalize{% else %}<i class="bi bi-hand-index-thumb"></i> Accept / Reject{% endif %}
+        </a>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
   <!-- KPI Cards -->
   <div class="row g-3 mb-4">
     {% for fund in current_user.funds if fund.is_active %}
