@@ -804,6 +804,9 @@ def close_deal_with_coinvestors(deal: Deal):
     for fts in outstanding:
         fts.status = 'fill_declined'
         fts.proposed_coinvest_amount = None
+        fts.rejection_reason = (
+            f"The co-investment window on {company.name} closed before you "
+            f"responded.")
         _notify(fts.team_id,
                 f"The co-investment window on {company.name} closed before you "
                 f"responded, so you were not included in the deal.",

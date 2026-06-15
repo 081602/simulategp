@@ -183,12 +183,16 @@ def dealflow():
     game = Game.query.get(current_user.game_id)
     rows = CompanySearch.query.filter_by(team_id=current_user.id).all()
 
+    # Closed bids: term sheets that yielded no investment — rejected outright,
+    # or offered a fill slot the team ultimately wasn't brought into / declined.
+    # (fill_offered is still live and shown on the dashboard, so it's excluded.)
     rejected_sheets = (TermSheet.query
-                       .filter_by(team_id=current_user.id, status='rejected')
+                       .filter_by(team_id=current_user.id)
+                       .filter(TermSheet.status.in_(['rejected', 'fill_declined']))
                        .order_by(TermSheet.game_year.desc(), TermSheet.id.desc())
                        .all())
-    # A company that rejected this team's term sheet drops off the
-    # watchlist/referrals; it lives in the Rejected Term Sheets section
+    # A company that closed out this team's term sheet drops off the
+    # watchlist/referrals; it lives in the closed-bids section
     rejected_ids = {ts.company_id for ts in rejected_sheets}
 
     # Only companies still on the market belong in deal flow lists —
@@ -619,6 +623,9 @@ def respond_coinvest(ts_id):
     else:
         ts.status = 'fill_declined'
         ts.proposed_coinvest_amount = None
+        ts.rejection_reason = (
+            f"You declined the ${amount:,.1f}M co-investment offer on "
+            f"{company.name}.")
         _notify(deal.lead_team_id,
                 f'{current_user.firm_name} declined your co-investment offer on '
                 f'{company.name}; your fund will backstop that slice.',
@@ -712,6 +719,9 @@ def finalize_deal_route(deal_id):
             for fts in fill_offers:
                 if str(fts.id) not in selected_fills and fts.status == 'fill_offered':
                     fts.status = 'fill_declined'
+                    fts.rejection_reason = (
+                        f"{current_user.firm_name} won the lead and chose not to "
+                        f"bring you in as a co-investor.")
                     _notify(fts.team_id,
                             f'You were not invited to co-invest in the final '
                             f'{company.name} deal.',
