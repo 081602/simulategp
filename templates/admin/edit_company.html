@@ -229,7 +229,6 @@
               <select class="form-select bg-dark text-white border-secondary" id="status" name="status">
                 <option value="available"   {% if company.status == 'available' %}selected{% endif %}>Available</option>
                 <option value="funded"      {% if company.status == 'funded' %}selected{% endif %}>Funded</option>
-                <option value="refinancing" {% if company.status == 'refinancing' %}selected{% endif %}>Refinancing</option>
                 <option value="liquidated"  {% if company.status == 'liquidated' %}selected{% endif %}>Exited</option>
                 <option value="bankrupt"    {% if company.status == 'bankrupt' %}selected{% endif %}>Bankrupt</option>
               </select>

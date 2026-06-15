@@ -31,7 +31,6 @@
           {% for status_val, status_label, badge_class in [
             ('available', 'Available', 'bg-success'),
             ('funded', 'Funded', 'bg-primary'),
-            ('refinancing', 'Refinancing', 'bg-info text-dark'),
             ('liquidated', 'Exited', 'bg-secondary'),
             ('bankrupt', 'Bankrupt', 'bg-danger')
           ] %}
@@ -93,7 +92,6 @@
                 <td>
                   {% if company.status == 'available' %}<span class="badge bg-success">Available</span>
                   {% elif company.status == 'funded' %}<span class="badge bg-primary">Funded</span>
-                  {% elif company.status == 'refinancing' %}<span class="badge bg-info text-dark">Refinancing</span>
                   {% elif company.status == 'liquidated' %}<span class="badge bg-secondary">Exited</span>
                   {% elif company.status == 'bankrupt' %}<span class="badge bg-danger">Bankrupt</span>
                   {% else %}<span class="badge bg-secondary">{{ company.status | title }}</span>{% endif %}

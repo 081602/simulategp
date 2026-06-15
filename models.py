@@ -185,7 +185,7 @@ class GameCompany(db.Model):
     year_available = db.Column(db.Integer, default=1)
     year_funded = db.Column(db.Integer, nullable=True)
     status = db.Column(db.String(30), default='available')
-    # available, funded, refinancing, liquidated, bankrupt
+    # available, funded, liquidated, bankrupt
     lead_team_id = db.Column(db.Integer, db.ForeignKey('team.id'), nullable=True)
     liquidation_proceeds = db.Column(db.Float, nullable=True)
     company_funds = db.Column(db.Float, default=0.0)  # cash the company holds
@@ -290,7 +290,6 @@ class GameCompany(db.Model):
         colors = {
             'available': 'success',
             'funded': 'primary',
-            'refinancing': 'info',
             'liquidated': 'secondary',
             'bankrupt': 'danger'
         }
