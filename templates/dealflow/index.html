@@ -157,9 +157,9 @@
     </div>
     {% endif %}
 
-    <!-- Closed / unsuccessful term sheets -->
+    <!-- Term sheets that didn't win the lead (your original terms are kept here) -->
     {% if rejected_sheets %}
-    <h5 class="fw-semibold mb-3 mt-4"><i class="bi bi-x-octagon text-danger"></i> Unsuccessful Term Sheets
+    <h5 class="fw-semibold mb-3 mt-4"><i class="bi bi-x-octagon text-danger"></i> Term Sheets Not Selected as Lead
       <span class="badge bg-secondary ms-1">{{ rejected_sheets|length }}</span>
     </h5>
     <div class="card border-secondary">
@@ -171,7 +171,8 @@
               <th class="text-center">Year</th>
               <th class="text-end">Valuation</th>
               <th class="text-end">Investment</th>
-              <th>Reason</th>
+              <th class="text-center">Status</th>
+              <th>Detail</th>
             </tr></thead>
             <tbody>
             {% for ts in rejected_sheets %}
@@ -182,7 +183,23 @@
               <td class="text-center text-secondary">{{ ts.game_year }}</td>
               <td class="text-end">${{ "{:,.1f}M".format(ts.pre_money_valuation) }}</td>
               <td class="text-end">${{ "{:,.1f}M".format(ts.total_investment) }}</td>
-              <td class="text-light small">{{ ts.rejection_reason or '—' }}</td>
+              <td class="text-center">
+                {% if ts.status == 'fill_offered' %}
+                  <span class="badge bg-info text-dark">Fill Pending</span>
+                {% elif ts.status == 'fill_declined' %}
+                  <span class="badge bg-secondary">Fill Not Taken</span>
+                {% else %}
+                  <span class="badge bg-danger">Rejected</span>
+                {% endif %}
+              </td>
+              <td class="text-light small">
+                {% if ts.status == 'fill_offered' %}
+                  Not selected as lead.{% if ts.company.lead_team %} {{ ts.company.lead_team.firm_name }} is leading.{% endif %}
+                  You offered to co-invest &mdash; awaiting their decision.
+                {% else %}
+                  {{ ts.rejection_reason or '—' }}
+                {% endif %}
+              </td>
             </tr>
             {% endfor %}
             </tbody>

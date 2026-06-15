@@ -183,16 +183,19 @@ def dealflow():
     game = Game.query.get(current_user.game_id)
     rows = CompanySearch.query.filter_by(team_id=current_user.id).all()
 
-    # Closed bids: term sheets that yielded no investment — rejected outright,
-    # or offered a fill slot the team ultimately wasn't brought into / declined.
-    # (fill_offered is still live and shown on the dashboard, so it's excluded.)
+    # Bids that didn't win the lead: rejected outright, still a live fill
+    # candidate (fill_offered), or offered a fill slot the team wasn't brought
+    # into / declined (fill_declined). Shown with the team's original terms so
+    # they can review what they offered. (fill_accepted became a portfolio
+    # holding, so it's excluded.)
     rejected_sheets = (TermSheet.query
                        .filter_by(team_id=current_user.id)
-                       .filter(TermSheet.status.in_(['rejected', 'fill_declined']))
+                       .filter(TermSheet.status.in_(
+                           ['rejected', 'fill_offered', 'fill_declined']))
                        .order_by(TermSheet.game_year.desc(), TermSheet.id.desc())
                        .all())
-    # A company that closed out this team's term sheet drops off the
-    # watchlist/referrals; it lives in the closed-bids section
+    # A company on this list isn't a fresh deal-flow lead anymore; keep it out
+    # of the watchlist/referral sections
     rejected_ids = {ts.company_id for ts in rejected_sheets}
 
     # Only companies still on the market belong in deal flow lists —
