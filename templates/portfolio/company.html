@@ -188,13 +188,13 @@
                 </tr>
               </thead>
               <tbody>
-                {% for eq in deal.equities %}
+                {% for eq in deal.equity_stakes %}
                 <tr {% if eq.team.id == current_user.id %}class="table-active"{% endif %}>
                   <td>
                     <strong>{{ eq.team.firm_name }}</strong>
                     {% if eq.team.id == current_user.id %}<span class="badge bg-warning text-dark ms-1">You</span>{% endif %}
                   </td>
-                  <td class="text-end fw-bold">{{ "%.1f"|format(eq.ownership_pct * 100) }}%</td>
+                  <td class="text-end fw-bold">{{ "%.1f"|format(eq.ownership_pct) }}%</td>
                   <td class="text-end text-secondary">${{ "{:,.1f}M".format(eq.equity_invested) }}</td>
                   <td class="text-center">
                     {% if eq.is_lead %}
