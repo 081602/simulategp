@@ -200,6 +200,18 @@ def run_phase2_crank(game: Game):
     """
     year = game.current_year
 
+    # 0. Force-close any deal still awaiting co-investor responses: outstanding
+    #    offers auto-decline and the lead backstops them, so the year can advance
+    pending_coinvest = (
+        Deal.query
+        .join(GameCompany, Deal.company_id == GameCompany.id)
+        .filter(GameCompany.game_id == game.id,
+                Deal.status == 'pending_coinvest')
+        .all()
+    )
+    for deal in pending_coinvest:
+        close_deal_with_coinvestors(deal)
+
     # 1. Management fees (2% of total fund committed capital)
     for team in Team.query.filter_by(game_id=game.id, is_admin=False).all():
         for fund in team.funds:
@@ -749,4 +761,88 @@ def finalize_deal(deal: Deal, final_pre_money: float, equity_stakes_data: list,
         company.company_funds = (company.available_cash or 0.0) + total_equity + debt_amount
     company.year_funded = deal.game_year
 
+    db.session.commit()
+
+
+def locked_deal_economics(deal: Deal):
+    """Re-derive the binding economics (pre-money, rolled %, debt, options) from
+    the accepted lead term sheet. Deterministic, so any close path agrees."""
+    company = deal.company
+    lead_ts = deal.lead_term_sheet
+    final_pre_money = lead_ts.pre_money_valuation
+    rolled_pct = lead_ts.rolled_equity_min
+    mgmt_options = (company.management_option_pct or 0.0) * 100
+    if company.stage == 'mature' and rolled_pct < 1:
+        implied = final_pre_money - lead_ts.total_investment / (1 - rolled_pct)
+        debt_amount = max(0.0, min(implied, company.debt_capacity))
+    else:
+        debt_amount = 0.0
+    debt_rate = DEBT_INTEREST_RATE if debt_amount > 0 else 0.0
+    return final_pre_money, rolled_pct, debt_amount, debt_rate, mgmt_options
+
+
+def close_deal_with_coinvestors(deal: Deal):
+    """Close a deal that was awaiting co-investor responses.
+
+    Any co-invest offer still outstanding (coinvest_offered) is auto-declined
+    so a slow responder can't block the close; the lead's fund backstops every
+    slice that isn't an accepted co-investor. Safe to call once the lead has
+    proposed offers (deal.status == 'pending_coinvest').
+    """
+    company = deal.company
+    lead_ts = deal.lead_term_sheet
+    final_pre_money, rolled_pct, debt_amount, debt_rate, mgmt_options = \
+        locked_deal_economics(deal)
+    total_equity = lead_ts.total_investment
+
+    # Force-decline any offer that never got a response
+    outstanding = (TermSheet.query
+                   .filter_by(company_id=company.id, game_year=deal.game_year,
+                              status='coinvest_offered')
+                   .filter(TermSheet.team_id != deal.lead_team_id)
+                   .all())
+    for fts in outstanding:
+        fts.status = 'fill_declined'
+        fts.proposed_coinvest_amount = None
+        _notify(fts.team_id,
+                f"The co-investment window on {company.name} closed before you "
+                f"responded, so you were not included in the deal.",
+                'deal_lost', company.id)
+
+    # Accepted co-investors fund their agreed slice; lead backstops the rest
+    accepted = (TermSheet.query
+                .filter_by(company_id=company.id, game_year=deal.game_year,
+                           status='fill_accepted')
+                .filter(TermSheet.team_id != deal.lead_team_id)
+                .all())
+    fill_stakes = []
+    for fts in accepted:
+        amt = min(fts.proposed_coinvest_amount or 0.0, fts.max_fill_equity)
+        if amt > 0:
+            fill_stakes.append((fts, amt))
+    fill_total = min(sum(a for _, a in fill_stakes), total_equity)
+
+    stakes = [{'team_id': deal.lead_team_id, 'fund_id': lead_ts.fund_id,
+               'equity_invested': total_equity - fill_total}]
+    for fts, amt in fill_stakes:
+        stakes.append({'team_id': fts.team_id, 'fund_id': fts.fund_id,
+                       'equity_invested': amt})
+
+    finalize_deal(deal, final_pre_money, stakes, rolled_pct,
+                  debt_amount, debt_rate, mgmt_options)
+
+    # finalize_deal committed; layer on notifications + lead reputation
+    for fts, amt in fill_stakes:
+        _notify(fts.team_id,
+                f"The deal on {company.name} has closed. Your co-investment of "
+                f"${amt:,.1f}M is now active.",
+                'deal_won', company.id)
+    lead = Team.query.get(deal.lead_team_id)
+    if lead:
+        lead.reputation = min(5.0, lead.reputation + 0.2)
+    _notify(deal.lead_team_id,
+            f"Your deal on {company.name} has closed"
+            + (f" with {len(fill_stakes)} co-investor(s)." if fill_stakes
+               else "."),
+            'deal_won', company.id)
     db.session.commit()

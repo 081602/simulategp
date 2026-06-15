@@ -12,31 +12,32 @@
       </div>
     </div>
 
-    <!-- SECTION 1: Pending Syndicate Approvals -->
-    <div class="card border-secondary shadow mb-4">
-      <div class="card-header border-secondary d-flex align-items-center justify-content-between">
-        <h6 class="mb-0 fw-semibold"><i class="bi bi-diagram-3 text-warning"></i> Pending Syndicate Approvals</h6>
-        {% if pending_syndicate_approval %}
-        <span class="badge bg-danger rounded-pill">{{ pending_syndicate_approval|length }}</span>
-        {% endif %}
+    <!-- SECTION 1: Co-Investment Offers (you've been invited to co-invest) -->
+    {% if coinvest_offers %}
+    <div class="card border-info shadow mb-4">
+      <div class="card-header border-info d-flex align-items-center justify-content-between"
+           style="background:rgba(13,202,240,0.1);">
+        <h6 class="mb-0 fw-semibold text-info"><i class="bi bi-hand-index-thumb"></i> Co-Investment Offers for You</h6>
+        <span class="badge bg-info text-dark rounded-pill">{{ coinvest_offers|length }}</span>
       </div>
       <div class="card-body p-0">
-        {% if pending_syndicate_approval %}
         <div class="table-responsive">
-          <table class="table table-dark table-hover mb-0">
+          <table class="table table-dark table-hover mb-0 align-middle">
             <thead>
               <tr>
                 <th>Company</th>
-                <th>Lead Team</th>
-                <th>Valuation</th>
-                <th>Investment Size</th>
-                <th>Type</th>
-                <th>Liq. Pref.</th>
-                <th>Action</th>
+                <th>Lead Investor</th>
+                <th>Proposed Amount</th>
+                <th>Terms</th>
+                <th>Your Available Capital</th>
+                <th>Decision</th>
               </tr>
             </thead>
             <tbody>
-              {% for ts in pending_syndicate_approval %}
+              {% for ts in coinvest_offers %}
+              {% set fund = my_funds.get(ts.fund_id) %}
+              {% set avail = fund.available_capital if fund else 0 %}
+              {% set short = avail + 0.000001 < (ts.proposed_coinvest_amount or 0) %}
               <tr>
                 <td>
                   <a href="{{ url_for('company_detail', company_id=ts.company.id) }}" class="text-warning text-decoration-none fw-semibold">
@@ -44,20 +45,24 @@
                   </a>
                   <div class="text-light small">{{ ts.company.sector }}</div>
                 </td>
-                <td>
-                  <span class="fw-semibold">{{ ts.team.firm_name }}</span>
+                <td><span class="fw-semibold">{{ ts.company.lead_team.firm_name if ts.company.lead_team else '—' }}</span></td>
+                <td><span class="fw-bold text-info">${{ "{:,.1f}M".format(ts.proposed_coinvest_amount or 0) }}</span></td>
+                <td class="small text-light">
+                  {% if ts.company.stage == 'mature' %}Purchase{% else %}Pre-money{% endif %}
+                  ${{ "{:,.1f}M".format(ts.pre_money_valuation) }} ·
+                  {{ ts.liquidation_preference }}x liq.
                 </td>
-                <td>${{ "{:,.1f}M".format(ts.pre_money_valuation) }}</td>
-                <td>${{ "{:,.1f}M".format(ts.total_investment) }}</td>
-                <td><span class="badge bg-info text-dark">Syndicate</span></td>
-                <td>{{ ts.liquidation_preference }}x</td>
+                <td class="{{ 'text-danger' if short else 'text-light' }}">
+                  ${{ "{:,.1f}M".format(avail) }}
+                  {% if short %}<div class="small">insufficient</div>{% endif %}
+                </td>
                 <td>
-                  <form method="POST" action="{{ url_for('approve_syndicate', ts_id=ts.id) }}" class="d-flex gap-2">
-                    <button type="submit" name="decision" value="approve" class="btn btn-success btn-sm">
-                      <i class="bi bi-check-lg"></i> Approve
+                  <form method="POST" action="{{ url_for('respond_coinvest', ts_id=ts.id) }}" class="d-flex gap-2">
+                    <button type="submit" name="decision" value="accept" class="btn btn-success btn-sm" {{ 'disabled' if short else '' }}>
+                      <i class="bi bi-check-lg"></i> Accept
                     </button>
-                    <button type="submit" name="decision" value="decline" class="btn btn-outline-danger btn-sm">
-                      <i class="bi bi-x-lg"></i> Decline
+                    <button type="submit" name="decision" value="reject" class="btn btn-outline-danger btn-sm">
+                      <i class="bi bi-x-lg"></i> Reject
                     </button>
                   </form>
                 </td>
@@ -66,14 +71,48 @@
             </tbody>
           </table>
         </div>
-        {% else %}
-        <div class="text-center text-secondary py-4">
-          <i class="bi bi-check-circle fs-3 d-block mb-2 text-success"></i>
-          No pending syndicate approvals
-        </div>
-        {% endif %}
       </div>
     </div>
+    {% endif %}
+
+    <!-- SECTION 1b: Deals you lead awaiting co-investor responses -->
+    {% if awaiting_coinvest %}
+    <div class="card border-secondary shadow mb-4">
+      <div class="card-header border-secondary">
+        <h6 class="mb-0 fw-semibold text-white"><i class="bi bi-hourglass-split text-warning"></i> Awaiting Co-Investor Responses</h6>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-dark mb-0 align-middle">
+            <thead>
+              <tr><th>Company</th><th>Total Equity</th><th>Invited Co-Investors</th></tr>
+            </thead>
+            <tbody>
+              {% for deal in awaiting_coinvest %}
+              <tr>
+                <td>
+                  <a href="{{ url_for('company_detail', company_id=deal.company.id) }}" class="text-warning text-decoration-none fw-semibold">{{ deal.company.name }}</a>
+                  <div class="text-secondary small">Closes when all respond, or at the next Deal &amp; Return Process</div>
+                </td>
+                <td>${{ "{:,.1f}M".format(deal.lead_term_sheet.total_investment) }}</td>
+                <td>
+                  {% for ts in deal.company.term_sheets if ts.game_year == deal.game_year and ts.status in ['coinvest_offered','fill_accepted','fill_declined'] and ts.team_id != deal.lead_team_id %}
+                    <div class="small">
+                      {{ ts.team.firm_name }} — ${{ "{:,.1f}M".format(ts.proposed_coinvest_amount or 0) }}
+                      {% if ts.status == 'coinvest_offered' %}<span class="badge bg-warning text-dark">Pending</span>
+                      {% elif ts.status == 'fill_accepted' %}<span class="badge bg-success">Accepted</span>
+                      {% else %}<span class="badge bg-secondary">Declined</span>{% endif %}
+                    </div>
+                  {% endfor %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% endif %}
 
     <!-- SECTION 2: My Term Sheets This Year -->
     <div class="card border-secondary shadow mb-4">

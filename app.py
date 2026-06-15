@@ -12,8 +12,9 @@ from models import (db, Game, Team, Fund, CompanyTemplate, GameCompany,
                     FundTransaction, Notification, ReturnAssumption)
 from game_logic import (run_phase1_crank, run_phase2_crank,
                         team_irr, team_gp_income, finalize_deal,
-                        exit_waterfall, DEBT_INTEREST_RATE,
-                        _notify, _record_transaction)
+                        close_deal_with_coinvestors, locked_deal_economics,
+                        exit_waterfall, DEBT_INTEREST_RATE, _notify,
+                        _record_transaction)
 
 # ---------------------------------------------------------------------------
 # App Setup
@@ -448,9 +449,8 @@ def create_term_sheet(company_id):
             willing_fill = 'willing_to_fill' in request.form
             max_fill = float(request.form.get('max_fill_equity') or 0)
             min_rep = float(request.form.get('min_lead_reputation') or 0)
-            ts_type = request.form.get('term_sheet_type') or request.form.get('ts_type', 'solo')
-            syndicate_ids = request.form.getlist('syndicate_partners')
-            syndicate_ids = [int(x) for x in syndicate_ids if x]
+            # Co-investment is handled solely through the fill flow at
+            # finalization; term sheets are always solo at submission.
 
             # Validate restrictions for mature/early_revenue
             if not company.allows_aggressive_terms:
@@ -498,19 +498,10 @@ def create_term_sheet(company_id):
                 willing_to_fill=willing_fill,
                 max_fill_equity=max_fill,
                 min_lead_reputation=min_rep,
-                term_sheet_type=ts_type,
-                syndicate_partners=json.dumps(syndicate_ids),
-                syndicate_approved_by=json.dumps([current_user.id])
+                term_sheet_type='solo',
             )
             db.session.add(ts)
             db.session.flush()
-
-            # Notify syndicate partners
-            for pid in syndicate_ids:
-                _notify(pid,
-                        f'{current_user.firm_name} has invited you to join a syndicate '
-                        f'term sheet on {company.name}. Please review and approve on the Timeline.',
-                        'fill_offered', company_id)
 
             # Keep active deals visible: auto-add the company to the watchlist
             cs = CompanySearch.query.filter_by(
@@ -558,53 +549,86 @@ def timeline():
                                 status='pending_finalization')
                      .all())
 
-    # Syndicate term sheets awaiting my approval
-    all_ts = (TermSheet.query
-              .filter_by(game_year=game.current_year,
-                         term_sheet_type='syndicate')
-              .filter(TermSheet.status.in_(['pending']))
-              .all())
+    # Co-investment offers awaiting my accept/reject (I'm the invited team)
+    coinvest_offers = (TermSheet.query
+                       .filter_by(team_id=current_user.id,
+                                  game_year=game.current_year,
+                                  status='coinvest_offered')
+                       .all())
 
-    pending_syndicate_approval = []
-    for ts in all_ts:
-        partners = ts.get_syndicate_partners()
-        approved_by = ts.get_syndicate_approved_by()
-        if current_user.id in partners and current_user.id not in approved_by:
-            pending_syndicate_approval.append(ts)
+    # Deals I lead that are waiting on co-investors before they close
+    awaiting_coinvest = (Deal.query
+                         .filter_by(lead_team_id=current_user.id,
+                                    game_year=game.current_year,
+                                    status='pending_coinvest')
+                         .all())
+
+    # My funds, keyed by id, so co-invest offers can show available capital
+    my_funds = {f.id: f for f in
+                Fund.query.filter_by(team_id=current_user.id, is_active=True).all()}
 
     return render_template('timeline.html',
                            game=game,
                            my_term_sheets=my_ts,
                            pending_deals=pending_deals,
-                           pending_syndicate_approval=pending_syndicate_approval)
+                           coinvest_offers=coinvest_offers,
+                           awaiting_coinvest=awaiting_coinvest,
+                           my_funds=my_funds)
 
 
-@app.route('/timeline/syndicate/approve/<int:ts_id>', methods=['POST'])
+@app.route('/timeline/coinvest/<int:ts_id>', methods=['POST'])
 @login_required
-def approve_syndicate(ts_id):
+def respond_coinvest(ts_id):
     ts = TermSheet.query.get_or_404(ts_id)
-    if current_user.id not in ts.get_syndicate_partners():
-        flash('You are not an invited partner on this term sheet.', 'warning')
+    if ts.team_id != current_user.id:
+        abort(403)
+    if ts.status != 'coinvest_offered':
+        flash('This co-investment offer is no longer open.', 'info')
         return redirect(url_for('timeline'))
-    decision = request.form.get('decision', 'approve')
-    if decision == 'decline':
-        # Remove current user from syndicate partners list
-        partners = ts.get_syndicate_partners()
-        partners.remove(current_user.id)
-        ts.syndicate_partners = json.dumps(partners)
-        _notify(ts.team_id,
-                f'{current_user.firm_name} declined your syndicate invitation '
-                f'on {ts.company.name}.',
-                'deal_lost', ts.company_id)
-        db.session.commit()
-        flash('You have declined the syndicate invitation.', 'info')
+
+    company = GameCompany.query.get(ts.company_id)
+    deal = Deal.query.filter_by(company_id=ts.company_id,
+                                game_year=ts.game_year,
+                                status='pending_coinvest').first()
+    decision = request.form.get('decision', 'accept')
+    amount = ts.proposed_coinvest_amount or 0.0
+
+    if decision == 'accept':
+        fund = Fund.query.get(ts.fund_id)
+        if not fund or fund.available_capital + 1e-6 < amount:
+            avail = fund.available_capital if fund else 0.0
+            flash(f'Your fund only has ${avail:,.1f}M available — not enough to '
+                  f'cover the ${amount:,.1f}M co-investment.', 'danger')
+            return redirect(url_for('timeline'))
+        ts.status = 'fill_accepted'
+        _notify(deal.lead_team_id,
+                f'{current_user.firm_name} accepted your ${amount:,.1f}M '
+                f'co-investment offer on {company.name}.',
+                'fill_offered', company.id)
+        flash(f'You accepted the ${amount:,.1f}M co-investment in {company.name}.',
+              'success')
     else:
-        approved_by = ts.get_syndicate_approved_by()
-        if current_user.id not in approved_by:
-            approved_by.append(current_user.id)
-            ts.syndicate_approved_by = json.dumps(approved_by)
-            db.session.commit()
-            flash('Syndicate term sheet approved.', 'success')
+        ts.status = 'fill_declined'
+        ts.proposed_coinvest_amount = None
+        _notify(deal.lead_team_id,
+                f'{current_user.firm_name} declined your co-investment offer on '
+                f'{company.name}; your fund will backstop that slice.',
+                'deal_lost', company.id)
+        flash(f'You declined the co-investment in {company.name}.', 'info')
+
+    db.session.commit()
+
+    # If every invited co-investor has now responded, close the deal
+    if deal:
+        outstanding = (TermSheet.query
+                       .filter_by(company_id=deal.company_id,
+                                  game_year=deal.game_year,
+                                  status='coinvest_offered')
+                       .filter(TermSheet.team_id != deal.lead_team_id)
+                       .count())
+        if outstanding == 0:
+            close_deal_with_coinvestors(deal)
+
     return redirect(url_for('timeline'))
 
 
@@ -651,73 +675,66 @@ def finalize_deal_route(deal_id):
 
         try:
             # All deal economics are LOCKED from the accepted term sheet;
-            # finalization only decides who funds the equity
-            final_pre_money = lead_ts.pre_money_valuation
-            rolled_pct = lead_ts.rolled_equity_min
-            mgmt_options = (company.management_option_pct or 0.0) * 100
-
-            if company.stage == 'mature' and rolled_pct < 1:
-                # Sources & uses: debt fills the gap the equity check and
-                # seller rollover leave (validated <= capacity at submission)
-                implied = final_pre_money - lead_ts.total_investment / (1 - rolled_pct)
-                debt_amount = max(0.0, min(implied, company.debt_capacity))
-            else:
-                debt_amount = 0.0
-            debt_rate = DEBT_INTEREST_RATE if debt_amount > 0 else 0.0
-
-            # Fills carve out of the locked equity total; lead backstops the rest
+            # finalization only decides who is invited to fund the equity.
             total_equity = lead_ts.total_investment
-            fill_stakes = []
-            fill_total = 0.0
+
+            # Build the lead's co-investment proposals (capped at each fill's max)
+            proposals = []
+            proposed_total = 0.0
             selected_fills = request.form.getlist('selected_fills')
             for fill_ts_id in selected_fills:
                 fts = TermSheet.query.get(int(fill_ts_id))
-                if not fts:
+                if not fts or fts.status != 'fill_offered':
                     continue
-                fill_equity = min(float(request.form.get(f'fill_equity_{fill_ts_id}')
-                                        or fts.max_fill_equity),
-                                  fts.max_fill_equity)
-                if fill_equity <= 0:
+                amount = min(float(request.form.get(f'fill_equity_{fill_ts_id}')
+                                   or fts.max_fill_equity),
+                             fts.max_fill_equity)
+                if amount <= 0:
                     continue
-                fill_total += fill_equity
-                fill_stakes.append((fts, fill_equity))
+                proposed_total += amount
+                proposals.append((fts, amount))
 
-            if fill_total > total_equity:
-                flash(f'Fill investors cannot exceed the ${total_equity:.1f}M '
+            if proposed_total > total_equity + 1e-6:
+                flash(f'Proposed co-investments cannot exceed the ${total_equity:.1f}M '
                       f'equity committed in your term sheet.', 'danger')
                 return redirect(request.url)
 
-            stakes = [{'team_id': current_user.id,
-                       'fund_id': lead_ts.fund_id,
-                       'equity_invested': total_equity - fill_total}]
-            for fts, fill_equity in fill_stakes:
-                stakes.append({'team_id': fts.team_id,
-                               'fund_id': fts.fund_id,
-                               'equity_invested': fill_equity})
-                fts.status = 'fill_accepted'
-                _notify(fts.team_id,
-                        f'Your fill investment in {company.name} has been accepted!',
-                        'deal_won', company.id)
-
-            # Reject non-selected fills
+            # Fills the lead did not invite are out
             for fts in fill_offers:
-                if str(fts.id) not in selected_fills:
+                if str(fts.id) not in selected_fills and fts.status == 'fill_offered':
                     fts.status = 'fill_declined'
                     _notify(fts.team_id,
-                            f'Your fill offer on {company.name} was not included in the final deal.',
+                            f'You were not invited to co-invest in the final '
+                            f'{company.name} deal.',
                             'deal_lost', company.id)
 
-            # Liq pref / participation / anti-dilution stay as accepted
-            # (copied from the lead term sheet when the deal was created)
+            if not proposals:
+                # Solo close: nobody to wait on, finalize immediately
+                stakes = [{'team_id': current_user.id, 'fund_id': lead_ts.fund_id,
+                           'equity_invested': total_equity}]
+                _, rolled_pct, debt_amount, debt_rate, mgmt_options = (
+                    locked_deal_economics(deal))
+                finalize_deal(deal, lead_ts.pre_money_valuation, stakes,
+                              rolled_pct, debt_amount, debt_rate, mgmt_options)
+                current_user.reputation = min(5.0, current_user.reputation + 0.2)
+                db.session.commit()
+                flash(f'Deal on {company.name} finalized successfully!', 'success')
+                return redirect(url_for('portfolio'))
 
-            finalize_deal(deal, final_pre_money, stakes,
-                          rolled_pct, debt_amount, debt_rate, mgmt_options)
-
-            flash(f'Deal on {company.name} finalized successfully!', 'success')
-            # Reputation boost for closing a deal
-            current_user.reputation = min(5.0, current_user.reputation + 0.2)
+            # Co-investors invited: send offers and wait for their responses
+            for fts, amount in proposals:
+                fts.status = 'coinvest_offered'
+                fts.proposed_coinvest_amount = amount
+                _notify(fts.team_id,
+                        f'{current_user.firm_name} invites you to co-invest '
+                        f'${amount:,.1f}M in {company.name} at the finalized terms. '
+                        f'Review and accept or reject on your Timeline.',
+                        'fill_offered', company.id)
+            deal.status = 'pending_coinvest'
             db.session.commit()
-            return redirect(url_for('portfolio'))
+            flash(f'Co-investment offers sent for {company.name}. The deal will '
+                  f'close once the invited teams respond.', 'success')
+            return redirect(url_for('timeline'))
 
         except (ValueError, KeyError) as e:
             flash(f'Error finalizing deal: {e}', 'danger')

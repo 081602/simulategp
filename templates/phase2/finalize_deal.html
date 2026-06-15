@@ -108,17 +108,20 @@
         <div class="card-body p-4">
           {% if fill_offers %}
           <p class="text-secondary small mb-3">
-            Fill investors below offered to co-invest. Any amount you accept comes out of the
-            ${{ "{:,.1f}M".format(lead_ts.total_investment) }} total &mdash; your fund covers the rest.
+            The teams below offered to co-invest. Tick the ones you want and propose an amount
+            (up to their max). Each invited team must <strong>accept or reject</strong> your proposal
+            before the deal closes &mdash; any amount you propose comes out of the
+            ${{ "{:,.1f}M".format(lead_ts.total_investment) }} total, and your fund backstops the rest
+            (including anyone who declines). Invite no one and the deal closes immediately as a solo deal.
           </p>
           <div class="table-responsive">
             <table class="table table-dark">
               <thead>
                 <tr>
-                  <th>Include</th>
+                  <th>Invite</th>
                   <th>Team</th>
-                  <th>Their Max Fill Equity</th>
-                  <th>Actual Fill Amount ($)</th>
+                  <th>Their Max Co-Investment</th>
+                  <th>Propose Amount ($M)</th>
                 </tr>
               </thead>
               <tbody>
@@ -149,9 +152,9 @@
           <p class="text-secondary mb-2">No fill investors offered to co-invest in this deal.</p>
           {% endif %}
           <div class="mt-2 fs-5">
-            <span class="text-light">Your fund's equity check:</span>
+            <span class="text-light">Your fund's equity check (if all accept):</span>
             <strong class="text-warning" id="lead_check">${{ "{:,.1f}M".format(lead_ts.total_investment) }}</strong>
-            <span class="text-secondary small">of ${{ "{:,.1f}M".format(lead_ts.total_investment) }} total</span>
+            <span class="text-secondary small">of ${{ "{:,.1f}M".format(lead_ts.total_investment) }} total — you backstop any decline</span>
           </div>
         </div>
       </div>
@@ -169,7 +172,7 @@
           </a>
           <button type="submit" name="action" value="finalize"
                   class="btn btn-warning text-dark fw-bold btn-lg confirm-action"
-                  data-confirm="Finalize this deal on the accepted terms? This action cannot be undone.">
+                  data-confirm="Lock these terms? If you invited co-investors, offers go out and the deal closes once they respond; otherwise it closes now. This cannot be undone.">
             <i class="bi bi-check2-circle"></i> Finalize Deal
           </button>
         </div>

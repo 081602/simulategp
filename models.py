@@ -336,10 +336,13 @@ class TermSheet(db.Model):
     rolled_equity_min = db.Column(db.Float, nullable=False)
     rolled_equity_max = db.Column(db.Float, nullable=False)
 
-    # Fill terms
+    # Fill / co-invest terms
     willing_to_fill = db.Column(db.Boolean, default=True)
     min_lead_reputation = db.Column(db.Float, default=0.0)
     max_fill_equity = db.Column(db.Float, default=0.0)
+    # When the lead invites this team as a co-investor at finalization, the
+    # amount they propose (awaiting the team's accept/reject); None until offered.
+    proposed_coinvest_amount = db.Column(db.Float, nullable=True)
 
     # Protective provisions
     liquidation_preference = db.Column(db.Integer, default=1)   # 1, 2, or 3
@@ -353,7 +356,8 @@ class TermSheet(db.Model):
 
     # Result
     status = db.Column(db.String(30), default='pending')
-    # pending, lead, fill_offered, fill_accepted, fill_declined, rejected, withdrawn
+    # pending, lead, fill_offered, coinvest_offered, fill_accepted,
+    # fill_declined, rejected, withdrawn
     rejection_reason = db.Column(db.String(300), nullable=True)  # set when status -> rejected
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
