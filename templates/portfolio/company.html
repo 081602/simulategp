@@ -188,6 +188,7 @@
                 </tr>
               </thead>
               <tbody>
+                {% set ns = namespace(inv_total=0.0) %}
                 {% for eq in deal.equity_stakes %}
                 <tr {% if eq.team.id == current_user.id %}class="table-active"{% endif %}>
                   <td>
@@ -204,16 +205,35 @@
                     {% endif %}
                   </td>
                 </tr>
+                {% set ns.inv_total = ns.inv_total + eq.ownership_pct %}
                 {% endfor %}
-                <!-- Management / Option Pool if any -->
-                {% if company.management_option_pct > 0 %}
+                {# Founders' rolled equity and the management option pool make up
+                   the rest of the cap table; the pool is the residual so the
+                   rows always total 100%. #}
+                {% set founders_pct = (deal.rolled_equity_pct or 0) * 100 %}
+                {% set mgmt_pct = 100 - founders_pct - ns.inv_total %}
+                {% if founders_pct > 0.05 %}
+                <tr class="text-secondary">
+                  <td><em>Founders (Rolled Equity)</em></td>
+                  <td class="text-end">{{ "%.1f"|format(founders_pct) }}%</td>
+                  <td class="text-end">&mdash;</td>
+                  <td class="text-center"><span class="badge bg-secondary">Rollover</span></td>
+                </tr>
+                {% endif %}
+                {% if mgmt_pct > 0.05 %}
                 <tr class="text-secondary">
                   <td><em>Management Pool</em></td>
-                  <td class="text-end">{{ "%.1f"|format(company.management_option_pct * 100) }}%</td>
+                  <td class="text-end">{{ "%.1f"|format(mgmt_pct) }}%</td>
                   <td class="text-end">&mdash;</td>
                   <td class="text-center"><span class="badge bg-secondary">Options</span></td>
                 </tr>
                 {% endif %}
+                <tr class="fw-bold border-top border-secondary">
+                  <td>Total</td>
+                  <td class="text-end">{{ "%.1f"|format(ns.inv_total + founders_pct + mgmt_pct) }}%</td>
+                  <td class="text-end">&mdash;</td>
+                  <td></td>
+                </tr>
               </tbody>
             </table>
           </div>
