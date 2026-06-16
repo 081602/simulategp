@@ -109,7 +109,8 @@
           {% if active_deals %}
           <table class="table table-dark table-hover mb-0">
             <thead><tr>
-              <th>Company</th><th>Sector</th><th>Your Stake</th><th>Current Val.</th><th></th>
+              <th>Company</th><th>Sector</th><th>Your Stake</th>
+              <th title="Your ownership share of the company's equity value (current valuation less outstanding debt)">Your Value</th><th></th>
             </tr></thead>
             <tbody>
             {% for deal in active_deals %}
@@ -124,7 +125,7 @@
               </td>
               <td><small class="text-muted">{{ company.sector }}</small></td>
               <td>{{ "%.1f"|format(my_stake.ownership_pct if my_stake else 0) }}%</td>
-              <td>${{ "%.1f"|format(company.latest_valuation or 0) }}M</td>
+              <td>${{ "%.1f"|format(my_stake.current_value if my_stake else 0) }}M</td>
               <td><a href="{{ url_for('portfolio_company', company_id=company.id) }}"
                      class="btn btn-sm btn-outline-primary">Manage</a></td>
             </tr>
