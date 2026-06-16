@@ -15,6 +15,22 @@
       </div>
     </div>
 
+    {% if game.is_complete %}
+    <!-- Game Complete -->
+    <div class="card border-success shadow mb-4" style="background:rgba(25,135,84,0.12) !important;">
+      <div class="card-body p-4 text-center">
+        <i class="bi bi-trophy-fill text-success fs-1 d-block mb-2"></i>
+        <h3 class="fw-bold text-success mb-1">Game Complete</h3>
+        <p class="text-light mb-3">
+          The fund's term ended after Year {{ game.current_year }}. All remaining holdings were
+          exited at their final valuations, and no further processes can be run.
+        </p>
+        <a href="{{ url_for('admin_leaderboard') }}" class="btn btn-success fw-semibold">
+          <i class="bi bi-bar-chart-fill me-1"></i> View Final Leaderboard
+        </a>
+      </div>
+    </div>
+    {% else %}
     <!-- Current Phase Indicator -->
     <div class="card border-info shadow mb-4" style="background:rgba(13,202,240,0.08) !important;">
       <div class="card-body p-4 text-center">
@@ -164,6 +180,7 @@
         {% endif %}
       </div>
     </div>
+    {% endif %}
 
   </div>
 </div>
