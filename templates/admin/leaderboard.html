@@ -8,7 +8,7 @@
     <div class="d-flex align-items-center justify-content-between mb-4">
       <div>
         <h2 class="fw-bold mb-0"><i class="bi bi-trophy text-warning"></i> Leaderboard</h2>
-        <p class="text-secondary mb-0">Year {{ game.current_year }} &mdash; Ranked by Unrealized IRR</p>
+        <p class="text-secondary mb-0">Year {{ game.current_year }} &mdash; Ranked by Annualized Return</p>
       </div>
       <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
         <i class="bi bi-arrow-left me-1"></i> Dashboard
@@ -24,9 +24,9 @@
           <div class="card-body pt-4">
             <div class="display-4 mb-2"><i class="bi bi-2-circle-fill text-secondary"></i></div>
             <div class="fw-bold fs-5">{{ team_data[1].team.firm_name }}</div>
-            <div class="text-secondary small mb-2">{{ "%.1f"|format(team_data[1].unrealized_irr * 100) }}% IRR</div>
-            <div class="text-success fw-bold">${{ "{:,.1f}M".format(team_data[1].portfolio_value) }}</div>
-            <div class="text-light small">Portfolio Value</div>
+            <div class="text-secondary small mb-2">{{ "%+.1f"|format(team_data[1].ret.annualized * 100) }}% / yr</div>
+            <div class="text-success fw-bold">${{ "{:,.1f}M".format(team_data[1].ret.net_value) }}</div>
+            <div class="text-light small">Net to LPs</div>
           </div>
         </div>
       </div>
@@ -36,9 +36,9 @@
           <div class="card-body pt-4">
             <div class="display-3 mb-2"><i class="bi bi-trophy-fill text-warning"></i></div>
             <div class="fw-bold fs-4 text-warning">{{ team_data[0].team.firm_name }}</div>
-            <div class="text-warning mb-2">{{ "%.1f"|format(team_data[0].unrealized_irr * 100) }}% IRR</div>
-            <div class="text-success fw-bold fs-5">${{ "{:,.1f}M".format(team_data[0].portfolio_value) }}</div>
-            <div class="text-light small">Portfolio Value</div>
+            <div class="text-warning mb-2">{{ "%+.1f"|format(team_data[0].ret.annualized * 100) }}% / yr</div>
+            <div class="text-success fw-bold fs-5">${{ "{:,.1f}M".format(team_data[0].ret.net_value) }}</div>
+            <div class="text-light small">Net to LPs</div>
           </div>
         </div>
       </div>
@@ -48,9 +48,9 @@
           <div class="card-body pt-4">
             <div class="display-4 mb-2"><i class="bi bi-3-circle-fill" style="color:#cd7f32;"></i></div>
             <div class="fw-bold fs-5">{{ team_data[2].team.firm_name }}</div>
-            <div class="text-secondary small mb-2">{{ "%.1f"|format(team_data[2].unrealized_irr * 100) }}% IRR</div>
-            <div class="text-success fw-bold">${{ "{:,.1f}M".format(team_data[2].portfolio_value) }}</div>
-            <div class="text-light small">Portfolio Value</div>
+            <div class="text-secondary small mb-2">{{ "%+.1f"|format(team_data[2].ret.annualized * 100) }}% / yr</div>
+            <div class="text-success fw-bold">${{ "{:,.1f}M".format(team_data[2].ret.net_value) }}</div>
+            <div class="text-light small">Net to LPs</div>
           </div>
         </div>
       </div>
@@ -66,8 +66,8 @@
               <tr>
                 <th class="text-center" style="width:60px;">Rank</th>
                 <th>Firm Name</th>
-                <th class="text-end">Unrealized IRR</th>
-                <th class="text-end">Realized IRR</th>
+                <th class="text-end">Annualized Return</th>
+                <th class="text-end">Net to LPs</th>
                 <th class="text-end">Total Capital</th>
                 <th class="text-end">Available Capital</th>
                 <th class="text-end">Portfolio Value</th>
@@ -98,14 +98,13 @@
                   <div class="text-secondary small font-monospace">{{ item.team.username }}</div>
                 </td>
                 <td class="text-end">
-                  <span class="fw-bold {% if item.unrealized_irr >= 0.20 %}text-success{% elif item.unrealized_irr >= 0 %}text-info{% else %}text-danger{% endif %} fs-5">
-                    {{ "%.1f"|format(item.unrealized_irr * 100) }}%
+                  <span class="fw-bold {% if item.ret.annualized >= 0.20 %}text-success{% elif item.ret.annualized >= 0 %}text-info{% else %}text-danger{% endif %} fs-5">
+                    {{ "%+.1f"|format(item.ret.annualized * 100) }}%
                   </span>
+                  <div class="text-secondary" style="font-size:0.7rem;">{{ "%.2f"|format(item.ret.multiple) }}&times; over {{ item.ret.years }}y</div>
                 </td>
-                <td class="text-end">
-                  <span class="{% if item.realized_irr >= 0.20 %}text-success{% elif item.realized_irr >= 0 %}text-secondary{% else %}text-danger{% endif %}">
-                    {{ "%.1f"|format(item.realized_irr * 100) }}%
-                  </span>
+                <td class="text-end fw-semibold {% if item.ret.net_value >= item.ret.committed %}text-success{% else %}text-danger{% endif %}">
+                  ${{ "{:,.1f}M".format(item.ret.net_value) }}
                 </td>
                 <td class="text-end">${{ "{:,.1f}M".format(item.total_capital) }}</td>
                 <td class="text-end text-success">${{ "{:,.1f}M".format(item.available_capital) }}</td>

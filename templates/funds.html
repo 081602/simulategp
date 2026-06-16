@@ -12,31 +12,63 @@
       </div>
     </div>
 
-    <!-- IRR Summary -->
+    <!-- Return Summary + Calculation -->
     <div class="row g-4 mb-4">
-      <div class="col-md-6">
-        <div class="card border-success shadow text-center" style="background:rgba(25,135,84,0.1) !important;">
-          <div class="card-body py-4">
+      <div class="col-md-5">
+        <div class="card border-success shadow text-center h-100"
+             style="background:rgba(25,135,84,0.1) !important;">
+          <div class="card-body py-4 d-flex flex-column justify-content-center">
             <div class="text-light small mb-1">
-              <i class="bi bi-check-circle-fill text-success me-1"></i> Realized IRR
+              <i class="bi bi-graph-up-arrow text-success me-1"></i> Annualized Return
             </div>
-            <div class="display-4 fw-bold text-success irr-display">
-              {{ "%.1f"|format(realized_irr * 100) }}%
+            <div class="display-4 fw-bold {% if ret.annualized >= 0 %}text-success{% else %}text-danger{% endif %}">
+              {{ "%+.1f"|format(ret.annualized * 100) }}%
             </div>
-            <div class="text-light small">From exited investments</div>
+            <div class="text-light small">per year over {{ ret.years }} year{{ 's' if ret.years != 1 }}
+              &mdash; {{ "%.2f"|format(ret.multiple) }}&times; net / committed</div>
           </div>
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="card border-info shadow text-center" style="background:rgba(13,202,240,0.1) !important;">
-          <div class="card-body py-4">
-            <div class="text-light small mb-1">
-              <i class="bi bi-graph-up-arrow text-info me-1"></i> Unrealized IRR
+      <div class="col-md-7">
+        <div class="card border-secondary shadow h-100">
+          <div class="card-header border-secondary">
+            <h6 class="mb-0 fw-semibold"><i class="bi bi-calculator text-warning"></i> How the Return Is Calculated</h6>
+          </div>
+          <div class="card-body">
+            <table class="table table-dark table-sm align-middle mb-2">
+              <tbody>
+                <tr>
+                  <td>Committed capital</td>
+                  <td class="text-end fw-semibold">${{ "{:,.1f}M".format(ret.committed) }}</td>
+                </tr>
+                <tr>
+                  <td>Cash in fund <span class="text-secondary small">(after ${{ "{:,.1f}M".format(ret.mgmt_fees) }} mgmt fees)</span></td>
+                  <td class="text-end">${{ "{:,.1f}M".format(ret.available) }}</td>
+                </tr>
+                {% if ret.unrealized > 0 %}
+                <tr>
+                  <td>+ Unrealized holdings</td>
+                  <td class="text-end">${{ "{:,.1f}M".format(ret.unrealized) }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                  <td>&minus; Carried interest to GP</td>
+                  <td class="text-end text-danger">&minus;${{ "{:,.1f}M".format(ret.carry) }}</td>
+                </tr>
+                <tr class="border-top border-secondary fw-bold">
+                  <td>= Net proceeds to LPs</td>
+                  <td class="text-end {% if ret.net_value >= ret.committed %}text-success{% else %}text-danger{% endif %}">${{ "{:,.1f}M".format(ret.net_value) }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="font-monospace small text-light">
+              Multiple = ${{ "{:,.1f}M".format(ret.net_value) }} / ${{ "{:,.1f}M".format(ret.committed) }}
+              = <span class="fw-bold">{{ "%.2f"|format(ret.multiple) }}&times;</span>
             </div>
-            <div class="display-4 fw-bold text-info irr-display">
-              {{ "%.1f"|format(unrealized_irr * 100) }}%
+            <div class="font-monospace small text-light mt-1">
+              Annualized = {{ "%.2f"|format(ret.multiple) }}<sup>(1/{{ ret.years }})</sup> &minus; 1
+              = <span class="fw-bold {% if ret.annualized >= 0 %}text-success{% else %}text-danger{% endif %}">{{ "%+.1f"|format(ret.annualized * 100) }}%</span>
             </div>
-            <div class="text-light small">Based on current valuations</div>
           </div>
         </div>
       </div>

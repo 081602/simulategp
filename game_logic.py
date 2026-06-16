@@ -734,6 +734,53 @@ def team_gp_income(team):
     }
 
 
+def team_simple_return(team, game):
+    """A simple, student-friendly fund return: net proceeds vs. committed capital,
+    annualized over the fund's life.
+
+      net value = available cash + unrealized holdings - carry owed to the GP
+                  (management fees are already deducted from available cash)
+      multiple  = net value / committed capital
+      annualized = multiple ** (1 / years) - 1
+
+    Returns every component so the calculation can be shown on screen.
+    """
+    funds = [f for f in team.funds if f.is_active]
+    committed = sum(f.total_capital for f in funds)
+    available = sum(f.available_capital for f in funds)
+
+    stakes = (DealEquity.query
+              .join(Deal, DealEquity.deal_id == Deal.id)
+              .filter(DealEquity.team_id == team.id, Deal.status == 'active')
+              .all())
+    unrealized = sum(s.current_value for s in stakes)
+
+    gp = team_gp_income(team)
+    carry = gp['carried_interest']
+    mgmt_fees = gp['mgmt_fees']
+
+    net_value = available + unrealized - carry
+    years = max(1, game.current_year)
+    multiple = (net_value / committed) if committed > 0 else 0.0
+    if net_value > 0 and committed > 0:
+        annualized = multiple ** (1.0 / years) - 1.0
+    else:
+        annualized = -1.0  # lost everything (or worse)
+
+    return {
+        'committed': committed,
+        'available': available,
+        'unrealized': unrealized,
+        'mgmt_fees': mgmt_fees,
+        'carry': carry,
+        'net_value': net_value,
+        'multiple': multiple,
+        'years': years,
+        'annualized': annualized,
+        'total_return': multiple - 1.0,
+    }
+
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

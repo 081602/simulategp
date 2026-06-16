@@ -11,10 +11,10 @@ from models import (db, Game, Team, Fund, CompanyTemplate, GameCompany,
                     CompanySearch, TermSheet, Deal, DealEquity,
                     FundTransaction, Notification, ReturnAssumption)
 from game_logic import (run_phase1_crank, run_phase2_crank,
-                        team_irr, team_gp_income, finalize_deal,
-                        close_deal_with_coinvestors, locked_deal_economics,
-                        exit_waterfall, DEBT_INTEREST_RATE, _notify,
-                        _record_transaction)
+                        team_irr, team_simple_return, team_gp_income,
+                        finalize_deal, close_deal_with_coinvestors,
+                        locked_deal_economics, exit_waterfall,
+                        DEBT_INTEREST_RATE, _notify, _record_transaction)
 
 # ---------------------------------------------------------------------------
 # App Setup
@@ -123,15 +123,13 @@ def dashboard():
                     .filter(TermSheet.status.in_(
                         ['pending', 'lead', 'fill_offered', 'coinvest_offered']))
                     .all())
-    realized_irr = team_irr(current_user.id, game, unrealized=False)
-    unrealized_irr = team_irr(current_user.id, game, unrealized=True)
+    ret = team_simple_return(current_user, game)
     return render_template('dashboard.html',
                            game=game,
                            notifications=notifications,
                            active_deals=active_deals,
                            bid_activity=bid_activity,
-                           realized_irr=realized_irr,
-                           unrealized_irr=unrealized_irr)
+                           ret=ret)
 
 
 @app.route('/notifications/read', methods=['POST'])
@@ -958,20 +956,18 @@ def funds():
                               FundTransaction.created_at,
                               FundTransaction.id)
                     .all())
-    realized_irr = team_irr(current_user.id, game, unrealized=False)
-    unrealized_irr = team_irr(current_user.id, game, unrealized=True)
     # Carry the fund pays out to the GP, by fund name, so available capital can
     # be shown net of it (the fund distributes carry to the GP at exit)
     gp = team_gp_income(current_user)
     carry_by_fund = {cf['fund']: cf['carry'] for cf in gp['carry_funds']}
+    ret = team_simple_return(current_user, game)
     return render_template('funds.html',
                            game=game,
                            team_funds=team_funds,
                            transactions=transactions,
                            carry_by_fund=carry_by_fund,
                            total_carry=gp['carried_interest'],
-                           realized_irr=realized_irr,
-                           unrealized_irr=unrealized_irr)
+                           ret=ret)
 
 
 @app.route('/gp-economics')
@@ -1430,23 +1426,19 @@ def admin_leaderboard():
     teams = Team.query.filter_by(game_id=game.id, is_admin=False).all()
     team_data = []
     for team in teams:
-        u_irr = team_irr(team.id, game, unrealized=True)
-        r_irr = team_irr(team.id, game, unrealized=False)
         total_deployed = sum(
             s.equity_invested for s in DealEquity.query.filter_by(team_id=team.id).all())
-        portfolio_val = 0
         stakes = (DealEquity.query
                   .join(Deal, DealEquity.deal_id == Deal.id)
                   .filter(DealEquity.team_id == team.id, Deal.status == 'active')
                   .all())
-        for s in stakes:
-            portfolio_val += s.current_value
+        portfolio_val = sum(s.current_value for s in stakes)
 
+        ret = team_simple_return(team, game)
         gp_income = team_gp_income(team)
         team_data.append({
             'team': team,
-            'unrealized_irr': u_irr,
-            'realized_irr': r_irr,
+            'ret': ret,
             'total_capital': sum(f.total_capital for f in team.funds),
             'available_capital': team.total_available_capital,
             'deployed': total_deployed,
@@ -1456,7 +1448,7 @@ def admin_leaderboard():
             'gp_income': gp_income,
         })
 
-    team_data.sort(key=lambda x: x['unrealized_irr'], reverse=True)
+    team_data.sort(key=lambda x: x['ret']['annualized'], reverse=True)
     return render_template('admin/leaderboard.html', game=game, team_data=team_data)
 
 
