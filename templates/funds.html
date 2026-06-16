@@ -150,7 +150,18 @@
                     {{ txn.transaction_type | replace('_', ' ') | title }}
                   </span>
                 </td>
-                <td class="text-secondary">{{ txn.description }}</td>
+                <td class="text-secondary">
+                  {% if txn.transaction_type == 'liquidation_proceeds' and txn.company_id %}
+                    <a href="{{ url_for('portfolio_company', company_id=txn.company_id) }}#exit-waterfall"
+                       class="text-info text-decoration-none">
+                      {{ txn.description }}
+                      <i class="bi bi-box-arrow-up-right small ms-1"></i>
+                    </a>
+                    <div class="small text-secondary">See the exit waterfall for how this was calculated</div>
+                  {% else %}
+                    {{ txn.description }}
+                  {% endif %}
+                </td>
                 <td class="text-end fw-bold {% if txn.amount >= 0 %}text-success{% else %}text-danger{% endif %}">
                   {% if txn.amount >= 0 %}+{% endif %}${{ "{:,.1f}M".format(txn.amount) }}
                 </td>
