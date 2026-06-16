@@ -12,7 +12,7 @@ class Game(db.Model):
     name = db.Column(db.String(100), nullable=False, default='PE Simulation')
     current_year = db.Column(db.Integer, default=1)
     current_phase = db.Column(db.Integer, default=1)  # 1 or 2
-    status = db.Column(db.String(20), default='active')  # active, paused, in_crank
+    status = db.Column(db.String(20), default='active')  # active, paused, in_crank, completed
     market_condition = db.Column(db.Float, default=1.0)  # multiplier on outcome distributions
     query_points_per_year = db.Column(db.Integer, default=10)  # unused — searches are free
     total_years = db.Column(db.Integer, default=7)
@@ -23,7 +23,13 @@ class Game(db.Model):
 
     @property
     def phase_label(self):
+        if self.status == 'completed':
+            return f"Game Complete — Year {self.current_year} Final Results"
         return f"Year {self.current_year}, Phase {self.current_phase}"
+
+    @property
+    def is_complete(self):
+        return self.status == 'completed'
 
 
 class Team(db.Model, UserMixin):

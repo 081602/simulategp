@@ -1362,7 +1362,9 @@ def admin_crank():
         market_adj = float(request.form.get('market_condition') or game.market_condition)
         game.market_condition = market_adj
 
-        if crank_type == 'phase1' and game.current_phase == 1:
+        if game.status == 'completed':
+            flash('The game has ended — no further processes can be run.', 'warning')
+        elif crank_type == 'phase1' and game.current_phase == 1:
             game.status = 'in_crank'
             db.session.commit()
             run_phase1_crank(game)
@@ -1371,7 +1373,12 @@ def admin_crank():
             game.status = 'in_crank'
             db.session.commit()
             run_phase2_crank(game)
-            flash(f'Deal & Return Process complete. Year {game.current_year} Phase 1 is now open.', 'success')
+            if game.status == 'completed':
+                flash(f'The fund\'s term has ended after Year {game.current_year}. '
+                      f'All remaining holdings were exited — the game is complete. '
+                      f'See the leaderboard for final results.', 'success')
+            else:
+                flash(f'Deal & Return Process complete. Year {game.current_year} Phase 1 is now open.', 'success')
         else:
             flash('Invalid process for current phase.', 'danger')
 

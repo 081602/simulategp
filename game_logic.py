@@ -275,7 +275,29 @@ def run_phase2_crank(game: Game):
         if deal.marked_for_liquidation:
             _process_liquidation(deal, company, year)
 
-    # 3. Advance year
+    # 3. End of the fund's term: after the final year's performance has rolled,
+    #    exit every remaining holding and close the game out.
+    if year >= (game.total_years or 7):
+        final_deals = (
+            Deal.query
+            .join(GameCompany, Deal.company_id == GameCompany.id)
+            .filter(GameCompany.game_id == game.id, Deal.status == 'active')
+            .all()
+        )
+        for deal in final_deals:
+            _process_liquidation(deal, deal.company, year, force=True)
+        game.current_phase = 2
+        game.status = 'completed'
+        db.session.commit()
+        for team in Team.query.filter_by(game_id=game.id, is_admin=False).all():
+            _notify(team.id,
+                    f"The fund's term has ended after Year {year}. All remaining "
+                    f"holdings were exited at their final valuations — see your "
+                    f"final results.",
+                    'crank_complete')
+        return
+
+    # 4. Advance year
     game.current_year += 1
     game.current_phase = 1
     game.status = 'active'
@@ -421,12 +443,15 @@ def exit_waterfall(deal: Deal):
     }
 
 
-def _process_liquidation(deal: Deal, company: GameCompany, year: int):
-    """Distribute proceeds according to liquidation waterfall."""
+def _process_liquidation(deal: Deal, company: GameCompany, year: int, force: bool = False):
+    """Distribute proceeds according to liquidation waterfall.
+
+    force=True (used at game end) sells regardless of the reserve price.
+    """
     proceeds = company.latest_valuation or 0
     reserve = deal.reserve_price or 0
 
-    if proceeds < reserve:
+    if not force and proceeds < reserve:
         # Company stays in portfolio; sale didn't happen
         company.status = 'funded'
         deal.marked_for_liquidation = False
