@@ -511,9 +511,14 @@ def _process_liquidation(deal: Deal, company: GameCompany, year: int, force: boo
 
 def calculate_irr(cash_flows: list) -> float:
     """
-    Simple IRR via Newton-Raphson.
+    IRR via Newton-Raphson with a bisection fallback.
     cash_flows: list of (year, amount) tuples; negative = outflow, positive = inflow.
     Returns IRR as a decimal (e.g., 0.25 = 25%).
+
+    Newton is fast but can fail to converge on some cash-flow shapes (it would
+    otherwise return 0.0 and make a losing fund look break-even). When it
+    doesn't converge, fall back to bisection, which reliably finds the root
+    whenever one is bracketed in (-99.99%, 10000%).
     """
     if not cash_flows:
         return 0.0
@@ -532,6 +537,7 @@ def calculate_irr(cash_flows: list) -> float:
     def npv_deriv(rate):
         return sum(-yr * cf / ((1 + rate) ** (yr + 1)) for yr, cf in cash_flows)
 
+    # 1) Newton-Raphson
     rate = 0.1
     try:
         for _ in range(200):
@@ -540,15 +546,35 @@ def calculate_irr(cash_flows: list) -> float:
                 break
             df = npv_deriv(rate)
             if df == 0:
-                return 0.0  # can't converge; don't report the initial guess
-            rate -= f / df
-            rate = max(-0.999, min(rate, 100.0))  # clamp to prevent overflow
+                break
+            rate = max(-0.9999, min(rate - f / df, 100.0))
+        if abs(npv(rate)) < 1e-4 and -0.9999 < rate < 100.0:
+            return round(rate, 4)
+    except (OverflowError, ZeroDivisionError):
+        pass
+
+    # 2) Bisection fallback over a wide bracket
+    lo, hi = -0.9999, 100.0
+    try:
+        f_lo, f_hi = npv(lo), npv(hi)
     except (OverflowError, ZeroDivisionError):
         return 0.0
-
-    if not (-0.999 < rate < 100.0):
-        return 0.0
-    return round(rate, 4)
+    if f_lo == 0:
+        return round(lo, 4)
+    if f_hi == 0:
+        return round(hi, 4)
+    if f_lo * f_hi > 0:
+        return 0.0  # no sign change -> root not bracketed
+    for _ in range(200):
+        mid = (lo + hi) / 2
+        f_mid = npv(mid)
+        if abs(f_mid) < 1e-7:
+            return round(mid, 4)
+        if f_lo * f_mid < 0:
+            hi = mid
+        else:
+            lo, f_lo = mid, f_mid
+    return round((lo + hi) / 2, 4)
 
 
 def team_irr(team_id: int, game: Game, unrealized: bool = False):
