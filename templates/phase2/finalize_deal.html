@@ -162,57 +162,22 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="d-flex gap-3 justify-content-between">
-        <div>
-          <button type="button" class="btn btn-outline-danger btn-lg" data-bs-toggle="modal" data-bs-target="#dropDealModal">
-            <i class="bi bi-trash3"></i> Drop Deal
-          </button>
-        </div>
-        <div class="d-flex gap-3">
-          <a href="{{ url_for('timeline') }}" class="btn btn-outline-secondary btn-lg">
-            <i class="bi bi-x-circle"></i> Cancel
-          </a>
-          <button type="submit" name="action" value="finalize"
-                  class="btn btn-warning text-dark fw-bold btn-lg confirm-action"
-                  data-confirm="Lock these terms? If you invited co-investors, offers go out and the deal closes once they respond; otherwise it closes now. This cannot be undone.">
-            <i class="bi bi-check2-circle"></i> Finalize Deal
-          </button>
-        </div>
+      <div class="d-flex gap-3 justify-content-end">
+        <a href="{{ url_for('timeline') }}" class="btn btn-outline-secondary btn-lg">
+          <i class="bi bi-x-circle"></i> Cancel
+        </a>
+        <button type="submit" name="action" value="finalize"
+                class="btn btn-warning text-dark fw-bold btn-lg confirm-action"
+                data-confirm="Lock these terms? If you invited co-investors, offers go out and the deal closes once they respond; otherwise it closes now. This cannot be undone.">
+          <i class="bi bi-check2-circle"></i> Finalize Deal
+        </button>
       </div>
+      <p class="text-secondary small text-end mt-2 mb-0">
+        Your term sheet was accepted, so this deal is committed &mdash; it can't be dropped.
+      </p>
 
     </form>
 
-  </div>
-</div>
-
-<!-- Drop Deal Modal -->
-<div class="modal fade" id="dropDealModal" tabindex="-1" aria-labelledby="dropDealModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content bg-dark border-danger">
-      <div class="modal-header border-danger">
-        <h5 class="modal-title text-danger" id="dropDealModalLabel">
-          <i class="bi bi-exclamation-triangle-fill"></i> Drop Deal
-        </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <form method="POST" action="{{ url_for('finalize_deal_route', deal_id=deal.id) }}">
-        <div class="modal-body">
-          <p class="text-secondary">You are about to drop the deal for <strong>{{ company.name }}</strong>. This will make the company available again for other teams.</p>
-          <div class="mb-3">
-            <label for="drop_reason" class="form-label fw-semibold text-white">Reason for Dropping</label>
-            <textarea class="form-control bg-dark text-white border-secondary"
-                      id="drop_reason" name="drop_reason" rows="3"
-                      placeholder="Briefly explain why you are dropping this deal..."></textarea>
-          </div>
-        </div>
-        <div class="modal-footer border-secondary">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" name="action" value="drop" class="btn btn-danger fw-semibold">
-            <i class="bi bi-trash3"></i> Confirm Drop Deal
-          </button>
-        </div>
-      </form>
-    </div>
   </div>
 </div>
 {% endblock %}

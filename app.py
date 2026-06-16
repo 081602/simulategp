@@ -677,21 +677,9 @@ def finalize_deal_route(deal_id):
     funds = Fund.query.filter_by(team_id=current_user.id, is_active=True).all()
 
     if request.method == 'POST':
-        action = request.form.get('action')
-        if action == 'drop':
-            deal.status = 'dropped'
-            company.status = 'available'
-            company.lead_team_id = None
-            reason = request.form.get('drop_reason', '')
-            # Reputation hit
-            current_user.reputation = max(1.0, current_user.reputation - 0.5)
-            _notify(current_user.id,
-                    f'You dropped the deal on {company.name}.',
-                    'deal_lost', company.id)
-            db.session.commit()
-            flash(f'Deal on {company.name} dropped.', 'warning')
-            return redirect(url_for('timeline'))
-
+        # Dropping an accepted deal isn't allowed: once a team's term sheet is
+        # accepted, the deal is committed and must be finalized. (Drop may be
+        # reintroduced in the future.)
         try:
             # All deal economics are LOCKED from the accepted term sheet;
             # finalization only decides who is invited to fund the equity.
