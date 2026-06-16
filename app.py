@@ -1439,8 +1439,7 @@ def admin_leaderboard():
                   .filter(DealEquity.team_id == team.id, Deal.status == 'active')
                   .all())
         for s in stakes:
-            val = s.deal.company.latest_valuation or 0
-            portfolio_val += val * (s.ownership_pct / 100.0)
+            portfolio_val += s.current_value
 
         gp_income = team_gp_income(team)
         team_data.append({

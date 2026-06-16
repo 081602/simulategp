@@ -44,7 +44,7 @@
                 <th>Stage</th>
                 <th class="text-end">Your Stake %</th>
                 <th class="text-end">Current Valuation</th>
-                <th class="text-end">Your Value</th>
+                <th class="text-end" title="Your ownership share of the company's equity value (current valuation less outstanding debt)">Your Value</th>
                 <th class="text-center">Role</th>
                 <th class="text-center">Actions</th>
               </tr>
@@ -82,7 +82,7 @@
                   {% endif %}
                 </td>
                 <td class="text-end fw-bold text-success">
-                  ${{ "{:,.1f}M".format((company.latest_valuation or 0) * stake.ownership_pct / 100) }}
+                  ${{ "{:,.1f}M".format(stake.current_value) }}
                 </td>
                 <td class="text-center">
                   {% if stake.is_lead %}

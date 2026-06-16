@@ -543,11 +543,7 @@ def team_irr(team_id: int, game: Game, unrealized: bool = False):
             .all()
         )
         for stake in stakes:
-            company = stake.deal.company
-            val = (company.latest_valuation or 0)
-            debt = company.debt_outstanding or 0
-            net_val = max(0, val - debt)
-            portfolio_value += net_val * (stake.ownership_pct / 100.0)
+            portfolio_value += stake.current_value
 
         if portfolio_value > 0:
             flows_by_year[game.current_year] = (

@@ -458,6 +458,18 @@ class DealEquity(db.Model):
     team = db.relationship('Team')
     fund = db.relationship('Fund')
 
+    @property
+    def current_value(self):
+        """Marked value of this equity stake: the company's *equity* value
+        (its latest/enterprise valuation net of outstanding debt) times this
+        stake's ownership. Matches the exit waterfall and IRR, which pay off
+        debt before distributing to equity — so a leveraged deal isn't valued
+        as if equity owned the debt-funded portion too."""
+        company = self.deal.company
+        equity_val = max(0.0, (company.latest_valuation or 0)
+                         - (company.debt_outstanding or 0))
+        return equity_val * (self.ownership_pct / 100.0)
+
 
 class FundTransaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
