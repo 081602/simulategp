@@ -647,8 +647,10 @@ def team_gp_income(team):
         fund_carry = max(0.0, carry_basis) * rate
         if fund_carry > 0:
             carried_interest += fund_carry
+            companies_str = ', '.join(e['company'] for e in fund_exits)
             ledger.append({'year': last_exit_year, 'kind': 'carry',
                            'description': f'Carried interest — {fund.name} '
+                                          f'on {companies_str} '
                                           f'({rate * 100:.0f}% of '
                                           f'${carry_basis:,.1f}M net of mgmt fees)',
                            'amount': fund_carry})
