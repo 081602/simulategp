@@ -584,8 +584,10 @@ def team_gp_income(team):
                    .filter_by(fund_id=fund.id, transaction_type='management_fee')
                    .order_by(FundTransaction.game_year)
                    .all())
+        fund_mgmt_fees = 0.0
         for tx in fee_txs:
             mgmt_fees += abs(tx.amount)
+            fund_mgmt_fees += abs(tx.amount)
             ledger.append({'year': tx.game_year, 'kind': 'fee',
                            'description': f'Management fee earned — {fund.name}',
                            'amount': abs(tx.amount)})
@@ -629,13 +631,16 @@ def team_gp_income(team):
                    'proceeds': payout, 'net': net}
             exits.append(row)
             fund_exits.append(row)
-        fund_carry = max(0.0, net_realized) * rate
+        # Carry is NET of management fees: fees the LPs paid reduce the profit
+        # the GP takes carry on (net basis, not gross basis)
+        carry_basis = net_realized - fund_mgmt_fees
+        fund_carry = max(0.0, carry_basis) * rate
         if fund_carry > 0:
             carried_interest += fund_carry
             ledger.append({'year': last_exit_year, 'kind': 'carry',
                            'description': f'Carried interest — {fund.name} '
                                           f'({rate * 100:.0f}% of '
-                                          f'${net_realized:,.1f}M net realized gains)',
+                                          f'${carry_basis:,.1f}M net of mgmt fees)',
                            'amount': fund_carry})
         if fund_exits:
             carry_funds.append({
@@ -645,6 +650,8 @@ def team_gp_income(team):
                 'total_invested': total_invested,
                 'total_proceeds': total_proceeds,
                 'net_realized': net_realized,
+                'mgmt_fees': fund_mgmt_fees,
+                'carry_basis': carry_basis,
                 'carry': fund_carry,
             })
 

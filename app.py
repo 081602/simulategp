@@ -972,10 +972,16 @@ def funds():
                     .all())
     realized_irr = team_irr(current_user.id, game, unrealized=False)
     unrealized_irr = team_irr(current_user.id, game, unrealized=True)
+    # Carry the fund pays out to the GP, by fund name, so available capital can
+    # be shown net of it (the fund distributes carry to the GP at exit)
+    gp = team_gp_income(current_user)
+    carry_by_fund = {cf['fund']: cf['carry'] for cf in gp['carry_funds']}
     return render_template('funds.html',
                            game=game,
                            team_funds=team_funds,
                            transactions=transactions,
+                           carry_by_fund=carry_by_fund,
+                           total_carry=gp['carried_interest'],
                            realized_irr=realized_irr,
                            unrealized_irr=unrealized_irr)
 

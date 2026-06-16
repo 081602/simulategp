@@ -91,9 +91,10 @@
         {% if gp.carry_funds %}
         <div class="px-3 pt-3 text-secondary small">
           Carry is calculated <strong class="text-light">per fund</strong> on a
-          <strong class="text-light">net basis</strong>: each realized deal's gain or loss is
-          summed, and the fund earns its performance fee only on the <em>positive</em> net total
-          &mdash; so losses and bankruptcies offset gains before any carry is owed.
+          <strong class="text-light">net basis</strong>: realized gains and losses are summed,
+          then the <strong class="text-light">management fees</strong> the LPs paid are
+          subtracted. The fund earns its performance fee only on the <em>positive</em> remainder
+          &mdash; so losses, bankruptcies, and fees all reduce carry before any is owed.
         </div>
         {% for cf in gp.carry_funds %}
         <div class="px-3 pt-3 pb-1 fw-semibold text-white">
@@ -139,23 +140,31 @@
         </div>
         <!-- Step-by-step calculation -->
         <div class="px-3 py-3 border-top border-secondary" style="background:rgba(251,191,36,0.06);">
-          <div class="small text-secondary mb-2 fw-semibold text-uppercase">Carry calculation</div>
+          <div class="small text-secondary mb-2 fw-semibold text-uppercase">Carry calculation (net basis)</div>
           <div class="font-monospace small text-light">
             Net realized gains = Proceeds &minus; Invested
             = ${{ "{:,.1f}M".format(cf.total_proceeds) }} &minus; ${{ "{:,.1f}M".format(cf.total_invested) }}
             = <span class="{% if cf.net_realized >= 0 %}text-success{% else %}text-danger{% endif %}">
               {{ '' if cf.net_realized >= 0 else '−' }}${{ "{:,.1f}M".format(cf.net_realized | abs) }}</span>
           </div>
-          {% if cf.net_realized > 0 %}
           <div class="font-monospace small text-light mt-1">
-            Carried interest = {{ "%.0f"|format(cf.rate * 100) }}% &times; ${{ "{:,.1f}M".format(cf.net_realized) }}
+            Less management fees paid by LPs = &minus;${{ "{:,.1f}M".format(cf.mgmt_fees) }}
+          </div>
+          <div class="font-monospace small text-light mt-1">
+            Carry basis (net of fees) =
+            <span class="{% if cf.carry_basis >= 0 %}text-info{% else %}text-danger{% endif %} fw-bold">
+              {{ '' if cf.carry_basis >= 0 else '−' }}${{ "{:,.1f}M".format(cf.carry_basis | abs) }}</span>
+          </div>
+          {% if cf.carry_basis > 0 %}
+          <div class="font-monospace small text-light mt-1">
+            Carried interest = {{ "%.0f"|format(cf.rate * 100) }}% &times; ${{ "{:,.1f}M".format(cf.carry_basis) }}
             = <span class="text-success fw-bold">${{ "{:,.2f}M".format(cf.carry) }}</span>
           </div>
           {% else %}
           <div class="font-monospace small mt-1">
-            Net is not positive &rarr; carried interest =
+            Carry basis is not positive &rarr; carried interest =
             <span class="text-white fw-bold">$0.00M</span>
-            <span class="text-secondary">(losses carry forward against future gains in this fund)</span>
+            <span class="text-secondary">(shortfall carries forward against future gains in this fund)</span>
           </div>
           {% endif %}
         </div>

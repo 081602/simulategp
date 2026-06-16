@@ -85,6 +85,25 @@
                    role="progressbar"></div>
             </div>
 
+            <!-- Carry the fund distributes to the GP, netted out of LP capital -->
+            {% set carry = carry_by_fund.get(fund.name, 0) %}
+            {% if carry > 0 %}
+            <div class="border-top border-secondary mt-2 pt-2 small">
+              <div class="d-flex justify-content-between">
+                <span class="text-secondary">Available Capital</span>
+                <span>${{ "{:,.1f}M".format(fund.available_capital) }}</span>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-secondary">Less: Carried Interest to GP</span>
+                <span class="text-danger">&minus;${{ "{:,.1f}M".format(carry) }}</span>
+              </div>
+              <div class="d-flex justify-content-between fw-bold border-top border-secondary mt-1 pt-1">
+                <span>Net Available to LPs</span>
+                <span class="text-success">${{ "{:,.1f}M".format(fund.available_capital - carry) }}</span>
+              </div>
+            </div>
+            {% endif %}
+
           </div>
         </div>
       </div>
