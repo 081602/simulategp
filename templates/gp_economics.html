@@ -85,10 +85,20 @@
     <!-- Carry Basis -->
     <div class="card border-secondary shadow">
       <div class="card-header border-secondary">
-        <h6 class="mb-0 fw-semibold"><i class="bi bi-trophy text-warning"></i> Carry Basis &mdash; Realized Exits</h6>
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-trophy text-warning"></i> Carry Basis &mdash; How Carried Interest Is Calculated</h6>
       </div>
       <div class="card-body p-0">
-        {% if gp.exits %}
+        {% if gp.carry_funds %}
+        <div class="px-3 pt-3 text-secondary small">
+          Carry is calculated <strong class="text-light">per fund</strong> on a
+          <strong class="text-light">net basis</strong>: each realized deal's gain or loss is
+          summed, and the fund earns its performance fee only on the <em>positive</em> net total
+          &mdash; so losses and bankruptcies offset gains before any carry is owed.
+        </div>
+        {% for cf in gp.carry_funds %}
+        <div class="px-3 pt-3 pb-1 fw-semibold text-white">
+          <i class="bi bi-bank2 text-warning me-1"></i> {{ cf.fund }}
+        </div>
         <div class="table-responsive">
           <table class="table table-dark table-hover align-middle mb-0">
             <thead><tr>
@@ -100,12 +110,10 @@
               <th class="text-end">Net Gain / (Loss)</th>
             </tr></thead>
             <tbody>
-            {% for e in gp.exits %}
+            {% for e in cf.exits %}
             <tr>
               <td class="text-secondary">{{ e.year }}</td>
-              <td class="fw-semibold">{{ e.company }}
-                <div class="text-secondary small fw-normal">{{ e.fund }}</div>
-              </td>
+              <td class="fw-semibold">{{ e.company }}</td>
               <td>
                 {% if e.outcome == 'liquidated' %}<span class="badge bg-success">Exited</span>
                 {% else %}<span class="badge bg-danger">Bankrupt</span>{% endif %}
@@ -117,14 +125,47 @@
               </td>
             </tr>
             {% endfor %}
+            <tr class="border-top border-secondary fw-semibold">
+              <td></td>
+              <td colspan="2">Totals across realized deals</td>
+              <td class="text-end">${{ "{:,.1f}M".format(cf.total_invested) }}</td>
+              <td class="text-end">${{ "{:,.1f}M".format(cf.total_proceeds) }}</td>
+              <td class="text-end {% if cf.net_realized >= 0 %}text-success{% else %}text-danger{% endif %}">
+                {{ '+' if cf.net_realized >= 0 else '−' }}${{ "{:,.1f}M".format(cf.net_realized | abs) }}
+              </td>
+            </tr>
             </tbody>
           </table>
         </div>
-        <div class="px-3 py-2 text-secondary small border-top border-secondary">
-          Carry is computed per fund on a <strong class="text-light">net basis</strong>:
-          performance fee &times; max(0, total proceeds &minus; total invested) across realized deals,
-          so losses and bankruptcies offset gains before any carry is earned.
+        <!-- Step-by-step calculation -->
+        <div class="px-3 py-3 border-top border-secondary" style="background:rgba(251,191,36,0.06);">
+          <div class="small text-secondary mb-2 fw-semibold text-uppercase">Carry calculation</div>
+          <div class="font-monospace small text-light">
+            Net realized gains = Proceeds &minus; Invested
+            = ${{ "{:,.1f}M".format(cf.total_proceeds) }} &minus; ${{ "{:,.1f}M".format(cf.total_invested) }}
+            = <span class="{% if cf.net_realized >= 0 %}text-success{% else %}text-danger{% endif %}">
+              {{ '' if cf.net_realized >= 0 else '−' }}${{ "{:,.1f}M".format(cf.net_realized | abs) }}</span>
+          </div>
+          {% if cf.net_realized > 0 %}
+          <div class="font-monospace small text-light mt-1">
+            Carried interest = {{ "%.0f"|format(cf.rate * 100) }}% &times; ${{ "{:,.1f}M".format(cf.net_realized) }}
+            = <span class="text-success fw-bold">${{ "{:,.2f}M".format(cf.carry) }}</span>
+          </div>
+          {% else %}
+          <div class="font-monospace small mt-1">
+            Net is not positive &rarr; carried interest =
+            <span class="text-white fw-bold">$0.00M</span>
+            <span class="text-secondary">(losses carry forward against future gains in this fund)</span>
+          </div>
+          {% endif %}
         </div>
+        {% endfor %}
+        {% if gp.carry_funds | length > 1 %}
+        <div class="px-3 py-2 border-top border-secondary d-flex justify-content-between fw-bold">
+          <span class="text-white">Total Carried Interest (all funds)</span>
+          <span class="text-success">${{ "{:,.2f}M".format(gp.carried_interest) }}</span>
+        </div>
+        {% endif %}
         {% else %}
         <div class="text-center text-secondary py-4">
           No realized exits yet &mdash; exits and bankruptcies will appear here and form the basis for carried interest.

@@ -576,6 +576,7 @@ def team_gp_income(team):
     carried_interest = 0.0
     ledger = []   # line items: {'year', 'kind', 'description', 'amount'} (GP view)
     exits = []    # realized exits feeding the carry basis
+    carry_funds = []  # per-fund carry calculation breakdown
 
     for fund in team.funds:
         opex_rate = fund.operating_cost_rate or 0
@@ -602,8 +603,12 @@ def team_gp_income(team):
                   .filter(DealEquity.fund_id == fund.id,
                           Deal.status.in_(['liquidated', 'bankrupt']))
                   .all())
+        rate = fund.performance_fee_rate or 0.20
         net_realized = 0.0
         last_exit_year = None
+        fund_exits = []
+        total_invested = 0.0
+        total_proceeds = 0.0
         for stake in stakes:
             payout_txs = (FundTransaction.query
                           .filter_by(fund_id=fund.id,
@@ -613,21 +618,35 @@ def team_gp_income(team):
             payout = sum(tx.amount for tx in payout_txs)
             net = payout - stake.equity_invested
             net_realized += net
+            total_invested += stake.equity_invested
+            total_proceeds += payout
             exit_year = payout_txs[0].game_year if payout_txs else stake.deal.game_year
             last_exit_year = max(last_exit_year or 0, exit_year)
-            exits.append({'year': exit_year, 'fund': fund.name,
-                          'company': stake.deal.company.name,
-                          'outcome': stake.deal.status,
-                          'invested': stake.equity_invested,
-                          'proceeds': payout, 'net': net})
-        fund_carry = max(0.0, net_realized) * (fund.performance_fee_rate or 0.20)
+            row = {'year': exit_year, 'fund': fund.name,
+                   'company': stake.deal.company.name,
+                   'outcome': stake.deal.status,
+                   'invested': stake.equity_invested,
+                   'proceeds': payout, 'net': net}
+            exits.append(row)
+            fund_exits.append(row)
+        fund_carry = max(0.0, net_realized) * rate
         if fund_carry > 0:
             carried_interest += fund_carry
             ledger.append({'year': last_exit_year, 'kind': 'carry',
                            'description': f'Carried interest — {fund.name} '
-                                          f'({(fund.performance_fee_rate or 0.20) * 100:.0f}% of '
+                                          f'({rate * 100:.0f}% of '
                                           f'${net_realized:,.1f}M net realized gains)',
                            'amount': fund_carry})
+        if fund_exits:
+            carry_funds.append({
+                'fund': fund.name,
+                'rate': rate,
+                'exits': fund_exits,
+                'total_invested': total_invested,
+                'total_proceeds': total_proceeds,
+                'net_realized': net_realized,
+                'carry': fund_carry,
+            })
 
     ledger.sort(key=lambda x: (x['year'] or 0))
     exits.sort(key=lambda x: x['year'])
@@ -641,6 +660,7 @@ def team_gp_income(team):
         'per_partner': total / partners,
         'ledger': ledger,
         'exits': exits,
+        'carry_funds': carry_funds,
     }
 
 
