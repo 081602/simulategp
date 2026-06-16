@@ -181,6 +181,15 @@
           <h6 class="mb-0 fw-semibold"><i class="bi bi-file-earmark-ruled text-warning"></i> Deal Terms</h6>
         </div>
         <div class="card-body p-4">
+          {% if company.stage == 'mature' %}
+          <p class="text-secondary mb-0">
+            <i class="bi bi-info-circle me-1"></i>
+            This is a <strong>buyout</strong> &mdash; you acquire common equity, so liquidation
+            preference, participating preferred, and anti-dilution provisions don't apply
+            (those are preferred-equity terms for venture deals). At exit, proceeds are split
+            pro-rata to ownership.
+          </p>
+          {% else %}
           <div class="row g-4">
 
             <!-- Liquidation Preference -->
@@ -237,6 +246,7 @@
             </div>
 
           </div>
+          {% endif %}
         </div>
       </div>
 

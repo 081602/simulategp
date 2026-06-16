@@ -74,6 +74,7 @@
             </div>
           </div>
           {% endif %}
+          {% if not is_buyout %}
           <div class="col-6 col-md-3">
             <div class="text-light small">Liq. Preference</div>
             <div class="fw-bold fs-5">{{ lead_ts.liquidation_preference }}x</div>
@@ -86,6 +87,7 @@
             <div class="text-light small">Anti-Dilution</div>
             <div class="fw-bold fs-5">{{ lead_ts.anti_dilution | title }}</div>
           </div>
+          {% endif %}
         </div>
         {% if is_buyout %}
         <div class="text-secondary small mt-3">

@@ -369,25 +369,33 @@ def exit_waterfall(deal: Deal):
     distributable = max(0, sale_price - debt_repaid)
 
     invested = deal.total_equity_invested or 0
-    pref_multiple = deal.liquidation_preference or 1
-    liq_pref_amount = invested * pref_multiple
     investor_ownership = sum(s.ownership_pct for s in deal.equity_stakes)
     as_converted = distributable * (investor_ownership / 100.0)
 
-    if distributable >= liq_pref_amount:
-        if deal.participation:
-            investor_payout = liq_pref_amount + \
-                (distributable - liq_pref_amount) * (investor_ownership / 100.0)
-            method = 'participation'
-        elif as_converted > liq_pref_amount:
-            investor_payout = as_converted
-            method = 'converted'
-        else:
-            investor_payout = liq_pref_amount
-            method = 'preference'
+    if deal.company.stage == 'mature':
+        # Buyouts hold common equity — no liquidation preference. Proceeds are
+        # split straight pro-rata to ownership.
+        pref_multiple = None
+        liq_pref_amount = None
+        investor_payout = as_converted
+        method = 'pro_rata'
     else:
-        investor_payout = distributable
-        method = 'underwater'
+        pref_multiple = deal.liquidation_preference or 1
+        liq_pref_amount = invested * pref_multiple
+        if distributable >= liq_pref_amount:
+            if deal.participation:
+                investor_payout = liq_pref_amount + \
+                    (distributable - liq_pref_amount) * (investor_ownership / 100.0)
+                method = 'participation'
+            elif as_converted > liq_pref_amount:
+                investor_payout = as_converted
+                method = 'converted'
+            else:
+                investor_payout = liq_pref_amount
+                method = 'preference'
+        else:
+            investor_payout = distributable
+            method = 'underwater'
 
     stakes = []
     for s in deal.equity_stakes:
@@ -433,27 +441,29 @@ def _process_liquidation(deal: Deal, company: GameCompany, year: int):
     if company.debt_outstanding > 0:
         remaining = max(0, remaining - company.debt_outstanding)
 
-    # 2. Liquidation preference
-    total_invested = deal.total_equity_invested
-    liq_pref_amount = total_invested * deal.liquidation_preference
-
-    # Determine investor payout per stake
+    # 2. Allocate to equity. Buyouts (common equity) get straight pro-rata;
+    #    only non-mature preferred equity carries a liquidation preference.
     investor_ownership = sum(s.ownership_pct for s in deal.equity_stakes)
 
-    if remaining >= liq_pref_amount:
-        # Preferred investors take liq pref; rest to common (founders)
-        # If participation: investors also get pro-rata of remainder
-        investor_payout = liq_pref_amount
-        remainder_after_pref = remaining - liq_pref_amount
-        if deal.participation:
-            # Investors also participate in remaining on pro-rata basis
-            investor_payout += remainder_after_pref * (investor_ownership / 100.0)
-        else:
-            # Check if converting to common gives more
-            common_payout = remaining * (investor_ownership / 100.0)
-            investor_payout = max(investor_payout, common_payout)
+    if company.stage == 'mature':
+        investor_payout = remaining * (investor_ownership / 100.0)
     else:
-        investor_payout = remaining  # all goes to investors (preference)
+        total_invested = deal.total_equity_invested
+        liq_pref_amount = total_invested * deal.liquidation_preference
+        if remaining >= liq_pref_amount:
+            # Preferred investors take liq pref; rest to common (founders)
+            # If participation: investors also get pro-rata of remainder
+            investor_payout = liq_pref_amount
+            remainder_after_pref = remaining - liq_pref_amount
+            if deal.participation:
+                # Investors also participate in remaining on pro-rata basis
+                investor_payout += remainder_after_pref * (investor_ownership / 100.0)
+            else:
+                # Check if converting to common gives more
+                common_payout = remaining * (investor_ownership / 100.0)
+                investor_payout = max(investor_payout, common_payout)
+        else:
+            investor_payout = remaining  # all goes to investors (preference)
 
     # Distribute to each equity holder proportionally
     for stake in deal.equity_stakes:

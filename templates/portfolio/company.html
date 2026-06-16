@@ -84,6 +84,20 @@
               <td>3. Distributable to equity</td>
               <td class="text-end fw-bold">${{ "{:,.1f}M".format(waterfall.distributable) }}</td>
             </tr>
+            {% if waterfall.method == 'pro_rata' %}
+            {# Buyout: common equity, no liquidation preference — straight pro-rata #}
+            <tr style="background:rgba(25,135,84,0.12);">
+              <td class="fw-bold text-white">
+                4. Investors receive &mdash; {{ "%.1f"|format(waterfall.investor_ownership) }}% ownership &times; distributable
+                <span class="text-success">(pro-rata — no liquidation preference on a buyout)</span>
+              </td>
+              <td class="text-end fw-bold text-success">${{ "{:,.1f}M".format(waterfall.investor_payout) }}</td>
+            </tr>
+            <tr>
+              <td>5. Founders / management keep the rest (their ownership share)</td>
+              <td class="text-end text-secondary">${{ "{:,.1f}M".format(waterfall.founders_payout) }}</td>
+            </tr>
+            {% else %}
             <tr>
               <td>4. Liquidation preference &mdash; {{ waterfall.pref_multiple }}x &times; ${{ "{:,.1f}M".format(waterfall.invested) }} invested</td>
               <td class="text-end">${{ "{:,.1f}M".format(waterfall.liq_pref_amount) }}</td>
@@ -111,6 +125,7 @@
               <td>7. Founders / management keep the rest</td>
               <td class="text-end text-secondary">${{ "{:,.1f}M".format(waterfall.founders_payout) }}</td>
             </tr>
+            {% endif %}
           </tbody>
         </table>
         <div class="text-secondary small mb-2">Investor payout split pro-rata by ownership:</div>
