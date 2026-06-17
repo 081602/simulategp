@@ -411,8 +411,9 @@ class TermSheet(db.Model):
             shortfall_pct = max(0, (capital_requested - self.total_investment) / capital_requested)
             score -= shortfall_pct * 3
         # Founders prefer keeping more: up to +2 pts at the top of the
-        # company's acceptable rolled-equity range
-        if self.company:
+        # company's acceptable rolled-equity range. Buyouts only — in venture
+        # deals founders always roll 100%, so rollover isn't a competitive term.
+        if self.company and self.company.stage == 'mature':
             span = (self.company.rolled_equity_max or 0) - (self.company.rolled_equity_min or 0)
             if span > 0:
                 position = (self.rolled_equity_min - self.company.rolled_equity_min) / span

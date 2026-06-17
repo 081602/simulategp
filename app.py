@@ -452,9 +452,16 @@ def create_term_sheet(company_id):
         try:
             pre_money = float(request.form['pre_money_valuation'])
             total_investment = float(request.form['total_investment'])
-            # Single rolled-equity number offered (stored in both legacy columns)
-            rolled_val = float(request.form.get('rolled_equity')
-                               or request.form.get('rolled_equity_min')) / 100
+            if company.stage == 'mature':
+                # Buyouts: seller rollover is a negotiable term.
+                rolled_val = float(request.form.get('rolled_equity')
+                                   or request.form.get('rolled_equity_min')) / 100
+            else:
+                # Venture: founders roll over ALL their equity (no secondary).
+                # Founder ownership is just their pre-money stake diluted by the
+                # new money = pre / post-money; not a choice the team makes.
+                post = pre_money + total_investment
+                rolled_val = (pre_money / post) if post > 0 else 0.0
             rolled_min = rolled_max = rolled_val
             fund_id = int(request.form['fund_id'])
             liq_pref = int(request.form.get('liquidation_preference', 1))
@@ -478,8 +485,10 @@ def create_term_sheet(company_id):
                     flash('Anti-dilution provisions not allowed for this company stage.', 'danger')
                     return redirect(request.url)
 
-            # Validate rolled equity within company's range
-            if not (company.rolled_equity_min <= rolled_min <= company.rolled_equity_max and
+            # Validate rolled equity within company's range (buyouts only;
+            # venture rollover is derived from pre/post, not entered)
+            if company.stage == 'mature' and not (
+                    company.rolled_equity_min <= rolled_min <= company.rolled_equity_max and
                     company.rolled_equity_min <= rolled_max <= company.rolled_equity_max):
                 flash(f'Rolled equity must be between '
                       f'{company.rolled_equity_min*100:.0f}% and '

@@ -34,7 +34,7 @@
           </div>
           <div class="col-4 col-md-2">
             <div class="text-light small">Rolled Equity</div>
-            <div class="fw-bold text-white">{{ "%.0f"|format(company.rolled_equity_min * 100) }}%&mdash;{{ "%.0f"|format(company.rolled_equity_max * 100) }}%</div>
+            <div class="fw-bold text-white">{% if company.stage == 'mature' %}{{ "%.0f"|format(company.rolled_equity_min * 100) }}%&mdash;{{ "%.0f"|format(company.rolled_equity_max * 100) }}%{% else %}<span class="text-secondary">All rolled</span>{% endif %}</div>
           </div>
           <div class="col-4 col-md-2">
             <div class="text-light small">Debt Capacity</div>
@@ -106,6 +106,7 @@
               {% endif %}
             </div>
 
+            {% if company.stage == 'mature' %}
             <div class="col-md-6">
               <label for="rolled_equity" class="form-label fw-semibold text-white">Founder Rolled Equity (%)</label>
               <div class="input-group">
@@ -118,10 +119,22 @@
                 <span class="input-group-text bg-dark border-secondary text-secondary">%</span>
               </div>
               <div class="form-text text-light">
-                Founders keep this share of the company. They will accept
+                Sellers keep this share of the company. They will accept
                 {{ "%.0f"|format(company.rolled_equity_min * 100) }}%&ndash;{{ "%.0f"|format(company.rolled_equity_max * 100) }}%.
               </div>
             </div>
+            {% else %}
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-white">Founder Rolled Equity</label>
+              <div class="form-control bg-dark text-secondary border-secondary">Founders roll over 100%</div>
+              <div class="form-text text-light">
+                <i class="bi bi-info-circle text-info"></i>
+                This is a primary round &mdash; founders can't sell shares, so they roll all of
+                their equity. Your stake is simply your investment &divide; post-money; founders
+                keep the rest.
+              </div>
+            </div>
+            {% endif %}
 
             <div class="col-md-6">
               <label for="fund_id" class="form-label fw-semibold text-white">Fund</label>

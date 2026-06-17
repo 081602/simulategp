@@ -148,9 +148,13 @@
                   </td>
                 </tr>
                 <tr>
-                  <td class="text-light">Rolled Equity Range</td>
+                  <td class="text-light">Founder Rolled Equity</td>
                   <td class="fw-bold text-white">
-                    {{ "%.0f"|format(company.rolled_equity_min * 100) }}% -- {{ "%.0f"|format(company.rolled_equity_max * 100) }}%
+                    {% if company.stage == 'mature' %}
+                      {{ "%.0f"|format(company.rolled_equity_min * 100) }}% -- {{ "%.0f"|format(company.rolled_equity_max * 100) }}%
+                    {% else %}
+                      <span class="text-secondary">All rolled (primary round)</span>
+                    {% endif %}
                   </td>
                 </tr>
                 <tr>
@@ -260,8 +264,12 @@
                 </div>
               </div>
             </div>
-            <p class="text-secondary small text-center mb-0">
-              Based on <strong class="text-white">{{ company.sector }} / {{ company.stage_label }}</strong> assumptions
+            <p class="text-secondary small text-center mb-2">
+              Industry baseline for <strong class="text-white">{{ company.sector }} / {{ company.stage_label }}</strong> &mdash; the sector/stage expected return <em>before</em> any company-specific adjustments.
+            </p>
+            <p class="text-secondary small mb-0">
+              <i class="bi bi-info-circle text-warning"></i>
+              Actual return will also depend on management quality, EBITDA margin, and historical revenue growth rate.
             </p>
             {% else %}
             <p class="text-secondary text-center small mt-3">No return data available for this sector/stage.</p>

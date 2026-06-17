@@ -59,8 +59,8 @@
             <div class="fw-bold fs-5">${{ "{:,.1f}M".format(lead_ts.total_investment) }}</div>
           </div>
           <div class="col-6 col-md-3">
-            <div class="text-light small">Founder Rolled Equity</div>
-            <div class="fw-bold fs-5">{{ "%.0f"|format(rolled * 100) }}%</div>
+            <div class="text-light small">{% if is_buyout %}Founder Rolled Equity{% else %}Founder Ownership{% endif %}</div>
+            <div class="fw-bold fs-5">{{ "%.0f"|format(rolled * 100) }}%{% if not is_buyout %} <span class="text-secondary small fw-normal">(all rolled)</span>{% endif %}</div>
           </div>
           <div class="col-6 col-md-3">
             <div class="text-light small">Management Option Pool</div>

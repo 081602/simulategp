@@ -35,7 +35,10 @@ def _lead_loss_reason(company, losing_ts, winning_ts, winning_team):
         edges.append(f"more of the funding need covered "
                      f"(${winning_ts.total_investment:,.1f}M vs your "
                      f"${losing_ts.total_investment:,.1f}M of ${cap:,.1f}M sought)")
-    if winning_ts.rolled_equity_min > losing_ts.rolled_equity_min:
+    # Rollover is a negotiable term only for buyouts; in venture deals founders
+    # always roll 100%, so it never differentiates two offers.
+    if (company.stage == 'mature'
+            and winning_ts.rolled_equity_min > losing_ts.rolled_equity_min):
         edges.append(f"founders keeping more equity "
                      f"({winning_ts.rolled_equity_min * 100:.0f}% vs your "
                      f"{losing_ts.rolled_equity_min * 100:.0f}%)")
@@ -874,6 +877,14 @@ def finalize_deal(deal: Deal, final_pre_money: float, equity_stakes_data: list,
         total_equity = cap
     post_money = (final_pre_money if is_buyout
                   else final_pre_money + total_equity + debt_amount)
+
+    if not is_buyout:
+        # Primary round: founders roll over ALL their equity — no secondary
+        # sale is possible. Investors only ever buy newly issued shares, so
+        # their ownership is purely their cash as a share of post-money and
+        # founders keep the rest (their pre-money stake, diluted by the new
+        # money). Rollover is therefore NOT a negotiable term for venture deals.
+        rolled_equity_pct = (final_pre_money / post_money) if post_money > 0 else 0.0
 
     deal.pre_money_valuation = final_pre_money
     deal.post_money_valuation = post_money
