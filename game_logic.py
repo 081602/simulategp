@@ -577,50 +577,6 @@ def calculate_irr(cash_flows: list) -> float:
     return round((lo + hi) / 2, 4)
 
 
-def team_irr(team_id: int, game: Game, unrealized: bool = False):
-    """
-    Build cash flows for a team across all funds and calculate IRR.
-    If unrealized=True, includes current portfolio value as a terminal cash flow.
-    """
-    transactions = (
-        FundTransaction.query
-        .join(Fund, FundTransaction.fund_id == Fund.id)
-        .filter(Fund.team_id == team_id)
-        .all()
-    )
-
-    # Group by year
-    flows_by_year = {}
-    for tx in transactions:
-        flows_by_year[tx.game_year] = flows_by_year.get(tx.game_year, 0) + tx.amount
-
-    if unrealized:
-        # Add unrealized portfolio value as current-year inflow
-        portfolio_value = 0.0
-        stakes = (
-            DealEquity.query
-            .join(Deal, DealEquity.deal_id == Deal.id)
-            .filter(DealEquity.team_id == team_id, Deal.status == 'active')
-            .all()
-        )
-        for stake in stakes:
-            portfolio_value += stake.current_value
-
-        if portfolio_value > 0:
-            flows_by_year[game.current_year] = (
-                flows_by_year.get(game.current_year, 0) + portfolio_value
-            )
-
-    if not flows_by_year:
-        return 0.0
-
-    cf_list = sorted(flows_by_year.items())
-    # Normalize to year 0
-    base_year = cf_list[0][0]
-    normalized = [(yr - base_year, amt) for yr, amt in cf_list]
-    return calculate_irr(normalized)
-
-
 def team_gp_income(team):
     """
     GP income earned by the firm (not the fund):

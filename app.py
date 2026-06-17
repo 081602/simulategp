@@ -11,7 +11,7 @@ from models import (db, Game, Team, Fund, CompanyTemplate, GameCompany,
                     CompanySearch, TermSheet, Deal, DealEquity,
                     FundTransaction, Notification, ReturnAssumption)
 from game_logic import (run_phase1_crank, run_phase2_crank,
-                        team_irr, team_simple_return, team_gp_income,
+                        team_simple_return, team_gp_income,
                         finalize_deal, close_deal_with_coinvestors,
                         locked_deal_economics, exit_waterfall,
                         DEBT_INTEREST_RATE, _notify, _record_transaction)
