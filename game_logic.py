@@ -189,6 +189,29 @@ def _terms_compatible(lead_ts: TermSheet, fill_ts: TermSheet) -> bool:
 # Phase 2 Crank (Year Advance)
 # ---------------------------------------------------------------------------
 
+def _ask_anchor(company: GameCompany, deal: Deal) -> float:
+    """Base that a holding's FIRST-year mark grows from: the company's original
+    ask, restated to be comparable to funded_valuation.
+
+    Rewards entry discipline. Because the first roll grows off the ask (not what
+    the team paid), buying below the ask makes the year-1 mark land above cost
+    (capturing more than the expected return) while overpaying makes it land at
+    or below cost (capturing less). Paying exactly the ask captures the return.
+
+    Buyouts: initial_val_ask is the whole-company ask, directly comparable to the
+    purchase price. VC: initial_val_ask is a PRE-money number, so add the team's
+    equity (and any debt) to get the ask-implied post-money — the apples-to-apples
+    counterpart of funded_valuation (= pre + equity + debt).
+    """
+    ask = company.initial_val_ask
+    if ask is None or ask <= 0:
+        # No ask on record — fall back to what was paid (original behavior).
+        return company.latest_valuation or 10.0
+    if company.stage == 'mature':
+        return ask
+    return ask + (deal.total_equity_invested or 0.0) + (deal.debt_amount or 0.0)
+
+
 def run_phase2_crank(game: Game):
     """
     - Charge management fees
@@ -233,10 +256,15 @@ def run_phase2_crank(game: Game):
     for deal in active_deals:
         company = deal.company
 
-        # Roll outcome
+        # Roll outcome. The FIRST year after funding grows off the company's
+        # original ask (see _ask_anchor) so entry price discipline drives the
+        # year-1 return; every year thereafter compounds off the current mark.
         multiple = _roll_outcome(company, game.market_condition)
-        old_val = company.latest_valuation or 10.0
-        new_val = old_val * multiple
+        if year == company.year_funded:
+            base_val = _ask_anchor(company, deal)
+        else:
+            base_val = company.latest_valuation or 10.0
+        new_val = base_val * multiple
         company.set_year_val(year, max(0.0, new_val))
 
         # Cash engine: EBITDA accrues (or burns) before debt service
