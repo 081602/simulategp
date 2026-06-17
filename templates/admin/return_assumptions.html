@@ -15,6 +15,14 @@
       </a>
     </div>
 
+    <div class="alert border-info text-light mb-4" style="background:rgba(13,202,240,0.1);">
+      <i class="bi bi-info-circle-fill text-info me-2"></i>
+      The values below are for <strong>sector-focused</strong> funds. A
+      <strong>generalist</strong> fund earns <strong>5 percentage points less</strong> expected
+      return and <strong>10% lower</strong> volatility (std dev &times; 0.9) on every sector/stage.
+      The resulting generalist figures are shown in <span class="text-info">blue</span> beneath each input.
+    </div>
+
     <form method="POST" action="{{ url_for('admin_return_assumptions') }}">
       <div class="card border-secondary shadow mb-4">
         <div class="card-body p-0">
@@ -42,21 +50,25 @@
                   {% for stage in stages %}
                   {% set ra = assumptions.get((sector, stage)) %}
                   {% set key = sector ~ '__' ~ stage %}
+                  {% set base_er = (ra.expected_return * 100) if ra else 10.0 %}
+                  {% set base_sd = (ra.std_dev * 100) if ra else 20.0 %}
                   <td class="text-center p-2">
                     <input type="number"
-                           class="form-control form-control-sm bg-dark text-white border-secondary text-center"
+                           class="form-control form-control-sm bg-dark text-white border-secondary text-center er-input"
                            name="er_{{ key }}"
                            min="-100" max="500" step="0.1"
-                           value="{{ '%.1f'|format(ra.expected_return * 100) if ra else '10.0' }}"
+                           value="{{ '%.1f'|format(base_er) }}"
                            required>
+                    <div class="small text-info mt-1 gen-er">Gen: {{ '%.1f'|format(base_er - 5) }}%</div>
                   </td>
                   <td class="text-center p-2">
                     <input type="number"
-                           class="form-control form-control-sm bg-dark text-white border-secondary text-center"
+                           class="form-control form-control-sm bg-dark text-white border-secondary text-center sd-input"
                            name="sd_{{ key }}"
                            min="0" max="200" step="0.1"
-                           value="{{ '%.1f'|format(ra.std_dev * 100) if ra else '20.0' }}"
+                           value="{{ '%.1f'|format(base_sd) }}"
                            required>
+                    <div class="small text-info mt-1 gen-sd">Gen: {{ '%.1f'|format(base_sd * 0.9) }}%</div>
                   </td>
                   {% endfor %}
                 </tr>
@@ -76,4 +88,25 @@
 
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Live-update the generalist figures as the sector-focused values are edited:
+  // generalist expected return = base - 5 pts; generalist std dev = base x 0.9
+  function updGen(inp, kind) {
+    var v = parseFloat(inp.value);
+    var disp = inp.parentElement.querySelector(kind === 'er' ? '.gen-er' : '.gen-sd');
+    if (!disp) return;
+    if (!isFinite(v)) { disp.textContent = 'Gen: —'; return; }
+    var g = kind === 'er' ? (v - 5) : (v * 0.9);
+    disp.textContent = 'Gen: ' + g.toFixed(1) + '%';
+  }
+  document.querySelectorAll('.er-input').forEach(function (i) {
+    i.addEventListener('input', function () { updGen(i, 'er'); });
+  });
+  document.querySelectorAll('.sd-input').forEach(function (i) {
+    i.addEventListener('input', function () { updGen(i, 'sd'); });
+  });
+</script>
 {% endblock %}
