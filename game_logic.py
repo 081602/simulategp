@@ -749,11 +749,11 @@ def team_simple_return(team, game):
     committed = sum(f.total_capital for f in funds)
     available = sum(f.available_capital for f in funds)
 
-    stakes = (DealEquity.query
-              .join(Deal, DealEquity.deal_id == Deal.id)
-              .filter(DealEquity.team_id == team.id, Deal.status == 'active')
-              .all())
-    unrealized = sum(s.current_value for s in stakes)
+    active_stakes = (DealEquity.query
+                     .join(Deal, DealEquity.deal_id == Deal.id)
+                     .filter(DealEquity.team_id == team.id, Deal.status == 'active')
+                     .all())
+    unrealized = sum(s.current_value for s in active_stakes)
 
     gp = team_gp_income(team)
     carry = gp['carried_interest']
@@ -767,6 +767,19 @@ def team_simple_return(team, game):
     else:
         annualized = -1.0  # lost everything (or worse)
 
+    # MOIC — multiple of *invested* capital (deal performance, before fund
+    # fees/carry): total value out of the deals / total equity put into them.
+    invested = sum(s.equity_invested
+                   for s in DealEquity.query.filter_by(team_id=team.id).all())
+    realized = sum(tx.amount for tx in (
+        FundTransaction.query.join(Fund, FundTransaction.fund_id == Fund.id)
+        .filter(Fund.team_id == team.id,
+                FundTransaction.transaction_type.in_(
+                    ['liquidation_proceeds', 'dividend_received']))
+        .all()))
+    total_value = realized + unrealized
+    moic = (total_value / invested) if invested > 0 else 0.0
+
     return {
         'committed': committed,
         'available': available,
@@ -778,6 +791,10 @@ def team_simple_return(team, game):
         'years': years,
         'annualized': annualized,
         'total_return': multiple - 1.0,
+        'invested': invested,
+        'realized': realized,
+        'total_value': total_value,
+        'moic': moic,
     }
 
 

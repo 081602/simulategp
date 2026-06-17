@@ -26,6 +26,14 @@
             </div>
             <div class="text-light small">per year over {{ ret.years }} year{{ 's' if ret.years != 1 }}
               &mdash; {{ "%.2f"|format(ret.multiple) }}&times; net / committed</div>
+            <hr class="border-secondary my-3">
+            <div class="text-light small mb-1">
+              <i class="bi bi-x-diamond text-info me-1"></i> MOIC <span class="text-secondary">(on invested capital)</span>
+            </div>
+            <div class="display-6 fw-bold {% if ret.moic >= 1 %}text-info{% else %}text-danger{% endif %}">
+              {{ "%.2f"|format(ret.moic) }}&times;
+            </div>
+            <div class="text-light small">how much the deals returned per $1 invested</div>
           </div>
         </div>
       </div>
@@ -68,6 +76,11 @@
             <div class="font-monospace small text-light mt-1">
               Annualized = {{ "%.2f"|format(ret.multiple) }}<sup>(1/{{ ret.years }})</sup> &minus; 1
               = <span class="fw-bold {% if ret.annualized >= 0 %}text-success{% else %}text-danger{% endif %}">{{ "%+.1f"|format(ret.annualized * 100) }}%</span>
+            </div>
+            <hr class="border-secondary my-2">
+            <div class="font-monospace small text-light">
+              MOIC = (proceeds ${{ "{:,.1f}M".format(ret.realized) }}{% if ret.unrealized > 0 %} + holdings ${{ "{:,.1f}M".format(ret.unrealized) }}{% endif %}) / invested ${{ "{:,.1f}M".format(ret.invested) }}
+              = <span class="fw-bold {% if ret.moic >= 1 %}text-info{% else %}text-danger{% endif %}">{{ "%.2f"|format(ret.moic) }}&times;</span>
             </div>
           </div>
         </div>

@@ -67,6 +67,7 @@
                 <th class="text-center" style="width:60px;">Rank</th>
                 <th>Firm Name</th>
                 <th class="text-end">Annualized Return</th>
+                <th class="text-end">MOIC</th>
                 <th class="text-end">Net to LPs</th>
                 <th class="text-end">Total Capital</th>
                 <th class="text-end">Available Capital</th>
@@ -101,7 +102,11 @@
                   <span class="fw-bold {% if item.ret.annualized >= 0.20 %}text-success{% elif item.ret.annualized >= 0 %}text-info{% else %}text-danger{% endif %} fs-5">
                     {{ "%+.1f"|format(item.ret.annualized * 100) }}%
                   </span>
-                  <div class="text-secondary" style="font-size:0.7rem;">{{ "%.2f"|format(item.ret.multiple) }}&times; over {{ item.ret.years }}y</div>
+                  <div class="text-secondary" style="font-size:0.7rem;">{{ "%.2f"|format(item.ret.multiple) }}&times; net / committed</div>
+                </td>
+                <td class="text-end">
+                  <span class="fw-bold {% if item.ret.moic >= 1 %}text-info{% else %}text-danger{% endif %}">{{ "%.2f"|format(item.ret.moic) }}&times;</span>
+                  <div class="text-secondary" style="font-size:0.7rem;">on ${{ "{:,.1f}M".format(item.ret.invested) }} invested</div>
                 </td>
                 <td class="text-end fw-semibold {% if item.ret.net_value >= item.ret.committed %}text-success{% else %}text-danger{% endif %}">
                   ${{ "{:,.1f}M".format(item.ret.net_value) }}

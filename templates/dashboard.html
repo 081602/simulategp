@@ -80,8 +80,9 @@
             {{ "%+.1f"|format(ret.annualized * 100) }}%
           </div>
           <div class="text-muted small">over {{ ret.years }} year{{ 's' if ret.years != 1 }}</div>
-          <div class="fs-6 fw-bold mt-1">{{ "%.2f"|format(ret.multiple) }}&times;
-            <span class="text-muted small fw-normal">net / committed</span>
+          <div class="fs-6 fw-bold mt-1">{{ "%.2f"|format(ret.moic) }}&times;
+            <span class="text-muted small fw-normal">MOIC</span>
+            <span class="text-muted small fw-normal">&middot; {{ "%.2f"|format(ret.multiple) }}&times; net/committed</span>
           </div>
         </div>
       </div>
