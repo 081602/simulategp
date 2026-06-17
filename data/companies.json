@@ -4598,5 +4598,4605 @@
     "ltm_ebitda_margin": 0.06,
     "ltm_revenue": 11.0,
     "ltm_ebitda": 0.66
+  },
+  {
+    "name": "Lattice Goods",
+    "sector": "Consumer",
+    "stage": "early_revenue",
+    "description": "Early-commercial Fitness company, $11.2M revenue growing ~72%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 19.1,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.9,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 67.8,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling operations",
+    "available_cash": 6.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.1,
+    "subsector": "Consumer / Fitness",
+    "revenue_growth_3yr": 0.72,
+    "ltm_ebitda_margin": -0.12,
+    "ltm_revenue": 11.2,
+    "ltm_ebitda": -1.3
+  },
+  {
+    "name": "Titan Grid",
+    "sector": "Energy",
+    "stage": "mature",
+    "description": "Established Energy Storage business with $70M revenue and 21% EBITDA margins, growing ~8%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 77.1,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.31,
+    "debt_capacity": 75.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "weak",
+    "base_valuation": 152.1,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "recapitalization and growth",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.055,
+    "subsector": "Energy / Energy Storage",
+    "revenue_growth_3yr": 0.08,
+    "ltm_ebitda_margin": 0.21,
+    "ltm_revenue": 69.5,
+    "ltm_ebitda": 14.6
+  },
+  {
+    "name": "Hawthorn Medical",
+    "sector": "Healthcare",
+    "stage": "startup",
+    "description": "Early-stage Digital Health venture, pre-revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 12.9,
+    "rolled_equity_min": 0.86,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 19.9,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "pre-commercial development and testing",
+    "available_cash": 0.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.112,
+    "subsector": "Healthcare / Digital Health",
+    "revenue_growth_3yr": 1.18,
+    "ltm_ebitda_margin": -0.53,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -6.0
+  },
+  {
+    "name": "Quill Supply",
+    "sector": "Industrials",
+    "stage": "developing",
+    "description": "Developing Distribution business with $9.3M revenue, growing ~44%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 9.1,
+    "rolled_equity_min": 0.74,
+    "rolled_equity_max": 0.94,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 19.8,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "entering new markets",
+    "available_cash": 6.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.099,
+    "subsector": "Industrials / Distribution",
+    "revenue_growth_3yr": 0.44,
+    "ltm_ebitda_margin": -0.17,
+    "ltm_revenue": 9.3,
+    "ltm_ebitda": -1.6
+  },
+  {
+    "name": "Northwind Networks",
+    "sector": "Technology",
+    "stage": "developing",
+    "description": "Developing SaaS business with $8.4M revenue, growing ~44%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 9.4,
+    "rolled_equity_min": 0.75,
+    "rolled_equity_max": 0.94,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 38.7,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "entering new markets",
+    "available_cash": 2.9,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.096,
+    "subsector": "Technology / SaaS",
+    "revenue_growth_3yr": 0.44,
+    "ltm_ebitda_margin": -0.15,
+    "ltm_revenue": 8.4,
+    "ltm_ebitda": -1.3
+  },
+  {
+    "name": "Nimbus Apparel",
+    "sector": "Consumer",
+    "stage": "startup",
+    "description": "Early-stage CPG venture, pre-revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 5.5,
+    "rolled_equity_min": 0.89,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 18.9,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "R&D and pilot programs",
+    "available_cash": 1.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.092,
+    "subsector": "Consumer / CPG",
+    "revenue_growth_3yr": 1.16,
+    "ltm_ebitda_margin": -0.96,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -2.3
+  },
+  {
+    "name": "Quarry Resources",
+    "sector": "Energy",
+    "stage": "early_revenue",
+    "description": "Early-commercial CleanTech company, $13.2M revenue growing ~87%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 18.7,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.92,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 58.4,
+    "year_available": 7,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "sales and marketing expansion",
+    "available_cash": 3.3,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.05,
+    "subsector": "Energy / CleanTech",
+    "revenue_growth_3yr": 0.87,
+    "ltm_ebitda_margin": 0.0,
+    "ltm_revenue": 13.2,
+    "ltm_ebitda": 0.0
+  },
+  {
+    "name": "Foundry Care",
+    "sector": "Healthcare",
+    "stage": "early_revenue",
+    "description": "Early-commercial Biotech company, $6.7M revenue growing ~82%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 24.9,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.99,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 65.8,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "geographic expansion",
+    "available_cash": 3.8,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.045,
+    "subsector": "Healthcare / Biotech",
+    "revenue_growth_3yr": 0.82,
+    "ltm_ebitda_margin": -0.07,
+    "ltm_revenue": 6.7,
+    "ltm_ebitda": -0.5
+  },
+  {
+    "name": "Ironclad Works",
+    "sector": "Industrials",
+    "stage": "mature",
+    "description": "Established Distribution business with $66M revenue and 21% EBITDA margins, growing ~5%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 93.5,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.23,
+    "debt_capacity": 69.5,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "weak",
+    "base_valuation": 163.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "buy-and-build acquisitions",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.074,
+    "subsector": "Industrials / Distribution",
+    "revenue_growth_3yr": 0.05,
+    "ltm_ebitda_margin": 0.21,
+    "ltm_revenue": 66.2,
+    "ltm_ebitda": 13.9
+  },
+  {
+    "name": "Nimbus Data",
+    "sector": "Technology",
+    "stage": "developing",
+    "description": "Developing Data Infrastructure business with $7.0M revenue, growing ~33%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 16.3,
+    "rolled_equity_min": 0.73,
+    "rolled_equity_max": 0.95,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 19.3,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "entering new markets",
+    "available_cash": 6.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.085,
+    "subsector": "Technology / Data Infrastructure",
+    "revenue_growth_3yr": 0.33,
+    "ltm_ebitda_margin": -0.04,
+    "ltm_revenue": 7.0,
+    "ltm_ebitda": -0.3
+  },
+  {
+    "name": "Sterling Brands",
+    "sector": "Consumer",
+    "stage": "developing",
+    "description": "Developing Fitness business with $11.7M revenue, growing ~49%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 15.1,
+    "rolled_equity_min": 0.72,
+    "rolled_equity_max": 0.9,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 28.0,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "entering new markets",
+    "available_cash": 5.1,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.103,
+    "subsector": "Consumer / Fitness",
+    "revenue_growth_3yr": 0.49,
+    "ltm_ebitda_margin": -0.06,
+    "ltm_revenue": 11.7,
+    "ltm_ebitda": -0.7
+  },
+  {
+    "name": "Umbra Grid",
+    "sector": "Energy",
+    "stage": "startup",
+    "description": "Early-stage CleanTech venture, $2.0M early revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 9.0,
+    "rolled_equity_min": 0.85,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 21.7,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "pre-commercial development and testing",
+    "available_cash": 0.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.116,
+    "subsector": "Energy / CleanTech",
+    "revenue_growth_3yr": 1.88,
+    "ltm_ebitda_margin": -0.77,
+    "ltm_revenue": 2.0,
+    "ltm_ebitda": -1.5
+  },
+  {
+    "name": "Riverstone Care",
+    "sector": "Healthcare",
+    "stage": "mature",
+    "description": "Established Diagnostics business with $66M revenue and 23% EBITDA margins, growing ~10%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 101.3,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.24,
+    "debt_capacity": 67.9,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 169.2,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "founder liquidity and buyout",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.035,
+    "subsector": "Healthcare / Diagnostics",
+    "revenue_growth_3yr": 0.1,
+    "ltm_ebitda_margin": 0.23,
+    "ltm_revenue": 66.5,
+    "ltm_ebitda": 15.3
+  },
+  {
+    "name": "Foundry Manufacturing",
+    "sector": "Industrials",
+    "stage": "mature",
+    "description": "Established Building Products business with $78M revenue and 15% EBITDA margins, growing ~9%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 83.8,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.31,
+    "debt_capacity": 56.7,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "weak",
+    "base_valuation": 140.5,
+    "year_available": 7,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "recapitalization and growth",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.054,
+    "subsector": "Industrials / Building Products",
+    "revenue_growth_3yr": 0.09,
+    "ltm_ebitda_margin": 0.15,
+    "ltm_revenue": 78.0,
+    "ltm_ebitda": 11.7
+  },
+  {
+    "name": "Evergreen Digital",
+    "sector": "Technology",
+    "stage": "startup",
+    "description": "Early-stage Cybersecurity venture, $1.5M early revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 10.4,
+    "rolled_equity_min": 0.89,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 27.6,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "product development and first hires",
+    "available_cash": 0.1,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.129,
+    "subsector": "Technology / Cybersecurity",
+    "revenue_growth_3yr": 1.75,
+    "ltm_ebitda_margin": -0.9,
+    "ltm_revenue": 1.5,
+    "ltm_ebitda": -1.4
+  },
+  {
+    "name": "Cobalt Retail",
+    "sector": "Consumer",
+    "stage": "mature",
+    "description": "Established Pet Care business with $50M revenue and 23% EBITDA margins, growing ~8%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 56.7,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.27,
+    "debt_capacity": 58.2,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 114.9,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "buy-and-build acquisitions",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.054,
+    "subsector": "Consumer / Pet Care",
+    "revenue_growth_3yr": 0.08,
+    "ltm_ebitda_margin": 0.23,
+    "ltm_revenue": 50.4,
+    "ltm_ebitda": 11.6
+  },
+  {
+    "name": "Northstar Resources",
+    "sector": "Energy",
+    "stage": "mature",
+    "description": "Established Utilities business with $46M revenue and 27% EBITDA margins, growing ~5%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 57.3,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.31,
+    "debt_capacity": 44.1,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 101.4,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "founder liquidity and buyout",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.065,
+    "subsector": "Energy / Utilities",
+    "revenue_growth_3yr": 0.05,
+    "ltm_ebitda_margin": 0.27,
+    "ltm_revenue": 45.9,
+    "ltm_ebitda": 12.4
+  },
+  {
+    "name": "Umbra Diagnostics",
+    "sector": "Healthcare",
+    "stage": "startup",
+    "description": "Early-stage Specialty Pharma venture, pre-revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 10.8,
+    "rolled_equity_min": 0.9,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 27.9,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "R&D and pilot programs",
+    "available_cash": 0.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.082,
+    "subsector": "Healthcare / Specialty Pharma",
+    "revenue_growth_3yr": 1.04,
+    "ltm_ebitda_margin": -0.99,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -4.5
+  },
+  {
+    "name": "Goldfinch Fabrication",
+    "sector": "Industrials",
+    "stage": "developing",
+    "description": "Developing Building Products business with $12.1M revenue, growing ~54%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 13.1,
+    "rolled_equity_min": 0.71,
+    "rolled_equity_max": 0.86,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 25.2,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "entering new markets",
+    "available_cash": 6.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.112,
+    "subsector": "Industrials / Building Products",
+    "revenue_growth_3yr": 0.54,
+    "ltm_ebitda_margin": -0.11,
+    "ltm_revenue": 12.1,
+    "ltm_ebitda": -1.3
+  },
+  {
+    "name": "Tahoe Networks",
+    "sector": "Technology",
+    "stage": "mature",
+    "description": "Established DevTools business with $84M revenue and 20% EBITDA margins, growing ~5%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 78.4,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.31,
+    "debt_capacity": 65.3,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 143.7,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "paying down existing debt",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.052,
+    "subsector": "Technology / DevTools",
+    "revenue_growth_3yr": 0.05,
+    "ltm_ebitda_margin": 0.2,
+    "ltm_revenue": 83.5,
+    "ltm_ebitda": 16.7
+  },
+  {
+    "name": "Lakeshore Lifestyle",
+    "sector": "Consumer",
+    "stage": "early_revenue",
+    "description": "Early-commercial Home Services company, $6.6M revenue growing ~99%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 25.2,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.9,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 47.4,
+    "year_available": 7,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling operations",
+    "available_cash": 5.2,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.09,
+    "subsector": "Consumer / Home Services",
+    "revenue_growth_3yr": 0.99,
+    "ltm_ebitda_margin": -0.17,
+    "ltm_revenue": 6.6,
+    "ltm_ebitda": -1.1
+  },
+  {
+    "name": "Praxis Energy",
+    "sector": "Energy",
+    "stage": "early_revenue",
+    "description": "Early-commercial Energy Storage company, $10.8M revenue growing ~64%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 17.4,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.94,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 62.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "accelerating commercial growth",
+    "available_cash": 4.9,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.045,
+    "subsector": "Energy / Energy Storage",
+    "revenue_growth_3yr": 0.64,
+    "ltm_ebitda_margin": 0.04,
+    "ltm_revenue": 10.8,
+    "ltm_ebitda": 0.4
+  },
+  {
+    "name": "Nova Therapeutics",
+    "sector": "Healthcare",
+    "stage": "startup",
+    "description": "Early-stage Health Services venture, pre-revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 5.5,
+    "rolled_equity_min": 0.89,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 14.6,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "R&D and pilot programs",
+    "available_cash": 0.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.1,
+    "subsector": "Healthcare / Health Services",
+    "revenue_growth_3yr": 1.94,
+    "ltm_ebitda_margin": -0.64,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -5.8
+  },
+  {
+    "name": "Goldfinch Equipment",
+    "sector": "Industrials",
+    "stage": "early_revenue",
+    "description": "Early-commercial Distribution company, $6.5M revenue growing ~50%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 21.1,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.99,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 38.9,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "accelerating commercial growth",
+    "available_cash": 7.9,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.094,
+    "subsector": "Industrials / Distribution",
+    "revenue_growth_3yr": 0.5,
+    "ltm_ebitda_margin": -0.07,
+    "ltm_revenue": 6.5,
+    "ltm_ebitda": -0.5
+  },
+  {
+    "name": "Monarch Compute",
+    "sector": "Technology",
+    "stage": "startup",
+    "description": "Early-stage AI/ML venture, $0.5M early revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 14.4,
+    "rolled_equity_min": 0.89,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 11.9,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "building the founding team and MVP",
+    "available_cash": 0.7,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.093,
+    "subsector": "Technology / AI/ML",
+    "revenue_growth_3yr": 1.46,
+    "ltm_ebitda_margin": -0.93,
+    "ltm_revenue": 0.5,
+    "ltm_ebitda": -0.5
+  },
+  {
+    "name": "Ardent Lifestyle",
+    "sector": "Consumer",
+    "stage": "mature",
+    "description": "Established Beauty business with $122M revenue and 17% EBITDA margins, growing ~8%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 84.4,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.25,
+    "debt_capacity": 102.6,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 187.0,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "paying down existing debt",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.059,
+    "subsector": "Consumer / Beauty",
+    "revenue_growth_3yr": 0.08,
+    "ltm_ebitda_margin": 0.17,
+    "ltm_revenue": 122.4,
+    "ltm_ebitda": 20.8
+  },
+  {
+    "name": "Onyx Energy",
+    "sector": "Energy",
+    "stage": "mature",
+    "description": "Established Oil & Gas Services business with $79M revenue and 21% EBITDA margins, growing ~10%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 95.0,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.29,
+    "debt_capacity": 91.1,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 186.1,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "founder liquidity and buyout",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.048,
+    "subsector": "Energy / Oil & Gas Services",
+    "revenue_growth_3yr": 0.1,
+    "ltm_ebitda_margin": 0.21,
+    "ltm_revenue": 79.0,
+    "ltm_ebitda": 16.6
+  },
+  {
+    "name": "Northwind Wellness",
+    "sector": "Healthcare",
+    "stage": "early_revenue",
+    "description": "Early-commercial Health Services company, $6.8M revenue growing ~100%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 25.1,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.91,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 62.4,
+    "year_available": 7,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling operations",
+    "available_cash": 7.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.09,
+    "subsector": "Healthcare / Health Services",
+    "revenue_growth_3yr": 1.0,
+    "ltm_ebitda_margin": -0.08,
+    "ltm_revenue": 6.8,
+    "ltm_ebitda": -0.5
+  },
+  {
+    "name": "Northstar Components",
+    "sector": "Industrials",
+    "stage": "early_revenue",
+    "description": "Early-commercial Industrial Services company, $13.3M revenue growing ~40%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 20.6,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.91,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 71.7,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling operations",
+    "available_cash": 7.6,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.049,
+    "subsector": "Industrials / Industrial Services",
+    "revenue_growth_3yr": 0.4,
+    "ltm_ebitda_margin": 0.04,
+    "ltm_revenue": 13.3,
+    "ltm_ebitda": 0.5
+  },
+  {
+    "name": "Atlas AI",
+    "sector": "Technology",
+    "stage": "early_revenue",
+    "description": "Early-commercial Fintech company, $4.8M revenue growing ~61%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 18.2,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.99,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 39.8,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "geographic expansion",
+    "available_cash": 4.9,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.047,
+    "subsector": "Technology / Fintech",
+    "revenue_growth_3yr": 0.61,
+    "ltm_ebitda_margin": -0.12,
+    "ltm_revenue": 4.8,
+    "ltm_ebitda": -0.6
+  },
+  {
+    "name": "Indigo Goods",
+    "sector": "Consumer",
+    "stage": "early_revenue",
+    "description": "Early-commercial Beauty company, $2.1M revenue growing ~96%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 16.2,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.99,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 53.1,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "geographic expansion",
+    "available_cash": 2.2,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.063,
+    "subsector": "Consumer / Beauty",
+    "revenue_growth_3yr": 0.96,
+    "ltm_ebitda_margin": -0.13,
+    "ltm_revenue": 2.1,
+    "ltm_ebitda": -0.3
+  },
+  {
+    "name": "Northstar Grid",
+    "sector": "Energy",
+    "stage": "startup",
+    "description": "Early-stage Oil & Gas Services venture, pre-revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 6.4,
+    "rolled_equity_min": 0.9,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 24.3,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "product development and first hires",
+    "available_cash": 0.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.122,
+    "subsector": "Energy / Oil & Gas Services",
+    "revenue_growth_3yr": 1.53,
+    "ltm_ebitda_margin": -0.8,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -5.5
+  },
+  {
+    "name": "Yellowstone Labs",
+    "sector": "Healthcare",
+    "stage": "early_revenue",
+    "description": "Early-commercial Diagnostics company, $12.5M revenue growing ~97%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 15.6,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.98,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 44.1,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling operations",
+    "available_cash": 7.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.081,
+    "subsector": "Healthcare / Diagnostics",
+    "revenue_growth_3yr": 0.97,
+    "ltm_ebitda_margin": -0.06,
+    "ltm_revenue": 12.5,
+    "ltm_ebitda": -0.8
+  },
+  {
+    "name": "Meridian Works",
+    "sector": "Industrials",
+    "stage": "mature",
+    "description": "Established Building Products business with $85M revenue and 16% EBITDA margins, growing ~9%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 76.9,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.26,
+    "debt_capacity": 55.9,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 132.8,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "recapitalization and growth",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.062,
+    "subsector": "Industrials / Building Products",
+    "revenue_growth_3yr": 0.09,
+    "ltm_ebitda_margin": 0.16,
+    "ltm_revenue": 85.0,
+    "ltm_ebitda": 13.6
+  },
+  {
+    "name": "Patriot Software",
+    "sector": "Technology",
+    "stage": "developing",
+    "description": "Developing Marketplace business with $5.5M revenue, growing ~48%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 10.5,
+    "rolled_equity_min": 0.72,
+    "rolled_equity_max": 0.9,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 28.5,
+    "year_available": 7,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "growth marketing and hiring",
+    "available_cash": 6.6,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.11,
+    "subsector": "Technology / Marketplace",
+    "revenue_growth_3yr": 0.48,
+    "ltm_ebitda_margin": -0.04,
+    "ltm_revenue": 5.5,
+    "ltm_ebitda": -0.2
+  },
+  {
+    "name": "Bluepeak Home",
+    "sector": "Consumer",
+    "stage": "mature",
+    "description": "Established CPG business with $43M revenue and 27% EBITDA margins, growing ~9%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 49.2,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.3,
+    "debt_capacity": 56.7,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 105.9,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "buy-and-build acquisitions",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.075,
+    "subsector": "Consumer / CPG",
+    "revenue_growth_3yr": 0.09,
+    "ltm_ebitda_margin": 0.27,
+    "ltm_revenue": 42.6,
+    "ltm_ebitda": 11.5
+  },
+  {
+    "name": "Driftwood Renewables",
+    "sector": "Energy",
+    "stage": "mature",
+    "description": "Established Power Infrastructure business with $50M revenue and 23% EBITDA margins, growing ~10%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 49.4,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.24,
+    "debt_capacity": 54.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 103.4,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "management buyout / succession",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.071,
+    "subsector": "Energy / Power Infrastructure",
+    "revenue_growth_3yr": 0.1,
+    "ltm_ebitda_margin": 0.23,
+    "ltm_revenue": 49.6,
+    "ltm_ebitda": 11.4
+  },
+  {
+    "name": "Vanguard Therapeutics",
+    "sector": "Healthcare",
+    "stage": "startup",
+    "description": "Early-stage Biotech venture, $1.0M early revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 14.1,
+    "rolled_equity_min": 0.89,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 14.1,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "R&D and pilot programs",
+    "available_cash": 0.8,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.084,
+    "subsector": "Healthcare / Biotech",
+    "revenue_growth_3yr": 1.83,
+    "ltm_ebitda_margin": -1.08,
+    "ltm_revenue": 1.0,
+    "ltm_ebitda": -1.1
+  },
+  {
+    "name": "Vista Equipment",
+    "sector": "Industrials",
+    "stage": "startup",
+    "description": "Early-stage Distribution venture, $2.0M early revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 10.8,
+    "rolled_equity_min": 0.87,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 20.0,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "building the founding team and MVP",
+    "available_cash": 1.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.114,
+    "subsector": "Industrials / Distribution",
+    "revenue_growth_3yr": 1.03,
+    "ltm_ebitda_margin": -0.51,
+    "ltm_revenue": 2.0,
+    "ltm_ebitda": -1.0
+  },
+  {
+    "name": "Indigo Networks",
+    "sector": "Technology",
+    "stage": "startup",
+    "description": "Early-stage SaaS venture, $0.5M early revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 7.6,
+    "rolled_equity_min": 0.88,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 22.4,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "building the founding team and MVP",
+    "available_cash": 0.2,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.092,
+    "subsector": "Technology / SaaS",
+    "revenue_growth_3yr": 1.76,
+    "ltm_ebitda_margin": -0.83,
+    "ltm_revenue": 0.5,
+    "ltm_ebitda": -0.4
+  },
+  {
+    "name": "Sterling Lifestyle",
+    "sector": "Consumer",
+    "stage": "mature",
+    "description": "Established Beauty business with $70M revenue and 25% EBITDA margins, growing ~7%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 77.7,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.29,
+    "debt_capacity": 74.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "weak",
+    "base_valuation": 151.7,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "recapitalization and growth",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.031,
+    "subsector": "Consumer / Beauty",
+    "revenue_growth_3yr": 0.07,
+    "ltm_ebitda_margin": 0.25,
+    "ltm_revenue": 70.4,
+    "ltm_ebitda": 17.6
+  },
+  {
+    "name": "Cobalt Renewables",
+    "sector": "Energy",
+    "stage": "developing",
+    "description": "Developing Renewables business with $9.6M revenue, growing ~31%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 8.2,
+    "rolled_equity_min": 0.74,
+    "rolled_equity_max": 0.88,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 18.4,
+    "year_available": 7,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "entering new markets",
+    "available_cash": 4.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.106,
+    "subsector": "Energy / Renewables",
+    "revenue_growth_3yr": 0.31,
+    "ltm_ebitda_margin": -0.1,
+    "ltm_revenue": 9.6,
+    "ltm_ebitda": -1.0
+  },
+  {
+    "name": "Tahoe Bio",
+    "sector": "Healthcare",
+    "stage": "startup",
+    "description": "Early-stage Diagnostics venture, $1.5M early revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 7.6,
+    "rolled_equity_min": 0.87,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 19.8,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "R&D and pilot programs",
+    "available_cash": 1.1,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.112,
+    "subsector": "Healthcare / Diagnostics",
+    "revenue_growth_3yr": 1.05,
+    "ltm_ebitda_margin": -1.12,
+    "ltm_revenue": 1.5,
+    "ltm_ebitda": -1.7
+  },
+  {
+    "name": "Hawthorn Materials",
+    "sector": "Industrials",
+    "stage": "developing",
+    "description": "Developing Manufacturing business with $13.1M revenue, growing ~34%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 11.6,
+    "rolled_equity_min": 0.73,
+    "rolled_equity_max": 0.92,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 19.1,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "growth marketing and hiring",
+    "available_cash": 5.9,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.088,
+    "subsector": "Industrials / Manufacturing",
+    "revenue_growth_3yr": 0.34,
+    "ltm_ebitda_margin": -0.08,
+    "ltm_revenue": 13.1,
+    "ltm_ebitda": -1.0
+  },
+  {
+    "name": "Cobalt Cloud",
+    "sector": "Technology",
+    "stage": "startup",
+    "description": "Early-stage Cybersecurity venture, $1.0M early revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 6.1,
+    "rolled_equity_min": 0.9,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 26.9,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "pre-commercial development and testing",
+    "available_cash": 1.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.121,
+    "subsector": "Technology / Cybersecurity",
+    "revenue_growth_3yr": 1.89,
+    "ltm_ebitda_margin": -1.2,
+    "ltm_revenue": 1.0,
+    "ltm_ebitda": -1.2
+  },
+  {
+    "name": "Atlas Lifestyle",
+    "sector": "Consumer",
+    "stage": "early_revenue",
+    "description": "Early-commercial Retail company, $7.1M revenue growing ~47%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 21.8,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.92,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 37.3,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "sales and marketing expansion",
+    "available_cash": 6.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.042,
+    "subsector": "Consumer / Retail",
+    "revenue_growth_3yr": 0.47,
+    "ltm_ebitda_margin": -0.15,
+    "ltm_revenue": 7.1,
+    "ltm_ebitda": -1.1
+  },
+  {
+    "name": "Keystone Storage",
+    "sector": "Energy",
+    "stage": "developing",
+    "description": "Developing Power Infrastructure business with $10.3M revenue, growing ~59%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 12.3,
+    "rolled_equity_min": 0.73,
+    "rolled_equity_max": 0.89,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 25.5,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "growth marketing and hiring",
+    "available_cash": 3.7,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.093,
+    "subsector": "Energy / Power Infrastructure",
+    "revenue_growth_3yr": 0.59,
+    "ltm_ebitda_margin": -0.08,
+    "ltm_revenue": 10.3,
+    "ltm_ebitda": -0.8
+  },
+  {
+    "name": "Riverstone Health",
+    "sector": "Healthcare",
+    "stage": "developing",
+    "description": "Developing Medical Devices business with $5.0M revenue, growing ~46%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 17.0,
+    "rolled_equity_min": 0.73,
+    "rolled_equity_max": 0.86,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 33.7,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "entering new markets",
+    "available_cash": 4.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.093,
+    "subsector": "Healthcare / Medical Devices",
+    "revenue_growth_3yr": 0.46,
+    "ltm_ebitda_margin": -0.15,
+    "ltm_revenue": 5.0,
+    "ltm_ebitda": -0.8
+  },
+  {
+    "name": "Lattice Materials",
+    "sector": "Industrials",
+    "stage": "mature",
+    "description": "Established Manufacturing business with $56M revenue and 26% EBITDA margins, growing ~7%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 80.1,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.27,
+    "debt_capacity": 72.1,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 152.2,
+    "year_available": 7,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "founder liquidity and buyout",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.069,
+    "subsector": "Industrials / Manufacturing",
+    "revenue_growth_3yr": 0.07,
+    "ltm_ebitda_margin": 0.26,
+    "ltm_revenue": 56.2,
+    "ltm_ebitda": 14.6
+  },
+  {
+    "name": "Lumen Compute",
+    "sector": "Technology",
+    "stage": "developing",
+    "description": "Developing SaaS business with $6.0M revenue, growing ~39%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 13.4,
+    "rolled_equity_min": 0.74,
+    "rolled_equity_max": 0.88,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 27.3,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "growth marketing and hiring",
+    "available_cash": 2.6,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.107,
+    "subsector": "Technology / SaaS",
+    "revenue_growth_3yr": 0.39,
+    "ltm_ebitda_margin": -0.01,
+    "ltm_revenue": 6.0,
+    "ltm_ebitda": -0.1
+  },
+  {
+    "name": "Vertex Brands",
+    "sector": "Consumer",
+    "stage": "developing",
+    "description": "Developing Retail business with $12.7M revenue, growing ~38%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 13.4,
+    "rolled_equity_min": 0.71,
+    "rolled_equity_max": 0.92,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 36.1,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "growth marketing and hiring",
+    "available_cash": 4.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.113,
+    "subsector": "Consumer / Retail",
+    "revenue_growth_3yr": 0.38,
+    "ltm_ebitda_margin": -0.02,
+    "ltm_revenue": 12.7,
+    "ltm_ebitda": -0.3
+  },
+  {
+    "name": "Titan Renewables",
+    "sector": "Energy",
+    "stage": "mature",
+    "description": "Established Energy Storage business with $54M revenue and 28% EBITDA margins, growing ~4%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 67.5,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.21,
+    "debt_capacity": 80.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 147.5,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "paying down existing debt",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.041,
+    "subsector": "Energy / Energy Storage",
+    "revenue_growth_3yr": 0.04,
+    "ltm_ebitda_margin": 0.28,
+    "ltm_revenue": 54.3,
+    "ltm_ebitda": 15.2
+  },
+  {
+    "name": "Delta Therapeutics",
+    "sector": "Healthcare",
+    "stage": "developing",
+    "description": "Developing Health Services business with $7.9M revenue, growing ~44%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 10.7,
+    "rolled_equity_min": 0.71,
+    "rolled_equity_max": 0.95,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 26.1,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "expanding the product line",
+    "available_cash": 4.6,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.1,
+    "subsector": "Healthcare / Health Services",
+    "revenue_growth_3yr": 0.44,
+    "ltm_ebitda_margin": -0.05,
+    "ltm_revenue": 7.9,
+    "ltm_ebitda": -0.4
+  },
+  {
+    "name": "Quantum Supply",
+    "sector": "Industrials",
+    "stage": "startup",
+    "description": "Early-stage Logistics venture, $1.5M early revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 12.7,
+    "rolled_equity_min": 0.88,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 14.4,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "product development and first hires",
+    "available_cash": 0.7,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.116,
+    "subsector": "Industrials / Logistics",
+    "revenue_growth_3yr": 1.73,
+    "ltm_ebitda_margin": -1.03,
+    "ltm_revenue": 1.5,
+    "ltm_ebitda": -1.5
+  },
+  {
+    "name": "Vanguard Cyber",
+    "sector": "Technology",
+    "stage": "mature",
+    "description": "Established Data Infrastructure business with $67M revenue and 16% EBITDA margins, growing ~3%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 60.6,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.29,
+    "debt_capacity": 64.1,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 124.7,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "founder liquidity and buyout",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.031,
+    "subsector": "Technology / Data Infrastructure",
+    "revenue_growth_3yr": 0.03,
+    "ltm_ebitda_margin": 0.16,
+    "ltm_revenue": 66.9,
+    "ltm_ebitda": 10.7
+  },
+  {
+    "name": "Monarch Beverage",
+    "sector": "Consumer",
+    "stage": "developing",
+    "description": "Developing Home Services business with $4.3M revenue, growing ~47%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 15.8,
+    "rolled_equity_min": 0.73,
+    "rolled_equity_max": 0.92,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 26.0,
+    "year_available": 7,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "entering new markets",
+    "available_cash": 2.3,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.116,
+    "subsector": "Consumer / Home Services",
+    "revenue_growth_3yr": 0.47,
+    "ltm_ebitda_margin": -0.06,
+    "ltm_revenue": 4.3,
+    "ltm_ebitda": -0.3
+  },
+  {
+    "name": "Magnolia Energy",
+    "sector": "Energy",
+    "stage": "developing",
+    "description": "Developing Power Infrastructure business with $13.7M revenue, growing ~60%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 11.5,
+    "rolled_equity_min": 0.74,
+    "rolled_equity_max": 0.86,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 33.4,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "expanding the product line",
+    "available_cash": 4.3,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.12,
+    "subsector": "Energy / Power Infrastructure",
+    "revenue_growth_3yr": 0.6,
+    "ltm_ebitda_margin": -0.15,
+    "ltm_revenue": 13.7,
+    "ltm_ebitda": -2.1
+  },
+  {
+    "name": "Obsidian Sciences",
+    "sector": "Healthcare",
+    "stage": "startup",
+    "description": "Early-stage Diagnostics venture, $1.5M early revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 12.8,
+    "rolled_equity_min": 0.87,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 27.6,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "product development and first hires",
+    "available_cash": 1.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.114,
+    "subsector": "Healthcare / Diagnostics",
+    "revenue_growth_3yr": 1.15,
+    "ltm_ebitda_margin": -0.67,
+    "ltm_revenue": 1.5,
+    "ltm_ebitda": -1.0
+  },
+  {
+    "name": "Driftwood Supply",
+    "sector": "Industrials",
+    "stage": "developing",
+    "description": "Developing Aerospace & Defense business with $10.0M revenue, growing ~36%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 10.7,
+    "rolled_equity_min": 0.72,
+    "rolled_equity_max": 0.94,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 31.3,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling go-to-market",
+    "available_cash": 2.7,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.094,
+    "subsector": "Industrials / Aerospace & Defense",
+    "revenue_growth_3yr": 0.36,
+    "ltm_ebitda_margin": -0.08,
+    "ltm_revenue": 10.0,
+    "ltm_ebitda": -0.8
+  },
+  {
+    "name": "Ironclad Cyber",
+    "sector": "Technology",
+    "stage": "early_revenue",
+    "description": "Early-commercial DevTools company, $5.1M revenue growing ~60%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 17.6,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.97,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 41.4,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "geographic expansion",
+    "available_cash": 4.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.076,
+    "subsector": "Technology / DevTools",
+    "revenue_growth_3yr": 0.6,
+    "ltm_ebitda_margin": -0.04,
+    "ltm_revenue": 5.1,
+    "ltm_ebitda": -0.2
+  },
+  {
+    "name": "Bluepeak Provisions",
+    "sector": "Consumer",
+    "stage": "startup",
+    "description": "Early-stage Retail venture, $2.0M early revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 12.6,
+    "rolled_equity_min": 0.87,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 27.7,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "pre-commercial development and testing",
+    "available_cash": 1.3,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.109,
+    "subsector": "Consumer / Retail",
+    "revenue_growth_3yr": 1.3,
+    "ltm_ebitda_margin": -0.64,
+    "ltm_revenue": 2.0,
+    "ltm_ebitda": -1.3
+  },
+  {
+    "name": "Driftwood Power",
+    "sector": "Energy",
+    "stage": "mature",
+    "description": "Established Utilities business with $76M revenue and 26% EBITDA margins, growing ~8%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 106.3,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.21,
+    "debt_capacity": 74.3,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 180.6,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "management buyout / succession",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.079,
+    "subsector": "Energy / Utilities",
+    "revenue_growth_3yr": 0.08,
+    "ltm_ebitda_margin": 0.26,
+    "ltm_revenue": 76.2,
+    "ltm_ebitda": 19.8
+  },
+  {
+    "name": "Solstice Bio",
+    "sector": "Healthcare",
+    "stage": "early_revenue",
+    "description": "Early-commercial Biotech company, $14.6M revenue growing ~82%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 16.8,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.99,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 67.0,
+    "year_available": 7,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "sales and marketing expansion",
+    "available_cash": 2.8,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.099,
+    "subsector": "Healthcare / Biotech",
+    "revenue_growth_3yr": 0.82,
+    "ltm_ebitda_margin": -0.17,
+    "ltm_revenue": 14.6,
+    "ltm_ebitda": -2.5
+  },
+  {
+    "name": "Brightline Supply",
+    "sector": "Industrials",
+    "stage": "early_revenue",
+    "description": "Early-commercial Distribution company, $5.7M revenue growing ~56%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 15.4,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.92,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 37.5,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "sales and marketing expansion",
+    "available_cash": 6.3,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.061,
+    "subsector": "Industrials / Distribution",
+    "revenue_growth_3yr": 0.56,
+    "ltm_ebitda_margin": -0.18,
+    "ltm_revenue": 5.7,
+    "ltm_ebitda": -1.0
+  },
+  {
+    "name": "Vista Compute",
+    "sector": "Technology",
+    "stage": "mature",
+    "description": "Established SaaS business with $75M revenue and 19% EBITDA margins, growing ~4%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 76.9,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.2,
+    "debt_capacity": 73.1,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 150.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "buy-and-build acquisitions",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.041,
+    "subsector": "Technology / SaaS",
+    "revenue_growth_3yr": 0.04,
+    "ltm_ebitda_margin": 0.19,
+    "ltm_revenue": 74.7,
+    "ltm_ebitda": 14.2
+  },
+  {
+    "name": "Praxis Apparel",
+    "sector": "Consumer",
+    "stage": "startup",
+    "description": "Early-stage Home Services venture, pre-revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 6.0,
+    "rolled_equity_min": 0.86,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 13.7,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "building the founding team and MVP",
+    "available_cash": 0.9,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.126,
+    "subsector": "Consumer / Home Services",
+    "revenue_growth_3yr": 1.84,
+    "ltm_ebitda_margin": -0.94,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -4.4
+  },
+  {
+    "name": "Patriot Renewables",
+    "sector": "Energy",
+    "stage": "mature",
+    "description": "Established Energy Storage business with $51M revenue and 24% EBITDA margins, growing ~4%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 51.6,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.34,
+    "debt_capacity": 55.5,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 107.1,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "founder liquidity and buyout",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.055,
+    "subsector": "Energy / Energy Storage",
+    "revenue_growth_3yr": 0.04,
+    "ltm_ebitda_margin": 0.24,
+    "ltm_revenue": 51.3,
+    "ltm_ebitda": 12.3
+  },
+  {
+    "name": "Windward Labs",
+    "sector": "Healthcare",
+    "stage": "developing",
+    "description": "Developing Digital Health business with $6.7M revenue, growing ~30%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 9.4,
+    "rolled_equity_min": 0.71,
+    "rolled_equity_max": 0.85,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 24.9,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "growth marketing and hiring",
+    "available_cash": 4.7,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.113,
+    "subsector": "Healthcare / Digital Health",
+    "revenue_growth_3yr": 0.3,
+    "ltm_ebitda_margin": -0.08,
+    "ltm_revenue": 6.7,
+    "ltm_ebitda": -0.5
+  },
+  {
+    "name": "Onyx Components",
+    "sector": "Industrials",
+    "stage": "startup",
+    "description": "Early-stage Manufacturing venture, $1.5M early revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 12.6,
+    "rolled_equity_min": 0.87,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 13.0,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "building the founding team and MVP",
+    "available_cash": 0.1,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.095,
+    "subsector": "Industrials / Manufacturing",
+    "revenue_growth_3yr": 1.09,
+    "ltm_ebitda_margin": -0.51,
+    "ltm_revenue": 1.5,
+    "ltm_ebitda": -0.8
+  },
+  {
+    "name": "Northwind Data",
+    "sector": "Technology",
+    "stage": "mature",
+    "description": "Established SaaS business with $57M revenue and 26% EBITDA margins, growing ~9%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 80.9,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.2,
+    "debt_capacity": 87.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 167.9,
+    "year_available": 7,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "buy-and-build acquisitions",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.068,
+    "subsector": "Technology / SaaS",
+    "revenue_growth_3yr": 0.09,
+    "ltm_ebitda_margin": 0.26,
+    "ltm_revenue": 57.3,
+    "ltm_ebitda": 14.9
+  },
+  {
+    "name": "Highmark Brands",
+    "sector": "Consumer",
+    "stage": "startup",
+    "description": "Early-stage Fitness venture, $2.0M early revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 11.8,
+    "rolled_equity_min": 0.88,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 12.5,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "product development and first hires",
+    "available_cash": 0.2,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.127,
+    "subsector": "Consumer / Fitness",
+    "revenue_growth_3yr": 1.42,
+    "ltm_ebitda_margin": -0.68,
+    "ltm_revenue": 2.0,
+    "ltm_ebitda": -1.4
+  },
+  {
+    "name": "Beacon Energy",
+    "sector": "Energy",
+    "stage": "developing",
+    "description": "Developing Utilities business with $5.7M revenue, growing ~50%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 14.7,
+    "rolled_equity_min": 0.74,
+    "rolled_equity_max": 0.91,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 19.6,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling go-to-market",
+    "available_cash": 3.7,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.092,
+    "subsector": "Energy / Utilities",
+    "revenue_growth_3yr": 0.5,
+    "ltm_ebitda_margin": -0.14,
+    "ltm_revenue": 5.7,
+    "ltm_ebitda": -0.8
+  },
+  {
+    "name": "Quill Wellness",
+    "sector": "Healthcare",
+    "stage": "developing",
+    "description": "Developing Biotech business with $8.8M revenue, growing ~45%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 13.1,
+    "rolled_equity_min": 0.72,
+    "rolled_equity_max": 0.88,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 34.1,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling go-to-market",
+    "available_cash": 3.9,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.1,
+    "subsector": "Healthcare / Biotech",
+    "revenue_growth_3yr": 0.45,
+    "ltm_ebitda_margin": -0.0,
+    "ltm_revenue": 8.8,
+    "ltm_ebitda": -0.0
+  },
+  {
+    "name": "Nova Equipment",
+    "sector": "Industrials",
+    "stage": "mature",
+    "description": "Established Distribution business with $39M revenue and 28% EBITDA margins, growing ~3%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 56.8,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.23,
+    "debt_capacity": 51.1,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "weak",
+    "base_valuation": 107.9,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "paying down existing debt",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.037,
+    "subsector": "Industrials / Distribution",
+    "revenue_growth_3yr": 0.03,
+    "ltm_ebitda_margin": 0.28,
+    "ltm_revenue": 38.9,
+    "ltm_ebitda": 10.9
+  },
+  {
+    "name": "Summit Software",
+    "sector": "Technology",
+    "stage": "early_revenue",
+    "description": "Early-commercial Marketplace company, $9.3M revenue growing ~47%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 25.7,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.92,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 65.6,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling operations",
+    "available_cash": 7.3,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.042,
+    "subsector": "Technology / Marketplace",
+    "revenue_growth_3yr": 0.47,
+    "ltm_ebitda_margin": -0.2,
+    "ltm_revenue": 9.3,
+    "ltm_ebitda": -1.9
+  },
+  {
+    "name": "Quantum Goods",
+    "sector": "Consumer",
+    "stage": "developing",
+    "description": "Developing Food & Beverage business with $5.2M revenue, growing ~56%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 15.7,
+    "rolled_equity_min": 0.73,
+    "rolled_equity_max": 0.91,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 30.2,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling go-to-market",
+    "available_cash": 3.2,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.086,
+    "subsector": "Consumer / Food & Beverage",
+    "revenue_growth_3yr": 0.56,
+    "ltm_ebitda_margin": -0.18,
+    "ltm_revenue": 5.2,
+    "ltm_ebitda": -0.9
+  },
+  {
+    "name": "Redwood Fuels",
+    "sector": "Energy",
+    "stage": "developing",
+    "description": "Developing Renewables business with $6.3M revenue, growing ~37%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 9.9,
+    "rolled_equity_min": 0.7,
+    "rolled_equity_max": 0.91,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 36.7,
+    "year_available": 7,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling go-to-market",
+    "available_cash": 6.9,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.109,
+    "subsector": "Energy / Renewables",
+    "revenue_growth_3yr": 0.37,
+    "ltm_ebitda_margin": -0.08,
+    "ltm_revenue": 6.3,
+    "ltm_ebitda": -0.5
+  },
+  {
+    "name": "Lattice Wellness",
+    "sector": "Healthcare",
+    "stage": "startup",
+    "description": "Early-stage Biotech venture, pre-revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 13.6,
+    "rolled_equity_min": 0.85,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 17.4,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "R&D and pilot programs",
+    "available_cash": 0.7,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.106,
+    "subsector": "Healthcare / Biotech",
+    "revenue_growth_3yr": 1.51,
+    "ltm_ebitda_margin": -1.2,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -4.8
+  },
+  {
+    "name": "Monarch Fabrication",
+    "sector": "Industrials",
+    "stage": "developing",
+    "description": "Developing Aerospace & Defense business with $13.8M revenue, growing ~51%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 17.8,
+    "rolled_equity_min": 0.71,
+    "rolled_equity_max": 0.91,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 30.1,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "expanding the product line",
+    "available_cash": 2.8,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.092,
+    "subsector": "Industrials / Aerospace & Defense",
+    "revenue_growth_3yr": 0.51,
+    "ltm_ebitda_margin": -0.12,
+    "ltm_revenue": 13.8,
+    "ltm_ebitda": -1.7
+  },
+  {
+    "name": "Delta Software",
+    "sector": "Technology",
+    "stage": "startup",
+    "description": "Early-stage AI/ML venture, pre-revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 8.4,
+    "rolled_equity_min": 0.89,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 16.6,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "pre-commercial development and testing",
+    "available_cash": 1.3,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.086,
+    "subsector": "Technology / AI/ML",
+    "revenue_growth_3yr": 1.12,
+    "ltm_ebitda_margin": -0.85,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -4.0
+  },
+  {
+    "name": "Beacon Apparel",
+    "sector": "Consumer",
+    "stage": "startup",
+    "description": "Early-stage Fitness venture, $1.5M early revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 7.4,
+    "rolled_equity_min": 0.89,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 13.9,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "R&D and pilot programs",
+    "available_cash": 0.1,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.093,
+    "subsector": "Consumer / Fitness",
+    "revenue_growth_3yr": 1.58,
+    "ltm_ebitda_margin": -1.13,
+    "ltm_revenue": 1.5,
+    "ltm_ebitda": -1.7
+  },
+  {
+    "name": "Bluepeak Resources",
+    "sector": "Energy",
+    "stage": "early_revenue",
+    "description": "Early-commercial Energy Storage company, $12.6M revenue growing ~76%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 26.7,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.94,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 43.8,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling operations",
+    "available_cash": 7.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.059,
+    "subsector": "Energy / Energy Storage",
+    "revenue_growth_3yr": 0.76,
+    "ltm_ebitda_margin": -0.03,
+    "ltm_revenue": 12.6,
+    "ltm_ebitda": -0.4
+  },
+  {
+    "name": "Hawthorn Clinics",
+    "sector": "Healthcare",
+    "stage": "mature",
+    "description": "Established Biotech business with $80M revenue and 15% EBITDA margins, growing ~6%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 71.5,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.26,
+    "debt_capacity": 60.0,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 131.5,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "buy-and-build acquisitions",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.059,
+    "subsector": "Healthcare / Biotech",
+    "revenue_growth_3yr": 0.06,
+    "ltm_ebitda_margin": 0.15,
+    "ltm_revenue": 80.0,
+    "ltm_ebitda": 12.0
+  },
+  {
+    "name": "Crestwood Industries",
+    "sector": "Industrials",
+    "stage": "early_revenue",
+    "description": "Early-commercial Distribution company, $2.4M revenue growing ~79%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 22.7,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 53.6,
+    "year_available": 7,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "geographic expansion",
+    "available_cash": 3.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.054,
+    "subsector": "Industrials / Distribution",
+    "revenue_growth_3yr": 0.79,
+    "ltm_ebitda_margin": 0.04,
+    "ltm_revenue": 2.4,
+    "ltm_ebitda": 0.1
+  },
+  {
+    "name": "Lakeshore Digital",
+    "sector": "Technology",
+    "stage": "early_revenue",
+    "description": "Early-commercial AI/ML company, $3.3M revenue growing ~57%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 17.4,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.95,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 60.5,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "accelerating commercial growth",
+    "available_cash": 6.7,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.1,
+    "subsector": "Technology / AI/ML",
+    "revenue_growth_3yr": 0.57,
+    "ltm_ebitda_margin": -0.14,
+    "ltm_revenue": 3.3,
+    "ltm_ebitda": -0.5
+  },
+  {
+    "name": "Falcon Brands",
+    "sector": "Consumer",
+    "stage": "startup",
+    "description": "Early-stage Retail venture, $1.0M early revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 11.9,
+    "rolled_equity_min": 0.89,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 28.5,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "pre-commercial development and testing",
+    "available_cash": 0.8,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.083,
+    "subsector": "Consumer / Retail",
+    "revenue_growth_3yr": 1.69,
+    "ltm_ebitda_margin": -0.63,
+    "ltm_revenue": 1.0,
+    "ltm_ebitda": -0.6
+  },
+  {
+    "name": "Onyx Solar",
+    "sector": "Energy",
+    "stage": "startup",
+    "description": "Early-stage Renewables venture, $1.5M early revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 6.6,
+    "rolled_equity_min": 0.86,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 20.5,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "product development and first hires",
+    "available_cash": 0.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.085,
+    "subsector": "Energy / Renewables",
+    "revenue_growth_3yr": 1.28,
+    "ltm_ebitda_margin": -1.17,
+    "ltm_revenue": 1.5,
+    "ltm_ebitda": -1.8
+  },
+  {
+    "name": "Redwood Clinics",
+    "sector": "Healthcare",
+    "stage": "startup",
+    "description": "Early-stage Digital Health venture, pre-revenue, targeting a large market. High risk, high reward.",
+    "capital_requested": 8.8,
+    "rolled_equity_min": 0.89,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "weak",
+    "base_valuation": 28.6,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "product development and first hires",
+    "available_cash": 0.8,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.107,
+    "subsector": "Healthcare / Digital Health",
+    "revenue_growth_3yr": 1.83,
+    "ltm_ebitda_margin": -0.62,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -5.7
+  },
+  {
+    "name": "Tahoe Supply",
+    "sector": "Industrials",
+    "stage": "early_revenue",
+    "description": "Early-commercial Logistics company, $6.2M revenue growing ~100%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 18.9,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.93,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 68.2,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling operations",
+    "available_cash": 4.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.067,
+    "subsector": "Industrials / Logistics",
+    "revenue_growth_3yr": 1.0,
+    "ltm_ebitda_margin": -0.16,
+    "ltm_revenue": 6.2,
+    "ltm_ebitda": -1.0
+  },
+  {
+    "name": "Brightline Cloud",
+    "sector": "Technology",
+    "stage": "early_revenue",
+    "description": "Early-commercial Marketplace company, $11.0M revenue growing ~92%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 14.3,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.9,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 60.8,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling operations",
+    "available_cash": 4.1,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.046,
+    "subsector": "Technology / Marketplace",
+    "revenue_growth_3yr": 0.92,
+    "ltm_ebitda_margin": -0.04,
+    "ltm_revenue": 11.0,
+    "ltm_ebitda": -0.4
+  },
+  {
+    "name": "Atlas Apparel",
+    "sector": "Consumer",
+    "stage": "developing",
+    "description": "Developing CPG business with $8.0M revenue, growing ~55%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 12.8,
+    "rolled_equity_min": 0.73,
+    "rolled_equity_max": 0.86,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 25.3,
+    "year_available": 7,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "entering new markets",
+    "available_cash": 2.2,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.103,
+    "subsector": "Consumer / CPG",
+    "revenue_growth_3yr": 0.55,
+    "ltm_ebitda_margin": -0.19,
+    "ltm_revenue": 8.0,
+    "ltm_ebitda": -1.5
+  },
+  {
+    "name": "Tahoe Electric",
+    "sector": "Energy",
+    "stage": "developing",
+    "description": "Developing Utilities business with $5.0M revenue, growing ~46%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 13.4,
+    "rolled_equity_min": 0.75,
+    "rolled_equity_max": 0.94,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 38.6,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "entering new markets",
+    "available_cash": 6.9,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.092,
+    "subsector": "Energy / Utilities",
+    "revenue_growth_3yr": 0.46,
+    "ltm_ebitda_margin": -0.12,
+    "ltm_revenue": 5.0,
+    "ltm_ebitda": -0.6
+  },
+  {
+    "name": "Ardent Care",
+    "sector": "Healthcare",
+    "stage": "early_revenue",
+    "description": "Early-commercial Health Services company, $4.3M revenue growing ~57%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 22.8,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.95,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 65.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling operations",
+    "available_cash": 6.5,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.044,
+    "subsector": "Healthcare / Health Services",
+    "revenue_growth_3yr": 0.57,
+    "ltm_ebitda_margin": 0.02,
+    "ltm_revenue": 4.3,
+    "ltm_ebitda": 0.1
+  },
+  {
+    "name": "Sterling Industries",
+    "sector": "Industrials",
+    "stage": "early_revenue",
+    "description": "Early-commercial Industrial Services company, $13.5M revenue growing ~56%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 23.3,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 38.1,
+    "year_available": 3,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "accelerating commercial growth",
+    "available_cash": 4.6,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.09,
+    "subsector": "Industrials / Industrial Services",
+    "revenue_growth_3yr": 0.56,
+    "ltm_ebitda_margin": -0.09,
+    "ltm_revenue": 13.5,
+    "ltm_ebitda": -1.2
+  },
+  {
+    "name": "Evergreen AI",
+    "sector": "Technology",
+    "stage": "early_revenue",
+    "description": "Early-commercial Data Infrastructure company, $14.3M revenue growing ~53%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 14.5,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 0.99,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 58.2,
+    "year_available": 4,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "accelerating commercial growth",
+    "available_cash": 5.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.071,
+    "subsector": "Technology / Data Infrastructure",
+    "revenue_growth_3yr": 0.53,
+    "ltm_ebitda_margin": -0.06,
+    "ltm_revenue": 14.3,
+    "ltm_ebitda": -0.9
+  },
+  {
+    "name": "Oakridge Goods",
+    "sector": "Consumer",
+    "stage": "mature",
+    "description": "Established Retail business with $70M revenue and 29% EBITDA margins, growing ~3%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 96.4,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.3,
+    "debt_capacity": 97.6,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "strong",
+    "base_valuation": 194.0,
+    "year_available": 5,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "buy-and-build acquisitions",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.079,
+    "subsector": "Consumer / Retail",
+    "revenue_growth_3yr": 0.03,
+    "ltm_ebitda_margin": 0.29,
+    "ltm_revenue": 69.7,
+    "ltm_ebitda": 20.2
+  },
+  {
+    "name": "Westgate Electric",
+    "sector": "Energy",
+    "stage": "developing",
+    "description": "Developing Power Infrastructure business with $10.6M revenue, growing ~59%/yr but not yet profitable. Building scale and distribution.",
+    "capital_requested": 11.9,
+    "rolled_equity_min": 0.71,
+    "rolled_equity_max": 0.86,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 19.5,
+    "year_available": 6,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "growth marketing and hiring",
+    "available_cash": 3.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.117,
+    "subsector": "Energy / Power Infrastructure",
+    "revenue_growth_3yr": 0.59,
+    "ltm_ebitda_margin": -0.08,
+    "ltm_revenue": 10.6,
+    "ltm_ebitda": -0.8
+  },
+  {
+    "name": "Bluepeak Therapeutics",
+    "sector": "Healthcare",
+    "stage": "early_revenue",
+    "description": "Early-commercial Digital Health company, $3.4M revenue growing ~72%/yr and approaching breakeven. Scaling toward profitability.",
+    "capital_requested": 25.5,
+    "rolled_equity_min": 0.8,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 38.3,
+    "year_available": 7,
+    "outcome_distributions": [
+      {
+        "multiple": 0.4,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.8,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.3,
+        "prob": 0.35
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.25
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "sales and marketing expansion",
+    "available_cash": 5.4,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.079,
+    "subsector": "Healthcare / Digital Health",
+    "revenue_growth_3yr": 0.72,
+    "ltm_ebitda_margin": -0.15,
+    "ltm_revenue": 3.4,
+    "ltm_ebitda": -0.5
+  },
+  {
+    "name": "Oakridge Fabrication",
+    "sector": "Industrials",
+    "stage": "mature",
+    "description": "Established Manufacturing business with $44M revenue and 24% EBITDA margins, growing ~4%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 53.3,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.32,
+    "debt_capacity": 54.4,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 107.7,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "buy-and-build acquisitions",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.075,
+    "subsector": "Industrials / Manufacturing",
+    "revenue_growth_3yr": 0.04,
+    "ltm_ebitda_margin": 0.24,
+    "ltm_revenue": 43.8,
+    "ltm_ebitda": 10.5
+  },
+  {
+    "name": "Nimbus Cyber",
+    "sector": "Technology",
+    "stage": "mature",
+    "description": "Established DevTools business with $51M revenue and 28% EBITDA margins, growing ~6%/yr. Stable cash flows; a classic buyout candidate.",
+    "capital_requested": 80.9,
+    "rolled_equity_min": 0.0,
+    "rolled_equity_max": 0.28,
+    "debt_capacity": 88.7,
+    "is_cash_flow_positive": true,
+    "dividend_eligible": true,
+    "management_quality": "average",
+    "base_valuation": 169.6,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.7,
+        "prob": 0.1
+      },
+      {
+        "multiple": 0.9,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.1,
+        "prob": 0.4
+      },
+      {
+        "multiple": 1.4,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.8,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "management buyout / succession",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.046,
+    "subsector": "Technology / DevTools",
+    "revenue_growth_3yr": 0.06,
+    "ltm_ebitda_margin": 0.28,
+    "ltm_revenue": 50.7,
+    "ltm_ebitda": 14.2
   }
 ]
