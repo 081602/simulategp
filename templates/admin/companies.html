@@ -8,7 +8,7 @@
     <div class="d-flex align-items-center justify-content-between mb-4">
       <div>
         <h2 class="fw-bold mb-0"><i class="bi bi-buildings text-warning"></i> Manage Companies</h2>
-        <p class="text-secondary mb-0">{{ companies|length }} companies in the game</p>
+        <p class="text-secondary mb-0">Showing {{ companies|length }} of {{ total_count }} companies</p>
       </div>
       <div class="d-flex gap-2">
         <a href="{{ url_for('admin_return_assumptions') }}" class="btn btn-outline-warning">
@@ -20,28 +20,45 @@
       </div>
     </div>
 
-    <!-- Status Filter -->
+    <!-- Filters -->
     <div class="card border-secondary mb-4">
       <div class="card-body py-3">
-        <div class="d-flex gap-2 flex-wrap align-items-center">
-          <span class="text-secondary small me-1"><i class="bi bi-funnel"></i> Filter:</span>
-          <a href="{{ url_for('admin_companies') }}" class="btn btn-sm {% if not request.args.get('status') %}btn-warning text-dark{% else %}btn-outline-secondary{% endif %}">
-            All <span class="badge {% if not request.args.get('status') %}bg-dark{% else %}bg-secondary{% endif %} ms-1">{{ companies|length }}</span>
-          </a>
-          {% for status_val, status_label, badge_class in [
-            ('available', 'Available', 'bg-success'),
-            ('funded', 'Funded', 'bg-primary'),
-            ('liquidated', 'Exited', 'bg-secondary'),
-            ('bankrupt', 'Bankrupt', 'bg-danger')
-          ] %}
-          {% set count = companies | selectattr('status', 'equalto', status_val) | list | length %}
-          <a href="{{ url_for('admin_companies', status=status_val) }}"
-             class="btn btn-sm {% if request.args.get('status') == status_val %}btn-warning text-dark{% else %}btn-outline-secondary{% endif %}">
-            {{ status_label }}
-            <span class="badge {{ badge_class }} ms-1">{{ count }}</span>
-          </a>
-          {% endfor %}
-        </div>
+        <form method="GET" action="{{ url_for('admin_companies') }}" class="row g-2 align-items-end">
+          <div class="col-auto">
+            <label class="form-label small text-secondary mb-1"><i class="bi bi-funnel"></i> Status</label>
+            <select name="status" class="form-select form-select-sm bg-dark text-white border-secondary">
+              <option value="">All</option>
+              <option value="available"  {% if f_status == 'available' %}selected{% endif %}>Available</option>
+              <option value="funded"     {% if f_status == 'funded' %}selected{% endif %}>Funded</option>
+              <option value="liquidated" {% if f_status == 'liquidated' %}selected{% endif %}>Exited</option>
+              <option value="bankrupt"   {% if f_status == 'bankrupt' %}selected{% endif %}>Bankrupt</option>
+            </select>
+          </div>
+          <div class="col-auto">
+            <label class="form-label small text-secondary mb-1">Sector</label>
+            <select name="sector" class="form-select form-select-sm bg-dark text-white border-secondary">
+              <option value="">All</option>
+              {% for s in sectors %}
+              <option value="{{ s }}" {% if f_sector == s %}selected{% endif %}>{{ s }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-auto">
+            <label class="form-label small text-secondary mb-1">Stage</label>
+            <select name="stage" class="form-select form-select-sm bg-dark text-white border-secondary">
+              <option value="">All</option>
+              {% for st in stages %}
+              <option value="{{ st }}" {% if f_stage == st %}selected{% endif %}>{{ stage_labels[st] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-warning btn-sm text-dark fw-semibold">
+              <i class="bi bi-funnel-fill"></i> Apply
+            </button>
+            <a href="{{ url_for('admin_companies') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -76,9 +93,7 @@
               </tr>
             </thead>
             <tbody>
-              {% set status_filter = request.args.get('status') %}
               {% for company in companies %}
-              {% if not status_filter or company.status == status_filter %}
               <tr>
                 <td class="fw-semibold">{{ company.name }}</td>
                 <td class="text-light small">{{ company.sector }}</td>
@@ -114,7 +129,6 @@
                   </a>
                 </td>
               </tr>
-              {% endif %}
               {% else %}
               <tr>
                 <td colspan="10" class="text-center text-secondary py-4">

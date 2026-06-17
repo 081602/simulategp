@@ -1279,8 +1279,25 @@ def admin_return_assumptions():
 @admin_required
 def admin_companies():
     game = Game.query.first()
-    companies = GameCompany.query.filter_by(game_id=game.id).all() if game else []
-    return render_template('admin/companies.html', game=game, companies=companies)
+    f_status = request.args.get('status') or ''
+    f_sector = request.args.get('sector') or ''
+    f_stage = request.args.get('stage') or ''
+    companies, total_count = [], 0
+    if game:
+        base = GameCompany.query.filter_by(game_id=game.id)
+        total_count = base.count()
+        q = base
+        if f_status:
+            q = q.filter_by(status=f_status)
+        if f_sector:
+            q = q.filter_by(sector=f_sector)
+        if f_stage:
+            q = q.filter_by(stage=f_stage)
+        companies = q.order_by(GameCompany.year_available, GameCompany.name).all()
+    return render_template('admin/companies.html', game=game, companies=companies,
+                           total_count=total_count, sectors=SECTORS, stages=STAGES,
+                           stage_labels=STAGE_LABELS, f_status=f_status,
+                           f_sector=f_sector, f_stage=f_stage)
 
 
 @app.route('/admin/company/<int:company_id>/edit', methods=['GET', 'POST'])
