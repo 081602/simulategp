@@ -325,9 +325,10 @@ MARGIN_VOL_WEIGHT = 0.6       # 10 pts of above-typical margin -> -6% relative v
 VOL_FACTOR_RANGE = (0.75, 1.25)
 # Management quality tilts expected return (weak destroys more than strong adds)
 MANAGEMENT_RETURN_TILT = {'strong': 0.02, 'average': 0.0, 'weak': -0.03}
-# A generalist fund earns slightly less than a sector-focused fund: 5 fewer
-# points of expected return and 10% lower volatility on every holding.
-GENERALIST_RETURN_PENALTY = 0.05
+# A generalist fund earns slightly less than a sector-focused fund: its
+# expected return is 5% lower and its volatility 10% lower than the sector
+# mean (both relative — multiply the base assumption).
+GENERALIST_RETURN_FACTOR = 0.95
 GENERALIST_VOL_FACTOR = 0.90
 
 
@@ -368,15 +369,16 @@ def _roll_outcome(company: GameCompany, market_condition: float) -> float:
         sigma = assumption.std_dev
     else:
         mu, sigma = 0.10, 0.25
-    mu, sigma = _fundamentals_adjustment(company, mu, sigma)
-    mu += MANAGEMENT_RETURN_TILT.get(company.management_quality, 0.0)
-    # Generalist lead funds earn a touch less, at slightly lower volatility,
-    # than sector specialists (the mandate already keeps a sector-focused fund
-    # in its own sector, so the lead team's focus settles every case).
+    # Generalist lead funds see a sector mean 5% lower at 10% lower volatility
+    # than sector specialists (applied to the base before company-specific
+    # tilts). The mandate already keeps a focused fund in its own sector, so
+    # the lead team's focus settles every case.
     lead = company.lead_team
     if lead and lead.sector_focus == 'generalist':
-        mu -= GENERALIST_RETURN_PENALTY
+        mu *= GENERALIST_RETURN_FACTOR
         sigma *= GENERALIST_VOL_FACTOR
+    mu, sigma = _fundamentals_adjustment(company, mu, sigma)
+    mu += MANAGEMENT_RETURN_TILT.get(company.management_quality, 0.0)
     annual_return = random.gauss(mu, sigma)
     multiple = max(0.0, 1.0 + annual_return) * market_condition
     return multiple

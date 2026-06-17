@@ -18,9 +18,10 @@
     <div class="alert border-info text-light mb-4" style="background:rgba(13,202,240,0.1);">
       <i class="bi bi-info-circle-fill text-info me-2"></i>
       The values below are for <strong>sector-focused</strong> funds. A
-      <strong>generalist</strong> fund earns <strong>5 percentage points less</strong> expected
-      return and <strong>10% lower</strong> volatility (std dev &times; 0.9) on every sector/stage.
-      The resulting generalist figures are shown in <span class="text-info">blue</span> beneath each input.
+      <strong>generalist</strong> fund earns <strong>5% lower</strong> expected return
+      (mean &times; 0.95) and <strong>10% lower</strong> volatility (std dev &times; 0.9) on
+      every sector/stage. The resulting generalist figures are shown in
+      <span class="text-info">blue</span> beneath each input.
     </div>
 
     <form method="POST" action="{{ url_for('admin_return_assumptions') }}">
@@ -59,7 +60,7 @@
                            min="-100" max="500" step="0.1"
                            value="{{ '%.1f'|format(base_er) }}"
                            required>
-                    <div class="small text-info mt-1 gen-er">Gen: {{ '%.1f'|format(base_er - 5) }}%</div>
+                    <div class="small text-info mt-1 gen-er">Gen: {{ '%.1f'|format(base_er * 0.95) }}%</div>
                   </td>
                   <td class="text-center p-2">
                     <input type="number"
@@ -99,7 +100,7 @@
     var disp = inp.parentElement.querySelector(kind === 'er' ? '.gen-er' : '.gen-sd');
     if (!disp) return;
     if (!isFinite(v)) { disp.textContent = 'Gen: —'; return; }
-    var g = kind === 'er' ? (v - 5) : (v * 0.9);
+    var g = kind === 'er' ? (v * 0.95) : (v * 0.9);
     disp.textContent = 'Gen: ' + g.toFixed(1) + '%';
   }
   document.querySelectorAll('.er-input').forEach(function (i) {
