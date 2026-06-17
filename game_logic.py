@@ -780,6 +780,25 @@ def team_simple_return(team, game):
     total_value = realized + unrealized
     moic = (total_value / invested) if invested > 0 else 0.0
 
+    # Deal IRR — time-weighted return on capital actually DEPLOYED into deals
+    # (deal cash flows only, before fund fees/carry): the IRR twin of MOIC,
+    # and the deployed-capital counterpart to the committed-capital return.
+    deal_flows = {}
+    for tx in (FundTransaction.query.join(Fund, FundTransaction.fund_id == Fund.id)
+               .filter(Fund.team_id == team.id,
+                       FundTransaction.transaction_type.in_(
+                           ['investment', 'liquidation_proceeds', 'dividend_received']))
+               .all()):
+        deal_flows[tx.game_year] = deal_flows.get(tx.game_year, 0) + tx.amount
+    if unrealized > 0:  # value remaining holdings as a terminal inflow
+        deal_flows[game.current_year] = deal_flows.get(game.current_year, 0) + unrealized
+    if deal_flows:
+        cf = sorted(deal_flows.items())
+        base_year = cf[0][0]
+        deal_irr = calculate_irr([(yr - base_year, amt) for yr, amt in cf])
+    else:
+        deal_irr = 0.0
+
     return {
         'committed': committed,
         'available': available,
@@ -795,6 +814,7 @@ def team_simple_return(team, game):
         'realized': realized,
         'total_value': total_value,
         'moic': moic,
+        'deal_irr': deal_irr,
     }
 
 

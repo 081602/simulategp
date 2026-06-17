@@ -32,8 +32,9 @@
             </div>
             <div class="display-6 fw-bold {% if ret.moic >= 1 %}text-info{% else %}text-danger{% endif %}">
               {{ "%.2f"|format(ret.moic) }}&times;
+              <span class="fs-6 fw-normal text-light">&middot; {{ "%+.1f"|format(ret.deal_irr * 100) }}% Deal IRR</span>
             </div>
-            <div class="text-light small">how much the deals returned per $1 invested</div>
+            <div class="text-light small">deal return per $1 invested &mdash; Deal IRR is the same on a time-weighted (annual) basis, before fees</div>
           </div>
         </div>
       </div>
