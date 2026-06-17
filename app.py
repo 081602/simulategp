@@ -1294,10 +1294,27 @@ def admin_companies():
         if f_stage:
             q = q.filter_by(stage=f_stage)
         companies = q.order_by(GameCompany.year_available, GameCompany.name).all()
+
+    # Capital the market is seeking, by sector x stage: funds wanted for
+    # venture deals + asking (whole-company) valuation for buyouts.
+    summary = {s: {st: 0.0 for st in STAGES} for s in SECTORS}
+    sector_tot = {s: 0.0 for s in SECTORS}
+    stage_tot = {st: 0.0 for st in STAGES}
+    grand = 0.0
+    for c in companies:
+        val = (c.initial_val_ask or 0) if c.stage == 'mature' else (c.capital_requested or 0)
+        if c.sector in summary and c.stage in summary[c.sector]:
+            summary[c.sector][c.stage] += val
+            sector_tot[c.sector] += val
+            stage_tot[c.stage] += val
+            grand += val
+
     return render_template('admin/companies.html', game=game, companies=companies,
                            total_count=total_count, sectors=SECTORS, stages=STAGES,
                            stage_labels=STAGE_LABELS, f_status=f_status,
-                           f_sector=f_sector, f_stage=f_stage)
+                           f_sector=f_sector, f_stage=f_stage,
+                           summary=summary, sector_tot=sector_tot,
+                           stage_tot=stage_tot, grand=grand)
 
 
 @app.route('/admin/company/<int:company_id>/edit', methods=['GET', 'POST'])
