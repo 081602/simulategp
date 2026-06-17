@@ -38,7 +38,7 @@
           </div>
           <div class="col-4 col-md-2">
             <div class="text-light small">Debt Capacity</div>
-            <div class="fw-bold text-white">{% if company.debt_capacity > 0 %}${{ "{:,.1f}M".format(company.debt_capacity) }}{% else %}None{% endif %}</div>
+            <div class="fw-bold text-white">{% if company.stage != 'mature' %}<span class="text-secondary">N/A</span>{% elif company.debt_capacity > 0 %}${{ "{:,.1f}M".format(company.debt_capacity) }}{% else %}None{% endif %}</div>
           </div>
           <div class="col-4 col-md-2">
             <div class="text-light small">Aggressive Terms</div>
