@@ -30,7 +30,6 @@
           {% if company.status == 'available' %}<span class="badge bg-success">Available</span>
           {% elif company.status == 'funded' %}<span class="badge bg-primary">Funded</span>
           {% else %}<span class="badge bg-secondary">{{ company.status | title }}</span>{% endif %}
-          {% if company.is_cash_flow_positive %}<span class="badge bg-success">Cash Flow +</span>{% endif %}
           {% if company.dividend_eligible %}<span class="badge bg-info text-dark">Dividend Eligible</span>{% endif %}
           {% if company.in_distress %}<span class="badge bg-danger">In Distress</span>{% endif %}
           {% if company.flagged_for_liquidation %}<span class="badge bg-warning text-dark">Marked for Exit</span>{% endif %}
@@ -249,16 +248,6 @@
               </select>
             </div>
 
-            <div class="col-md-6 d-flex flex-column justify-content-end">
-              <div class="form-check form-switch mb-2">
-                <input class="form-check-input" type="checkbox" id="is_cash_flow_positive"
-                       name="is_cash_flow_positive" value="1"
-                       {% if company.is_cash_flow_positive %}checked{% endif %}>
-                <label class="form-check-label text-white" for="is_cash_flow_positive">
-                  <i class="bi bi-graph-up-arrow text-success me-1"></i> Cash Flow Positive
-                </label>
-              </div>
-            </div>
 
           </div>
         </div>

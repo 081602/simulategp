@@ -159,16 +159,6 @@
                     {% endif %}
                   </td>
                 </tr>
-                <tr>
-                  <td class="text-light">Cash Flow Positive</td>
-                  <td>
-                    {% if company.is_cash_flow_positive %}
-                      <i class="bi bi-check-circle-fill text-success"></i> Yes
-                    {% else %}
-                      <i class="bi bi-x-circle-fill text-danger"></i> No
-                    {% endif %}
-                  </td>
-                </tr>
                 {% if company.revenue_growth_3yr is not none or company.ltm_ebitda_margin is not none %}
                 <tr>
                   <td class="text-light">3-Yr Revenue Growth</td>

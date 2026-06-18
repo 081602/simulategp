@@ -240,6 +240,14 @@ class GameCompany(db.Model):
         return self.initial_val_ask
 
     @property
+    def net_annual_cash_flow(self):
+        """EBITDA less interest on outstanding debt (debt is interest-only).
+        Positive => the company generates cash. This is the derived proxy for
+        'cash flow positive' — there is no authored flag; EBITDA carries it."""
+        return ((self.ltm_ebitda or 0)
+                - (self.debt_outstanding or 0) * (self.debt_interest_rate or 0))
+
+    @property
     def enterprise_value(self):
         """Implied EV: equity value (latest valuation / ask) + debt - cash."""
         if self.latest_valuation is None:

@@ -803,6 +803,12 @@ def portfolio():
                            liquidated=liquidated)
 
 
+# Dividends are disabled in the game for now. The full implementation is kept
+# (issue_dividend route + the UI section in portfolio/company.html, gated on this
+# flag) so it can be re-enabled later by flipping this to True.
+DIVIDENDS_ENABLED = False
+
+
 @app.route('/portfolio/company/<int:company_id>')
 @login_required
 def portfolio_company(company_id):
@@ -848,6 +854,7 @@ def portfolio_company(company_id):
                            val_history=val_history,
                            is_lead=is_lead,
                            funds=funds,
+                           dividends_enabled=DIVIDENDS_ENABLED,
                            all_teams=all_teams)
 
 
@@ -890,14 +897,18 @@ def change_management(company_id):
 @app.route('/portfolio/company/<int:company_id>/dividend', methods=['POST'])
 @login_required
 def issue_dividend(company_id):
+    if not DIVIDENDS_ENABLED:
+        abort(404)
     game = Game.query.get(current_user.game_id)
     company = GameCompany.query.filter_by(id=company_id, game_id=game.id).first_or_404()
     deal = company.deal
 
     if deal.lead_team_id != current_user.id:
         abort(403)
-    if not company.is_cash_flow_positive:
-        flash('This company is not eligible for dividends.', 'warning')
+    if company.net_annual_cash_flow <= 0:
+        flash("This company isn't generating positive cash flow (its EBITDA "
+              "doesn't cover its debt interest), so it can't pay a dividend.",
+              'warning')
         return redirect(url_for('portfolio_company', company_id=company_id))
 
     # Max dividend = 20% of company funds
@@ -1345,7 +1356,6 @@ def admin_edit_company(company_id):
         company.status = request.form.get('status', company.status)
         company.management_quality = request.form.get('management_quality',
                                                        company.management_quality)
-        company.is_cash_flow_positive = 'is_cash_flow_positive' in request.form
 
         if 'revenue_growth_3yr' in request.form:
             rg = request.form.get('revenue_growth_3yr')
