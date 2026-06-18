@@ -88,8 +88,15 @@
                      min="0" step="0.1"
                      value="0" required>
               <div class="form-text text-light">
-                How much debt to load onto the company. There's no cap &mdash; but the company pays
-                interest every year, so too much debt can push it into distress.
+                How much debt to load onto the company &mdash; up to <strong>60% of the purchase
+                valuation</strong>. Interest is paid every year, so high leverage can push it into distress.
+              </div>
+              <div class="form-text">
+                <i class="bi bi-bank text-info"></i>
+                <span class="text-info">Debt is <strong id="debt_pct">&mdash;</strong> of the purchase valuation</span>
+                <span id="debt_cap_warning" class="text-danger fw-semibold d-none">
+                  &mdash; over the 60% limit; lower the debt or raise the price.
+                </span>
               </div>
               <div class="form-text">
                 <i class="bi bi-cash-coin text-info"></i>
@@ -310,7 +317,8 @@
   // Live equity check + interest for buyouts. The student chooses the debt; the
   // equity check is the consequence (buyer not diluted by the management pool):
   //   equity = (1 - pool) x (price - debt)
-  // Interest (interest-only) is debt x rate; if it tops EBITDA, warn of distress.
+  // Debt is capped at 60% of the purchase valuation; interest (interest-only) is
+  // debt x rate, and if it tops EBITDA we warn of distress.
   (function () {
     var equityOut = document.getElementById('equity_check');
     if (!equityOut) return;  // non-mature company
@@ -319,21 +327,29 @@
     var pool = {{ company.management_option_pct or 0 }};
     var rate = {{ debt_interest_rate if debt_interest_rate is defined else 0.08 }};
     var ebitda = {{ company.ltm_ebitda or 0 }};
+    var maxDebtPct = 0.60;
     var intOut = document.getElementById('annual_interest');
     var warning = document.getElementById('interest_warning');
+    var pctOut = document.getElementById('debt_pct');
+    var capWarning = document.getElementById('debt_cap_warning');
     function update() {
       var p = parseFloat(priceInput.value);
       var d = parseFloat(debtInput.value);
       if (!isFinite(d)) d = 0;
+      // Keep the spinner's ceiling at 60% of the current price.
+      if (isFinite(p) && p > 0) debtInput.max = (maxDebtPct * p).toFixed(1);
       if (!isFinite(p) || p <= 0 || pool >= 1 || d < 0 || d >= p) {
-        equityOut.textContent = '—'; intOut.textContent = '—';
-        warning.classList.add('d-none');
+        equityOut.textContent = '—'; intOut.textContent = '—'; pctOut.textContent = '—';
+        warning.classList.add('d-none'); capWarning.classList.add('d-none');
         return;
       }
       var equity = (1 - pool) * (p - d);
       var interest = d * rate;
+      var debtPct = d / p;
       equityOut.textContent = '$' + equity.toFixed(1) + 'M';
       intOut.textContent = '$' + interest.toFixed(1) + 'M';
+      pctOut.textContent = (debtPct * 100).toFixed(0) + '%';
+      capWarning.classList.toggle('d-none', debtPct <= maxDebtPct + 1e-9);
       warning.classList.toggle('d-none', interest <= ebitda);
     }
     priceInput.addEventListener('input', update);

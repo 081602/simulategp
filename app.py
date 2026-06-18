@@ -123,6 +123,12 @@ def dashboard():
                     .filter(TermSheet.status.in_(
                         ['pending', 'lead', 'fill_offered', 'coinvest_offered']))
                     .all())
+    # A won-lead term sheet keeps status 'lead' even after the deal closes, so
+    # only prompt to finalize while the deal is still awaiting finalization.
+    bid_activity = [ts for ts in bid_activity
+                    if ts.status != 'lead'
+                    or (ts.company.deal is not None
+                        and ts.company.deal.status == 'pending_finalization')]
     ret = team_simple_return(current_user, game)
     return render_template('dashboard.html',
                            game=game,
@@ -423,6 +429,10 @@ def refer_company(company_id):
     return redirect(url_for('company_detail', company_id=company_id))
 
 
+# Buyout leverage cap: debt may not exceed this share of the purchase valuation.
+MAX_DEBT_PCT = 0.60
+
+
 @app.route('/company/<int:company_id>/termsheet', methods=['GET', 'POST'])
 @login_required
 def create_term_sheet(company_id):
@@ -492,14 +502,15 @@ def create_term_sheet(company_id):
                     flash('Anti-dilution provisions not allowed for this company stage.', 'danger')
                     return redirect(request.url)
 
-            # Buyout debt has no cap — over-leverage is allowed and punishes
-            # itself (interest > EBITDA pushes the company into distress). Debt
-            # just has to leave some equity: 0 <= debt < purchase price.
+            # Buyout debt is capped at MAX_DEBT_PCT of the purchase valuation.
+            # (Enforced both ways: too much debt, or a price low enough that the
+            # chosen debt tops 60% of it, is rejected.)
             if company.stage == 'mature':
-                if debt_amount < 0 or debt_amount >= pre_money:
-                    flash(f'Debt must be between $0 and just under the '
-                          f'${pre_money:,.1f}M purchase price — you need to write '
-                          f'some equity.', 'danger')
+                max_debt = MAX_DEBT_PCT * pre_money
+                if debt_amount < 0 or debt_amount > max_debt + 1e-6:
+                    flash(f'Debt can be at most {MAX_DEBT_PCT * 100:.0f}% of the '
+                          f'${pre_money:,.1f}M purchase valuation (${max_debt:,.1f}M). '
+                          f'Lower the debt or raise the price.', 'danger')
                     return redirect(request.url)
 
             ts = TermSheet(
