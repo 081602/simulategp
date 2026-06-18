@@ -959,9 +959,11 @@ def locked_deal_economics(deal: Deal):
         #   => debt = price - equity / (1 - pool)
         rolled_pct = 0.0
         pool = company.management_option_pct or 0.0
+        # Debt is the buyer's choice (no capacity cap). It's recovered here from
+        # the stored equity check: equity = (1 - pool)(price - debt).
         implied = (final_pre_money - lead_ts.total_investment / (1 - pool)
                    if pool < 1 else final_pre_money)
-        debt_amount = max(0.0, min(implied, company.debt_capacity))
+        debt_amount = max(0.0, implied)
     else:
         # Venture: founders roll the full pre-money; the pool comes off their side.
         rolled_pct = lead_ts.rolled_equity_min

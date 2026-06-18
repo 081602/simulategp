@@ -451,15 +451,22 @@ def create_term_sheet(company_id):
     if request.method == 'POST':
         try:
             pre_money = float(request.form['pre_money_valuation'])
-            total_investment = float(request.form['total_investment'])
             if company.stage == 'mature':
-                # Buyout: sellers cash out 100% — no seller rollover. The
-                # management option pool is the only non-buyer equity.
+                # Buyout: the student chooses how much DEBT to load on; the
+                # equity check is the consequence. Sellers cash out 100% (no
+                # rollover); the management pool is the only non-buyer equity.
+                # equity = (1 - pool)(price - debt), so the buyer's stake is
+                # worth their full check and debt is recovered at finalize.
+                debt_amount = float(request.form.get('debt_amount') or 0)
+                pool = company.management_option_pct or 0.0
+                total_investment = ((1 - pool) * (pre_money - debt_amount)
+                                    if pool < 1 else (pre_money - debt_amount))
                 rolled_val = 0.0
             else:
                 # Venture: founders roll over ALL their equity (no secondary).
                 # Founder ownership is just their pre-money stake diluted by the
                 # new money = pre / post-money; not a choice the team makes.
+                total_investment = float(request.form['total_investment'])
                 post = pre_money + total_investment
                 rolled_val = (pre_money / post) if post > 0 else 0.0
             rolled_min = rolled_max = rolled_val
@@ -485,19 +492,14 @@ def create_term_sheet(company_id):
                     flash('Anti-dilution provisions not allowed for this company stage.', 'danger')
                     return redirect(request.url)
 
-            # Buyouts must be financeable: the debt the structure implies
-            # cannot exceed the company's capacity (terms are binding). The
-            # management pool plays the rollover role, so it sizes the debt:
-            #   debt = price - equity / (1 - pool)
+            # Buyout debt has no cap — over-leverage is allowed and punishes
+            # itself (interest > EBITDA pushes the company into distress). Debt
+            # just has to leave some equity: 0 <= debt < purchase price.
             if company.stage == 'mature':
-                pool = company.management_option_pct or 0.0
-                implied_debt = (pre_money - total_investment / (1 - pool)
-                                if pool < 1 else pre_money - total_investment)
-                if implied_debt > company.debt_capacity + 1e-6:
-                    flash(f'This structure implies ${implied_debt:,.1f}M of debt — '
-                          f'above {company.name}\'s ${company.debt_capacity:,.1f}M '
-                          f'capacity. Raise your equity check or lower the price.',
-                          'danger')
+                if debt_amount < 0 or debt_amount >= pre_money:
+                    flash(f'Debt must be between $0 and just under the '
+                          f'${pre_money:,.1f}M purchase price — you need to write '
+                          f'some equity.', 'danger')
                     return redirect(request.url)
 
             ts = TermSheet(

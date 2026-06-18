@@ -37,9 +37,9 @@
     {% set rolled = lead_ts.rolled_equity_min %}
     {% set pool = company.management_option_pct or 0 %}
     {% if is_buyout and pool < 1 %}
-      {# Management pool is the rollover piece: debt = price - equity / (1 - pool) #}
-      {% set implied_debt = [lead_ts.pre_money_valuation - lead_ts.total_investment / (1 - pool), 0] | max %}
-      {% set locked_debt = [implied_debt, company.debt_capacity] | min %}
+      {# Debt is the buyer's choice, recovered from the equity check (no cap):
+         debt = price - equity / (1 - pool) #}
+      {% set locked_debt = [lead_ts.pre_money_valuation - lead_ts.total_investment / (1 - pool), 0] | max %}
     {% else %}
       {% set locked_debt = 0.0 %}
     {% endif %}

@@ -136,18 +136,6 @@
                   {% endif %}
                 </tr>
                 <tr>
-                  <td class="text-light">Debt Capacity</td>
-                  <td class="fw-bold text-white">
-                    {% if company.stage != 'mature' %}
-                      <span class="text-secondary">N/A &mdash; buyouts only</span>
-                    {% elif company.debt_capacity > 0 %}
-                      ${{ "{:,.1f}M".format(company.debt_capacity) }}
-                    {% else %}
-                      <span class="text-secondary">None</span>
-                    {% endif %}
-                  </td>
-                </tr>
-                <tr>
                   <td class="text-light">{% if company.stage == 'mature' %}Seller Rollover{% else %}Founder Rolled Equity{% endif %}</td>
                   <td class="fw-bold text-white">
                     {% if company.stage == 'mature' %}

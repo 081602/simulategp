@@ -37,8 +37,8 @@
             <div class="fw-bold text-white">{% if company.stage == 'mature' %}{{ "%.1f"|format((company.management_option_pct or 0) * 100) }}%{% else %}<span class="text-secondary">All rolled</span>{% endif %}</div>
           </div>
           <div class="col-4 col-md-2">
-            <div class="text-light small">Debt Capacity</div>
-            <div class="fw-bold text-white">{% if company.stage != 'mature' %}<span class="text-secondary">N/A</span>{% elif company.debt_capacity > 0 %}${{ "{:,.1f}M".format(company.debt_capacity) }}{% else %}None{% endif %}</div>
+            <div class="text-light small">LTM EBITDA</div>
+            <div class="fw-bold text-white">{% if company.ltm_ebitda is not none %}${{ "{:,.1f}M".format(company.ltm_ebitda) }}{% else %}<span class="text-secondary">N/A</span>{% endif %}</div>
           </div>
           <div class="col-4 col-md-2">
             <div class="text-light small">Aggressive Terms</div>
@@ -80,31 +80,42 @@
               </div>
             </div>
 
+            {% if company.stage == 'mature' %}
             <div class="col-md-6">
-              <label for="total_investment" class="form-label fw-semibold text-white">{% if company.stage == 'mature' %}Equity Investment ($M){% else %}Total Investment Amount ($M){% endif %}</label>
+              <label for="debt_amount" class="form-label fw-semibold text-white">Debt ($M)</label>
+              <input type="number" class="form-control bg-dark text-white border-secondary"
+                     id="debt_amount" name="debt_amount"
+                     min="0" step="0.1"
+                     value="0" required>
+              <div class="form-text text-light">
+                How much debt to load onto the company. There's no cap &mdash; but the company pays
+                interest every year, so too much debt can push it into distress.
+              </div>
+              <div class="form-text">
+                <i class="bi bi-cash-coin text-info"></i>
+                <span class="text-info">Your equity check: <strong id="equity_check">&mdash;</strong></span>
+              </div>
+              <div class="form-text">
+                <i class="bi bi-percent text-info"></i>
+                <span class="text-info">Annual interest: <strong id="annual_interest">&mdash;</strong>
+                  vs LTM EBITDA ${{ "{:,.1f}M".format(company.ltm_ebitda or 0) }}</span>
+                <span id="interest_warning" class="text-danger fw-semibold d-none">
+                  &mdash; interest exceeds EBITDA; this deal will fall into distress!
+                </span>
+              </div>
+            </div>
+            {% else %}
+            <div class="col-md-6">
+              <label for="total_investment" class="form-label fw-semibold text-white">Total Investment Amount ($M)</label>
               <input type="number" class="form-control bg-dark text-white border-secondary"
                      id="total_investment" name="total_investment"
                      min="0" step="0.1"
-                     value="{{ "%.1f"|format([company.initial_val_ask - company.debt_capacity, 0]|max) if company.stage == 'mature' else company.capital_requested }}" required>
+                     value="{{ company.capital_requested }}" required>
               <div class="form-text text-light">
-                {% if company.stage == 'mature' %}
-                Your equity check. Debt (up to ${{ "{:,.1f}M".format(company.debt_capacity) }} capacity)
-                and the management option pool cover the rest of the price at finalization.
-                {% else %}
                 Funds Wanted: ${{ "{:,.1f}M".format(company.capital_requested) }}
-                {% endif %}
               </div>
-              {% if company.stage == 'mature' %}
-              <div class="form-text">
-                <i class="bi bi-bank text-info"></i>
-                <span class="text-info">Implied debt: <strong id="implied_debt">&mdash;</strong>
-                  (<strong id="implied_debt_pct">&mdash;</strong> of enterprise value)</span>
-                <span id="implied_debt_warning" class="text-danger fw-semibold d-none">
-                  &mdash; exceeds the company's ${{ "{:,.1f}M".format(company.debt_capacity) }} debt capacity!
-                </span>
-              </div>
-              {% endif %}
             </div>
+            {% endif %}
 
             {% if company.stage == 'mature' %}
             <div class="col-md-6">
@@ -296,34 +307,37 @@
     update();
   })();
 
-  // Live implied debt for buyouts. The management pool is the only non-buyer
-  // equity, so it plays the rollover role and sizes the debt:
-  //   price = equity + debt + management's piece, management = pool x (price - debt)
-  //   => debt = price - equity / (1 - pool)
+  // Live equity check + interest for buyouts. The student chooses the debt; the
+  // equity check is the consequence (buyer not diluted by the management pool):
+  //   equity = (1 - pool) x (price - debt)
+  // Interest (interest-only) is debt x rate; if it tops EBITDA, warn of distress.
   (function () {
-    var debtOut = document.getElementById('implied_debt');
-    if (!debtOut) return;  // non-mature company
+    var equityOut = document.getElementById('equity_check');
+    if (!equityOut) return;  // non-mature company
     var priceInput = document.getElementById('pre_money_valuation');
-    var equityInput = document.getElementById('total_investment');
+    var debtInput = document.getElementById('debt_amount');
     var pool = {{ company.management_option_pct or 0 }};
-    var pctOut = document.getElementById('implied_debt_pct');
-    var warning = document.getElementById('implied_debt_warning');
-    var capacity = {{ company.debt_capacity or 0 }};
+    var rate = {{ debt_interest_rate if debt_interest_rate is defined else 0.08 }};
+    var ebitda = {{ company.ltm_ebitda or 0 }};
+    var intOut = document.getElementById('annual_interest');
+    var warning = document.getElementById('interest_warning');
     function update() {
       var p = parseFloat(priceInput.value);
-      var e = parseFloat(equityInput.value);
-      if (!isFinite(p) || !isFinite(e) || p <= 0 || pool >= 1) {
-        debtOut.textContent = '—'; pctOut.textContent = '—';
+      var d = parseFloat(debtInput.value);
+      if (!isFinite(d)) d = 0;
+      if (!isFinite(p) || p <= 0 || pool >= 1 || d < 0 || d >= p) {
+        equityOut.textContent = '—'; intOut.textContent = '—';
         warning.classList.add('d-none');
         return;
       }
-      var implied = Math.max(0, p - e / (1 - pool));
-      debtOut.textContent = '$' + implied.toFixed(1) + 'M';
-      pctOut.textContent = (implied / p * 100).toFixed(0) + '%';
-      warning.classList.toggle('d-none', implied <= capacity);
+      var equity = (1 - pool) * (p - d);
+      var interest = d * rate;
+      equityOut.textContent = '$' + equity.toFixed(1) + 'M';
+      intOut.textContent = '$' + interest.toFixed(1) + 'M';
+      warning.classList.toggle('d-none', interest <= ebitda);
     }
     priceInput.addEventListener('input', update);
-    equityInput.addEventListener('input', update);
+    debtInput.addEventListener('input', update);
     update();
   })();
 </script>

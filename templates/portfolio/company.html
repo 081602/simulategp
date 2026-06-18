@@ -215,7 +215,7 @@
         <table class="table table-dark table-sm mb-0 align-middle">
           <tbody>
             <tr>
-              <td class="text-light">EBITDA <span class="text-secondary small">(annual cash the company generates)</span></td>
+              <td class="text-light">EBITDA <span class="text-secondary small">(proxy for annual cash the company generates in this simulation)</span></td>
               <td class="text-end fw-bold {% if ebitda < 0 %}text-danger{% else %}text-success{% endif %}">${{ "{:,.1f}M".format(ebitda) }}</td>
             </tr>
             {% if company.debt_outstanding and company.debt_outstanding > 0 %}

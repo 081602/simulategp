@@ -97,8 +97,8 @@
             </span>
           </div>
           <div class="col-md-3">
-            <div class="text-secondary small">Debt Capacity</div>
-            <span class="text-white">{% if company.debt_capacity %}${{ "{:,.1f}M".format(company.debt_capacity) }}{% else %}None{% endif %}</span>
+            <div class="text-secondary small">LTM EBITDA</div>
+            <span class="text-white">{% if company.ltm_ebitda is not none %}${{ "{:,.1f}M".format(company.ltm_ebitda) }}{% else %}&mdash;{% endif %}</span>
           </div>
           <div class="col-md-3">
             <div class="text-secondary small">{% if company.stage == 'mature' %}Seller Rollover{% else %}Founder Rolled Equity{% endif %}</div>
