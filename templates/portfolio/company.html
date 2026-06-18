@@ -19,11 +19,16 @@
       </div>
     </div>
 
-    {# Annual cash figures, reused by the distress banner and the cash card below.
-       Debt is interest-only: principal does not amortize, it's repaid at exit. #}
+    {# Annual cash figures (for the distress banner) and cumulative-since-
+       acquisition figures (for the cash card). Debt is interest-only, so
+       interest is constant each year; years held = one per crank in val_history. #}
     {% set ebitda = company.ltm_ebitda or 0 %}
     {% set interest = (company.debt_outstanding or 0) * (company.debt_interest_rate or 0) %}
     {% set net_cf = ebitda - interest %}
+    {% set years_held = val_history | length %}
+    {% set cum_ebitda = ebitda * years_held %}
+    {% set cum_interest = interest * years_held %}
+    {% set cum_net = cum_ebitda - cum_interest %}
 
     {% if company.in_distress %}
     <div class="alert alert-danger d-flex align-items-start gap-2 shadow-sm" role="alert">
@@ -209,25 +214,25 @@
     <div class="card border-secondary shadow mb-4">
       <div class="card-header border-secondary">
         <h6 class="mb-0 fw-semibold"><i class="bi bi-cash-stack text-warning"></i> Cash &amp; Debt Service
-          <span class="text-secondary small fw-normal">&mdash; annual</span></h6>
+          <span class="text-secondary small fw-normal">&mdash; cumulative since acquisition{% if years_held %} ({{ years_held }} year{{ 's' if years_held != 1 else '' }}){% endif %}</span></h6>
       </div>
       <div class="card-body p-0">
         <table class="table table-dark table-sm mb-0 align-middle">
           <tbody>
             <tr>
-              <td class="text-light">EBITDA <span class="text-secondary small">(proxy for annual cash the company generates in this simulation)</span></td>
-              <td class="text-end fw-bold {% if ebitda < 0 %}text-danger{% else %}text-success{% endif %}">${{ "{:,.1f}M".format(ebitda) }}</td>
+              <td class="text-light">Cumulative EBITDA <span class="text-secondary small">(proxy for cash generated since acquisition in this simulation)</span></td>
+              <td class="text-end fw-bold {% if cum_ebitda < 0 %}text-danger{% else %}text-success{% endif %}">${{ "{:,.1f}M".format(cum_ebitda) }}</td>
             </tr>
             {% if company.debt_outstanding and company.debt_outstanding > 0 %}
             <tr>
-              <td class="text-light">Debt Interest
-                <span class="text-secondary small">(interest-only &mdash; {{ "%.0f"|format((company.debt_interest_rate or 0) * 100) }}% on ${{ "{:,.1f}M".format(company.debt_outstanding) }})</span></td>
-              <td class="text-end text-danger">&minus;${{ "{:,.1f}M".format(interest) }}</td>
+              <td class="text-light">Cumulative Interest
+                <span class="text-secondary small">(interest-only &mdash; {{ "%.0f"|format((company.debt_interest_rate or 0) * 100) }}% on ${{ "{:,.1f}M".format(company.debt_outstanding) }}/yr)</span></td>
+              <td class="text-end text-danger">&minus;${{ "{:,.1f}M".format(cum_interest) }}</td>
             </tr>
             {% endif %}
             <tr class="border-top border-secondary">
-              <td class="fw-semibold text-white">Net Annual Cash Flow</td>
-              <td class="text-end fw-bold fs-6 {% if net_cf < 0 %}text-danger{% else %}text-success{% endif %}">{{ '+' if net_cf >= 0 else '' }}${{ "{:,.1f}M".format(net_cf) }}</td>
+              <td class="fw-semibold text-white">Net Cumulative Cash Flow</td>
+              <td class="text-end fw-bold fs-6 {% if cum_net < 0 %}text-danger{% else %}text-success{% endif %}">{{ '+' if cum_net >= 0 else '' }}${{ "{:,.1f}M".format(cum_net) }}</td>
             </tr>
             <tr>
               <td class="text-light">Company Cash on Hand</td>

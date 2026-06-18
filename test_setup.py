@@ -51,7 +51,10 @@ with app.test_request_context('/admin/setup', method='POST'):
                 initial_val_ask=cd['base_valuation'],
                 year_available=cd.get('year_available', 1),
                 reasons_for_funding=cd.get('reasons_for_funding'),
-                available_cash=cd.get('available_cash', 0.0),
+                # Non-mature companies start with $0 cash — they're raising it in
+                # the round. (Mature buyouts are cash-free at close too.)
+                available_cash=(0.0 if cd['stage'] != 'mature'
+                                else cd.get('available_cash', 0.0)),
                 founder_shares=cd.get('founder_shares', 10000000),
                 management_option_pct=cd.get('management_option_pct', 0.10),
                 revenue_growth_3yr=cd.get('revenue_growth_3yr'),

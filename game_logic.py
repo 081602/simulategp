@@ -937,8 +937,10 @@ def finalize_deal(deal: Deal, final_pre_money: float, equity_stakes_data: list,
         company.company_funds = 0.0
         company.available_cash = 0.0
     else:
-        # New money lands on the balance sheet alongside existing cash
-        company.company_funds = (company.available_cash or 0.0) + total_equity + debt_amount
+        # Venture: the company started with $0 cash and is raising it in the
+        # round, so the money invested IS its post-deal cash balance.
+        company.company_funds = total_equity + debt_amount
+        company.available_cash = 0.0
     company.year_funded = deal.game_year
 
     db.session.commit()
