@@ -52,7 +52,7 @@
             <tbody>
               {% for stake in stakes %}
               {% set company = stake.deal.company %}
-              {% set is_distressed = (company.latest_valuation or 0) < (company.funded_valuation or 0) * 0.5 %}
+              {% set is_distressed = company.in_distress %}
               <tr class="{% if is_distressed %}distress-row{% endif %}">
                 <td>
                   <a href="{{ url_for('portfolio_company', company_id=stake.deal.company_id) }}" class="text-warning fw-semibold text-decoration-none">
@@ -72,12 +72,12 @@
                 </td>
                 <td class="text-end fw-bold">{{ "%.1f"|format(stake.ownership_pct) }}%</td>
                 <td class="text-end">
-                  <span class="{% if is_distressed %}text-danger{% else %}text-white{% endif %} fw-semibold">
+                  <span class="text-white fw-semibold">
                     ${{ "{:,.1f}M".format(company.latest_valuation or 0) }}
                   </span>
                   {% if is_distressed %}
                   <div class="text-danger" style="font-size:0.7rem;">
-                    Funded at: ${{ "{:,.1f}M".format(company.funded_valuation or 0) }}
+                    <i class="bi bi-exclamation-triangle-fill"></i> Cash exhausted
                   </div>
                   {% endif %}
                 </td>

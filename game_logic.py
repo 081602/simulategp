@@ -267,13 +267,12 @@ def run_phase2_crank(game: Game):
         if company.ltm_ebitda is not None:
             company.company_funds += company.ltm_ebitda
 
-        # Debt service
-        if company.debt_outstanding > 0 and company.debt_years_remaining > 0:
-            annual_payment = company.debt_outstanding / company.debt_years_remaining
+        # Debt service: INTEREST ONLY (bullet loan). The principal does not
+        # amortize — it stays outstanding for the life of the hold and is repaid
+        # from sale proceeds at exit (the liquidation waterfall pays debt first).
+        if company.debt_outstanding > 0:
             interest = company.debt_outstanding * company.debt_interest_rate
-            company.debt_outstanding = max(0, company.debt_outstanding - annual_payment)
-            company.debt_years_remaining -= 1
-            company.company_funds -= (annual_payment + interest)
+            company.company_funds -= interest
 
         # Valuation wipeout -> immediate bankruptcy
         if (company.latest_valuation or 0) <= 0:
@@ -837,7 +836,10 @@ def _record_transaction(fund_id, tx_type, amount, description, year, company_id=
     db.session.add(tx)
 
 
-DEBT_TERM_YEARS = 5         # amortization horizon for deal debt
+# Deal debt is interest-only (no amortization); principal is repaid from sale
+# proceeds at exit. DEBT_TERM_YEARS is retained only to populate the legacy
+# debt_years_remaining column and is not used to amortize.
+DEBT_TERM_YEARS = 5
 DEBT_INTEREST_RATE = 0.08   # fixed market rate applied to all deal debt
 
 

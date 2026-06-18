@@ -76,7 +76,7 @@
           <div class="col-6 col-md-3">
             <div class="text-light small">Debt Financing</div>
             <div class="fw-bold fs-5">${{ "{:,.1f}M".format(locked_debt) }}
-              <span class="text-secondary small fw-normal">@ {{ "%.0f"|format(debt_rate * 100) }}%/yr, 5-yr</span>
+              <span class="text-secondary small fw-normal">@ {{ "%.0f"|format(debt_rate * 100) }}%/yr, interest-only (repaid at exit)</span>
             </div>
           </div>
           {% endif %}

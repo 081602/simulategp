@@ -19,6 +19,29 @@
       </div>
     </div>
 
+    {# Annual cash figures, reused by the distress banner and the cash card below.
+       Debt is interest-only: principal does not amortize, it's repaid at exit. #}
+    {% set ebitda = company.ltm_ebitda or 0 %}
+    {% set interest = (company.debt_outstanding or 0) * (company.debt_interest_rate or 0) %}
+    {% set net_cf = ebitda - interest %}
+
+    {% if company.in_distress %}
+    <div class="alert alert-danger d-flex align-items-start gap-2 shadow-sm" role="alert">
+      <i class="bi bi-exclamation-octagon-fill fs-4"></i>
+      <div>
+        <div class="fw-bold">In Financial Distress &mdash; cash exhausted</div>
+        <div class="small">
+          {{ company.name }} has run out of cash: its annual EBITDA of
+          <strong>${{ "{:,.1f}M".format(ebitda) }}</strong> doesn't cover its
+          <strong>${{ "{:,.1f}M".format(interest) }}</strong> of annual debt interest{% if net_cf < 0 %}
+          &mdash; a shortfall of <strong>${{ "{:,.1f}M".format(-net_cf) }}</strong> a year{% endif %}.
+          Note this is a <strong>cash</strong> problem, not a valuation one &mdash; the company can be appreciating and still
+          fail to service its debt. If cash is negative again next year it goes <strong>bankrupt</strong> and the investment is lost.
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
     {% if val_history %}
     <!-- Valuation History -->
     <div class="card border-secondary shadow mb-4">
@@ -153,12 +176,11 @@
         <div class="row g-4 text-center">
           <div class="col-6 col-md-3">
             <div class="text-light small mb-1">Latest Valuation</div>
-            {% set is_distressed = (company.latest_valuation or 0) < (company.funded_valuation or 0) * 0.5 %}
-            <div class="fw-bold fs-4 {% if is_distressed %}text-danger{% else %}text-success{% endif %}">
+            <div class="fw-bold fs-4 text-success">
               ${{ "{:,.1f}M".format(company.latest_valuation or 0) }}
             </div>
-            {% if is_distressed %}
-            <span class="badge bg-danger"><i class="bi bi-exclamation-triangle-fill"></i> Distressed</span>
+            {% if company.in_distress %}
+            <span class="badge bg-danger"><i class="bi bi-exclamation-triangle-fill"></i> In Distress</span>
             {% endif %}
           </div>
           <div class="col-6 col-md-3">
@@ -180,6 +202,46 @@
             <div class="fw-bold fs-4 text-info">${{ "{:,.1f}M".format(company.company_funds) }}</div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Cash & Debt Service -->
+    <div class="card border-secondary shadow mb-4">
+      <div class="card-header border-secondary">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-cash-stack text-warning"></i> Cash &amp; Debt Service
+          <span class="text-secondary small fw-normal">&mdash; annual</span></h6>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-dark table-sm mb-0 align-middle">
+          <tbody>
+            <tr>
+              <td class="text-light">EBITDA <span class="text-secondary small">(annual cash the company generates)</span></td>
+              <td class="text-end fw-bold {% if ebitda < 0 %}text-danger{% else %}text-success{% endif %}">${{ "{:,.1f}M".format(ebitda) }}</td>
+            </tr>
+            {% if company.debt_outstanding and company.debt_outstanding > 0 %}
+            <tr>
+              <td class="text-light">Debt Interest
+                <span class="text-secondary small">(interest-only &mdash; {{ "%.0f"|format((company.debt_interest_rate or 0) * 100) }}% on ${{ "{:,.1f}M".format(company.debt_outstanding) }})</span></td>
+              <td class="text-end text-danger">&minus;${{ "{:,.1f}M".format(interest) }}</td>
+            </tr>
+            {% endif %}
+            <tr class="border-top border-secondary">
+              <td class="fw-semibold text-white">Net Annual Cash Flow</td>
+              <td class="text-end fw-bold fs-6 {% if net_cf < 0 %}text-danger{% else %}text-success{% endif %}">{{ '+' if net_cf >= 0 else '' }}${{ "{:,.1f}M".format(net_cf) }}</td>
+            </tr>
+            <tr>
+              <td class="text-light">Company Cash on Hand</td>
+              <td class="text-end fw-bold text-info">${{ "{:,.1f}M".format(company.company_funds or 0) }}</td>
+            </tr>
+          </tbody>
+        </table>
+        {% if company.debt_outstanding and company.debt_outstanding > 0 %}
+        <div class="px-3 py-2 small {% if net_cf < 0 %}text-warning{% else %}text-secondary{% endif %} border-top border-secondary">
+          <i class="bi bi-info-circle"></i>
+          Debt is interest-only; the ${{ "{:,.1f}M".format(company.debt_outstanding) }} principal is repaid from sale proceeds at exit.
+          {% if net_cf < 0 %}Interest exceeds EBITDA, so the company burns cash each year &mdash; it will stay in distress and go bankrupt unless earnings grow.{% endif %}
+        </div>
+        {% endif %}
       </div>
     </div>
 

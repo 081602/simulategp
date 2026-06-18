@@ -93,7 +93,7 @@
           <div class="col-md-3">
             <div class="text-secondary small">Debt Outstanding</div>
             <span class="text-white">${{ "{:,.1f}M".format(company.debt_outstanding or 0) }}
-              {% if company.debt_outstanding %}<small class="text-secondary">({{ "%.1f"|format((company.debt_interest_rate or 0) * 100) }}%, {{ company.debt_years_remaining }} yrs left)</small>{% endif %}
+              {% if company.debt_outstanding %}<small class="text-secondary">({{ "%.1f"|format((company.debt_interest_rate or 0) * 100) }}%, interest-only)</small>{% endif %}
             </span>
           </div>
           <div class="col-md-3">
