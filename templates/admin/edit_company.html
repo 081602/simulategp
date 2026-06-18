@@ -101,8 +101,14 @@
             <span class="text-white">{% if company.debt_capacity %}${{ "{:,.1f}M".format(company.debt_capacity) }}{% else %}None{% endif %}</span>
           </div>
           <div class="col-md-3">
-            <div class="text-secondary small">Rolled Equity Range</div>
-            <span class="text-white">{{ "%.0f"|format(company.rolled_equity_min * 100) }}% &ndash; {{ "%.0f"|format(company.rolled_equity_max * 100) }}%</span>
+            <div class="text-secondary small">Founder Rolled Equity</div>
+            <span class="text-white">
+              {% if company.stage == 'mature' %}
+                {{ "%.0f"|format(company.rolled_equity_min * 100) }}% &ndash; {{ "%.0f"|format(company.rolled_equity_max * 100) }}%
+              {% else %}
+                <span class="text-secondary">All rolled (primary round)</span>
+              {% endif %}
+            </span>
           </div>
           <div class="col-md-3">
             <div class="text-secondary small">Founder Shares</div>
