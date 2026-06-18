@@ -40,10 +40,6 @@
             <div class="text-light small">LTM EBITDA</div>
             <div class="fw-bold text-white">{% if company.ltm_ebitda is not none %}${{ "{:,.1f}M".format(company.ltm_ebitda) }}{% else %}<span class="text-secondary">N/A</span>{% endif %}</div>
           </div>
-          <div class="col-4 col-md-2">
-            <div class="text-light small">Aggressive Terms</div>
-            <div class="fw-bold">{% if company.allows_aggressive_terms %}<i class="bi bi-check-circle-fill text-success"></i>{% else %}<i class="bi bi-x-circle-fill text-danger"></i>{% endif %}</div>
-          </div>
         </div>
       </div>
     </div>
