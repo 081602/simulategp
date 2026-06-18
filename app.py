@@ -453,9 +453,9 @@ def create_term_sheet(company_id):
             pre_money = float(request.form['pre_money_valuation'])
             total_investment = float(request.form['total_investment'])
             if company.stage == 'mature':
-                # Buyouts: seller rollover is a negotiable term.
-                rolled_val = float(request.form.get('rolled_equity')
-                                   or request.form.get('rolled_equity_min')) / 100
+                # Buyout: sellers cash out 100% — no seller rollover. The
+                # management option pool is the only non-buyer equity.
+                rolled_val = 0.0
             else:
                 # Venture: founders roll over ALL their equity (no secondary).
                 # Founder ownership is just their pre-money stake diluted by the
@@ -485,20 +485,14 @@ def create_term_sheet(company_id):
                     flash('Anti-dilution provisions not allowed for this company stage.', 'danger')
                     return redirect(request.url)
 
-            # Validate rolled equity within company's range (buyouts only;
-            # venture rollover is derived from pre/post, not entered)
-            if company.stage == 'mature' and not (
-                    company.rolled_equity_min <= rolled_min <= company.rolled_equity_max and
-                    company.rolled_equity_min <= rolled_max <= company.rolled_equity_max):
-                flash(f'Rolled equity must be between '
-                      f'{company.rolled_equity_min*100:.0f}% and '
-                      f'{company.rolled_equity_max*100:.0f}%.', 'danger')
-                return redirect(request.url)
-
             # Buyouts must be financeable: the debt the structure implies
-            # cannot exceed the company's capacity (terms are binding)
-            if company.stage == 'mature' and rolled_val < 1:
-                implied_debt = pre_money - total_investment / (1 - rolled_val)
+            # cannot exceed the company's capacity (terms are binding). The
+            # management pool plays the rollover role, so it sizes the debt:
+            #   debt = price - equity / (1 - pool)
+            if company.stage == 'mature':
+                pool = company.management_option_pct or 0.0
+                implied_debt = (pre_money - total_investment / (1 - pool)
+                                if pool < 1 else pre_money - total_investment)
                 if implied_debt > company.debt_capacity + 1e-6:
                     flash(f'This structure implies ${implied_debt:,.1f}M of debt — '
                           f'above {company.name}\'s ${company.debt_capacity:,.1f}M '

@@ -101,10 +101,10 @@
             <span class="text-white">{% if company.debt_capacity %}${{ "{:,.1f}M".format(company.debt_capacity) }}{% else %}None{% endif %}</span>
           </div>
           <div class="col-md-3">
-            <div class="text-secondary small">Founder Rolled Equity</div>
+            <div class="text-secondary small">{% if company.stage == 'mature' %}Seller Rollover{% else %}Founder Rolled Equity{% endif %}</div>
             <span class="text-white">
               {% if company.stage == 'mature' %}
-                {{ "%.0f"|format(company.rolled_equity_min * 100) }}% &ndash; {{ "%.0f"|format(company.rolled_equity_max * 100) }}%
+                <span class="text-secondary">None &ndash; sellers cash out 100%</span>
               {% else %}
                 <span class="text-secondary">All rolled (primary round)</span>
               {% endif %}

@@ -148,10 +148,10 @@
                   </td>
                 </tr>
                 <tr>
-                  <td class="text-light">Founder Rolled Equity</td>
+                  <td class="text-light">{% if company.stage == 'mature' %}Seller Rollover{% else %}Founder Rolled Equity{% endif %}</td>
                   <td class="fw-bold text-white">
                     {% if company.stage == 'mature' %}
-                      {{ "%.0f"|format(company.rolled_equity_min * 100) }}% -- {{ "%.0f"|format(company.rolled_equity_max * 100) }}%
+                      <span class="text-secondary">None — sellers cash out 100%</span>
                     {% else %}
                       <span class="text-secondary">All rolled (primary round)</span>
                     {% endif %}

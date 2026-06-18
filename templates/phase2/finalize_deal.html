@@ -35,8 +35,10 @@
 
     {% set is_buyout = company.stage == 'mature' %}
     {% set rolled = lead_ts.rolled_equity_min %}
-    {% if is_buyout and rolled < 1 %}
-      {% set implied_debt = [lead_ts.pre_money_valuation - lead_ts.total_investment / (1 - rolled), 0] | max %}
+    {% set pool = company.management_option_pct or 0 %}
+    {% if is_buyout and pool < 1 %}
+      {# Management pool is the rollover piece: debt = price - equity / (1 - pool) #}
+      {% set implied_debt = [lead_ts.pre_money_valuation - lead_ts.total_investment / (1 - pool), 0] | max %}
       {% set locked_debt = [implied_debt, company.debt_capacity] | min %}
     {% else %}
       {% set locked_debt = 0.0 %}
@@ -59,8 +61,12 @@
             <div class="fw-bold fs-5">${{ "{:,.1f}M".format(lead_ts.total_investment) }}</div>
           </div>
           <div class="col-6 col-md-3">
-            <div class="text-light small">{% if is_buyout %}Founder Rolled Equity{% else %}Founder Ownership{% endif %}</div>
-            <div class="fw-bold fs-5">{{ "%.0f"|format(rolled * 100) }}%{% if not is_buyout %} <span class="text-secondary small fw-normal">(all rolled)</span>{% endif %}</div>
+            <div class="text-light small">{% if is_buyout %}Your Ownership{% else %}Founder Ownership{% endif %}</div>
+            {% if is_buyout %}
+            <div class="fw-bold fs-5">{{ "%.1f"|format((1 - pool) * 100) }}% <span class="text-secondary small fw-normal">(sellers cash out)</span></div>
+            {% else %}
+            <div class="fw-bold fs-5">{{ "%.0f"|format(rolled * 100) }}% <span class="text-secondary small fw-normal">(all rolled)</span></div>
+            {% endif %}
           </div>
           <div class="col-6 col-md-3">
             <div class="text-light small">Management Option Pool</div>

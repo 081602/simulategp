@@ -33,8 +33,8 @@
             <div class="fw-bold text-white">{% if company.stage == 'mature' %}<span class="text-secondary">N/A</span>{% else %}${{ "{:,.1f}M".format(company.capital_requested) }}{% endif %}</div>
           </div>
           <div class="col-4 col-md-2">
-            <div class="text-light small">Rolled Equity</div>
-            <div class="fw-bold text-white">{% if company.stage == 'mature' %}{{ "%.0f"|format(company.rolled_equity_min * 100) }}%&mdash;{{ "%.0f"|format(company.rolled_equity_max * 100) }}%{% else %}<span class="text-secondary">All rolled</span>{% endif %}</div>
+            <div class="text-light small">{% if company.stage == 'mature' %}Mgmt Pool{% else %}Rolled Equity{% endif %}</div>
+            <div class="fw-bold text-white">{% if company.stage == 'mature' %}{{ "%.1f"|format((company.management_option_pct or 0) * 100) }}%{% else %}<span class="text-secondary">All rolled</span>{% endif %}</div>
           </div>
           <div class="col-4 col-md-2">
             <div class="text-light small">Debt Capacity</div>
@@ -89,7 +89,7 @@
               <div class="form-text text-light">
                 {% if company.stage == 'mature' %}
                 Your equity check. Debt (up to ${{ "{:,.1f}M".format(company.debt_capacity) }} capacity)
-                and seller rollover cover the rest of the price at finalization.
+                and the management option pool cover the rest of the price at finalization.
                 {% else %}
                 Funds Wanted: ${{ "{:,.1f}M".format(company.capital_requested) }}
                 {% endif %}
@@ -108,19 +108,14 @@
 
             {% if company.stage == 'mature' %}
             <div class="col-md-6">
-              <label for="rolled_equity" class="form-label fw-semibold text-white">Founder Rolled Equity (%)</label>
-              <div class="input-group">
-                <input type="number" class="form-control bg-dark text-white border-secondary"
-                       id="rolled_equity" name="rolled_equity"
-                       min="{{ company.rolled_equity_min * 100 }}"
-                       max="{{ company.rolled_equity_max * 100 }}"
-                       step="1"
-                       value="{{ "%.0f"|format(company.rolled_equity_min * 100) }}" required>
-                <span class="input-group-text bg-dark border-secondary text-secondary">%</span>
-              </div>
+              <label class="form-label fw-semibold text-white">Management Equity</label>
+              <div class="form-control bg-dark text-secondary border-secondary">Sellers cash out 100%</div>
               <div class="form-text text-light">
-                Sellers keep this share of the company. They will accept
-                {{ "%.0f"|format(company.rolled_equity_min * 100) }}%&ndash;{{ "%.0f"|format(company.rolled_equity_max * 100) }}%.
+                <i class="bi bi-info-circle text-info"></i>
+                You buy the whole company. Management retains a
+                {{ "%.1f"|format((company.management_option_pct or 0) * 100) }}% option pool
+                (the only equity not owned by you) &mdash; it's funded out of the price,
+                so your stake is worth your full equity check at close.
               </div>
             </div>
             {% else %}
@@ -301,36 +296,34 @@
     update();
   })();
 
-  // Live implied debt for buyouts. Sources must cover the price:
-  //   price = equity + debt + rollover, rollover = roll% x (price - debt)
-  //   => debt = price - equity / (1 - roll%)
+  // Live implied debt for buyouts. The management pool is the only non-buyer
+  // equity, so it plays the rollover role and sizes the debt:
+  //   price = equity + debt + management's piece, management = pool x (price - debt)
+  //   => debt = price - equity / (1 - pool)
   (function () {
     var debtOut = document.getElementById('implied_debt');
     if (!debtOut) return;  // non-mature company
     var priceInput = document.getElementById('pre_money_valuation');
     var equityInput = document.getElementById('total_investment');
-    var rollInput = document.getElementById('rolled_equity');
+    var pool = {{ company.management_option_pct or 0 }};
     var pctOut = document.getElementById('implied_debt_pct');
     var warning = document.getElementById('implied_debt_warning');
     var capacity = {{ company.debt_capacity or 0 }};
     function update() {
       var p = parseFloat(priceInput.value);
       var e = parseFloat(equityInput.value);
-      var roll = rollInput ? parseFloat(rollInput.value) / 100 : 0;
-      if (!isFinite(roll)) roll = 0;
-      if (!isFinite(p) || !isFinite(e) || p <= 0 || roll >= 1) {
+      if (!isFinite(p) || !isFinite(e) || p <= 0 || pool >= 1) {
         debtOut.textContent = '—'; pctOut.textContent = '—';
         warning.classList.add('d-none');
         return;
       }
-      var implied = Math.max(0, p - e / (1 - roll));
+      var implied = Math.max(0, p - e / (1 - pool));
       debtOut.textContent = '$' + implied.toFixed(1) + 'M';
       pctOut.textContent = (implied / p * 100).toFixed(0) + '%';
       warning.classList.toggle('d-none', implied <= capacity);
     }
     priceInput.addEventListener('input', update);
     equityInput.addEventListener('input', update);
-    if (rollInput) rollInput.addEventListener('input', update);
     update();
   })();
 </script>

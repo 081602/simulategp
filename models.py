@@ -410,14 +410,9 @@ class TermSheet(db.Model):
         if capital_requested > 0:
             shortfall_pct = max(0, (capital_requested - self.total_investment) / capital_requested)
             score -= shortfall_pct * 3
-        # Founders prefer keeping more: up to +2 pts at the top of the
-        # company's acceptable rolled-equity range. Buyouts only — in venture
-        # deals founders always roll 100%, so rollover isn't a competitive term.
-        if self.company and self.company.stage == 'mature':
-            span = (self.company.rolled_equity_max or 0) - (self.company.rolled_equity_min or 0)
-            if span > 0:
-                position = (self.rolled_equity_min - self.company.rolled_equity_min) / span
-                score += max(0.0, min(1.0, position)) * 2
+        # Rollover is no longer a competitive term: venture founders always roll
+        # 100% and buyout sellers always cash out 100%, so it never differentiates
+        # two offers and carries no scoring weight.
         return score
 
 

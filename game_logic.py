@@ -35,13 +35,6 @@ def _lead_loss_reason(company, losing_ts, winning_ts, winning_team):
         edges.append(f"more of the funding need covered "
                      f"(${winning_ts.total_investment:,.1f}M vs your "
                      f"${losing_ts.total_investment:,.1f}M of ${cap:,.1f}M sought)")
-    # Rollover is a negotiable term only for buyouts; in venture deals founders
-    # always roll 100%, so it never differentiates two offers.
-    if (company.stage == 'mature'
-            and winning_ts.rolled_equity_min > losing_ts.rolled_equity_min):
-        edges.append(f"founders keeping more equity "
-                     f"({winning_ts.rolled_equity_min * 100:.0f}% vs your "
-                     f"{losing_ts.rolled_equity_min * 100:.0f}%)")
 
     if edges:
         return (f"{company.name} chose {winning_team.firm_name}'s term sheet, "
@@ -900,17 +893,24 @@ def finalize_deal(deal: Deal, final_pre_money: float, equity_stakes_data: list,
     # Investor equity = (1 - rolled_equity_pct) allocated among investors
     investor_pool_pct = (1.0 - rolled_equity_pct) * 100.0  # total % available to investors
 
+    # The management option pool is carved out of the rolled (pre-money / seller)
+    # side first, so it does NOT dilute new investors — an investor's stake is
+    # worth their full investment at close. Only the excess, when the rolled side
+    # is smaller than the pool, falls through and dilutes the buyer (possible on a
+    # low-/no-rollover buyout; venture founders always roll the full pre-money,
+    # which dwarfs the pool, so it never reaches them).
+    pool_from_investors = max(0.0, mgmt_option_pct - rolled_equity_pct * 100.0)
+
     for s in equity_stakes_data:
-        ownership = (s['equity_invested'] / total_equity) * investor_pool_pct if total_equity > 0 else 0
-        # Adjust for management options
-        ownership_after_mgmt = ownership * (1.0 - mgmt_option_pct / 100.0)
+        share = (s['equity_invested'] / total_equity) if total_equity > 0 else 0
+        ownership = share * (investor_pool_pct - pool_from_investors)
 
         stake = DealEquity(
             deal_id=deal.id,
             team_id=s['team_id'],
             fund_id=s['fund_id'],
             equity_invested=s['equity_invested'],
-            ownership_pct=round(ownership_after_mgmt, 4),
+            ownership_pct=round(ownership, 4),
             is_lead=(s['team_id'] == deal.lead_team_id)
         )
         db.session.add(stake)
@@ -948,12 +948,21 @@ def locked_deal_economics(deal: Deal):
     company = deal.company
     lead_ts = deal.lead_term_sheet
     final_pre_money = lead_ts.pre_money_valuation
-    rolled_pct = lead_ts.rolled_equity_min
     mgmt_options = (company.management_option_pct or 0.0) * 100
-    if company.stage == 'mature' and rolled_pct < 1:
-        implied = final_pre_money - lead_ts.total_investment / (1 - rolled_pct)
+    if company.stage == 'mature':
+        # Buyout: sellers cash out 100% (no rollover). The management option pool
+        # is the only non-buyer equity and plays the rollover role in financing,
+        # so the buyer's stake is worth their full equity check:
+        #   price = equity + debt + management's piece, management = pool x (price - debt)
+        #   => debt = price - equity / (1 - pool)
+        rolled_pct = 0.0
+        pool = company.management_option_pct or 0.0
+        implied = (final_pre_money - lead_ts.total_investment / (1 - pool)
+                   if pool < 1 else final_pre_money)
         debt_amount = max(0.0, min(implied, company.debt_capacity))
     else:
+        # Venture: founders roll the full pre-money; the pool comes off their side.
+        rolled_pct = lead_ts.rolled_equity_min
         debt_amount = 0.0
     debt_rate = DEBT_INTEREST_RATE if debt_amount > 0 else 0.0
     return final_pre_money, rolled_pct, debt_amount, debt_rate, mgmt_options

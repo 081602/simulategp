@@ -222,10 +222,12 @@
                 </tr>
                 {% set ns.inv_total = ns.inv_total + eq.ownership_pct %}
                 {% endfor %}
-                {# Founders' rolled equity and the management option pool make up
-                   the rest of the cap table; the pool is the residual so the
+                {# Founders'/sellers' rolled equity and the management option pool
+                   make up the rest of the cap table. The option pool is carved
+                   out of the rolled (pre-money / seller) side, so founders =
+                   rolled less the pool; the pool is then the residual and the
                    rows always total 100%. #}
-                {% set founders_pct = (deal.rolled_equity_pct or 0) * 100 %}
+                {% set founders_pct = [(deal.rolled_equity_pct or 0) * 100 - (deal.mgmt_option_pct or 0), 0] | max %}
                 {% set mgmt_pct = 100 - founders_pct - ns.inv_total %}
                 {% if founders_pct > 0.05 %}
                 <tr class="text-secondary">
