@@ -9,6 +9,11 @@ from models import (db, Game, Team, Fund, GameCompany, CompanySearch,
                     ReturnAssumption, ebitda_to_cash)
 
 
+# Shown on the management-fee line (Fund Economics + GP Economics) when a fund
+# owes a fee but lacks the cash to pay it in full.
+MGMT_FEE_SHORTFALL_NOTE = "Insufficient capital at the fund level to pay management fee"
+
+
 # ---------------------------------------------------------------------------
 # Lead Selection Algorithm (Phase 1 Crank)
 # ---------------------------------------------------------------------------
@@ -240,15 +245,23 @@ def run_phase2_crank(game: Game):
             if not fund.is_active:
                 continue
             fee = fund.deployed_capital * fund.management_fee_rate
+            # No deployed capital ⇒ no fee owed ⇒ no line at all.
+            if fee <= 1e-9:
+                continue
             # Cap the fee at the cash the fund actually has — it can't pay more
             # than it holds, and the ledger should match the cash that moved.
             # (GPs can pull cash up via portfolio dividends to cover their fees.)
-            paid = min(fee, fund.available_capital)
-            if paid <= 1e-9:
-                continue
+            paid = min(fee, max(0.0, fund.available_capital))
+            # Always post the fee line so the year is visible even when the fund
+            # can't pay — show what was actually paid ($0 or partial) and flag the
+            # shortfall for transparency.
+            desc = f"Year {year} management fee"
+            if fee - paid > 1e-9:
+                desc += (f" — {MGMT_FEE_SHORTFALL_NOTE} "
+                         f"(${fee:,.1f}M owed, ${paid:,.1f}M paid)")
             fund.available_capital -= paid
-            _record_transaction(fund.id, 'management_fee', -paid,
-                                f"Year {year} management fee", year)
+            # Avoid negative zero so the ledger shows a clean "$0.0M".
+            _record_transaction(fund.id, 'management_fee', (-paid) or 0.0, desc, year)
 
     # 2. Simulate company performance for all active deals
     active_deals = (
@@ -715,7 +728,7 @@ def team_gp_income(team):
     """
     GP income earned by the firm (not the fund):
     - Management fees charged to their funds each year (on invested/deployed capital)
-    - minus operating costs (fund-size-based %, accrued each year fees are charged)
+    - minus operating costs (fund-size-based %, accrued each year the fund operates)
     - plus carried interest on a NET basis per fund: performance fee rate x
       max(0, total realized proceeds - total invested in realized deals),
       so losses (incl. bankruptcies) offset gains.
@@ -729,6 +742,17 @@ def team_gp_income(team):
     exits = []    # realized exits feeding the carry basis
     carry_funds = []  # per-fund carry calculation breakdown
 
+    # Last year that has actually been cranked. The crank advances current_year
+    # after every year except the final one (the game completes in place without
+    # advancing), so the cut-off depends on game status.
+    game = Game.query.get(team.game_id)
+    if game and game.status == 'completed':
+        last_cranked_year = game.current_year
+    elif game:
+        last_cranked_year = game.current_year - 1
+    else:
+        last_cranked_year = 0
+
     for fund in team.funds:
         opex_rate = fund.operating_cost_rate or 0
         fee_txs = (FundTransaction.query
@@ -739,16 +763,25 @@ def team_gp_income(team):
         for tx in fee_txs:
             mgmt_fees += abs(tx.amount)
             fund_mgmt_fees += abs(tx.amount)
+            fee_desc = f'Management fee earned — {fund.name}'
+            # Surface a fund-level shortfall in the GP ledger too.
+            if tx.description and MGMT_FEE_SHORTFALL_NOTE.lower() in tx.description.lower():
+                fee_desc = f'{fund.name} — {tx.description}'
             ledger.append({'year': tx.game_year, 'kind': 'fee',
-                           'description': f'Management fee earned — {fund.name}',
+                           'description': fee_desc,
                            'amount': abs(tx.amount)})
-            # Opex accrues for each year the fund operated
-            opex = fund.total_capital * opex_rate
-            operating_costs += opex
-            ledger.append({'year': tx.game_year, 'kind': 'opex',
-                           'description': f'Operating costs — {fund.name} '
-                                          f'({opex_rate * 100:.2f}% of committed)',
-                           'amount': -opex})
+
+        # Operating costs are the GP's running expenses — incurred every year the
+        # fund operates (vintage through the last cranked year), independent of
+        # whether a management fee was charged or paid that year.
+        if opex_rate:
+            for op_year in range(fund.year_raised, last_cranked_year + 1):
+                opex = fund.total_capital * opex_rate
+                operating_costs += opex
+                ledger.append({'year': op_year, 'kind': 'opex',
+                               'description': f'Operating costs — {fund.name} '
+                                              f'({opex_rate * 100:.2f}% of committed)',
+                               'amount': -opex})
 
         # Net realized result across this fund's exited deals (carry basis)
         stakes = (DealEquity.query
