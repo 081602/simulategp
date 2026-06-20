@@ -1788,11 +1788,17 @@ def admin_set_market():
     return redirect(url_for('admin_dashboard'))
 
 
-@app.route('/admin/leaderboard')
-@login_required
-@admin_required
-def admin_leaderboard():
-    game = Game.query.first()
+# Sortable leaderboard columns -> key into each team's row dict.
+LEADERBOARD_SORTS = {
+    'committed': lambda x: x['ret']['annualized'],   # Return on Committed Capital
+    'invested': lambda x: x['ret']['moic'],          # Return on Invested Capital
+    'gp': lambda x: x['gp_income']['per_partner'],   # GP Income / Partner
+}
+
+
+def _leaderboard_team_data(game, sort='committed'):
+    """Build the ranked per-team rows for the leaderboard. Shared by the admin
+    view and the post-game team view. `sort` selects the ranking column."""
     teams = Team.query.filter_by(game_id=game.id, is_admin=False).all()
     team_data = []
     for team in teams:
@@ -1803,6 +1809,11 @@ def admin_leaderboard():
                   .filter(DealEquity.team_id == team.id, Deal.status == 'active')
                   .all())
         portfolio_val = sum(s.current_value for s in stakes)
+        closed_count = (DealEquity.query
+                        .join(Deal, DealEquity.deal_id == Deal.id)
+                        .filter(DealEquity.team_id == team.id,
+                                Deal.status.in_(['liquidated', 'bankrupt']))
+                        .count())
 
         ret = team_simple_return(team, game)
         gp_income = team_gp_income(team)
@@ -1814,12 +1825,43 @@ def admin_leaderboard():
             'deployed': total_deployed,
             'portfolio_value': portfolio_val,
             'reputation': team.reputation,
-            'deal_count': len(stakes),
+            'active_deals': len(stakes),
+            'closed_deals': closed_count,
             'gp_income': gp_income,
         })
 
-    team_data.sort(key=lambda x: x['ret']['annualized'], reverse=True)
-    return render_template('admin/leaderboard.html', game=game, team_data=team_data)
+    keyfn = LEADERBOARD_SORTS.get(sort, LEADERBOARD_SORTS['committed'])
+    team_data.sort(key=keyfn, reverse=True)
+    return team_data
+
+
+@app.route('/admin/leaderboard')
+@login_required
+@admin_required
+def admin_leaderboard():
+    game = Game.query.first()
+    sort = request.args.get('sort', 'committed')
+    if sort not in LEADERBOARD_SORTS:
+        sort = 'committed'
+    return render_template('admin/leaderboard.html', game=game, sort=sort,
+                           team_data=_leaderboard_team_data(game, sort))
+
+
+@app.route('/leaderboard')
+@login_required
+def leaderboard():
+    """Team-facing leaderboard — available to everyone once the game is over."""
+    if current_user.is_admin:
+        return redirect(url_for('admin_leaderboard'))
+    game = Game.query.get(current_user.game_id)
+    if not game or not game.is_complete:
+        flash('The leaderboard opens once the game is complete.', 'info')
+        return redirect(url_for('dashboard'))
+    sort = request.args.get('sort', 'committed')
+    if sort not in LEADERBOARD_SORTS:
+        sort = 'committed'
+    return render_template('admin/leaderboard.html', game=game, sort=sort,
+                           team_data=_leaderboard_team_data(game, sort))
 
 
 # ---------------------------------------------------------------------------

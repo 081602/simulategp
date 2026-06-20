@@ -2,15 +2,22 @@
 {% block title %}Leaderboard{% endblock %}
 
 {% block content %}
+{% set sort_labels = {'committed': 'Return on Committed Capital', 'invested': 'Return on Invested Capital', 'gp': 'GP Income / Partner'} %}
+{% macro sort_metric(item, sort) %}
+  {%- if sort == 'invested' -%}{{ "%.2f"|format(item.ret.moic) }}&times; MOIC
+  {%- elif sort == 'gp' -%}${{ "{:,.2f}M".format(item.gp_income.per_partner) }} / partner
+  {%- else -%}{{ "%+.1f"|format(item.ret.annualized * 100) }}% / yr
+  {%- endif -%}
+{% endmacro %}
 <div class="row justify-content-center">
   <div class="col-lg-12">
 
     <div class="d-flex align-items-center justify-content-between mb-4">
       <div>
         <h2 class="fw-bold mb-0"><i class="bi bi-trophy text-warning"></i> Leaderboard</h2>
-        <p class="text-secondary mb-0">Year {{ game.current_year }} &mdash; Ranked by Annualized Return</p>
+        <p class="text-secondary mb-0">Year {{ game.current_year }} &mdash; Ranked by {{ sort_labels[sort] }}</p>
       </div>
-      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+      <a href="{{ url_for('admin_dashboard') if current_user.is_admin else url_for('dashboard') }}" class="btn btn-outline-secondary">
         <i class="bi bi-arrow-left me-1"></i> Dashboard
       </a>
     </div>
@@ -24,7 +31,7 @@
           <div class="card-body pt-4">
             <div class="display-4 mb-2"><i class="bi bi-2-circle-fill text-secondary"></i></div>
             <div class="fw-bold fs-5">{{ team_data[1].team.firm_name }}</div>
-            <div class="text-secondary small mb-2">{{ "%+.1f"|format(team_data[1].ret.annualized * 100) }}% / yr</div>
+            <div class="text-secondary small mb-2">{{ sort_metric(team_data[1], sort) }}</div>
             <div class="text-success fw-bold">${{ "{:,.1f}M".format(team_data[1].ret.net_value) }}</div>
             <div class="text-light small">Net to LPs</div>
           </div>
@@ -36,7 +43,7 @@
           <div class="card-body pt-4">
             <div class="display-3 mb-2"><i class="bi bi-trophy-fill text-warning"></i></div>
             <div class="fw-bold fs-4 text-warning">{{ team_data[0].team.firm_name }}</div>
-            <div class="text-warning mb-2">{{ "%+.1f"|format(team_data[0].ret.annualized * 100) }}% / yr</div>
+            <div class="text-warning mb-2">{{ sort_metric(team_data[0], sort) }}</div>
             <div class="text-success fw-bold fs-5">${{ "{:,.1f}M".format(team_data[0].ret.net_value) }}</div>
             <div class="text-light small">Net to LPs</div>
           </div>
@@ -48,7 +55,7 @@
           <div class="card-body pt-4">
             <div class="display-4 mb-2"><i class="bi bi-3-circle-fill" style="color:#cd7f32;"></i></div>
             <div class="fw-bold fs-5">{{ team_data[2].team.firm_name }}</div>
-            <div class="text-secondary small mb-2">{{ "%+.1f"|format(team_data[2].ret.annualized * 100) }}% / yr</div>
+            <div class="text-secondary small mb-2">{{ sort_metric(team_data[2], sort) }}</div>
             <div class="text-success fw-bold">${{ "{:,.1f}M".format(team_data[2].ret.net_value) }}</div>
             <div class="text-light small">Net to LPs</div>
           </div>
@@ -66,14 +73,27 @@
               <tr>
                 <th class="text-center" style="width:60px;">Rank</th>
                 <th>Firm Name</th>
-                <th class="text-end">Annualized Return</th>
-                <th class="text-end">MOIC / Deal IRR</th>
+                <th class="text-end">
+                  <a href="{{ url_for(request.endpoint, sort='committed') }}" class="text-light text-decoration-none {% if sort == 'committed' %}fw-bold{% endif %}">
+                    Return on Committed Capital{% if sort == 'committed' %} <i class="bi bi-caret-down-fill"></i>{% endif %}
+                  </a>
+                </th>
+                <th class="text-end">
+                  <a href="{{ url_for(request.endpoint, sort='invested') }}" class="text-light text-decoration-none {% if sort == 'invested' %}fw-bold{% endif %}">
+                    Return on Invested Capital{% if sort == 'invested' %} <i class="bi bi-caret-down-fill"></i>{% endif %}
+                  </a>
+                </th>
                 <th class="text-end">Net to LPs</th>
                 <th class="text-end">Total Capital</th>
                 <th class="text-end">Available Capital</th>
                 <th class="text-end">Portfolio Value</th>
-                <th class="text-end">GP Income / Partner</th>
-                <th class="text-center"># Deals</th>
+                <th class="text-end">
+                  <a href="{{ url_for(request.endpoint, sort='gp') }}" class="text-light text-decoration-none {% if sort == 'gp' %}fw-bold{% endif %}">
+                    GP Income / Partner{% if sort == 'gp' %} <i class="bi bi-caret-down-fill"></i>{% endif %}
+                  </a>
+                </th>
+                <th class="text-center">Active Deals</th>
+                <th class="text-center">Closed Deals</th>
               </tr>
             </thead>
             <tbody>
@@ -125,12 +145,15 @@
                   </div>
                 </td>
                 <td class="text-center">
-                  <span class="badge bg-secondary">{{ item.deal_count }}</span>
+                  <span class="badge bg-success">{{ item.active_deals }}</span>
+                </td>
+                <td class="text-center">
+                  <span class="badge bg-secondary">{{ item.closed_deals }}</span>
                 </td>
               </tr>
               {% else %}
               <tr>
-                <td colspan="10" class="text-center text-secondary py-4">
+                <td colspan="11" class="text-center text-secondary py-4">
                   <i class="bi bi-trophy fs-3 d-block mb-2"></i>
                   No team data available
                 </td>

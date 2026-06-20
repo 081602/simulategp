@@ -56,6 +56,12 @@
           <a class="nav-link {% if request.endpoint == 'firm_directory' %}active{% endif %}"
              href="{{ url_for('firm_directory') }}"><i class="bi bi-building"></i> Firms</a>
         </li>
+        {% if game and game.is_complete %}
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint == 'leaderboard' %}active{% endif %}"
+             href="{{ url_for('leaderboard') }}"><i class="bi bi-trophy"></i> Leaderboard</a>
+        </li>
+        {% endif %}
       </ul>
       <ul class="navbar-nav">
         <li class="nav-item">
