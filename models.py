@@ -188,6 +188,7 @@ class GameCompany(db.Model):
     year_5_val = db.Column(db.Float, nullable=True)
     year_6_val = db.Column(db.Float, nullable=True)
     year_7_val = db.Column(db.Float, nullable=True)
+    year_ebitdas = db.Column(db.Text, default='{}')   # JSON {year: ebitda} per crank
     year_available = db.Column(db.Integer, default=1)
     year_funded = db.Column(db.Integer, nullable=True)
     status = db.Column(db.String(30), default='available')
@@ -227,6 +228,16 @@ class GameCompany(db.Model):
     def set_year_val(self, year, value):
         if 1 <= year <= self.MAX_TRACKED_YEARS:
             setattr(self, f'year_{year}_val', value)
+
+    def get_year_ebitda(self, year):
+        """EBITDA recorded for a given crank year (evolves with the return)."""
+        data = json.loads(self.year_ebitdas) if self.year_ebitdas else {}
+        return data.get(str(year))
+
+    def set_year_ebitda(self, year, value):
+        data = json.loads(self.year_ebitdas) if self.year_ebitdas else {}
+        data[str(year)] = value
+        self.year_ebitdas = json.dumps(data)
 
     @property
     def latest_valuation(self):

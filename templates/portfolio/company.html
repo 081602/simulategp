@@ -19,16 +19,11 @@
       </div>
     </div>
 
-    {# Annual cash figures (for the distress banner) and cumulative-since-
-       acquisition figures (for the cash card). Debt is interest-only, so
-       interest is constant each year; years held = one per crank in val_history. #}
+    {# Annual cash figures for the distress banner (interest-only, so constant
+       each year). The year-by-year cash register is built in the route. #}
     {% set ebitda = company.ltm_ebitda or 0 %}
     {% set interest = (company.debt_outstanding or 0) * (company.debt_interest_rate or 0) %}
     {% set net_cf = ebitda - interest %}
-    {% set years_held = val_history | length %}
-    {% set cum_ebitda = ebitda * years_held %}
-    {% set cum_interest = interest * years_held %}
-    {% set cum_net = cum_ebitda - cum_interest %}
 
     {% if company.in_distress %}
     <div class="alert alert-danger d-flex align-items-start gap-2 shadow-sm" role="alert">
@@ -210,44 +205,52 @@
       </div>
     </div>
 
-    <!-- Cash & Debt Service -->
+    <!-- Cash Register -->
     <div class="card border-secondary shadow mb-4">
       <div class="card-header border-secondary">
-        <h6 class="mb-0 fw-semibold"><i class="bi bi-cash-stack text-warning"></i> Cash &amp; Debt Service
-          <span class="text-secondary small fw-normal">&mdash; cumulative since acquisition{% if years_held %} ({{ years_held }} year{{ 's' if years_held != 1 else '' }}){% endif %}</span></h6>
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-cash-stack text-warning"></i> Cash Register
+          <span class="text-secondary small fw-normal">&mdash; cash balance by year</span></h6>
       </div>
       <div class="card-body p-0">
+        <div class="px-3 pt-2 small text-secondary">
+          Acquired in Year {{ company.year_funded }} with
+          <strong class="text-white">${{ "{:,.1f}M".format(register_start) }}</strong> of cash
+          {% if company.stage == 'mature' %}(cash-free buyout &mdash; starts at $0, lives off earnings){% else %}(the capital invested in the round){% endif %}.
+          EBITDA is added and interest paid each year (debt is interest-only).
+        </div>
+        {% if cash_register %}
         <table class="table table-dark table-sm mb-0 align-middle">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th class="text-end">Opening Cash</th>
+              <th class="text-end">EBITDA</th>
+              <th class="text-end">Interest</th>
+              <th class="text-end">Closing Cash</th>
+            </tr>
+          </thead>
           <tbody>
+            {% for r in cash_register %}
             <tr>
-              <td class="text-light">Cumulative EBITDA <span class="text-secondary small">(proxy for cash generated since acquisition in this simulation)</span></td>
-              <td class="text-end fw-bold {% if cum_ebitda < 0 %}text-danger{% else %}text-success{% endif %}">${{ "{:,.1f}M".format(cum_ebitda) }}</td>
+              <td>Year {{ r.year }}{% if r.distressed %} <span class="badge bg-danger">distress</span>{% endif %}</td>
+              <td class="text-end text-secondary">${{ "{:,.1f}M".format(r.opening) }}</td>
+              <td class="text-end {% if r.ebitda < 0 %}text-danger{% else %}text-success{% endif %}">{% if r.ebitda < 0 %}&minus;${{ "{:,.1f}M".format(-r.ebitda) }}{% else %}+${{ "{:,.1f}M".format(r.ebitda) }}{% endif %}</td>
+              <td class="text-end {% if r.interest > 0 %}text-danger{% else %}text-secondary{% endif %}">{% if r.interest > 0 %}&minus;${{ "{:,.1f}M".format(r.interest) }}{% else %}&mdash;{% endif %}</td>
+              <td class="text-end fw-bold {% if r.closing <= 0 %}text-danger{% else %}text-white{% endif %}">${{ "{:,.1f}M".format(r.closing) }}</td>
             </tr>
-            {% if company.debt_outstanding and company.debt_outstanding > 0 %}
-            <tr>
-              <td class="text-light">Cumulative Interest
-                <span class="text-secondary small">(interest-only &mdash; {{ "%.0f"|format((company.debt_interest_rate or 0) * 100) }}% on ${{ "{:,.1f}M".format(company.debt_outstanding) }}/yr)</span></td>
-              <td class="text-end text-danger">&minus;${{ "{:,.1f}M".format(cum_interest) }}</td>
-            </tr>
-            {% endif %}
-            <tr class="border-top border-secondary">
-              <td class="fw-semibold text-white">Net Cumulative Cash Flow</td>
-              <td class="text-end fw-bold fs-6 {% if cum_net < 0 %}text-danger{% else %}text-success{% endif %}">{{ '+' if cum_net >= 0 else '' }}${{ "{:,.1f}M".format(cum_net) }}</td>
-            </tr>
-            <tr>
-              <td class="text-light">Company Cash on Hand</td>
-              <td class="text-end fw-bold text-info">${{ "{:,.1f}M".format(company.company_funds or 0) }}</td>
-            </tr>
+            {% endfor %}
           </tbody>
         </table>
-        {% if company.debt_outstanding and company.debt_outstanding > 0 %}
-        <div class="px-3 py-2 small {% if net_cf < 0 %}text-warning{% else %}text-secondary{% endif %} border-top border-secondary">
-          <i class="bi bi-info-circle"></i>
-          Debt is interest-only; the ${{ "{:,.1f}M".format(company.debt_outstanding) }} principal is repaid from sale proceeds at exit.
-          {% if net_cf < 0 %}Interest exceeds EBITDA, so the company burns cash each year &mdash; it will stay in distress and go bankrupt unless earnings grow.{% endif %}
-        </div>
+        {% else %}
+        <div class="px-3 py-3 text-secondary small">No full year has elapsed since acquisition yet.</div>
         {% endif %}
       </div>
+      {% if company.debt_outstanding and company.debt_outstanding > 0 %}
+      <div class="card-footer border-secondary text-secondary small">
+        Debt is interest-only; the ${{ "{:,.1f}M".format(company.debt_outstanding) }} principal is repaid from sale proceeds at exit.
+        A closing balance of $0 means cash was exhausted that year (distress) &mdash; a second year underwater is bankruptcy.
+      </div>
+      {% endif %}
     </div>
 
     <div class="row g-4">

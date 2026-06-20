@@ -855,6 +855,33 @@ def portfolio_company(company_id):
                                 'ret': (v / prev - 1) if prev else None})
             prev = v
 
+    # Cash register: a running balance by year, mirroring the cash engine.
+    # Opening = capital invested (venture) or $0 (cash-free buyout); each year
+    # adds EBITDA and subtracts interest-only debt interest, clamped at $0 on
+    # cash exhaustion (which flags distress). One row per year that has rolled.
+    cash_register = []
+    register_start = 0.0
+    if company.year_funded and company.funded_valuation:
+        is_buyout = company.stage == 'mature'
+        register_start = 0.0 if is_buyout else \
+            (deal.total_equity_invested or 0.0) + (deal.debt_amount or 0.0)
+        annual_interest = (company.debt_outstanding or 0.0) * (company.debt_interest_rate or 0.0)
+        bal = register_start
+        for row in val_history:
+            # EBITDA recorded for that year (it evolves with the return). Legacy
+            # deals cranked before per-year tracking fall back to current EBITDA.
+            ebitda_y = company.get_year_ebitda(row['year'])
+            if ebitda_y is None:
+                ebitda_y = company.ltm_ebitda or 0.0
+            opening = bal
+            raw_close = opening + ebitda_y - annual_interest
+            distressed = raw_close < 0
+            closing = max(0.0, raw_close)
+            cash_register.append({'year': row['year'], 'opening': opening,
+                                  'ebitda': ebitda_y, 'interest': annual_interest,
+                                  'closing': closing, 'distressed': distressed})
+            bal = closing
+
     return render_template('portfolio/company.html',
                            game=game,
                            company=company,
@@ -863,6 +890,8 @@ def portfolio_company(company_id):
                            waterfall=waterfall,
                            return_assumption=return_assumption,
                            val_history=val_history,
+                           cash_register=cash_register,
+                           register_start=register_start,
                            is_lead=is_lead,
                            funds=funds,
                            dividends_enabled=DIVIDENDS_ENABLED,

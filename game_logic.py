@@ -263,8 +263,14 @@ def run_phase2_crank(game: Game):
         new_val = base_val * multiple
         company.set_year_val(year, max(0.0, new_val))
 
-        # Cash engine: EBITDA accrues (or burns) before debt service
+        # EBITDA moves with this year's return (sign-aware): a positive return
+        # pushes EBITDA toward profit (a burn shrinks), a negative return deepens
+        # it. So profits grow with the company and losing companies bleed more.
+        # Then the (new) EBITDA accrues to cash before debt service.
         if company.ltm_ebitda is not None:
+            annual_return = multiple - 1.0
+            company.ltm_ebitda = company.ltm_ebitda + annual_return * abs(company.ltm_ebitda)
+            company.set_year_ebitda(year, company.ltm_ebitda)
             company.company_funds += company.ltm_ebitda
 
         # Debt service: INTEREST ONLY (bullet loan). The principal does not
