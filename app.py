@@ -14,7 +14,7 @@ from models import (db, Game, Team, Fund, CompanyTemplate, GameCompany,
 from game_logic import (run_phase1_crank, run_phase2_crank,
                         team_simple_return, team_gp_income,
                         finalize_deal, close_deal_with_coinvestors,
-                        locked_deal_economics, exit_waterfall,
+                        locked_deal_economics, exit_waterfall, process_followon,
                         DEBT_INTEREST_RATE, _notify, _record_transaction)
 
 # ---------------------------------------------------------------------------
@@ -1005,6 +1005,37 @@ def mark_liquidation(company_id):
     deal.reserve_price = reserve_price
     db.session.commit()
     flash(f'{company.name} marked for exit with reserve price ${reserve_price:.1f}M.', 'success')
+    return redirect(url_for('portfolio_company', company_id=company_id))
+
+
+@app.route('/portfolio/company/<int:company_id>/followon', methods=['POST'])
+@login_required
+def follow_on(company_id):
+    game = Game.query.get(current_user.game_id)
+    company = GameCompany.query.filter_by(id=company_id, game_id=game.id).first_or_404()
+    deal = company.deal
+
+    if not deal or deal.lead_team_id != current_user.id:
+        abort(403)
+    if deal.status != 'active' or not company.in_distress:
+        flash('Follow-on investment is only available when the company is in distress.', 'warning')
+        return redirect(url_for('portfolio_company', company_id=company_id))
+
+    lead_stake = next((s for s in deal.equity_stakes
+                       if s.team_id == current_user.id), None)
+    fund = Fund.query.get(lead_stake.fund_id) if lead_stake else None
+    if fund is None:
+        abort(403)
+
+    amount = float(request.form.get('amount', 0) or 0)
+    if amount <= 0 or amount > fund.available_capital + 1e-6:
+        flash(f'Follow-on amount must be between $0 and your fund\'s '
+              f'${fund.available_capital:,.1f}M of available capital.', 'danger')
+        return redirect(url_for('portfolio_company', company_id=company_id))
+
+    process_followon(deal, amount)
+    flash(f'Invested ${amount:,.1f}M into {company.name} at its current valuation. '
+          f'Runway extended.', 'success')
     return redirect(url_for('portfolio_company', company_id=company_id))
 
 

@@ -228,6 +228,7 @@ class GameCompany(db.Model):
     founder_shares = db.Column(db.Integer, default=10000000)
     management_option_pct = db.Column(db.Float, default=0.10)
     in_distress = db.Column(db.Boolean, default=False)
+    ever_distressed = db.Column(db.Boolean, default=False)  # ran out of cash at least once
     flagged_for_liquidation = db.Column(db.Boolean, default=False)
     revenue_growth_3yr = db.Column(db.Float, nullable=True)   # e.g. 0.12 = 12%
     ltm_ebitda_margin = db.Column(db.Float, nullable=True)    # e.g. 0.20 = 20%

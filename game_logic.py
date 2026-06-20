@@ -299,6 +299,7 @@ def run_phase2_crank(game: Game):
                 _process_bankruptcy(deal, company, year)
                 continue
             company.in_distress = True
+            company.ever_distressed = True   # permanent scar: tilts future returns down
             company.company_funds = 0.0
             for stake in deal.equity_stakes:
                 _notify(stake.team_id,
@@ -362,6 +363,9 @@ MARGIN_VOL_WEIGHT = 0.6       # 10 pts of above-typical margin -> -6% relative v
 VOL_FACTOR_RANGE = (0.75, 1.25)
 # Management quality tilts expected return (weak destroys more than strong adds)
 MANAGEMENT_RETURN_TILT = {'strong': 0.02, 'average': 0.0, 'weak': -0.03}
+# A company that has run out of cash even once carries a permanent scar: its
+# expected annual return is tilted down by this much from then on.
+DISTRESS_RETURN_PENALTY = 0.05
 # A generalist fund earns slightly less than a sector-focused fund: its
 # expected return is 5% lower and its volatility 10% lower than the sector
 # mean (both relative — multiply the base assumption).
@@ -416,6 +420,9 @@ def _roll_outcome(company: GameCompany, market_condition: float) -> float:
         sigma *= GENERALIST_VOL_FACTOR
     mu, sigma = _fundamentals_adjustment(company, mu, sigma)
     mu += MANAGEMENT_RETURN_TILT.get(company.management_quality, 0.0)
+    # Permanent scar: a company that has ever run out of cash returns less.
+    if company.ever_distressed:
+        mu -= DISTRESS_RETURN_PENALTY
     annual_return = random.gauss(mu, sigma)
     multiple = max(0.0, 1.0 + annual_return) * market_condition
     return multiple
@@ -958,6 +965,61 @@ def finalize_deal(deal: Deal, final_pre_money: float, equity_stakes_data: list,
         company.available_cash = 0.0
     company.year_funded = deal.game_year
 
+    db.session.commit()
+
+
+def process_followon(deal: Deal, amount: float):
+    """The lead injects fresh cash into a distressed company at the CURRENT
+    valuation (a bridge/follow-on round). New money buys equity at the existing
+    equity value (valuation - debt), diluting every existing holder pro-rata;
+    the lead's stake grows by its purchase. The cash extends runway, the
+    enterprise value rises by the cash injected, and distress clears.
+    """
+    company = deal.company
+    debt = company.debt_outstanding or 0.0
+    pre_eq = max(0.0, (company.latest_valuation or 0.0) - debt)   # pre-money equity value
+    post_eq = pre_eq + amount
+    if post_eq <= 0 or amount <= 0:
+        return
+    d = pre_eq / post_eq   # dilution factor for existing holders
+
+    lead_stake = next((s for s in deal.equity_stakes
+                       if s.team_id == deal.lead_team_id), None)
+    if lead_stake is None:
+        return
+
+    # Dilute every existing holder: investor stakes, founders (rolled), and the
+    # management option pool all shrink by pre/post.
+    for s in deal.equity_stakes:
+        s.ownership_pct = round(s.ownership_pct * d, 4)
+    deal.rolled_equity_pct = (deal.rolled_equity_pct or 0.0) * d
+    company.management_option_pct = (company.management_option_pct or 0.0) * d
+
+    # The lead's new money buys (amount / post-money equity) of the company.
+    lead_stake.ownership_pct = round(lead_stake.ownership_pct + (amount / post_eq) * 100.0, 4)
+    lead_stake.equity_invested += amount
+
+    # Cash lands on the balance sheet; enterprise value rises by the cash; the
+    # immediate crisis is resolved.
+    company.company_funds += amount
+    for y in range(company.MAX_TRACKED_YEARS, 0, -1):
+        if company.get_year_val(y) is not None:
+            company.set_year_val(y, company.get_year_val(y) + amount)
+            break
+    else:
+        if company.funded_valuation is not None:
+            company.funded_valuation += amount
+    company.in_distress = False
+
+    fund = Fund.query.get(lead_stake.fund_id)
+    fund.available_capital -= amount
+    _record_transaction(fund.id, 'investment', -amount,
+                        f"Follow-on investment in {company.name}",
+                        deal.game_year, company.id)
+    _notify(deal.lead_team_id,
+            f"You injected ${amount:,.1f}M into {company.name} at its current "
+            f"valuation. Its runway is extended and it's no longer in distress.",
+            'deal_won', company.id)
     db.session.commit()
 
 

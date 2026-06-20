@@ -48,6 +48,36 @@
         </div>
       </div>
     </div>
+
+    {% if is_lead and deal.status == 'active' and company.in_distress %}
+    {% set lead_stake = (deal.equity_stakes | selectattr('team_id', 'equalto', current_user.id) | first) %}
+    <div class="card border-warning shadow mb-4">
+      <div class="card-header border-warning" style="background:rgba(255,193,7,0.1);">
+        <h6 class="mb-0 fw-semibold text-warning"><i class="bi bi-life-preserver"></i> Follow-on Investment &mdash; rescue or let it go bankrupt</h6>
+      </div>
+      <div class="card-body p-4">
+        <p class="text-secondary small mb-3">
+          Inject fresh cash <strong>at the current valuation</strong> to extend runway, or do nothing and the company goes
+          <strong>bankrupt</strong> at the next Deal &amp; Return Process. New money dilutes the other holders pro-rata and
+          raises your stake.{% if not is_buyout %} It burns ${{ "{:,.1f}M".format(company.annual_burn_rate or 0) }}/yr &mdash; invest enough to fund the years you need.{% endif %}
+        </p>
+        <form method="POST" action="{{ url_for('follow_on', company_id=company.id) }}" class="d-flex gap-2 align-items-center flex-wrap">
+          <div class="input-group" style="max-width:260px;">
+            <span class="input-group-text bg-dark border-secondary text-secondary">$</span>
+            <input type="number" class="form-control bg-dark text-white border-secondary"
+                   name="amount" min="0" step="0.1" placeholder="Amount"
+                   {% if lead_stake %}max="{{ lead_stake.fund.available_capital }}"{% endif %} required>
+            <span class="input-group-text bg-dark border-secondary text-secondary">M</span>
+          </div>
+          <button type="submit" class="btn btn-warning btn-sm text-dark confirm-action"
+                  data-confirm="Invest in {{ company.name }} at its current valuation? This draws from your fund and dilutes the other holders.">
+            <i class="bi bi-life-preserver"></i> Invest
+          </button>
+          {% if lead_stake %}<span class="text-secondary small">Fund available: ${{ "{:,.1f}M".format(lead_stake.fund.available_capital) }}</span>{% endif %}
+        </form>
+      </div>
+    </div>
+    {% endif %}
     {% endif %}
 
     {% if val_history %}
@@ -197,6 +227,8 @@
             </div>
             {% if company.in_distress %}
             <span class="badge bg-danger"><i class="bi bi-exclamation-triangle-fill"></i> In Distress</span>
+            {% elif company.ever_distressed %}
+            <span class="badge bg-secondary" title="Ran out of cash before — expected return is permanently tilted down 5%/yr"><i class="bi bi-bandaid"></i> Prior distress</span>
             {% endif %}
           </div>
           <div class="col-6 col-md-3">
