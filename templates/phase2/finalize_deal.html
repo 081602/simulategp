@@ -117,8 +117,8 @@
         <div class="card-body p-4">
           {% if fill_offers %}
           <p class="text-secondary small mb-3">
-            The teams below offered to co-invest. Tick the ones you want and propose an amount
-            (up to their max). Each invited team must <strong>accept or reject</strong> your proposal
+            The teams below offered to co-invest. Tick the ones you want and propose an amount.
+            Each invited team must <strong>accept or reject</strong> your proposal
             before the deal closes &mdash; any amount you propose comes out of the
             ${{ "{:,.1f}M".format(lead_ts.total_investment) }} total, and your fund backstops the rest
             (including anyone who declines). Invite no one and the deal closes immediately as a solo deal.
@@ -129,7 +129,6 @@
                 <tr>
                   <th>Invite</th>
                   <th>Team</th>
-                  <th>Their Max Co-Investment</th>
                   <th>Propose Amount ($M)</th>
                 </tr>
               </thead>
@@ -143,11 +142,10 @@
                     </div>
                   </td>
                   <td><strong>{{ offer.team.firm_name }}</strong></td>
-                  <td class="text-secondary">${{ "{:,.1f}M".format(offer.max_fill_equity) }}</td>
                   <td>
                     <input type="number" class="form-control form-control-sm bg-dark text-white border-secondary fill-amount-input"
                            name="fill_equity_{{ offer.id }}"
-                           min="0" max="{{ offer.max_fill_equity }}" step="0.1"
+                           min="0" step="0.1"
                            placeholder="Amount"
                            style="width:140px;"
                            disabled>
@@ -157,14 +155,14 @@
               </tbody>
             </table>
           </div>
-          {% else %}
-          <p class="text-secondary mb-2">No fill investors offered to co-invest in this deal.</p>
-          {% endif %}
           <div class="mt-2 fs-5">
             <span class="text-light">Your fund's equity check (if all accept):</span>
             <strong class="text-warning" id="lead_check">${{ "{:,.1f}M".format(lead_ts.total_investment) }}</strong>
             <span class="text-secondary small">of ${{ "{:,.1f}M".format(lead_ts.total_investment) }} total — you backstop any decline</span>
           </div>
+          {% else %}
+          <p class="text-secondary mb-2">No fill investors offered to co-invest in this deal.</p>
+          {% endif %}
         </div>
       </div>
 
@@ -195,6 +193,7 @@
   (function () {
     var total = {{ lead_ts.total_investment }};
     var leadOut = document.getElementById('lead_check');
+    if (!leadOut) return;  // no fill investors — nothing to update
 
     function recompute() {
       var fills = 0;

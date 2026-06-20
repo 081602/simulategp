@@ -15,6 +15,48 @@
     </div>
   </div>
 
+  <!-- Distress alert: holdings that have run out of cash -->
+  {% if distressed %}
+  <div class="alert alert-danger border-danger shadow-sm mb-4" role="alert">
+    <div class="d-flex align-items-start gap-2">
+      <i class="bi bi-exclamation-octagon-fill fs-4"></i>
+      <div class="flex-grow-1">
+        <div class="fw-bold mb-1">
+          {{ distressed | length }} portfolio
+          {{ 'company has' if distressed|length == 1 else 'companies have' }}
+          run out of cash
+        </div>
+        <div class="small mb-2">
+          A distressed company can go <strong>bankrupt</strong> at the next Deal &amp; Return Process.
+          A non-mature company gets a <strong>chance to turn profitable</strong> on its own next year &mdash;
+          but if it doesn't and the lead hasn't injected enough cash, it goes bankrupt and the investment is lost.
+        </div>
+        <ul class="list-unstyled mb-0">
+          {% for deal in distressed %}
+          {% set company = deal.company %}
+          <li class="d-flex justify-content-between align-items-center flex-wrap gap-2 py-1 border-top border-danger border-opacity-25">
+            <span>
+              <i class="bi bi-cash-stack"></i>
+              <strong>{{ company.name }}</strong>
+              <span class="badge bg-danger ms-1"><i class="bi bi-exclamation-triangle-fill"></i> Cash exhausted</span>
+              {% if deal.lead_team_id == current_user.id %}
+              <span class="text-light small ms-1">&mdash; you're the lead; invest or let it roll</span>
+              {% else %}
+              <span class="text-light small ms-1">&mdash; the lead must decide whether to rescue it</span>
+              {% endif %}
+            </span>
+            <a href="{{ url_for('portfolio_company', company_id=company.id) }}"
+               class="btn btn-sm btn-warning text-dark text-nowrap">
+              <i class="bi bi-life-preserver"></i> {% if deal.lead_team_id == current_user.id %}Decide / Manage{% else %}View{% endif %}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
   <!-- Deal Activity: where your bids stand in the deal process -->
   {% if bid_activity %}
   <div class="card bg-dark border-warning text-white mb-4">
@@ -117,14 +159,17 @@
             {% for deal in active_deals %}
             {% set company = deal.company %}
             {% set my_stake = deal.equity_stakes | selectattr('team_id', 'eq', current_user.id) | first %}
-            <tr>
+            <tr {% if company.in_distress %}class="table-danger"{% endif %}>
               <td>
                 {{ company.name }}
+                {% if company.in_distress %}
+                <span class="badge bg-danger ms-1"><i class="bi bi-exclamation-triangle-fill"></i> Distressed</span>
+                {% endif %}
                 {% if deal.marked_for_liquidation %}
                 <span class="badge bg-warning text-dark ms-1">For Sale</span>
                 {% endif %}
               </td>
-              <td><small class="text-muted">{{ company.sector }}</small></td>
+              <td><small class="{% if not company.in_distress %}text-muted{% endif %}">{{ company.sector }}</small></td>
               <td>{{ "%.1f"|format(my_stake.ownership_pct if my_stake else 0) }}%</td>
               <td>${{ "%.1f"|format(my_stake.current_value if my_stake else 0) }}M</td>
               <td><a href="{{ url_for('portfolio_company', company_id=company.id) }}"

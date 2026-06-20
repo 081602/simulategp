@@ -16,6 +16,7 @@ from game_logic import (run_phase1_crank, run_phase2_crank,
                         finalize_deal, close_deal_with_coinvestors,
                         locked_deal_economics, exit_waterfall, process_followon,
                         DEBT_INTEREST_RATE, _notify, _record_transaction)
+import game_settings
 
 # ---------------------------------------------------------------------------
 # App Setup
@@ -130,11 +131,18 @@ def dashboard():
                     if ts.status != 'lead'
                     or (ts.company.deal is not None
                         and ts.company.deal.status == 'pending_finalization')]
+    # Holdings that have run out of cash and still need a decision — surfaced
+    # prominently so the team can rescue them before they go bankrupt. Once the
+    # lead has decided (invested clears in_distress, or chose to let it roll),
+    # the company drops off this banner.
+    distressed = [d for d in active_deals
+                  if d.company.in_distress and not d.let_it_roll]
     ret = team_simple_return(current_user, game)
     return render_template('dashboard.html',
                            game=game,
                            notifications=notifications,
                            active_deals=active_deals,
+                           distressed=distressed,
                            bid_activity=bid_activity,
                            ret=ret)
 
@@ -247,12 +255,15 @@ def search_companies():
     sectors = sorted(set(s[0].split('/')[0].strip() for s in all_sectors))
 
     results = None  # None = no search submitted yet; searches are free/unlimited
+    form_values = {}
     if request.method == 'POST':
         results = []
         sector_filter = request.form.get('sector', '')
         stage_filter = request.form.get('stage', '')
         min_deal_size = request.form.get('min_deal_size', '')
         max_deal_size = request.form.get('max_deal_size', '')
+        form_values = {'sector': sector_filter, 'stage': stage_filter,
+                       'min_deal_size': min_deal_size, 'max_deal_size': max_deal_size}
 
         # Build query — companies are only on the market in their designated year
         query = GameCompany.query.filter_by(
@@ -314,13 +325,26 @@ def search_companies():
 
         # Grant view access to this result set until the next search
         session['last_search_ids'] = [c.id for c in results]
+        session['last_search_filters'] = form_values
 
         if not results:
             flash('No new companies found matching your criteria. Try relaxing your search parameters.', 'info')
 
+    elif request.args.get('restore') and session.get('last_search_ids'):
+        # Re-show the previous search results (e.g. "Back to Search Results"
+        # from a company detail page). Drop any that are no longer on market.
+        ids = session['last_search_ids']
+        found = {c.id: c for c in GameCompany.query.filter(
+            GameCompany.id.in_(ids), GameCompany.game_id == game.id,
+            GameCompany.status == 'available',
+            GameCompany.year_available == game.current_year).all()}
+        results = [found[i] for i in ids if i in found]
+        form_values = session.get('last_search_filters', {})
+
     return render_template('dealflow/search.html',
                            game=game,
                            results=results,
+                           form_values=form_values,
                            sectors=sectors)
 
 
@@ -355,6 +379,7 @@ def company_detail(company_id):
                            existing_ts=existing_ts,
                            teams=teams,
                            funds=funds,
+                           from_search=(request.args.get('src') == 'search'),
                            on_watchlist=bool(search_record and search_record.on_watchlist),
                            return_assumption=return_assumption)
 
@@ -432,6 +457,12 @@ def refer_company(company_id):
 
 # Buyout leverage cap: debt may not exceed this share of the purchase valuation.
 MAX_DEBT_PCT = 0.60
+# Flat cost ($M) a fund pays to replace a portfolio company's management team.
+CHANGE_MGMT_COST = 5.0
+# Probability the rerolled management team lands at weak or average; the chance
+# of strong is whatever's left (1 - weak - average), so the three sum to 100%.
+CHANGE_MGMT_P_WEAK = 0.25
+CHANGE_MGMT_P_AVERAGE = 0.50
 
 
 @app.route('/company/<int:company_id>/termsheet', methods=['GET', 'POST'])
@@ -486,7 +517,9 @@ def create_term_sheet(company_id):
             participation = 'participation' in request.form
             anti_dilution = request.form.get('anti_dilution', 'none')
             willing_fill = 'willing_to_fill' in request.form
-            max_fill = float(request.form.get('max_fill_equity') or 0)
+            # Max co-investment removed — fill investors only toggle willingness;
+            # the lead proposes any amount and they accept/reject. Column kept at 0.
+            max_fill = 0.0
             min_rep = float(request.form.get('min_lead_reputation') or 0)
             # Co-investment is handled solely through the fill flow at
             # finalization; term sheets are always solo at submission.
@@ -513,6 +546,27 @@ def create_term_sheet(company_id):
                           f'${pre_money:,.1f}M purchase valuation (${max_debt:,.1f}M). '
                           f'Lower the debt or raise the price.', 'danger')
                     return redirect(request.url)
+
+            # Capital discipline: a team can't submit term sheets that together
+            # commit more equity than the fund has available to invest. Sum the
+            # fund's other outstanding bids this round + this one vs. its cash.
+            fund = Fund.query.get(fund_id)
+            already_committed = sum(
+                t.total_investment for t in TermSheet.query.filter_by(
+                    team_id=current_user.id, fund_id=fund_id,
+                    game_year=game.current_year, status='pending').all())
+            available = fund.available_capital if fund else 0.0
+            remaining = available - already_committed
+            if total_investment > remaining + 1e-6:
+                msg = (f"This ${total_investment:,.1f}M term sheet is more than your "
+                       f"fund can invest. {fund.name if fund else 'Your fund'} has "
+                       f"${available:,.1f}M available")
+                if already_committed > 1e-6:
+                    msg += (f", and you've already committed ${already_committed:,.1f}M "
+                            f"in term sheets this round — only ${max(0.0, remaining):,.1f}M left")
+                msg += ". Lower this bid to fit your capital."
+                flash(msg, 'danger')
+                return redirect(request.url)
 
             ts = TermSheet(
                 team_id=current_user.id,
@@ -700,7 +754,8 @@ def finalize_deal_route(deal_id):
             # finalization only decides who is invited to fund the equity.
             total_equity = lead_ts.total_investment
 
-            # Build the lead's co-investment proposals (capped at each fill's max)
+            # Build the lead's co-investment proposals. The lead proposes any
+            # amount per invited fill; total can't exceed the committed equity.
             proposals = []
             proposed_total = 0.0
             selected_fills = request.form.getlist('selected_fills')
@@ -708,9 +763,7 @@ def finalize_deal_route(deal_id):
                 fts = TermSheet.query.get(int(fill_ts_id))
                 if not fts or fts.status != 'fill_offered':
                     continue
-                amount = min(float(request.form.get(f'fill_equity_{fill_ts_id}')
-                                   or fts.max_fill_equity),
-                             fts.max_fill_equity)
+                amount = float(request.form.get(f'fill_equity_{fill_ts_id}') or 0)
                 if amount <= 0:
                     continue
                 proposed_total += amount
@@ -744,7 +797,7 @@ def finalize_deal_route(deal_id):
                 current_user.reputation = min(5.0, current_user.reputation + 0.2)
                 db.session.commit()
                 flash(f'Deal on {company.name} finalized successfully!', 'success')
-                return redirect(url_for('portfolio'))
+                return redirect(url_for('timeline'))
 
             # Co-investors invited: send offers and wait for their responses
             for fts, amount in proposals:
@@ -815,10 +868,11 @@ def portfolio():
                            liquidated=liquidated)
 
 
-# Dividends are disabled in the game for now. The full implementation is kept
-# (issue_dividend route + the UI section in portfolio/company.html, gated on this
-# flag) so it can be re-enabled later by flipping this to True.
-DIVIDENDS_ENABLED = False
+# Dividends let the lead pull cash up from a cash-flow-positive portfolio company
+# to its fund (pro-rata to ownership) — a key way for GPs to raise cash to cover
+# management fees. Capped at MAX_DIVIDEND_PCT of the company's cash per dividend.
+DIVIDENDS_ENABLED = True
+MAX_DIVIDEND_PCT = 0.20
 
 
 @app.route('/portfolio/company/<int:company_id>')
@@ -852,14 +906,30 @@ def portfolio_company(company_id):
             v = company.get_year_val(y)
             if v is None:
                 continue
-            val_history.append({'year': y, 'value': v,
-                                'ret': (v / prev - 1) if prev else None})
+            mgmt_fee = company.get_year_mgmt_fee(y)
+            followon = company.get_year_followon(y)
+            dividend = company.get_year_dividend(y)
+            # The market's dollar contribution is whatever isn't explained by the
+            # recorded cash events, so the bridge always ties to the stored mark:
+            #   opening + market_gain + follow-on - mgmt - dividend = closing.
+            # (For a cranked year this equals opening x (roll - 1) exactly.)
+            market_gain = v - prev - followon + mgmt_fee + dividend
+            val_history.append({'year': y, 'value': v, 'opening': prev,
+                                'market_gain': market_gain,
+                                'mgmt_fee': mgmt_fee,
+                                'followon': followon,
+                                'dividend': dividend})
             prev = v
+    val_has_followons = any(r['followon'] for r in val_history)
+    val_has_mgmt = any(r['mgmt_fee'] for r in val_history)
+    val_has_dividends = any(r['dividend'] for r in val_history)
 
-    # Cash register: a running balance by year, mirroring the cash engine.
-    # Opening = capital invested (venture) or $0 (cash-free buyout). MATURE adds
-    # EBITDA-converted cash and subtracts debt interest; VENTURE just burns its
-    # annual burn rate. Clamped at $0 on cash exhaustion (flags distress).
+    # Cash register: a running balance by year with a UNIFIED column set so a
+    # company's whole history reads consistently — including a venture company
+    # that burned cash for years and then turned profitable. Each year is shown
+    # in EBITDA mode (if EBITDA was recorded that year) or burn mode (if a burn
+    # was recorded); follow-on injections and mgmt-change fees adjust either.
+    # Clamped at $0 on cash exhaustion (flags distress).
     is_buyout = company.stage == 'mature'
     cash_register = []
     register_start = 0.0
@@ -867,33 +937,72 @@ def portfolio_company(company_id):
         register_start = 0.0 if is_buyout else \
             (deal.total_equity_invested or 0.0) + (deal.debt_amount or 0.0)
         annual_interest = (company.debt_outstanding or 0.0) * (company.debt_interest_rate or 0.0)
-        burn = company.annual_burn_rate or 0.0
         bal = register_start
         for row in val_history:
+            y = row['year']
             opening = bal
-            if is_buyout:
-                # EBITDA recorded for that year (evolves with the return); legacy
-                # rows fall back to current EBITDA.
-                ebitda_y = company.get_year_ebitda(row['year'])
-                if ebitda_y is None:
+            ebitda_y = company.get_year_ebitda(y)
+            burn_y = company.get_year_burn(y)
+            if ebitda_y is None and burn_y is None:
+                # Legacy year with no recorded flow: infer from current state.
+                if is_buyout or company.turned_profitable:
                     ebitda_y = company.ltm_ebitda or 0.0
-                cash_y = ebitda_to_cash(ebitda_y)
-                raw_close = opening + cash_y - annual_interest
-                rowdata = {'ebitda': ebitda_y, 'cash': cash_y, 'interest': annual_interest}
+                else:
+                    burn_y = company.annual_burn_rate or 0.0
+            # A burning year always records a burn; a profitable/mature year
+            # records EBITDA and no burn — so a recorded burn wins the mode
+            # (ignoring any stale EBITDA from a prior model).
+            if burn_y is not None:
+                # Burning year (venture, pre-profit).
+                op = -(burn_y or 0.0)
+                rowdata = {'ebitda': None, 'cash': None, 'burn': burn_y,
+                           'interest': None}
             else:
-                # Venture: burn cash. Burn evolves each year (recorded per year);
-                # legacy rows fall back to the current burn rate.
-                burn_y = company.get_year_burn(row['year'])
-                if burn_y is None:
-                    burn_y = burn
-                raw_close = opening - burn_y
-                rowdata = {'burn': burn_y}
-            distressed = raw_close < 0
+                # Profitable year: EBITDA converts to cash; debt interest paid.
+                cash_y = ebitda_to_cash(ebitda_y)
+                interest_y = annual_interest
+                op = cash_y - interest_y
+                rowdata = {'ebitda': ebitda_y, 'cash': cash_y, 'burn': None,
+                           'interest': interest_y}
+            # Follow-on injections add cash; management-change fees and
+            # dividends subtract it.
+            followon_y = company.get_year_followon(y)
+            mgmt_fee_y = company.get_year_mgmt_fee(y)
+            dividend_y = company.get_year_dividend(y)
+            raw_close = opening + op + followon_y - mgmt_fee_y - dividend_y
+            rowdata['followon'] = followon_y
+            rowdata['mgmt_fee'] = mgmt_fee_y
+            rowdata['dividend'] = dividend_y
             closing = max(0.0, raw_close)
-            rowdata.update({'year': row['year'], 'opening': opening,
-                            'closing': closing, 'distressed': distressed})
+            rowdata.update({'year': y, 'opening': opening,
+                            'closing': closing, 'distressed': raw_close < 0})
             cash_register.append(rowdata)
             bal = closing
+
+        # Follow-on injections and management-change fees hit cash immediately,
+        # but the current year may not be cranked yet (no valuation row). Add an
+        # "in progress" row for any such year so the running balance matches
+        # actual cash on hand.
+        covered = {r['year'] for r in cash_register}
+        for y in range(company.year_funded, game.current_year + 1):
+            followon_y = company.get_year_followon(y)
+            fee_y = company.get_year_mgmt_fee(y)
+            dividend_y = company.get_year_dividend(y)
+            if y in covered or (not fee_y and not followon_y and not dividend_y):
+                continue
+            opening = bal
+            raw_close = opening + followon_y - fee_y - dividend_y
+            closing = max(0.0, raw_close)
+            cash_register.append({'year': y, 'opening': opening,
+                                  'ebitda': None, 'cash': None, 'burn': None,
+                                  'interest': None, 'followon': followon_y,
+                                  'mgmt_fee': fee_y, 'dividend': dividend_y,
+                                  'closing': closing,
+                                  'distressed': raw_close < 0, 'pending': True})
+            bal = closing
+    register_has_mgmt_fees = any(r.get('mgmt_fee') for r in cash_register)
+    register_has_followons = any(r.get('followon') for r in cash_register)
+    register_has_dividends = any(r.get('dividend') for r in cash_register)
 
     return render_template('portfolio/company.html',
                            game=game,
@@ -903,11 +1012,19 @@ def portfolio_company(company_id):
                            waterfall=waterfall,
                            return_assumption=return_assumption,
                            val_history=val_history,
+                           val_has_followons=val_has_followons,
+                           val_has_mgmt=val_has_mgmt,
+                           val_has_dividends=val_has_dividends,
                            cash_register=cash_register,
                            register_start=register_start,
+                           register_has_mgmt_fees=register_has_mgmt_fees,
+                           register_has_followons=register_has_followons,
+                           register_has_dividends=register_has_dividends,
                            is_lead=is_lead,
                            funds=funds,
                            dividends_enabled=DIVIDENDS_ENABLED,
+                           max_dividend_pct=MAX_DIVIDEND_PCT,
+                           change_mgmt_cost=CHANGE_MGMT_COST,
                            all_teams=all_teams)
 
 
@@ -924,26 +1041,36 @@ def change_management(company_id):
         flash('Management can only be changed after at least 1 year in portfolio.', 'warning')
         return redirect(url_for('portfolio_company', company_id=company_id))
 
-    cost = (company.latest_valuation or 10.0) * 0.10
-    primary_fund = Fund.query.filter_by(
-        team_id=current_user.id, is_active=True).first()
+    cost = CHANGE_MGMT_COST
 
-    if not primary_fund or primary_fund.available_capital < cost:
-        flash(f'Insufficient funds. Management change costs ${cost:.2f}M.', 'danger')
+    # The fee is paid out of the company's own cash (not the fund's capital).
+    if (company.company_funds or 0) < cost:
+        flash(f"{company.name} doesn't have enough cash to cover the "
+              f"${cost:,.1f}M management-change fee "
+              f"(cash on hand: ${company.company_funds or 0:,.1f}M).", 'danger')
         return redirect(url_for('portfolio_company', company_id=company_id))
 
-    primary_fund.available_capital -= cost
-    _record_transaction(primary_fund.id, 'management_change_fee', -cost,
-                        f'Management change at {company.name}', game.current_year, company.id)
+    company.company_funds -= cost
+    # Record the fee in this year. The valuation incorporates the company's cash,
+    # so the mark drops by the same amount — but that reduction is applied to
+    # THIS year's mark at the next Deal & Return Process (the crank), so the
+    # valuation history ties out (prior mark x roll - fee = new mark). The cash
+    # leaves immediately; the mark is re-struck when results are processed.
+    company.add_year_mgmt_fee(game.current_year, cost)
 
-    # Randomly assign new management quality
-    qualities = ['weak', 'average', 'average', 'strong']
-    company.management_quality = random.choice(qualities)
+    # Randomly assign new management quality using the configured probabilities.
+    # Strong is the remainder so the three odds always sum to 100%.
+    p_strong = max(0.0, 1.0 - CHANGE_MGMT_P_WEAK - CHANGE_MGMT_P_AVERAGE)
+    company.management_quality = random.choices(
+        ['weak', 'average', 'strong'],
+        weights=[CHANGE_MGMT_P_WEAK, CHANGE_MGMT_P_AVERAGE, p_strong])[0]
     # Slight reputation hit for instability
     current_user.reputation = max(1.0, current_user.reputation - 0.1)
     db.session.commit()
-    flash(f'Management team replaced at {company.name}. Cost: ${cost:.2f}M. '
-          f'New management quality: {company.management_quality}.', 'success')
+    flash(f"Management team replaced at {company.name}. ${cost:,.1f}M paid "
+          f"from the company's cash; its valuation drops by the same amount "
+          f"when this year's results are processed. "
+          f"New management quality: {company.management_quality}.", 'success')
     return redirect(url_for('portfolio_company', company_id=company_id))
 
 
@@ -964,14 +1091,20 @@ def issue_dividend(company_id):
               'warning')
         return redirect(url_for('portfolio_company', company_id=company_id))
 
-    # Max dividend = 20% of company funds
-    max_div = company.company_funds * 0.20
+    # Max dividend = MAX_DIVIDEND_PCT of company funds
+    max_div = company.company_funds * MAX_DIVIDEND_PCT
     amount = float(request.form.get('amount', 0))
     if amount <= 0 or amount > max_div:
         flash(f'Dividend amount must be between $0 and ${max_div:.2f}M.', 'danger')
         return redirect(url_for('portfolio_company', company_id=company_id))
 
     company.company_funds -= amount
+    # The valuation incorporates the company's cash, so paying it out lowers the
+    # mark by the same amount (mirror of the management-change fee) — otherwise a
+    # team could dividend out cash and still collect the full mark at exit. That
+    # reduction is applied to this year's mark at the next Deal & Return Process
+    # so the valuation history ties out. Record it for both itemized tables.
+    company.add_year_dividend(game.current_year, amount)
 
     # Distribute to each investor proportionally
     total_investor_pct = sum(s.ownership_pct for s in deal.equity_stakes)
@@ -1034,8 +1167,30 @@ def follow_on(company_id):
         return redirect(url_for('portfolio_company', company_id=company_id))
 
     process_followon(deal, amount)
+    deal.let_it_roll = False   # they chose to invest, not roll
+    db.session.commit()
     flash(f'Invested ${amount:,.1f}M into {company.name} at its current valuation. '
           f'Runway extended.', 'success')
+    return redirect(url_for('portfolio_company', company_id=company_id))
+
+
+@app.route('/portfolio/company/<int:company_id>/let-it-roll', methods=['POST'])
+@login_required
+def let_it_roll(company_id):
+    """Lead explicitly chooses to forgo a rescue and let the turn-profitable
+    roll decide at the next Deal & Return Process (non-mature only)."""
+    game = Game.query.get(current_user.game_id)
+    company = GameCompany.query.filter_by(id=company_id, game_id=game.id).first_or_404()
+    deal = company.deal
+    if not deal or deal.lead_team_id != current_user.id:
+        abort(403)
+    if deal.status != 'active' or not company.in_distress or company.stage == 'mature':
+        flash('That choice is only available for a distressed non-mature company.', 'warning')
+        return redirect(url_for('portfolio_company', company_id=company_id))
+    deal.let_it_roll = True
+    db.session.commit()
+    flash(f'You chose to let {company.name} roll — no rescue. It will take its '
+          f'chance at turning profitable, and goes bankrupt if it does not.', 'info')
     return redirect(url_for('portfolio_company', company_id=company_id))
 
 
@@ -1121,6 +1276,64 @@ def admin_dashboard():
                            term_sheet_groups=term_sheet_groups)
 
 
+def _reload_companies_from_json(game):
+    """Reload every company for the game fresh from data/companies.json,
+    restoring all authored fields and clearing ALL per-game simulation state
+    (status, valuations, EBITDA/revenue/margin, burn, company cash,
+    turned_profitable, distress flags, and the per-year history columns).
+
+    Anything that references a company (deals, stakes, term sheets, searches,
+    and company-linked transactions/notifications) is cleared first so the
+    delete-and-reload is safe. Returns the number of companies loaded.
+    """
+    from sqlalchemy import text
+    from models import starting_burn_rate
+    db.session.execute(text('DELETE FROM deal_equity'))
+    db.session.execute(text('DELETE FROM deal'))
+    db.session.execute(text('DELETE FROM company_search'))
+    db.session.execute(text('DELETE FROM term_sheet'))
+    db.session.execute(text('UPDATE fund_transaction SET company_id=NULL'))
+    db.session.execute(text('UPDATE notification SET related_company_id=NULL'))
+    db.session.execute(text('DELETE FROM game_company WHERE game_id=:g'),
+                       {'g': game.id})
+    db.session.flush()
+    with open(os.path.join(_BASE_DIR, 'data', 'companies.json')) as f:
+        company_data = json.load(f)
+    for cd in company_data:
+        db.session.add(GameCompany(
+            game_id=game.id, name=cd['name'], sector=cd['sector'], stage=cd['stage'],
+            description=cd['description'], capital_requested=cd['capital_requested'],
+            rolled_equity_min=cd['rolled_equity_min'], rolled_equity_max=cd['rolled_equity_max'],
+            debt_capacity=cd['debt_capacity'], is_cash_flow_positive=cd['is_cash_flow_positive'],
+            dividend_eligible=cd.get('dividend_eligible', False),
+            management_quality=cd['management_quality'],
+            outcome_distributions=json.dumps(cd['outcome_distributions']),
+            initial_val_ask=cd['base_valuation'], year_available=cd.get('year_available', 1),
+            reasons_for_funding=cd.get('reasons_for_funding'),
+            available_cash=(0.0 if cd['stage'] != 'mature' else cd.get('available_cash', 0.0)),
+            founder_shares=cd.get('founder_shares', 10000000),
+            management_option_pct=cd.get('management_option_pct', 0.10),
+            revenue_growth_3yr=cd.get('revenue_growth_3yr'),
+            ltm_ebitda_margin=cd.get('ltm_ebitda_margin'),
+            ltm_revenue=cd.get('ltm_revenue'), ltm_ebitda=cd.get('ltm_ebitda'),
+            annual_burn_rate=starting_burn_rate(cd['stage'], cd['capital_requested']),
+        ))
+    return len(company_data)
+
+
+@app.route('/admin/reset-companies', methods=['POST'])
+@login_required
+@admin_required
+def admin_reset_companies():
+    game = Game.query.first()
+    n = _reload_companies_from_json(game)
+    db.session.commit()
+    flash(f'All {n} companies reloaded fresh from the source file — every '
+          f'company is back to its authored state. (Any open deals and term '
+          f'sheets were cleared.)', 'success')
+    return redirect(url_for('admin_setup'))
+
+
 @app.route('/admin/delete-all-deals', methods=['POST'])
 @login_required
 @admin_required
@@ -1144,24 +1357,17 @@ def admin_setup():
     if request.method == 'POST':
         from sqlalchemy import text
         db.session.expire_all()
-        db.session.execute(text('DELETE FROM deal_equity'))
-        db.session.execute(text('DELETE FROM deal'))
-        db.session.execute(text('DELETE FROM company_search'))
-        db.session.execute(text('DELETE FROM term_sheet'))
         db.session.execute(text('DELETE FROM fund_transaction'))
         db.session.execute(text('DELETE FROM notification'))
         db.session.execute(text('DELETE FROM fund'))
         db.session.execute(text('DELETE FROM team WHERE is_admin = 0'))
-        db.session.execute(text(
-            "UPDATE game_company SET status='available', year_funded=NULL, "
-            "lead_team_id=NULL, in_distress=0, flagged_for_liquidation=0, "
-            "funded_valuation=NULL, year_1_val=NULL, year_2_val=NULL, "
-            "year_3_val=NULL, year_4_val=NULL, year_5_val=NULL, "
-            "year_6_val=NULL, year_7_val=NULL"
-        ))
+        # Reload every company fresh so nothing carries over from the last game
+        # (clears deals/stakes/term sheets/searches and resets all company state).
+        _reload_companies_from_json(Game.query.first())
         db.session.commit()
         db.session.expire_all()
-        flash('All teams and their data have been removed.', 'success')
+        flash('All teams and their data have been removed, and every company '
+              'was reloaded fresh.', 'success')
         return redirect(url_for('admin_teams'))
 
     return render_template('admin/setup.html')
@@ -1372,6 +1578,36 @@ def admin_return_assumptions():
     return render_template('admin/return_assumptions.html',
                            sectors=SECTORS, stages=STAGES, stage_labels=STAGE_LABELS,
                            assumptions=assumptions)
+
+
+@app.route('/admin/game-dynamics', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def admin_game_dynamics():
+    if request.method == 'POST':
+        if 'reset' in request.form:
+            game_settings.reset_all()
+            flash('Game dynamics reset to defaults.', 'success')
+            return redirect(url_for('admin_game_dynamics'))
+        if 'reset_one' in request.form:
+            label = game_settings.reset_one(request.form['reset_one'])
+            if label:
+                flash(f'"{label}" reset to its default.', 'success')
+            return redirect(url_for('admin_game_dynamics'))
+        ok, errors, changed = game_settings.save_from_form(request.form)
+        if not ok:
+            for e in errors:
+                flash(e, 'danger')
+        elif changed:
+            flash('Game dynamics saved — they take effect on the next '
+                  'Deal & Return Process and all future rolls.', 'success')
+        else:
+            flash('No changes to save.', 'info')
+        return redirect(url_for('admin_game_dynamics'))
+
+    return render_template('admin/game_dynamics.html',
+                           groups=game_settings.GROUPS,
+                           view=game_settings.current_view())
 
 
 @app.route('/admin/companies')
@@ -1609,6 +1845,8 @@ def api_game_status():
 def init_db():
     with app.app_context():
         db.create_all()
+        # Load any saved Game Dynamics overrides onto the live module globals.
+        game_settings.apply_overrides()
         # Create admin user if none exists
         admin = Team.query.filter_by(username='admin').first()
         if not admin:

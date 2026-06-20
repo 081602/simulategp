@@ -231,14 +231,23 @@ def run_phase2_crank(game: Game):
     for deal in pending_coinvest:
         close_deal_with_coinvestors(deal)
 
-    # 1. Management fees (2% of total fund committed capital)
+    # 1. Management fees — charged on INVESTED (deployed) capital, i.e. the
+    #    capital currently at work in active holdings, NOT committed capital.
+    #    Charged before this year's deals roll/exit, so it reflects the capital
+    #    deployed entering the year. A fund with nothing deployed pays no fee.
     for team in Team.query.filter_by(game_id=game.id, is_admin=False).all():
         for fund in team.funds:
             if not fund.is_active:
                 continue
-            fee = fund.total_capital * fund.management_fee_rate
-            fund.available_capital = max(0, fund.available_capital - fee)
-            _record_transaction(fund.id, 'management_fee', -fee,
+            fee = fund.deployed_capital * fund.management_fee_rate
+            # Cap the fee at the cash the fund actually has — it can't pay more
+            # than it holds, and the ledger should match the cash that moved.
+            # (GPs can pull cash up via portfolio dividends to cover their fees.)
+            paid = min(fee, fund.available_capital)
+            if paid <= 1e-9:
+                continue
+            fund.available_capital -= paid
+            _record_transaction(fund.id, 'management_fee', -paid,
                                 f"Year {year} management fee", year)
 
     # 2. Simulate company performance for all active deals
@@ -262,6 +271,20 @@ def run_phase2_crank(game: Game):
             base_val = company.latest_valuation or 10.0
         new_val = base_val * multiple
         company.set_year_val(year, max(0.0, new_val))
+        # Record the pure market roll so the holding page can show the market
+        # move separately from cash events (follow-ons, fees, dividends).
+        company.set_year_return(year, multiple)
+
+        # Cash events charged THIS year move the mark dollar-for-dollar — the
+        # valuation incorporates the company's cash. They're applied to this
+        # year's mark (the year they were charged, after the market roll) so the
+        # holding-page valuation bridge ties out exactly:
+        #   prior mark x roll  +  follow-on  -  mgmt fees  -  dividends  =  mark.
+        cash_event = (company.get_year_followon(year)
+                      - company.get_year_mgmt_fee(year)
+                      - company.get_year_dividend(year))
+        if cash_event:
+            company.set_year_val(year, max(0.0, company.get_year_val(year) + cash_event))
 
         # Cash flow into the balance:
         #  - MATURE: EBITDA moves with the year's return (sign-aware) and is
@@ -270,16 +293,45 @@ def run_phase2_crank(game: Game):
         #    INVERSELY with the return at half the rate (return +20% -> burn -10%,
         #    return -20% -> burn +10%), floored at $0. Then it burns that amount.
         annual_return = multiple - 1.0
-        if company.stage == 'mature':
+        if company.stage == 'mature' or company.turned_profitable:
+            # Mature buyouts — and venture companies that have turned profitable —
+            # generate cash: EBITDA moves with the return and converts to cash.
             if company.ltm_ebitda is not None:
                 company.ltm_ebitda = company.ltm_ebitda + annual_return * abs(company.ltm_ebitda)
                 company.set_year_ebitda(year, company.ltm_ebitda)
                 company.company_funds += ebitda_to_cash(company.ltm_ebitda)
         else:
-            company.annual_burn_rate = max(
-                0.0, (company.annual_burn_rate or 0.0) * (1 - 0.5 * annual_return))
-            company.set_year_burn(year, company.annual_burn_rate)
-            company.company_funds -= company.annual_burn_rate
+            # Venture, still pre-profit. Track projected revenue each year.
+            rev = company.projected_revenue(year)
+            company.set_year_revenue(year, rev)
+            if company.ever_distressed:
+                # In recovery: a stage-based chance of turning profitable.
+                p = VENTURE_RECOVERY_PROB.get(company.stage, 0.0)
+                if random.random() < p:
+                    margin = random.uniform(0.0, VENTURE_MAX_PROFIT_MARGIN)
+                    company.ltm_revenue = rev
+                    company.ltm_ebitda = rev * margin
+                    company.ltm_ebitda_margin = margin
+                    company.turned_profitable = True
+                    company.annual_burn_rate = 0.0
+                    company.set_year_ebitda(year, company.ltm_ebitda)
+                    company.company_funds += ebitda_to_cash(company.ltm_ebitda)
+                    company.in_distress = False
+                    for stake in deal.equity_stakes:
+                        _notify(stake.team_id,
+                                f"{company.name} turned profitable — it now generates "
+                                f"cash and is no longer at risk of running dry.",
+                                'crank_complete', company.id)
+                else:
+                    company.annual_burn_rate = max(
+                        0.0, (company.annual_burn_rate or 0.0) * (1 - BURN_EVOLUTION_RATE * annual_return))
+                    company.set_year_burn(year, company.annual_burn_rate)
+                    company.company_funds -= company.annual_burn_rate
+            else:
+                company.annual_burn_rate = max(
+                    0.0, (company.annual_burn_rate or 0.0) * (1 - BURN_EVOLUTION_RATE * annual_return))
+                company.set_year_burn(year, company.annual_burn_rate)
+                company.company_funds -= company.annual_burn_rate
 
         # Debt service: INTEREST ONLY (bullet loan). The principal does not
         # amortize — it stays outstanding for the life of the hold and is repaid
@@ -293,19 +345,33 @@ def run_phase2_crank(game: Game):
             _process_bankruptcy(deal, company, year)
             continue
 
-        # Cash exhausted: first year = distress warning, second year = bankrupt
+        # Cash exhausted handling.
         if company.company_funds < 0:
-            if company.in_distress:
+            recoverable_venture = (company.stage != 'mature'
+                                   and not company.turned_profitable)
+            if recoverable_venture and company.ever_distressed:
+                # Already in recovery; this year's profitability roll failed and
+                # there was no cash left to fund the burn -> bankrupt.
+                _process_bankruptcy(deal, company, year)
+                continue
+            if not recoverable_venture and company.in_distress:
+                # Mature (or turned-profitable venture) two-strike: bankrupt.
                 _process_bankruptcy(deal, company, year)
                 continue
             company.in_distress = True
             company.ever_distressed = True   # permanent scar: tilts future returns down
             company.company_funds = 0.0
+            deal.let_it_roll = False          # fresh decision for this distress episode
+            if recoverable_venture:
+                msg = (f"{company.name} has run out of cash. There's a chance it "
+                       f"turns profitable next year — but if it doesn't and you "
+                       f"haven't injected cash, it goes bankrupt. Inject enough "
+                       f"cash to keep it alive while it tries to turn the corner.")
+            else:
+                msg = (f"{company.name} is in financial distress — cash exhausted. "
+                       f"Without action it will go bankrupt next year.")
             for stake in deal.equity_stakes:
-                _notify(stake.team_id,
-                        f"{company.name} is in financial distress — cash exhausted. "
-                        f"Without action it will go bankrupt next year.",
-                        'distress', company.id)
+                _notify(stake.team_id, msg, 'distress', company.id)
         else:
             company.in_distress = False
 
@@ -371,6 +437,15 @@ DISTRESS_RETURN_PENALTY = 0.05
 # mean (both relative — multiply the base assumption).
 GENERALIST_RETURN_FACTOR = 0.95
 GENERALIST_VOL_FACTOR = 0.90
+# Venture burn evolves inversely with the year's return at this fraction of the
+# rate (0.5 = half-rate: a +20% return cuts burn 10%, a -20% return raises it 10%).
+BURN_EVOLUTION_RATE = 0.5
+# When a non-mature company runs out of cash it gets a stage-based chance, each
+# year, of turning profitable instead of going bankrupt. Teams are told a chance
+# exists but never the number. On success, EBITDA = projected revenue x a random
+# margin in (0, VENTURE_MAX_PROFIT_MARGIN].
+VENTURE_RECOVERY_PROB = {'startup': 0.20, 'developing': 0.50, 'early_revenue': 0.80}
+VENTURE_MAX_PROFIT_MARGIN = 0.20
 
 
 def _fundamentals_adjustment(company: GameCompany, mu: float, sigma: float):
@@ -420,8 +495,10 @@ def _roll_outcome(company: GameCompany, market_condition: float) -> float:
         sigma *= GENERALIST_VOL_FACTOR
     mu, sigma = _fundamentals_adjustment(company, mu, sigma)
     mu += MANAGEMENT_RETURN_TILT.get(company.management_quality, 0.0)
-    # Permanent scar: a company that has ever run out of cash returns less.
-    if company.ever_distressed:
+    # Permanent scar: a MATURE company that has ever run out of cash returns less.
+    # Non-mature companies are expected to run dry at some point (it's the nature
+    # of venture), so no scar applies to them.
+    if company.ever_distressed and company.stage == 'mature':
         mu -= DISTRESS_RETURN_PENALTY
     annual_return = random.gauss(mu, sigma)
     multiple = max(0.0, 1.0 + annual_return) * market_condition
@@ -637,7 +714,7 @@ def calculate_irr(cash_flows: list) -> float:
 def team_gp_income(team):
     """
     GP income earned by the firm (not the fund):
-    - Management fees charged to their funds each year (on committed capital)
+    - Management fees charged to their funds each year (on invested/deployed capital)
     - minus operating costs (fund-size-based %, accrued each year fees are charged)
     - plus carried interest on a NET basis per fund: performance fee rate x
       max(0, total realized proceeds - total invested in realized deals),
@@ -805,10 +882,13 @@ def team_simple_return(team, game):
         deal_flows[tx.game_year] = deal_flows.get(tx.game_year, 0) + tx.amount
     if unrealized > 0:  # value remaining holdings as a terminal inflow
         deal_flows[game.current_year] = deal_flows.get(game.current_year, 0) + unrealized
+    deal_cashflows = []   # year-by-year net deal cash flow, for showing the IRR
     if deal_flows:
         cf = sorted(deal_flows.items())
         base_year = cf[0][0]
         deal_irr = calculate_irr([(yr - base_year, amt) for yr, amt in cf])
+        deal_cashflows = [{'year': yr, 'offset': yr - base_year, 'amount': amt}
+                          for yr, amt in cf]
     else:
         deal_irr = 0.0
 
@@ -828,6 +908,7 @@ def team_simple_return(team, game):
         'total_value': total_value,
         'moic': moic,
         'deal_irr': deal_irr,
+        'deal_cashflows': deal_cashflows,
     }
 
 
@@ -999,16 +1080,17 @@ def process_followon(deal: Deal, amount: float):
     lead_stake.ownership_pct = round(lead_stake.ownership_pct + (amount / post_eq) * 100.0, 4)
     lead_stake.equity_invested += amount
 
-    # Cash lands on the balance sheet; enterprise value rises by the cash; the
-    # immediate crisis is resolved.
+    # Cash lands on the balance sheet and the immediate crisis is resolved. The
+    # enterprise value rises by the injected cash too, but — like the mgmt-change
+    # fee and dividends — that mark bump is applied to THIS year's mark at the
+    # next Deal & Return Process (the crank), so the valuation history bridge ties
+    # out: prior mark x roll + follow-on - fees - dividends = this year's mark.
     company.company_funds += amount
-    for y in range(company.MAX_TRACKED_YEARS, 0, -1):
-        if company.get_year_val(y) is not None:
-            company.set_year_val(y, company.get_year_val(y) + amount)
-            break
-    else:
-        if company.funded_valuation is not None:
-            company.funded_valuation += amount
+    # Record the injection in the current year so the holding-page cash register
+    # and the crank itemize it (it lands after the distressed year's cash was
+    # clamped to $0).
+    game = Game.query.get(company.game_id)
+    company.add_year_followon(game.current_year if game else company.year_funded, amount)
     company.in_distress = False
 
     fund = Fund.query.get(lead_stake.fund_id)
@@ -1090,7 +1172,7 @@ def close_deal_with_coinvestors(deal: Deal):
                 .all())
     fill_stakes = []
     for fts in accepted:
-        amt = min(fts.proposed_coinvest_amount or 0.0, fts.max_fill_equity)
+        amt = fts.proposed_coinvest_amount or 0.0
         if amt > 0:
             fill_stakes.append((fts, amt))
     fill_total = min(sum(a for _, a in fill_stakes), total_equity)

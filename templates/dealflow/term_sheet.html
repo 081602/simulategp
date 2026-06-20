@@ -16,6 +16,10 @@
           {% elif company.stage == 'developing' %}<span class="badge bg-warning text-dark ms-1">Developing</span>
           {% elif company.stage == 'early_revenue' %}<span class="badge bg-info text-dark ms-1">Early Revenue</span>
           {% elif company.stage == 'mature' %}<span class="badge bg-success ms-1">Mature</span>{% endif %}
+          {% if company.management_quality == 'strong' %}<span class="badge bg-success ms-1"><i class="bi bi-people-fill"></i> Mgmt: Strong</span>
+          {% elif company.management_quality == 'average' %}<span class="badge bg-warning text-dark ms-1"><i class="bi bi-people-fill"></i> Mgmt: Average</span>
+          {% elif company.management_quality == 'weak' %}<span class="badge bg-danger ms-1"><i class="bi bi-people-fill"></i> Mgmt: Weak</span>
+          {% elif company.management_quality %}<span class="badge bg-secondary ms-1"><i class="bi bi-people-fill"></i> Mgmt: {{ company.management_quality | title }}</span>{% endif %}
         </p>
       </div>
     </div>
@@ -149,9 +153,11 @@
             <div class="col-md-6">
               <label for="fund_id" class="form-label fw-semibold text-white">Fund</label>
               <select class="form-select bg-dark text-white border-secondary" id="fund_id" name="fund_id" required>
+                {% if funds|length != 1 %}
                 <option value="">Select a fund&hellip;</option>
+                {% endif %}
                 {% for fund in funds %}
-                <option value="{{ fund.id }}">
+                <option value="{{ fund.id }}" {% if funds|length == 1 %}selected{% endif %}>
                   {{ fund.name }} &mdash; ${{ "{:,.1f}M".format(fund.available_capital) }} available
                 </option>
                 {% endfor %}
@@ -180,18 +186,6 @@
               finalized terms and a proposed amount, and you will be able to
               <strong>accept or reject</strong> co-investing on those exact terms — nothing is
               committed without your approval.
-            </div>
-          </div>
-
-          <div id="fillInvestorFields" class="d-none">
-            <div class="row g-3">
-              <div class="col-md-6">
-                <label for="max_fill_equity" class="form-label fw-semibold text-white">Max Co-Investment ($M)</label>
-                <input type="number" class="form-control bg-dark text-white border-secondary"
-                       id="max_fill_equity" name="max_fill_equity"
-                       min="0" step="0.1" placeholder="e.g. 5">
-                <div class="form-text text-light">The most you'd be willing to put in as a co-investor. The lead can propose up to this amount; you still get the final say.</div>
-              </div>
             </div>
           </div>
 
@@ -290,11 +284,6 @@
 
 {% block scripts %}
 <script>
-  // Fill investor toggle
-  document.getElementById('willing_to_fill').addEventListener('change', function() {
-    document.getElementById('fillInvestorFields').classList.toggle('d-none', !this.checked);
-  });
-
   // Live implied multiple: EV = offer + debt - cash, over EBITDA (mature) or revenue
   (function () {
     var input = document.getElementById('pre_money_valuation');

@@ -7,9 +7,15 @@
 
     <!-- Back nav + watchlist toggle -->
     <div class="mb-3 d-flex justify-content-between align-items-center">
+      {% if from_search %}
+      <a href="{{ url_for('search_companies', restore=1) }}" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Search Results
+      </a>
+      {% else %}
       <a href="{{ url_for('dealflow') }}" class="btn btn-sm btn-outline-secondary">
         <i class="bi bi-arrow-left"></i> Back to Deal Flow
       </a>
+      {% endif %}
       {% if not current_user.is_admin %}
         {% if on_watchlist %}
         <form method="POST" action="{{ url_for('remove_from_watchlist', company_id=company.id) }}">
@@ -26,6 +32,16 @@
         {% endif %}
       {% endif %}
     </div>
+
+    {% if existing_ts and existing_ts.status == 'rejected' and existing_ts.rejection_reason %}
+    <div class="alert alert-danger d-flex align-items-start gap-2 shadow-sm" role="alert">
+      <i class="bi bi-x-circle-fill fs-4"></i>
+      <div>
+        <div class="fw-bold">Your term sheet was rejected</div>
+        <div class="small">{{ existing_ts.rejection_reason }}</div>
+      </div>
+    </div>
+    {% endif %}
 
     <!-- Company Header -->
     <div class="card border-secondary shadow mb-4">
@@ -122,6 +138,15 @@
                   <td class="text-light">Funds Wanted</td>
                   <td class="fw-bold text-white">{% if company.stage == 'mature' %}<span class="text-secondary">N/A</span>{% else %}${{ "{:,.1f}M".format(company.capital_requested) }}{% endif %}</td>
                 </tr>
+                {% if company.stage != 'mature' %}
+                <tr>
+                  <td class="text-light">Annual Cash Burn</td>
+                  <td class="fw-bold text-danger">
+                    ${{ "{:,.1f}M".format(company.annual_burn_rate or 0) }}/yr
+                    <small class="text-secondary fw-normal">(cash consumed per year pre-funding)</small>
+                  </td>
+                </tr>
+                {% endif %}
                 <tr>
                   <td class="text-light">Available Cash</td>
                   {% if company.stage == 'mature' %}

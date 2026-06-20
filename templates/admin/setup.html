@@ -24,7 +24,7 @@
         <div class="alert border-danger mb-3" style="background:rgba(220,53,69,0.15);">
           <div class="d-flex align-items-center gap-3">
             <i class="bi bi-exclamation-triangle-fill text-danger fs-4"></i>
-            <p class="mb-0 text-light">This will <strong>delete all teams, funds, deals, and transactions</strong>. Companies are kept and reset to available. The game clock is not changed. This cannot be undone.</p>
+            <p class="mb-0 text-light">This will <strong>delete all teams, funds, deals, and transactions</strong>, and <strong>reload every company fresh</strong> from the source file. The game clock is not changed. This cannot be undone.</p>
           </div>
         </div>
         <form method="POST" action="{{ url_for('admin_setup') }}">
@@ -36,6 +36,32 @@
           </div>
           <button type="submit" class="btn btn-danger fw-bold w-100">
             <i class="bi bi-trash me-2"></i> Remove All Teams
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Reset All Companies -->
+    <div class="card border-info shadow mb-4" style="background:rgba(13,202,240,0.08) !important;">
+      <div class="card-header bg-transparent border-info">
+        <h5 class="mb-0 text-info fw-bold"><i class="bi bi-building-gear me-2"></i>Reset All Companies</h5>
+      </div>
+      <div class="card-body p-4">
+        <div class="alert border-info mb-3" style="background:rgba(13,202,240,0.12);">
+          <div class="d-flex align-items-center gap-3">
+            <i class="bi bi-arrow-repeat text-info fs-4"></i>
+            <p class="mb-0 text-light">Reloads <strong>every company fresh</strong> from the source file &mdash; restoring authored fundamentals and clearing all in-game state (funded status, valuations, EBITDA, burn, profitability, distress). <strong>Any open deals and term sheets are cleared.</strong> Teams and the game clock are not affected.</p>
+          </div>
+        </div>
+        <form method="POST" action="{{ url_for('admin_reset_companies') }}">
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="confirm_company_reset" name="confirm_company_reset" value="1" required>
+            <label class="form-check-label fw-semibold text-info" for="confirm_company_reset">
+              I understand all companies will be reloaded and any open deals cleared.
+            </label>
+          </div>
+          <button type="submit" class="btn btn-info fw-bold w-100">
+            <i class="bi bi-arrow-repeat me-2"></i> Reset All Companies
           </button>
         </form>
       </div>

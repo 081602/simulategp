@@ -3,6 +3,7 @@ __pycache__/
 *.pyo
 *.db
 *.sqlite
+data/companies_backup_*.json
 .env
 .venv/
 venv/

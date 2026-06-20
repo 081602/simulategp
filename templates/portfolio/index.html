@@ -42,8 +42,11 @@
                 <th>Company</th>
                 <th>Sector</th>
                 <th>Stage</th>
-                <th class="text-end">Your Stake %</th>
+                <th class="text-center">Management</th>
+                <th class="text-end" title="The post-money valuation when you acquired the company">Acquisition Value</th>
                 <th class="text-end">Current Valuation</th>
+                <th class="text-end" title="Your value today vs. what you invested (current value / equity invested)">MOIC</th>
+                <th class="text-end" title="The company's cash on hand today">Current Cash</th>
                 <th class="text-end" title="Your ownership share of the company's equity value (current valuation less outstanding debt)">Your Value</th>
                 <th class="text-center">Role</th>
                 <th class="text-center">Actions</th>
@@ -70,7 +73,13 @@
                   {% elif company.stage == 'mature' %}<span class="badge bg-success">Mature</span>
                   {% else %}<span class="badge bg-secondary">{{ company.stage | title }}</span>{% endif %}
                 </td>
-                <td class="text-end fw-bold">{{ "%.1f"|format(stake.ownership_pct) }}%</td>
+                <td class="text-center">
+                  {% if company.management_quality == 'strong' %}<span class="badge bg-success"><i class="bi bi-people-fill"></i> Strong</span>
+                  {% elif company.management_quality == 'average' %}<span class="badge bg-warning text-dark"><i class="bi bi-people-fill"></i> Average</span>
+                  {% elif company.management_quality == 'weak' %}<span class="badge bg-danger"><i class="bi bi-people-fill"></i> Weak</span>
+                  {% elif company.management_quality %}<span class="badge bg-secondary"><i class="bi bi-people-fill"></i> {{ company.management_quality | title }}</span>{% endif %}
+                </td>
+                <td class="text-end text-secondary">${{ "{:,.1f}M".format(company.funded_valuation or 0) }}</td>
                 <td class="text-end">
                   <span class="text-white fw-semibold">
                     ${{ "{:,.1f}M".format(company.latest_valuation or 0) }}
@@ -80,6 +89,13 @@
                     <i class="bi bi-exclamation-triangle-fill"></i> Cash exhausted
                   </div>
                   {% endif %}
+                </td>
+                <td class="text-end fw-bold">
+                  {% set moic = (stake.current_value / stake.equity_invested) if stake.equity_invested else 0 %}
+                  <span class="{% if moic >= 1 %}text-info{% else %}text-danger{% endif %}">{{ "%.2f"|format(moic) }}&times;</span>
+                </td>
+                <td class="text-end">
+                  <span class="{% if is_distressed %}text-danger{% else %}text-white{% endif %}">${{ "{:,.1f}M".format(company.company_funds or 0) }}</span>
                 </td>
                 <td class="text-end fw-bold text-success">
                   ${{ "{:,.1f}M".format(stake.current_value) }}

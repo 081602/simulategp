@@ -12,38 +12,134 @@
       </div>
     </div>
 
-    <!-- Return Summary + Calculation -->
+    <!-- Fund Cards -->
     <div class="row g-4 mb-4">
-      <div class="col-md-5">
-        <div class="card border-success shadow text-center h-100"
-             style="background:rgba(25,135,84,0.1) !important;">
-          <div class="card-body py-4 d-flex flex-column justify-content-center">
-            <div class="text-light small mb-1">
-              <i class="bi bi-graph-up-arrow text-success me-1"></i> Annualized Return
+      {% for fund in team_funds %}
+      {% set deployment_pct = (fund.deployed_capital / fund.total_capital * 100) if fund.total_capital > 0 else 0 %}
+      <div class="col-12">
+        <div class="card border-secondary shadow h-100">
+          <div class="card-header border-secondary d-flex align-items-center justify-content-between">
+            <h6 class="mb-0 fw-semibold">
+              <i class="bi bi-wallet2 text-warning me-1"></i> {{ fund.name }}
+            </h6>
+            <span class="badge bg-secondary small">{{ "%.1f"|format(fund.management_fee_rate * 100) }}% / {{ "%.1f"|format(fund.performance_fee_rate * 100) }}% Carry</span>
+          </div>
+          <div class="card-body">
+            <div class="row g-3 align-items-end">
+              <div class="col-6 col-md-3">
+                <div class="text-light small">Total Capital</div>
+                <div class="fw-bold fs-5">${{ "{:,.1f}M".format(fund.total_capital) }}</div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="text-light small">Available</div>
+                <div class="fw-bold fs-5 text-success">${{ "{:,.1f}M".format(fund.available_capital) }}</div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="text-light small">Deployed</div>
+                <div class="fw-bold fs-5 text-warning">${{ "{:,.1f}M".format(fund.deployed_capital) }}</div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="text-light small d-flex justify-content-between">
+                  <span>Deployment</span><span>{{ "%.1f"|format(deployment_pct) }}%</span>
+                </div>
+                <div class="progress bg-secondary mt-1" style="height:10px;">
+                  <div class="progress-bar {% if deployment_pct >= 90 %}bg-danger{% elif deployment_pct >= 70 %}bg-warning{% else %}bg-success{% endif %}"
+                       style="width:{{ [deployment_pct, 100]|min }}%" role="progressbar"></div>
+                </div>
+              </div>
             </div>
-            <div class="display-4 fw-bold {% if ret.annualized >= 0 %}text-success{% else %}text-danger{% endif %}">
-              {{ "%+.1f"|format(ret.annualized * 100) }}%
+
+            <!-- Carry the fund distributes to the GP, netted out of LP capital -->
+            {% set carry = carry_by_fund.get(fund.name, 0) %}
+            {% if carry > 0 %}
+            <div class="border-top border-secondary mt-3 pt-2 small d-flex flex-wrap gap-4">
+              <span><span class="text-secondary">Available Capital:</span> ${{ "{:,.1f}M".format(fund.available_capital) }}</span>
+              <span><span class="text-secondary">Less Carried Interest to GP:</span> <span class="text-danger">&minus;${{ "{:,.1f}M".format(carry) }}</span></span>
+              <span class="fw-bold"><span class="text-secondary fw-normal">Net Available to LPs:</span> <span class="text-success">${{ "{:,.1f}M".format(fund.available_capital - carry) }}</span></span>
             </div>
-            <div class="text-light small">per year over {{ ret.years }} year{{ 's' if ret.years != 1 }}
-              &mdash; {{ "%.2f"|format(ret.multiple) }}&times; net / committed</div>
-            <hr class="border-secondary my-3">
-            <div class="text-light small mb-1">
-              <i class="bi bi-x-diamond text-info me-1"></i> MOIC <span class="text-secondary">(on invested capital)</span>
-            </div>
-            <div class="display-6 fw-bold {% if ret.moic >= 1 %}text-info{% else %}text-danger{% endif %}">
-              {{ "%.2f"|format(ret.moic) }}&times;
-              <span class="fs-6 fw-normal text-light">&middot; {{ "%+.1f"|format(ret.deal_irr * 100) }}% Deal IRR</span>
-            </div>
-            <div class="text-light small">deal return per $1 invested &mdash; Deal IRR is the same on a time-weighted (annual) basis, before fees</div>
+            {% endif %}
+
           </div>
         </div>
       </div>
-      <div class="col-md-7">
-        <div class="card border-secondary shadow h-100">
-          <div class="card-header border-secondary">
-            <h6 class="mb-0 fw-semibold"><i class="bi bi-calculator text-warning"></i> How the Return Is Calculated</h6>
+      {% else %}
+      <div class="col-12">
+        <div class="card border-secondary text-center py-4">
+          <div class="card-body text-secondary">
+            <i class="bi bi-wallet2 fs-2 d-block mb-2"></i>
+            No funds created yet.
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Return Summary — two parallel columns -->
+    <div class="row g-4 mb-4">
+
+      <!-- ===== LEFT: Return on Invested Capital ===== -->
+      <div class="col-lg-6">
+        <div class="card border-info shadow h-100" style="background:rgba(13,202,240,0.06) !important;">
+          <div class="card-header border-info">
+            <h6 class="mb-0 fw-semibold text-info"><i class="bi bi-x-diamond me-1"></i> Return on Invested Capital</h6>
           </div>
           <div class="card-body">
+            <div class="text-center mb-3">
+              <div class="display-4 fw-bold {% if ret.deal_irr >= 0 %}text-success{% else %}text-danger{% endif %}">{{ "%+.1f"|format(ret.deal_irr * 100) }}%</div>
+              <div class="text-light small">Deal IRR</div>
+              <div class="fs-4 fw-semibold {% if ret.moic >= 1 %}text-info{% else %}text-danger{% endif %} mt-1">{{ "%.2f"|format(ret.moic) }}&times; <span class="fs-6 fw-normal text-light">MOIC</span></div>
+            </div>
+            <p class="text-secondary small">
+              Deal performance on the capital you actually <strong>deployed</strong>, <strong>before</strong> fund fees and carry.
+              <strong>MOIC</strong> = how much you made per $1; <strong>Deal IRR</strong> = the annualized rate, accounting for <em>when</em> the cash moved.
+            </p>
+            <hr class="border-secondary my-2">
+            <div class="font-monospace small text-light mb-2">
+              MOIC = (proceeds ${{ "{:,.1f}M".format(ret.realized) }}{% if ret.unrealized > 0 %} + holdings ${{ "{:,.1f}M".format(ret.unrealized) }}{% endif %}) / invested ${{ "{:,.1f}M".format(ret.invested) }}
+              = <span class="fw-bold text-info">{{ "%.2f"|format(ret.moic) }}&times;</span>
+            </div>
+            {% if ret.deal_cashflows %}
+            <div class="text-light small mb-1"><strong>Deal IRR</strong> &mdash; the annual rate that discounts these net deal cash flows to zero:</div>
+            <table class="table table-dark table-sm align-middle mb-1">
+              <thead><tr><th>Year</th><th class="text-end">Invested</th><th class="text-end">Returned</th><th class="text-end">Net</th></tr></thead>
+              <tbody>
+                {% for f in ret.deal_cashflows %}
+                <tr>
+                  <td>Year {{ f.year }} <span class="text-secondary small">(t+{{ f.offset }})</span></td>
+                  <td class="text-end text-danger">{% if f.amount < 0 %}&minus;${{ "{:,.1f}M".format(-f.amount) }}{% else %}&mdash;{% endif %}</td>
+                  <td class="text-end text-success">{% if f.amount > 0 %}+${{ "{:,.1f}M".format(f.amount) }}{% else %}&mdash;{% endif %}</td>
+                  <td class="text-end fw-semibold {% if f.amount < 0 %}text-danger{% else %}text-success{% endif %}">{% if f.amount < 0 %}&minus;${{ "{:,.1f}M".format(-f.amount) }}{% else %}+${{ "{:,.1f}M".format(f.amount) }}{% endif %}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <div class="font-monospace small text-light mb-1">
+              &Sigma; CF<sub>t</sub> / (1 + IRR)<sup>t</sup> = 0 &nbsp;&rarr;&nbsp; Deal IRR =
+              <span class="fw-bold {% if ret.deal_irr >= 0 %}text-success{% else %}text-danger{% endif %}">{{ "%+.1f"|format(ret.deal_irr * 100) }}%</span>
+            </div>
+            <p class="text-secondary small mb-0">where <span class="font-monospace">t</span> is years after the first cash flow (t+0, t+1, …). Active holdings are added as a terminal inflow at the current year.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== RIGHT: Return on Committed Capital ===== -->
+      <div class="col-lg-6">
+        <div class="card border-success shadow h-100" style="background:rgba(25,135,84,0.06) !important;">
+          <div class="card-header border-success">
+            <h6 class="mb-0 fw-semibold text-success"><i class="bi bi-graph-up-arrow me-1"></i> Return on Committed Capital</h6>
+          </div>
+          <div class="card-body">
+            <div class="text-center mb-3">
+              <div class="display-4 fw-bold {% if ret.annualized >= 0 %}text-success{% else %}text-danger{% endif %}">{{ "%+.1f"|format(ret.annualized * 100) }}%</div>
+              <div class="text-light small">Annualized, net to LPs</div>
+              <div class="fs-4 fw-semibold mt-1">{{ "%.2f"|format(ret.multiple) }}&times; <span class="fs-6 fw-normal text-light">net / committed</span></div>
+            </div>
+            <p class="text-secondary small">
+              The net return to LPs on the <strong>entire fund they committed</strong> &mdash; including any capital that sat idle &mdash;
+              <strong>after</strong> management fees and carry. This is the figure LPs actually earn.
+            </p>
+            <hr class="border-secondary my-2">
             <table class="table table-dark table-sm align-middle mb-2">
               <tbody>
                 <tr>
@@ -78,91 +174,10 @@
               Annualized = {{ "%.2f"|format(ret.multiple) }}<sup>(1/{{ ret.years }})</sup> &minus; 1
               = <span class="fw-bold {% if ret.annualized >= 0 %}text-success{% else %}text-danger{% endif %}">{{ "%+.1f"|format(ret.annualized * 100) }}%</span>
             </div>
-            <hr class="border-secondary my-2">
-            <div class="font-monospace small text-light">
-              MOIC = (proceeds ${{ "{:,.1f}M".format(ret.realized) }}{% if ret.unrealized > 0 %} + holdings ${{ "{:,.1f}M".format(ret.unrealized) }}{% endif %}) / invested ${{ "{:,.1f}M".format(ret.invested) }}
-              = <span class="fw-bold {% if ret.moic >= 1 %}text-info{% else %}text-danger{% endif %}">{{ "%.2f"|format(ret.moic) }}&times;</span>
-            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Fund Cards -->
-    <div class="row g-4 mb-4">
-      {% for fund in team_funds %}
-      {% set deployment_pct = (fund.deployed_capital / fund.total_capital * 100) if fund.total_capital > 0 else 0 %}
-      <div class="col-md-6 col-xl-4">
-        <div class="card border-secondary shadow h-100">
-          <div class="card-header border-secondary d-flex align-items-center justify-content-between">
-            <h6 class="mb-0 fw-semibold">
-              <i class="bi bi-wallet2 text-warning me-1"></i> {{ fund.name }}
-            </h6>
-            <span class="badge bg-secondary small">{{ "%.1f"|format(fund.management_fee_rate * 100) }}% / {{ "%.1f"|format(fund.performance_fee_rate * 100) }}% Carry</span>
-          </div>
-          <div class="card-body">
-            <div class="row g-2 mb-3">
-              <div class="col-6">
-                <div class="text-light small">Total Capital</div>
-                <div class="fw-bold">${{ "{:,.1f}M".format(fund.total_capital) }}</div>
-              </div>
-              <div class="col-6">
-                <div class="text-light small">Available</div>
-                <div class="fw-bold text-success">${{ "{:,.1f}M".format(fund.available_capital) }}</div>
-              </div>
-              <div class="col-6">
-                <div class="text-light small">Deployed</div>
-                <div class="fw-bold text-warning">${{ "{:,.1f}M".format(fund.deployed_capital) }}</div>
-              </div>
-              <div class="col-6">
-                <div class="text-light small">Deployment</div>
-                <div class="fw-bold">{{ "%.1f"|format(deployment_pct) }}%</div>
-              </div>
-            </div>
-
-            <!-- Deployment Progress Bar -->
-            <div class="mb-1 d-flex justify-content-between">
-              <small class="text-secondary">Deployment Progress</small>
-              <small class="text-secondary">{{ "%.1f"|format(deployment_pct) }}%</small>
-            </div>
-            <div class="progress bg-secondary mb-2" style="height:10px;">
-              <div class="progress-bar {% if deployment_pct >= 90 %}bg-danger{% elif deployment_pct >= 70 %}bg-warning{% else %}bg-success{% endif %}"
-                   style="width:{{ [deployment_pct, 100]|min }}%"
-                   role="progressbar"></div>
-            </div>
-
-            <!-- Carry the fund distributes to the GP, netted out of LP capital -->
-            {% set carry = carry_by_fund.get(fund.name, 0) %}
-            {% if carry > 0 %}
-            <div class="border-top border-secondary mt-2 pt-2 small">
-              <div class="d-flex justify-content-between">
-                <span class="text-secondary">Available Capital</span>
-                <span>${{ "{:,.1f}M".format(fund.available_capital) }}</span>
-              </div>
-              <div class="d-flex justify-content-between">
-                <span class="text-secondary">Less: Carried Interest to GP</span>
-                <span class="text-danger">&minus;${{ "{:,.1f}M".format(carry) }}</span>
-              </div>
-              <div class="d-flex justify-content-between fw-bold border-top border-secondary mt-1 pt-1">
-                <span>Net Available to LPs</span>
-                <span class="text-success">${{ "{:,.1f}M".format(fund.available_capital - carry) }}</span>
-              </div>
-            </div>
-            {% endif %}
-
-          </div>
-        </div>
-      </div>
-      {% else %}
-      <div class="col-12">
-        <div class="card border-secondary text-center py-4">
-          <div class="card-body text-secondary">
-            <i class="bi bi-wallet2 fs-2 d-block mb-2"></i>
-            No funds created yet.
-          </div>
-        </div>
-      </div>
-      {% endfor %}
     </div>
 
     <!-- Transaction History -->

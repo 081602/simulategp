@@ -14,6 +14,15 @@
           {{ company.name }}
           {% if is_lead %}<span class="badge bg-warning text-dark ms-2 fs-6"><i class="bi bi-star-fill"></i> Lead</span>
           {% else %}<span class="badge bg-secondary ms-2 fs-6"><i class="bi bi-people"></i> Fill</span>{% endif %}
+          {% if company.management_quality == 'strong' %}<span class="badge bg-success ms-2 fs-6"><i class="bi bi-people-fill"></i> Mgmt: Strong</span>
+          {% elif company.management_quality == 'average' %}<span class="badge bg-warning text-dark ms-2 fs-6"><i class="bi bi-people-fill"></i> Mgmt: Average</span>
+          {% elif company.management_quality == 'weak' %}<span class="badge bg-danger ms-2 fs-6"><i class="bi bi-people-fill"></i> Mgmt: Weak</span>
+          {% elif company.management_quality %}<span class="badge bg-secondary ms-2 fs-6"><i class="bi bi-people-fill"></i> Mgmt: {{ company.management_quality | title }}</span>{% endif %}
+          {% if company.stage == 'startup' %}<span class="badge bg-danger ms-2 fs-6">Startup</span>
+          {% elif company.stage == 'developing' %}<span class="badge bg-warning text-dark ms-2 fs-6">Developing</span>
+          {% elif company.stage == 'early_revenue' %}<span class="badge bg-info text-dark ms-2 fs-6">Early Revenue</span>
+          {% elif company.stage == 'mature' %}<span class="badge bg-success ms-2 fs-6">Mature</span>
+          {% else %}<span class="badge bg-secondary ms-2 fs-6">{{ company.stage | title }}</span>{% endif %}
         </h2>
         <p class="text-secondary mb-0">{{ company.sector }} &mdash; Portfolio Management</p>
       </div>
@@ -41,43 +50,112 @@
           &mdash; a net <strong>${{ "{:,.1f}M".format(-net_cf) }}</strong> shortfall a year{% endif %}.
           {% else %}
           It burns <strong>${{ "{:,.1f}M".format(company.annual_burn_rate or 0) }}</strong> of cash a year and
-          exhausted the capital it raised.
+          exhausted the capital it raised. There is a <strong>chance it turns profitable next year</strong> on
+          its own &mdash; but that is not guaranteed.
           {% endif %}
           Note this is a <strong>cash</strong> problem, not a valuation one &mdash; the company can be appreciating and still
-          run dry. If cash is negative again next year it goes <strong>bankrupt</strong> and the investment is lost.
+          run dry.
+          {% if is_buyout %}
+          If cash is negative again next year it goes <strong>bankrupt</strong> and the investment is lost.
+          {% else %}
+          If it does <strong>not</strong> turn profitable and you have not injected enough cash to cover its burn, it goes
+          <strong>bankrupt</strong> and the investment is lost. Injecting cash keeps it alive while it tries to turn the corner &mdash;
+          and if it does turn profitable, that cash simply stays on its balance sheet.
+          {% endif %}
         </div>
       </div>
     </div>
 
     {% if is_lead and deal.status == 'active' and company.in_distress %}
     {% set lead_stake = (deal.equity_stakes | selectattr('team_id', 'equalto', current_user.id) | first) %}
+    {% if deal.let_it_roll %}
+    <div class="card border-secondary shadow mb-4 opacity-75">
+      <div class="card-header border-secondary">
+        <h6 class="mb-0 fw-semibold text-secondary"><i class="bi bi-dice-5-fill"></i> Follow-on Investment &mdash; you chose to let it roll</h6>
+      </div>
+      <div class="card-body p-4 text-center text-secondary">
+        <i class="bi bi-dice-5-fill fs-2 d-block mb-2"></i>
+        <p class="mb-0"><strong class="text-light">You chose to let {{ company.name }} roll &mdash; no rescue.</strong><br>
+          It takes its chance at turning profitable, and goes bankrupt if it doesn't.
+          Your destiny is set for the next Deal &amp; Return Process.</p>
+      </div>
+    </div>
+    {% else %}
     <div class="card border-warning shadow mb-4">
       <div class="card-header border-warning" style="background:rgba(255,193,7,0.1);">
         <h6 class="mb-0 fw-semibold text-warning"><i class="bi bi-life-preserver"></i> Follow-on Investment &mdash; rescue or let it go bankrupt</h6>
       </div>
       <div class="card-body p-4">
         <p class="text-secondary small mb-3">
-          Inject fresh cash <strong>at the current valuation</strong> to extend runway, or do nothing and the company goes
-          <strong>bankrupt</strong> at the next Deal &amp; Return Process. New money dilutes the other holders pro-rata and
-          raises your stake.{% if not is_buyout %} It burns ${{ "{:,.1f}M".format(company.annual_burn_rate or 0) }}/yr &mdash; invest enough to fund the years you need.{% endif %}
+          Inject fresh cash <strong>at the current valuation</strong> to extend runway, or
+          <strong>let it roll</strong> and risk <strong>bankruptcy</strong> at the next Deal &amp; Return Process. New money
+          dilutes the other holders pro-rata and raises your stake.{% if not is_buyout %} It burns ${{ "{:,.1f}M".format(company.annual_burn_rate or 0) }}/yr &mdash; invest enough to fund the years you need. There's a chance it turns profitable on its own next year; injecting cash protects you if it doesn't, and any cash left over stays on its balance sheet.{% endif %}
         </p>
-        <form method="POST" action="{{ url_for('follow_on', company_id=company.id) }}" class="d-flex gap-2 align-items-center flex-wrap">
-          <div class="input-group" style="max-width:260px;">
-            <span class="input-group-text bg-dark border-secondary text-secondary">$</span>
-            <input type="number" class="form-control bg-dark text-white border-secondary"
-                   name="amount" min="0" step="0.1" placeholder="Amount"
-                   {% if lead_stake %}max="{{ lead_stake.fund.available_capital }}"{% endif %} required>
-            <span class="input-group-text bg-dark border-secondary text-secondary">M</span>
-          </div>
-          <button type="submit" class="btn btn-warning btn-sm text-dark confirm-action"
-                  data-confirm="Invest in {{ company.name }} at its current valuation? This draws from your fund and dilutes the other holders.">
-            <i class="bi bi-life-preserver"></i> Invest
-          </button>
-          {% if lead_stake %}<span class="text-secondary small">Fund available: ${{ "{:,.1f}M".format(lead_stake.fund.available_capital) }}</span>{% endif %}
-        </form>
+
+        <div class="mb-3">
+          <div class="fw-semibold text-white small mb-1">Option 1 &mdash; Invest (rescue)</div>
+          <form method="POST" action="{{ url_for('follow_on', company_id=company.id) }}" class="d-flex gap-2 align-items-center flex-wrap">
+            <div class="input-group" style="max-width:260px;">
+              <span class="input-group-text bg-dark border-secondary text-secondary">$</span>
+              <input type="number" class="form-control bg-dark text-white border-secondary"
+                     name="amount" min="0" step="0.1" placeholder="Amount"
+                     {% if lead_stake %}max="{{ lead_stake.fund.available_capital }}"{% endif %} required>
+              <span class="input-group-text bg-dark border-secondary text-secondary">M</span>
+            </div>
+            <button type="submit" class="btn btn-warning btn-sm text-dark confirm-action"
+                    data-confirm="Invest in {{ company.name }} at its current valuation? This draws from your fund and dilutes the other holders.">
+              <i class="bi bi-life-preserver"></i> Invest
+            </button>
+            {% if lead_stake %}<span class="text-secondary small">Fund available: ${{ "{:,.1f}M".format(lead_stake.fund.available_capital) }}</span>{% endif %}
+          </form>
+        </div>
+
+        {% if not is_buyout %}
+        <div class="pt-3 border-top border-secondary">
+          <div class="fw-semibold text-white small mb-1">Option 2 &mdash; Let it roll</div>
+          <form method="POST" action="{{ url_for('let_it_roll', company_id=company.id) }}">
+            <button type="submit" class="btn btn-outline-secondary btn-sm confirm-action"
+                    data-confirm="Let {{ company.name }} roll with no rescue? It risks bankruptcy, but may turn profitable on its own.">
+              <i class="bi bi-dice-5"></i> Let it roll and risk bankruptcy but hope for cash flow positivity
+            </button>
+          </form>
+          <div class="form-text text-secondary">If you do nothing, this is the default at the next Deal &amp; Return Process.</div>
+        </div>
+        {% endif %}
       </div>
     </div>
     {% endif %}
+    {% endif %}
+
+    {% if not is_lead and deal.status == 'active' %}
+    <div class="card border-secondary shadow mb-4">
+      <div class="card-header border-secondary">
+        <h6 class="mb-0 fw-semibold text-secondary"><i class="bi bi-people"></i> You're a Fill Investor &mdash; the lead decides</h6>
+      </div>
+      <div class="card-body p-4 text-secondary">
+        <p class="mb-0">{{ company.name }} has run out of cash. As a <strong>fill investor</strong> you're along for the ride &mdash;
+          the <strong class="text-light">lead investor{% if deal.lead_team %} ({{ deal.lead_team.firm_name }}){% endif %}</strong>
+          decides whether to inject a follow-on rescue or let it roll. You can't make that call, but you can
+          follow up with the lead offline if you'd like to weigh in.</p>
+      </div>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    {# Rescued this round: distress is cleared by the injection, so show a locked,
+       grayed confirmation instead of the active form — the decision is made. #}
+    {% set fo_this_round = company.get_year_followon(game.current_year) or 0 %}
+    {% if is_lead and deal.status == 'active' and not company.in_distress and fo_this_round > 0 %}
+    <div class="card border-secondary shadow mb-4 opacity-75">
+      <div class="card-header border-secondary">
+        <h6 class="mb-0 fw-semibold text-secondary"><i class="bi bi-life-preserver"></i> Follow-on Investment &mdash; rescued this round</h6>
+      </div>
+      <div class="card-body p-4 text-center text-secondary">
+        <i class="bi bi-life-preserver fs-2 d-block mb-2 text-warning"></i>
+        <p class="mb-0"><strong class="text-light">You invested ${{ "{:,.1f}M".format(fo_this_round) }} to rescue {{ company.name }} this round.</strong><br>
+          The distress is cleared and its runway extended. Your decision is locked in for the next Deal &amp; Return Process.</p>
+      </div>
+    </div>
     {% endif %}
 
     {% if val_history %}
@@ -95,29 +173,55 @@
         {% endif %}
       </div>
       <div class="card-body p-0">
-        <table class="table table-dark align-middle mb-0">
-          <thead><tr>
-            <th>Year</th>
-            <th class="text-end">Valuation</th>
-            <th class="text-end">Annual Return</th>
-          </tr></thead>
+        <table class="table table-dark table-sm align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th class="text-end">Opening Value</th>
+              <th class="text-end">Market Roll</th>
+              <th class="text-end">Market Gain/Loss</th>
+              {% if val_has_followons %}<th class="text-end">Follow-on</th>{% endif %}
+              {% if val_has_mgmt %}<th class="text-end">Mgmt Change</th>{% endif %}
+              {% if val_has_dividends %}<th class="text-end">Dividend</th>{% endif %}
+              <th class="text-end">Closing Value</th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
               <td class="text-secondary">Year {{ company.year_funded }} &mdash; deal closed</td>
-              <td class="text-end fw-bold">${{ "{:,.1f}M".format(company.funded_valuation) }}</td>
               <td class="text-end text-secondary">&mdash;</td>
+              <td class="text-end text-secondary">&mdash;</td>
+              <td class="text-end text-secondary">&mdash;</td>
+              {% if val_has_followons %}<td class="text-end text-secondary">&mdash;</td>{% endif %}
+              {% if val_has_mgmt %}<td class="text-end text-secondary">&mdash;</td>{% endif %}
+              {% if val_has_dividends %}<td class="text-end text-secondary">&mdash;</td>{% endif %}
+              <td class="text-end fw-bold">${{ "{:,.1f}M".format(company.funded_valuation) }}</td>
             </tr>
             {% for row in val_history %}
+            {% set pct = (row.market_gain / row.opening) if row.opening else None %}
             <tr>
               <td class="text-secondary">Year {{ row.year }}</td>
-              <td class="text-end fw-bold">${{ "{:,.1f}M".format(row.value) }}</td>
-              <td class="text-end fw-bold {% if row.ret is not none and row.ret >= 0 %}text-success{% elif row.ret is not none %}text-danger{% endif %}">
-                {% if row.ret is not none %}{{ '+' if row.ret >= 0 }}{{ "%.1f"|format(row.ret * 100) }}%{% else %}&mdash;{% endif %}
+              <td class="text-end text-secondary">${{ "{:,.1f}M".format(row.opening) }}</td>
+              <td class="text-end {% if pct is not none and pct >= 0 %}text-success{% elif pct is not none %}text-danger{% endif %}">
+                {% if pct is not none %}{{ '+' if pct >= 0 }}{{ "%.1f"|format(pct * 100) }}%{% else %}&mdash;{% endif %}
               </td>
+              <td class="text-end {% if row.market_gain >= 0 %}text-success{% else %}text-danger{% endif %}">
+                {% if row.market_gain >= 0 %}+${{ "{:,.1f}M".format(row.market_gain) }}{% else %}&minus;${{ "{:,.1f}M".format(-row.market_gain) }}{% endif %}
+              </td>
+              {% if val_has_followons %}<td class="text-end {% if row.followon %}text-success{% else %}text-secondary{% endif %}">{% if row.followon %}+${{ "{:,.1f}M".format(row.followon) }}{% else %}&mdash;{% endif %}</td>{% endif %}
+              {% if val_has_mgmt %}<td class="text-end {% if row.mgmt_fee %}text-info{% else %}text-secondary{% endif %}">{% if row.mgmt_fee %}&minus;${{ "{:,.1f}M".format(row.mgmt_fee) }}{% else %}&mdash;{% endif %}</td>{% endif %}
+              {% if val_has_dividends %}<td class="text-end {% if row.dividend %}text-warning{% else %}text-secondary{% endif %}">{% if row.dividend %}&minus;${{ "{:,.1f}M".format(row.dividend) }}{% else %}&mdash;{% endif %}</td>{% endif %}
+              <td class="text-end fw-bold text-white">${{ "{:,.1f}M".format(row.value) }}</td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
+      </div>
+      <div class="card-footer border-secondary text-secondary small">
+        Each year reads left to right as a bridge:
+        <strong>Opening Value</strong> &times; <strong>Market Roll</strong> = <strong>Market Gain/Loss</strong>{% if val_has_followons %} <span class="text-success">+ Follow-on</span>{% endif %}{% if val_has_mgmt %} <span class="text-info">&minus; Mgmt Change</span>{% endif %}{% if val_has_dividends %} <span class="text-warning">&minus; Dividend</span>{% endif %} = <strong>Closing Value</strong>.
+        <strong>Market Roll</strong> is the pure market move drawn that year; the cash events move the mark dollar-for-dollar because the valuation incorporates the company's cash.{% if val_has_followons %} <span class="text-success">Follow-on</span> capital raises it;{% endif %}{% if val_has_mgmt or val_has_dividends %} <span class="text-info">management changes</span>{% if val_has_dividends %} and <span class="text-warning">dividends</span>{% endif %} lower it.{% endif %}
+        The first year's roll is measured against the price you paid (entry discipline), so a good entry shows up as a higher Year&nbsp;1 gain.
       </div>
     </div>
     {% endif %}
@@ -227,7 +331,7 @@
             </div>
             {% if company.in_distress %}
             <span class="badge bg-danger"><i class="bi bi-exclamation-triangle-fill"></i> In Distress</span>
-            {% elif company.ever_distressed %}
+            {% elif company.ever_distressed and company.stage == 'mature' %}
             <span class="badge bg-secondary" title="Ran out of cash before — expected return is permanently tilted down 5%/yr"><i class="bi bi-bandaid"></i> Prior distress</span>
             {% endif %}
           </div>
@@ -263,7 +367,7 @@
         <div class="px-3 pt-2 small text-secondary">
           Acquired in Year {{ company.year_funded }} with
           <strong class="text-white">${{ "{:,.1f}M".format(register_start) }}</strong> of cash
-          {% if is_buyout %}(cash-free buyout &mdash; starts at $0, lives off earnings). EBITDA converts to <strong>Cash</strong> each year (60% of a profit) and interest is paid (debt is interest-only).{% else %}(the capital invested in the round). The company <strong>burns</strong> cash each year (the burn moves inversely with the annual return at half the rate) &mdash; the team must exit before it runs out.{% endif %}
+          {% if is_buyout %}(cash-free buyout &mdash; starts at $0, lives off earnings). EBITDA converts to <strong>Cash Flow</strong> each year (60% of a profit) and interest is paid (debt is interest-only).{% elif company.turned_profitable %}(the capital invested in the round). It <strong>burned</strong> cash early on, then <strong>turned profitable</strong> &mdash; it now generates cash from EBITDA.{% else %}(the capital invested in the round). The company <strong>burns</strong> cash each year &mdash; the team must exit before it runs out.{% endif %}
         </div>
         {% if cash_register %}
         <table class="table table-dark table-sm mb-0 align-middle">
@@ -271,28 +375,28 @@
             <tr>
               <th>Year</th>
               <th class="text-end">Opening Cash</th>
-              {% if is_buyout %}
               <th class="text-end">EBITDA</th>
-              <th class="text-end">Cash</th>
-              <th class="text-end">Interest</th>
-              {% else %}
+              <th class="text-end">Cash Flow</th>
               <th class="text-end">Cash Burn</th>
-              {% endif %}
+              <th class="text-end">Interest</th>
+              <th class="text-end">Follow-on</th>
+              <th class="text-end">Mgmt Change</th>
+              {% if register_has_dividends %}<th class="text-end">Dividend</th>{% endif %}
               <th class="text-end">Closing Cash</th>
             </tr>
           </thead>
           <tbody>
             {% for r in cash_register %}
             <tr>
-              <td>Year {{ r.year }}{% if r.distressed %} <span class="badge bg-danger">distress</span>{% endif %}</td>
+              <td>Year {{ r.year }}{% if r.pending %} <span class="badge bg-secondary text-light">in progress</span>{% endif %}{% if r.distressed %} <span class="badge bg-danger">distress</span>{% endif %}</td>
               <td class="text-end text-secondary">${{ "{:,.1f}M".format(r.opening) }}</td>
-              {% if is_buyout %}
-              <td class="text-end {% if r.ebitda < 0 %}text-danger{% else %}text-light{% endif %}">{% if r.ebitda < 0 %}&minus;${{ "{:,.1f}M".format(-r.ebitda) }}{% else %}${{ "{:,.1f}M".format(r.ebitda) }}{% endif %}</td>
-              <td class="text-end {% if r.cash < 0 %}text-danger{% else %}text-success{% endif %}">{% if r.cash < 0 %}&minus;${{ "{:,.1f}M".format(-r.cash) }}{% else %}+${{ "{:,.1f}M".format(r.cash) }}{% endif %}</td>
-              <td class="text-end {% if r.interest > 0 %}text-danger{% else %}text-secondary{% endif %}">{% if r.interest > 0 %}&minus;${{ "{:,.1f}M".format(r.interest) }}{% else %}&mdash;{% endif %}</td>
-              {% else %}
-              <td class="text-end text-danger">&minus;${{ "{:,.1f}M".format(r.burn) }}</td>
-              {% endif %}
+              <td class="text-end {% if r.ebitda is not none and r.ebitda < 0 %}text-danger{% elif r.ebitda is not none %}text-light{% else %}text-secondary{% endif %}">{% if r.ebitda is none %}&mdash;{% elif r.ebitda < 0 %}&minus;${{ "{:,.1f}M".format(-r.ebitda) }}{% else %}${{ "{:,.1f}M".format(r.ebitda) }}{% endif %}</td>
+              <td class="text-end {% if r.cash is not none and r.cash < 0 %}text-danger{% elif r.cash is not none %}text-success{% else %}text-secondary{% endif %}">{% if r.cash is none %}&mdash;{% elif r.cash < 0 %}&minus;${{ "{:,.1f}M".format(-r.cash) }}{% else %}+${{ "{:,.1f}M".format(r.cash) }}{% endif %}</td>
+              <td class="text-end {% if r.burn %}text-danger{% else %}text-secondary{% endif %}">{% if r.burn %}&minus;${{ "{:,.1f}M".format(r.burn) }}{% else %}&mdash;{% endif %}</td>
+              <td class="text-end {% if r.interest %}text-danger{% else %}text-secondary{% endif %}">{% if r.interest %}&minus;${{ "{:,.1f}M".format(r.interest) }}{% else %}&mdash;{% endif %}</td>
+              <td class="text-end {% if r.followon %}text-success{% else %}text-secondary{% endif %}">{% if r.followon %}+${{ "{:,.1f}M".format(r.followon) }}{% else %}&mdash;{% endif %}</td>
+              <td class="text-end {% if r.mgmt_fee %}text-danger{% else %}text-secondary{% endif %}">{% if r.mgmt_fee %}&minus;${{ "{:,.1f}M".format(r.mgmt_fee) }}{% else %}&mdash;{% endif %}</td>
+              {% if register_has_dividends %}<td class="text-end {% if r.dividend %}text-warning{% else %}text-secondary{% endif %}">{% if r.dividend %}&minus;${{ "{:,.1f}M".format(r.dividend) }}{% else %}&mdash;{% endif %}</td>{% endif %}
               <td class="text-end fw-bold {% if r.closing <= 0 %}text-danger{% else %}text-white{% endif %}">${{ "{:,.1f}M".format(r.closing) }}</td>
             </tr>
             {% endfor %}
@@ -303,15 +407,13 @@
         {% endif %}
       </div>
       <div class="card-footer border-secondary text-secondary small">
-        {% if is_buyout %}
-        <strong>Cash</strong> = 60% of positive EBITDA, or 1.25&times; negative EBITDA.
-        {% if company.debt_outstanding and company.debt_outstanding > 0 %}Debt is interest-only; the ${{ "{:,.1f}M".format(company.debt_outstanding) }} principal is repaid at exit.{% endif %}
-        {% else %}
-        <strong>Cash Burn</strong> moves inversely with the annual return at half the rate
-        (return +20% &rarr; burn &minus;10%; return &minus;20% &rarr; burn +10%), against the
-        ${{ "{:,.1f}M".format(register_start) }} of capital raised.
-        {% endif %}
-        A closing balance of $0 means cash was exhausted that year (distress) &mdash; a second year underwater is bankruptcy.
+        <strong>Cash Flow</strong> = how EBITDA converts to cash (60% of a profit, or 1.25&times; a loss).
+        <strong>Cash Burn</strong> = cash a pre-profit venture consumes each year.
+        {% if company.debt_outstanding and company.debt_outstanding > 0 %}<strong>Interest</strong> is paid on debt (interest-only); the ${{ "{:,.1f}M".format(company.debt_outstanding) }} principal is repaid at exit.{% endif %}
+        Columns not in use for a given year show &mdash;. A closing balance of $0 means cash was exhausted that year (distress).
+        {% if register_has_followons %}<br><strong>Follow-on</strong> = fresh capital the lead injected that year (the valuation rises by the same amount).{% endif %}
+        {% if register_has_mgmt_fees %}<br><strong>Mgmt Change</strong> = management-change fees paid out of cash that year (the valuation drops by the same amount).{% endif %}
+        {% if register_has_dividends %}<br><strong>Dividend</strong> = cash distributed to the fund(s) that year (the valuation drops by the same amount).{% endif %}
       </div>
     </div>
 
@@ -440,8 +542,8 @@
                 <i class="bi bi-person-gear text-info me-1"></i> Change Management
               </h6>
               <p class="text-secondary small mb-2">
-                Replace management team. Cost: <strong class="text-warning">${{ "{:,.1f}M".format((company.latest_valuation or 0) * 0.1) }}</strong>
-                (10% of latest valuation)
+                Replace management team. Cost: <strong class="text-warning">${{ "{:,.1f}M".format(change_mgmt_cost) }}</strong>
+                (flat fee, paid from the company's cash &mdash; which also lowers the valuation by the same amount)
               </p>
               <div class="text-secondary small mb-3">
                 <span class="badge {% if company.management_quality == 'strong' %}bg-success{% elif company.management_quality == 'average' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
@@ -450,7 +552,7 @@
               </div>
               <form method="POST" action="{{ url_for('change_management', company_id=company.id) }}">
                 <button type="button" class="btn btn-outline-info btn-sm confirm-action"
-                        data-confirm="Change management for {{ company.name }}? This will cost ${{ '{:,.1f}M'.format((company.latest_valuation or 0) * 0.1) }} and cannot be undone."
+                        data-confirm="Change management for {{ company.name }}? This will cost ${{ '{:,.1f}M'.format(change_mgmt_cost) }}, paid from the company's cash and lowering the valuation by the same amount, and cannot be undone."
                         onclick="this.closest('form').submit()">
                   <i class="bi bi-arrow-repeat"></i> Change Management Team
                 </button>
@@ -465,15 +567,15 @@
                 <i class="bi bi-cash-coin text-success me-1"></i> Issue Dividend
               </h6>
               <p class="text-secondary small mb-2">
-                Maximum: <strong class="text-success">${{ "{:,.1f}M".format(company.company_funds * 0.2) }}</strong>
-                (20% of ${{ "{:,.1f}M".format(company.company_funds) }} company cash)
+                Maximum: <strong class="text-success">${{ "{:,.1f}M".format(company.company_funds * max_dividend_pct) }}</strong>
+                ({{ "%.0f"|format(max_dividend_pct * 100) }}% of ${{ "{:,.1f}M".format(company.company_funds) }} company cash)
               </p>
               <form method="POST" action="{{ url_for('issue_dividend', company_id=company.id) }}" class="d-flex gap-2">
                 <div class="input-group" style="max-width:300px;">
                   <span class="input-group-text bg-dark border-secondary text-secondary">$</span>
                   <input type="number" class="form-control bg-dark text-white border-secondary"
-                         name="dividend_amount"
-                         min="0" max="{{ company.company_funds * 0.2 }}" step="0.1"
+                         name="amount"
+                         min="0" max="{{ company.company_funds * max_dividend_pct }}" step="0.1"
                          placeholder="Amount">
                 </div>
                 <button type="submit" class="btn btn-success btn-sm">

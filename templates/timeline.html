@@ -160,7 +160,8 @@
                   {% elif ts.status == 'approved' %}
                     <span class="badge bg-success"><i class="bi bi-check-circle"></i> Approved</span>
                   {% elif ts.status == 'rejected' %}
-                    <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Rejected</span>
+                    <span class="badge bg-danger" {% if ts.rejection_reason %}title="{{ ts.rejection_reason }}"{% endif %}><i class="bi bi-x-circle"></i> Rejected</span>
+                    {% if ts.rejection_reason %}<div class="text-secondary small mt-1" style="max-width:260px;">{{ ts.rejection_reason }}</div>{% endif %}
                   {% elif ts.status == 'in_deal' %}
                     <span class="badge bg-primary"><i class="bi bi-briefcase"></i> In Deal</span>
                   {% else %}

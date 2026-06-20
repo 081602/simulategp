@@ -33,6 +33,15 @@ def starting_burn_rate(stage, capital_requested):
     return capital_requested / runway
 
 
+# Revenue projection for venture companies. Revenue compounds off the authored
+# 3-year growth rate, tapered each year so very high early growth doesn't run
+# away over a long hold. Pre-revenue startups ($0 authored revenue) are seeded
+# from the capital they raised. Used to size EBITDA if/when a distressed venture
+# company turns profitable (EBITDA = projected revenue x a random margin).
+STARTUP_REVENUE_SEED_FACTOR = 0.5   # seed revenue = this x capital raised
+REVENUE_GROWTH_DECAY = 0.7          # each year's growth rate = prior x this
+
+
 class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, default='PE Simulation')
@@ -132,7 +141,15 @@ class Fund(db.Model):
 
     @property
     def deployed_capital(self):
-        return self.total_capital - self.available_capital
+        """Capital currently invested in ACTIVE holdings funded by this fund.
+        Returns $0 once every deal has exited (e.g. at game end). This is the
+        cash actually at work in deals — NOT committed-minus-cash, which would
+        wrongly count management fees consumed over the fund's life."""
+        return (db.session.query(
+                    db.func.coalesce(db.func.sum(DealEquity.equity_invested), 0.0))
+                .join(Deal, DealEquity.deal_id == Deal.id)
+                .filter(DealEquity.fund_id == self.id, Deal.status == 'active')
+                .scalar()) or 0.0
 
     @property
     def deployment_pct(self):
@@ -216,6 +233,12 @@ class GameCompany(db.Model):
     year_7_val = db.Column(db.Float, nullable=True)
     year_ebitdas = db.Column(db.Text, default='{}')   # JSON {year: ebitda} per crank
     year_burns = db.Column(db.Text, default='{}')     # JSON {year: burn} per crank (venture)
+    year_mgmt_fees = db.Column(db.Text, default='{}') # JSON {year: total mgmt-change fees}
+    year_followons = db.Column(db.Text, default='{}') # JSON {year: total follow-on cash injected}
+    year_dividends = db.Column(db.Text, default='{}') # JSON {year: total dividends paid out of cash}
+    year_returns = db.Column(db.Text, default='{}')   # JSON {year: market roll multiple} per crank
+    year_revenues = db.Column(db.Text, default='{}')  # JSON {year: projected revenue} (venture)
+    turned_profitable = db.Column(db.Boolean, default=False)  # venture recovered to positive EBITDA
     year_available = db.Column(db.Integer, default=1)
     year_funded = db.Column(db.Integer, nullable=True)
     status = db.Column(db.String(30), default='available')
@@ -258,6 +281,22 @@ class GameCompany(db.Model):
         if 1 <= year <= self.MAX_TRACKED_YEARS:
             setattr(self, f'year_{year}_val', value)
 
+    def adjust_latest_valuation(self, delta):
+        """Shift the most recent valuation by `delta` (floored at $0), writing it
+        back to whichever slot latest_valuation reads from so future cranks roll
+        off the adjusted base. The valuation is assumed to incorporate the
+        company's cash, so spending/injecting cash moves the mark one-for-one
+        (mirror of how a follow-on injection raises it)."""
+        for y in range(self.MAX_TRACKED_YEARS, 0, -1):
+            cur = self.get_year_val(y)
+            if cur is not None:
+                self.set_year_val(y, max(0.0, cur + delta))
+                return
+        if self.funded_valuation is not None:
+            self.funded_valuation = max(0.0, self.funded_valuation + delta)
+        elif self.initial_val_ask is not None:
+            self.initial_val_ask = max(0.0, self.initial_val_ask + delta)
+
     def get_year_ebitda(self, year):
         """EBITDA recorded for a given crank year (evolves with the return)."""
         data = json.loads(self.year_ebitdas) if self.year_ebitdas else {}
@@ -278,6 +317,72 @@ class GameCompany(db.Model):
         data[str(year)] = value
         self.year_burns = json.dumps(data)
 
+    def get_year_mgmt_fee(self, year):
+        """Total management-change fees paid out of cash in a given year."""
+        data = json.loads(self.year_mgmt_fees) if self.year_mgmt_fees else {}
+        return data.get(str(year), 0.0)
+
+    def add_year_mgmt_fee(self, year, amount):
+        """Accumulate a management-change fee for the given year."""
+        data = json.loads(self.year_mgmt_fees) if self.year_mgmt_fees else {}
+        data[str(year)] = data.get(str(year), 0.0) + amount
+        self.year_mgmt_fees = json.dumps(data)
+
+    def get_year_followon(self, year):
+        """Total follow-on cash injected into the company in a given year."""
+        data = json.loads(self.year_followons) if self.year_followons else {}
+        return data.get(str(year), 0.0)
+
+    def add_year_followon(self, year, amount):
+        """Accumulate a follow-on injection for the given year."""
+        data = json.loads(self.year_followons) if self.year_followons else {}
+        data[str(year)] = data.get(str(year), 0.0) + amount
+        self.year_followons = json.dumps(data)
+
+    def get_year_dividend(self, year):
+        """Total dividends paid out of the company's cash in a given year."""
+        data = json.loads(self.year_dividends) if self.year_dividends else {}
+        return data.get(str(year), 0.0)
+
+    def add_year_dividend(self, year, amount):
+        """Accumulate a dividend payout for the given year."""
+        data = json.loads(self.year_dividends) if self.year_dividends else {}
+        data[str(year)] = data.get(str(year), 0.0) + amount
+        self.year_dividends = json.dumps(data)
+
+    def get_year_return(self, year):
+        """Market roll multiple drawn for a given crank year (None if not
+        recorded, e.g. a legacy crank that predates this column)."""
+        data = json.loads(self.year_returns) if self.year_returns else {}
+        return data.get(str(year))
+
+    def set_year_return(self, year, multiple):
+        data = json.loads(self.year_returns) if self.year_returns else {}
+        data[str(year)] = multiple
+        self.year_returns = json.dumps(data)
+
+    def get_year_revenue(self, year):
+        """Projected revenue recorded for a given crank year (venture)."""
+        data = json.loads(self.year_revenues) if self.year_revenues else {}
+        return data.get(str(year))
+
+    def set_year_revenue(self, year, value):
+        data = json.loads(self.year_revenues) if self.year_revenues else {}
+        data[str(year)] = value
+        self.year_revenues = json.dumps(data)
+
+    def projected_revenue(self, year):
+        """Projected revenue for `year`, compounding the authored 3-year growth
+        rate from a base (authored revenue, or seeded from capital raised for a
+        pre-revenue startup), tapering the growth rate each year held."""
+        base = self.ltm_revenue if (self.ltm_revenue or 0) > 0 \
+            else STARTUP_REVENUE_SEED_FACTOR * (self.capital_requested or 0.0)
+        rev = base
+        g0 = self.revenue_growth_3yr or 0.0
+        for n in range(1, (year - (self.year_funded or year)) + 1):
+            rev *= (1.0 + g0 * (REVENUE_GROWTH_DECAY ** (n - 1)))
+        return rev
+
     @property
     def latest_valuation(self):
         """Most recent known valuation: latest year val, else funded, else initial ask."""
@@ -291,9 +396,10 @@ class GameCompany(db.Model):
 
     @property
     def annual_operating_cash(self):
-        """Cash the company generates/consumes a year. Mature: EBITDA converted
-        to cash (60% of a profit). Venture: negative of its annual burn rate."""
-        if self.stage == 'mature':
+        """Cash the company generates/consumes a year. Mature (and a venture that
+        has turned profitable): EBITDA converted to cash (60% of a profit).
+        Pre-profit venture: negative of its annual burn rate."""
+        if self.stage == 'mature' or self.turned_profitable:
             return ebitda_to_cash(self.ltm_ebitda)
         return -(self.annual_burn_rate or 0.0)
 
@@ -506,6 +612,9 @@ class Deal(db.Model):
     finalized_at = db.Column(db.DateTime)
     reserve_price = db.Column(db.Float, nullable=True)   # liquidation reserve
     marked_for_liquidation = db.Column(db.Boolean, default=False)
+    # Lead's explicit choice, while distressed, to forgo a rescue and let the
+    # turn-profitable roll decide (non-mature). Reset when a new distress begins.
+    let_it_roll = db.Column(db.Boolean, default=False)
 
     lead_team = db.relationship('Team')
     equity_stakes = db.relationship('DealEquity', backref='deal', lazy=True, cascade='all, delete-orphan')
@@ -562,3 +671,17 @@ class Notification(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     related_company = db.relationship('GameCompany')
+
+
+class GameSetting(db.Model):
+    """Admin-tunable simulation constant (Game Dynamics page).
+
+    Stores an override for a named module-level constant. Defaults live in
+    code; only changed values are persisted. game_settings.apply_overrides()
+    reads these and writes them onto the live module globals at startup and
+    after each save, so future cranks/rolls pick them up.
+    """
+    key = db.Column(db.String(60), primary_key=True)
+    value = db.Column(db.Float, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow,
+                           onupdate=datetime.utcnow)

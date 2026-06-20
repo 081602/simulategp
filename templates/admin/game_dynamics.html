@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Game Dynamics{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <div>
+        <h2 class="fw-bold mb-0"><i class="bi bi-sliders text-warning"></i> Game Dynamics</h2>
+        <p class="text-secondary mb-0">Tune the simulation's underlying assumptions</p>
+      </div>
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Admin
+      </a>
+    </div>
+
+    <div class="alert border-info text-light mb-4" style="background:rgba(13,202,240,0.1);">
+      <i class="bi bi-info-circle-fill text-info me-2"></i>
+      Changes take effect on the <strong>next Deal &amp; Return Process</strong> and all
+      future rolls &mdash; past results are not rewritten. Values shown in
+      <span class="text-secondary">grey</span> are at their default.
+    </div>
+
+    <form method="POST" action="{{ url_for('admin_game_dynamics') }}">
+
+      {% for group in groups %}
+      <div class="card border-secondary shadow mb-4">
+        <div class="card-header border-secondary">
+          <h6 class="mb-0 fw-semibold">
+            {% if group == 'Returns & Risk' %}<i class="bi bi-graph-up-arrow text-warning"></i>
+            {% elif group == 'Cash & Burn' %}<i class="bi bi-cash-stack text-warning"></i>
+            {% elif group == 'Player Actions' %}<i class="bi bi-person-gear text-warning"></i>
+            {% elif group == 'Venture Recovery' %}<i class="bi bi-life-preserver text-warning"></i>
+            {% else %}<i class="bi bi-bank text-warning"></i>{% endif %}
+            {{ group }}
+          </h6>
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-dark align-middle mb-0">
+            <tbody>
+              {% for p in view[group] %}
+              <tr>
+                <td class="ps-3" style="width:46%;">
+                  <div class="fw-semibold text-white">{{ p.label }}</div>
+                  <div class="text-secondary small">{{ p.help }}</div>
+                </td>
+                <td style="width:30%;">
+                  {% if p.derived %}
+                  <div class="input-group input-group-sm" style="max-width:200px;">
+                    <input type="text" id="derived_{{ p.key }}" class="form-control bg-dark text-secondary border-secondary" value="{{ p.value }}" disabled>
+                    {% if p.suffix %}<span class="input-group-text bg-secondary text-dark border-secondary">{{ p.suffix }}</span>{% endif %}
+                  </div>
+                  {% else %}
+                  <div class="input-group input-group-sm" style="max-width:200px;">
+                    <input type="number"
+                           class="form-control bg-dark text-white border-secondary"
+                           name="{{ p.key }}"
+                           value="{{ p.value }}"
+                           min="{{ p.min }}" max="{{ p.max }}" step="{{ p.step }}">
+                    {% if p.suffix %}<span class="input-group-text bg-secondary text-dark border-secondary">{{ p.suffix }}</span>{% endif %}
+                  </div>
+                  {% endif %}
+                </td>
+                <td class="text-end pe-3 text-secondary small" style="width:24%;">
+                  {% if p.derived %}
+                    <span class="badge bg-dark border border-secondary text-secondary">calculated</span>
+                  {% elif p.is_default %}
+                    <span class="badge bg-dark border border-secondary text-secondary">default</span>
+                  {% else %}
+                    <span class="me-1">default: {{ p.default }}{{ p.suffix }}</span>
+                    <button type="submit" name="reset_one" value="{{ p.key }}"
+                            class="btn btn-sm btn-outline-secondary py-0 px-1"
+                            title="Reset {{ p.label }} to its default ({{ p.default }}{{ p.suffix }})">
+                      <i class="bi bi-arrow-counterclockwise"></i>
+                    </button>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endfor %}
+
+      <div class="d-flex justify-content-between mb-5">
+        <button type="submit" name="reset" value="1"
+                class="btn btn-outline-danger"
+                onclick="return confirm('Reset ALL game dynamics to their code defaults?');">
+          <i class="bi bi-arrow-counterclockwise"></i> Reset to Defaults
+        </button>
+        <button type="submit" class="btn btn-warning text-dark fw-semibold">
+          <i class="bi bi-save"></i> Save Game Dynamics
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<script>
+  // Keep the calculated "chance of Strong" in sync with weak + average.
+  (function () {
+    var weak = document.querySelector('input[name="change_mgmt_p_weak"]');
+    var avg = document.querySelector('input[name="change_mgmt_p_average"]');
+    var strong = document.getElementById('derived_change_mgmt_p_strong');
+    if (!weak || !avg || !strong) return;
+    function recompute() {
+      var s = 100 - (parseFloat(weak.value) || 0) - (parseFloat(avg.value) || 0);
+      strong.value = (Math.max(0, s)).toFixed(1).replace(/\.0$/, '');
+    }
+    weak.addEventListener('input', recompute);
+    avg.addEventListener('input', recompute);
+  })();
+</script>
+{% endblock %}

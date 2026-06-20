@@ -29,7 +29,7 @@
               <select class="form-select bg-dark text-white border-secondary" id="sector" name="sector">
                 <option value="">All Sectors</option>
                 {% for s in sectors %}
-                <option value="{{ s }}" {% if request.form.get('sector') == s %}selected{% endif %}>
+                <option value="{{ s }}" {% if form_values.get('sector') == s %}selected{% endif %}>
                   {{ s }}
                 </option>
                 {% endfor %}
@@ -40,10 +40,10 @@
               <label for="stage" class="form-label fw-semibold text-white">Stage</label>
               <select class="form-select bg-dark text-white border-secondary" id="stage" name="stage">
                 <option value="">All Stages</option>
-                <option value="startup"      {% if request.form.get('stage') == 'startup' %}selected{% endif %}>Startup</option>
-                <option value="developing"   {% if request.form.get('stage') == 'developing' %}selected{% endif %}>Developing</option>
-                <option value="early_revenue"{% if request.form.get('stage') == 'early_revenue' %}selected{% endif %}>Early Revenue</option>
-                <option value="mature"       {% if request.form.get('stage') == 'mature' %}selected{% endif %}>Mature</option>
+                <option value="startup"      {% if form_values.get('stage') == 'startup' %}selected{% endif %}>Startup</option>
+                <option value="developing"   {% if form_values.get('stage') == 'developing' %}selected{% endif %}>Developing</option>
+                <option value="early_revenue"{% if form_values.get('stage') == 'early_revenue' %}selected{% endif %}>Early Revenue</option>
+                <option value="mature"       {% if form_values.get('stage') == 'mature' %}selected{% endif %}>Mature</option>
               </select>
             </div>
 
@@ -56,7 +56,7 @@
                      min="0"
                      step="0.5"
                      placeholder="No min"
-                     value="{{ request.form.get('min_deal_size', '') }}">
+                     value="{{ form_values.get('min_deal_size', '') }}">
             </div>
 
             <div class="col-md-2">
@@ -68,7 +68,7 @@
                      min="0"
                      step="0.5"
                      placeholder="No max"
-                     value="{{ request.form.get('max_deal_size', '') }}">
+                     value="{{ form_values.get('max_deal_size', '') }}">
             </div>
 
             <div class="col-md-2">
@@ -139,11 +139,17 @@
                     {% if company.ltm_ebitda_margin is not none %}{{ "%.0f"|format(company.ltm_ebitda_margin * 100) }}%{% else %}&mdash;{% endif %}
                   </span>
                 </div>
+                {% if company.stage != 'mature' %}
+                <div class="col-6">
+                  <small class="text-light d-block">Annual Cash Burn</small>
+                  <span class="fw-bold text-danger">${{ "{:,.1f}M".format(company.annual_burn_rate or 0) }}</span>
+                </div>
+                {% endif %}
               </div>
 
             </div>
             <div class="card-footer border-secondary bg-transparent d-flex gap-2">
-              <a href="{{ url_for('company_detail', company_id=company.id) }}" class="btn btn-outline-warning btn-sm flex-fill">
+              <a href="{{ url_for('company_detail', company_id=company.id, src='search') }}" class="btn btn-outline-warning btn-sm flex-fill">
                 <i class="bi bi-eye"></i> View Details
               </a>
               <button type="button" class="btn btn-outline-info btn-sm flex-fill watchlist-add-btn"
