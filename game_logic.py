@@ -6,7 +6,7 @@ import math
 from datetime import datetime
 from models import (db, Game, Team, Fund, GameCompany, CompanySearch,
                     TermSheet, Deal, DealEquity, FundTransaction, Notification,
-                    ReturnAssumption)
+                    ReturnAssumption, ebitda_to_cash)
 
 
 # ---------------------------------------------------------------------------
@@ -266,12 +266,13 @@ def run_phase2_crank(game: Game):
         # EBITDA moves with this year's return (sign-aware): a positive return
         # pushes EBITDA toward profit (a burn shrinks), a negative return deepens
         # it. So profits grow with the company and losing companies bleed more.
-        # Then the (new) EBITDA accrues to cash before debt service.
+        # EBITDA is then converted to CASH (70% of a profit, 1.25x a burn) and
+        # that cash accrues to the balance before debt service.
         if company.ltm_ebitda is not None:
             annual_return = multiple - 1.0
             company.ltm_ebitda = company.ltm_ebitda + annual_return * abs(company.ltm_ebitda)
             company.set_year_ebitda(year, company.ltm_ebitda)
-            company.company_funds += company.ltm_ebitda
+            company.company_funds += ebitda_to_cash(company.ltm_ebitda)
 
         # Debt service: INTEREST ONLY (bullet loan). The principal does not
         # amortize — it stays outstanding for the life of the hold and is repaid

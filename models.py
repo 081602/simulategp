@@ -6,6 +6,18 @@ import json
 
 db = SQLAlchemy()
 
+# EBITDA is not cash. A profitable company converts EBITDA to cash at 70%;
+# a cash-burning company (negative EBITDA) consumes cash at 1.25x the burn.
+EBITDA_CASH_YIELD = 0.70      # positive EBITDA -> cash
+EBITDA_BURN_MULTIPLE = 1.25   # negative EBITDA -> cash burn
+
+
+def ebitda_to_cash(ebitda):
+    """Convert a year's EBITDA into the cash it actually generates/consumes."""
+    if ebitda is None:
+        return 0.0
+    return ebitda * EBITDA_CASH_YIELD if ebitda >= 0 else ebitda * EBITDA_BURN_MULTIPLE
+
 
 class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -251,11 +263,16 @@ class GameCompany(db.Model):
         return self.initial_val_ask
 
     @property
+    def annual_operating_cash(self):
+        """Cash the company generates/consumes a year = EBITDA converted to cash
+        (70% of a positive EBITDA, 1.25x a negative one)."""
+        return ebitda_to_cash(self.ltm_ebitda)
+
+    @property
     def net_annual_cash_flow(self):
-        """EBITDA less interest on outstanding debt (debt is interest-only).
-        Positive => the company generates cash. This is the derived proxy for
-        'cash flow positive' — there is no authored flag; EBITDA carries it."""
-        return ((self.ltm_ebitda or 0)
+        """Operating cash less interest on outstanding debt (interest-only).
+        Positive => the company generates cash after debt service."""
+        return (self.annual_operating_cash
                 - (self.debt_outstanding or 0) * (self.debt_interest_rate or 0))
 
     @property

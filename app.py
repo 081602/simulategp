@@ -9,7 +9,8 @@ from flask_login import (LoginManager, login_user, logout_user,
                          login_required, current_user)
 from models import (db, Game, Team, Fund, CompanyTemplate, GameCompany,
                     CompanySearch, TermSheet, Deal, DealEquity,
-                    FundTransaction, Notification, ReturnAssumption)
+                    FundTransaction, Notification, ReturnAssumption,
+                    ebitda_to_cash)
 from game_logic import (run_phase1_crank, run_phase2_crank,
                         team_simple_return, team_gp_income,
                         finalize_deal, close_deal_with_coinvestors,
@@ -873,12 +874,14 @@ def portfolio_company(company_id):
             ebitda_y = company.get_year_ebitda(row['year'])
             if ebitda_y is None:
                 ebitda_y = company.ltm_ebitda or 0.0
+            cash_y = ebitda_to_cash(ebitda_y)  # EBITDA -> cash (70% / 1.25x)
             opening = bal
-            raw_close = opening + ebitda_y - annual_interest
+            raw_close = opening + cash_y - annual_interest
             distressed = raw_close < 0
             closing = max(0.0, raw_close)
             cash_register.append({'year': row['year'], 'opening': opening,
-                                  'ebitda': ebitda_y, 'interest': annual_interest,
+                                  'ebitda': ebitda_y, 'cash': cash_y,
+                                  'interest': annual_interest,
                                   'closing': closing, 'distressed': distressed})
             bal = closing
 
