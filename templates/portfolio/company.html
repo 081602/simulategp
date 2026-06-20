@@ -19,8 +19,9 @@
       </div>
     </div>
 
-    {# Annual figures for the distress banner. Cash = EBITDA converted (70% of a
-       profit, 1.25x a burn); net = cash less interest-only interest. #}
+    {# Annual figures for the distress banner. Mature converts EBITDA to cash;
+       venture burns its annual burn rate. #}
+    {% set is_buyout = company.stage == 'mature' %}
     {% set ebitda = company.ltm_ebitda or 0 %}
     {% set cash = company.annual_operating_cash %}
     {% set interest = (company.debt_outstanding or 0) * (company.debt_interest_rate or 0) %}
@@ -32,11 +33,16 @@
       <div>
         <div class="fw-bold">In Financial Distress &mdash; cash exhausted</div>
         <div class="small">
-          {{ company.name }} has run out of cash. Its EBITDA of
-          <strong>${{ "{:,.1f}M".format(ebitda) }}</strong> converts to
+          {{ company.name }} has run out of cash.
+          {% if is_buyout %}
+          Its EBITDA of <strong>${{ "{:,.1f}M".format(ebitda) }}</strong> converts to
           <strong>${{ "{:,.1f}M".format(cash) }}</strong> of cash a year{% if interest %} against
           <strong>${{ "{:,.1f}M".format(interest) }}</strong> of debt interest{% endif %}{% if net_cf < 0 %}
           &mdash; a net <strong>${{ "{:,.1f}M".format(-net_cf) }}</strong> shortfall a year{% endif %}.
+          {% else %}
+          It burns <strong>${{ "{:,.1f}M".format(company.annual_burn_rate or 0) }}</strong> of cash a year and
+          exhausted the capital it raised.
+          {% endif %}
           Note this is a <strong>cash</strong> problem, not a valuation one &mdash; the company can be appreciating and still
           run dry. If cash is negative again next year it goes <strong>bankrupt</strong> and the investment is lost.
         </div>
@@ -225,8 +231,7 @@
         <div class="px-3 pt-2 small text-secondary">
           Acquired in Year {{ company.year_funded }} with
           <strong class="text-white">${{ "{:,.1f}M".format(register_start) }}</strong> of cash
-          {% if company.stage == 'mature' %}(cash-free buyout &mdash; starts at $0, lives off earnings){% else %}(the capital invested in the round){% endif %}.
-          EBITDA converts to <strong>Cash</strong> each year (70% of a profit, 1.25&times; a burn); cash is added and interest paid (debt is interest-only).
+          {% if is_buyout %}(cash-free buyout &mdash; starts at $0, lives off earnings). EBITDA converts to <strong>Cash</strong> each year (60% of a profit) and interest is paid (debt is interest-only).{% else %}(the capital invested in the round). The company <strong>burns</strong> cash each year (the burn moves inversely with the annual return at half the rate) &mdash; the team must exit before it runs out.{% endif %}
         </div>
         {% if cash_register %}
         <table class="table table-dark table-sm mb-0 align-middle">
@@ -234,9 +239,13 @@
             <tr>
               <th>Year</th>
               <th class="text-end">Opening Cash</th>
+              {% if is_buyout %}
               <th class="text-end">EBITDA</th>
               <th class="text-end">Cash</th>
               <th class="text-end">Interest</th>
+              {% else %}
+              <th class="text-end">Cash Burn</th>
+              {% endif %}
               <th class="text-end">Closing Cash</th>
             </tr>
           </thead>
@@ -245,9 +254,13 @@
             <tr>
               <td>Year {{ r.year }}{% if r.distressed %} <span class="badge bg-danger">distress</span>{% endif %}</td>
               <td class="text-end text-secondary">${{ "{:,.1f}M".format(r.opening) }}</td>
+              {% if is_buyout %}
               <td class="text-end {% if r.ebitda < 0 %}text-danger{% else %}text-light{% endif %}">{% if r.ebitda < 0 %}&minus;${{ "{:,.1f}M".format(-r.ebitda) }}{% else %}${{ "{:,.1f}M".format(r.ebitda) }}{% endif %}</td>
               <td class="text-end {% if r.cash < 0 %}text-danger{% else %}text-success{% endif %}">{% if r.cash < 0 %}&minus;${{ "{:,.1f}M".format(-r.cash) }}{% else %}+${{ "{:,.1f}M".format(r.cash) }}{% endif %}</td>
               <td class="text-end {% if r.interest > 0 %}text-danger{% else %}text-secondary{% endif %}">{% if r.interest > 0 %}&minus;${{ "{:,.1f}M".format(r.interest) }}{% else %}&mdash;{% endif %}</td>
+              {% else %}
+              <td class="text-end text-danger">&minus;${{ "{:,.1f}M".format(r.burn) }}</td>
+              {% endif %}
               <td class="text-end fw-bold {% if r.closing <= 0 %}text-danger{% else %}text-white{% endif %}">${{ "{:,.1f}M".format(r.closing) }}</td>
             </tr>
             {% endfor %}
@@ -258,8 +271,14 @@
         {% endif %}
       </div>
       <div class="card-footer border-secondary text-secondary small">
-        <strong>Cash</strong> = 70% of positive EBITDA, or 1.25&times; negative EBITDA (a burn consumes more cash than the loss).
+        {% if is_buyout %}
+        <strong>Cash</strong> = 60% of positive EBITDA, or 1.25&times; negative EBITDA.
         {% if company.debt_outstanding and company.debt_outstanding > 0 %}Debt is interest-only; the ${{ "{:,.1f}M".format(company.debt_outstanding) }} principal is repaid at exit.{% endif %}
+        {% else %}
+        <strong>Cash Burn</strong> moves inversely with the annual return at half the rate
+        (return +20% &rarr; burn &minus;10%; return &minus;20% &rarr; burn +10%), against the
+        ${{ "{:,.1f}M".format(register_start) }} of capital raised.
+        {% endif %}
         A closing balance of $0 means cash was exhausted that year (distress) &mdash; a second year underwater is bankruptcy.
       </div>
     </div>

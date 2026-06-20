@@ -6,17 +6,31 @@ import json
 
 db = SQLAlchemy()
 
-# EBITDA is not cash. A profitable company converts EBITDA to cash at 70%;
+# EBITDA is not cash. A profitable company converts EBITDA to cash at 60%;
 # a cash-burning company (negative EBITDA) consumes cash at 1.25x the burn.
-EBITDA_CASH_YIELD = 0.70      # positive EBITDA -> cash
+EBITDA_CASH_YIELD = 0.60      # positive EBITDA -> cash
 EBITDA_BURN_MULTIPLE = 1.25   # negative EBITDA -> cash burn
 
 
 def ebitda_to_cash(ebitda):
-    """Convert a year's EBITDA into the cash it actually generates/consumes."""
+    """Convert a year's EBITDA into the cash it actually generates/consumes.
+    Used for MATURE (buyout) companies; venture companies use a burn rate."""
     if ebitda is None:
         return 0.0
     return ebitda * EBITDA_CASH_YIELD if ebitda >= 0 else ebitda * EBITDA_BURN_MULTIPLE
+
+
+# Venture companies don't convert EBITDA to cash; they burn cash at a set rate.
+# The starting burn = funds sought / a stage runway target, so a full raise buys
+# that many years of runway (a smaller raise buys less). Mature cos don't burn.
+BURN_RUNWAY_YEARS = {'startup': 2.5, 'developing': 3.0, 'early_revenue': 4.0}
+
+
+def starting_burn_rate(stage, capital_requested):
+    runway = BURN_RUNWAY_YEARS.get(stage)
+    if not runway or not capital_requested:
+        return 0.0
+    return capital_requested / runway
 
 
 class Game(db.Model):
@@ -201,6 +215,7 @@ class GameCompany(db.Model):
     year_6_val = db.Column(db.Float, nullable=True)
     year_7_val = db.Column(db.Float, nullable=True)
     year_ebitdas = db.Column(db.Text, default='{}')   # JSON {year: ebitda} per crank
+    year_burns = db.Column(db.Text, default='{}')     # JSON {year: burn} per crank (venture)
     year_available = db.Column(db.Integer, default=1)
     year_funded = db.Column(db.Integer, nullable=True)
     status = db.Column(db.String(30), default='available')
@@ -218,6 +233,7 @@ class GameCompany(db.Model):
     ltm_ebitda_margin = db.Column(db.Float, nullable=True)    # e.g. 0.20 = 20%
     ltm_revenue = db.Column(db.Float, nullable=True)          # $M
     ltm_ebitda = db.Column(db.Float, nullable=True)           # $M (negative = burn)
+    annual_burn_rate = db.Column(db.Float, default=0.0)       # $M/yr cash burn (venture)
 
     template = db.relationship('CompanyTemplate')
     lead_team = db.relationship('Team', foreign_keys=[lead_team_id])
@@ -251,6 +267,16 @@ class GameCompany(db.Model):
         data[str(year)] = value
         self.year_ebitdas = json.dumps(data)
 
+    def get_year_burn(self, year):
+        """Cash burn recorded for a given crank year (evolves with the return)."""
+        data = json.loads(self.year_burns) if self.year_burns else {}
+        return data.get(str(year))
+
+    def set_year_burn(self, year, value):
+        data = json.loads(self.year_burns) if self.year_burns else {}
+        data[str(year)] = value
+        self.year_burns = json.dumps(data)
+
     @property
     def latest_valuation(self):
         """Most recent known valuation: latest year val, else funded, else initial ask."""
@@ -264,9 +290,11 @@ class GameCompany(db.Model):
 
     @property
     def annual_operating_cash(self):
-        """Cash the company generates/consumes a year = EBITDA converted to cash
-        (70% of a positive EBITDA, 1.25x a negative one)."""
-        return ebitda_to_cash(self.ltm_ebitda)
+        """Cash the company generates/consumes a year. Mature: EBITDA converted
+        to cash (60% of a profit). Venture: negative of its annual burn rate."""
+        if self.stage == 'mature':
+            return ebitda_to_cash(self.ltm_ebitda)
+        return -(self.annual_burn_rate or 0.0)
 
     @property
     def net_annual_cash_flow(self):

@@ -263,16 +263,23 @@ def run_phase2_crank(game: Game):
         new_val = base_val * multiple
         company.set_year_val(year, max(0.0, new_val))
 
-        # EBITDA moves with this year's return (sign-aware): a positive return
-        # pushes EBITDA toward profit (a burn shrinks), a negative return deepens
-        # it. So profits grow with the company and losing companies bleed more.
-        # EBITDA is then converted to CASH (70% of a profit, 1.25x a burn) and
-        # that cash accrues to the balance before debt service.
-        if company.ltm_ebitda is not None:
-            annual_return = multiple - 1.0
-            company.ltm_ebitda = company.ltm_ebitda + annual_return * abs(company.ltm_ebitda)
-            company.set_year_ebitda(year, company.ltm_ebitda)
-            company.company_funds += ebitda_to_cash(company.ltm_ebitda)
+        # Cash flow into the balance:
+        #  - MATURE: EBITDA moves with the year's return (sign-aware) and is
+        #    converted to cash (60% of a profit). Profits grow with the company.
+        #  - VENTURE: no EBITDA-to-cash; the company burns cash. The burn moves
+        #    INVERSELY with the return at half the rate (return +20% -> burn -10%,
+        #    return -20% -> burn +10%), floored at $0. Then it burns that amount.
+        annual_return = multiple - 1.0
+        if company.stage == 'mature':
+            if company.ltm_ebitda is not None:
+                company.ltm_ebitda = company.ltm_ebitda + annual_return * abs(company.ltm_ebitda)
+                company.set_year_ebitda(year, company.ltm_ebitda)
+                company.company_funds += ebitda_to_cash(company.ltm_ebitda)
+        else:
+            company.annual_burn_rate = max(
+                0.0, (company.annual_burn_rate or 0.0) * (1 - 0.5 * annual_return))
+            company.set_year_burn(year, company.annual_burn_rate)
+            company.company_funds -= company.annual_burn_rate
 
         # Debt service: INTEREST ONLY (bullet loan). The principal does not
         # amortize — it stays outstanding for the life of the hold and is repaid

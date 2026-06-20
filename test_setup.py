@@ -2,6 +2,7 @@ import os, sys, traceback
 
 sys.path.insert(0, os.path.dirname(__file__))
 from app import app, db, _BASE_DIR, Game, GameCompany, Team, Fund
+from models import starting_burn_rate
 import json
 from sqlalchemy import text
 
@@ -61,6 +62,8 @@ with app.test_request_context('/admin/setup', method='POST'):
                 ltm_ebitda_margin=cd.get('ltm_ebitda_margin'),
                 ltm_revenue=cd.get('ltm_revenue'),
                 ltm_ebitda=cd.get('ltm_ebitda'),
+                # Venture cash burn = funds sought / stage runway (mature = 0).
+                annual_burn_rate=starting_burn_rate(cd['stage'], cd['capital_requested']),
             )
             db.session.add(gc)
         print('Companies added to session', flush=True)

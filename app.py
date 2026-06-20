@@ -857,32 +857,42 @@ def portfolio_company(company_id):
             prev = v
 
     # Cash register: a running balance by year, mirroring the cash engine.
-    # Opening = capital invested (venture) or $0 (cash-free buyout); each year
-    # adds EBITDA and subtracts interest-only debt interest, clamped at $0 on
-    # cash exhaustion (which flags distress). One row per year that has rolled.
+    # Opening = capital invested (venture) or $0 (cash-free buyout). MATURE adds
+    # EBITDA-converted cash and subtracts debt interest; VENTURE just burns its
+    # annual burn rate. Clamped at $0 on cash exhaustion (flags distress).
+    is_buyout = company.stage == 'mature'
     cash_register = []
     register_start = 0.0
     if company.year_funded and company.funded_valuation:
-        is_buyout = company.stage == 'mature'
         register_start = 0.0 if is_buyout else \
             (deal.total_equity_invested or 0.0) + (deal.debt_amount or 0.0)
         annual_interest = (company.debt_outstanding or 0.0) * (company.debt_interest_rate or 0.0)
+        burn = company.annual_burn_rate or 0.0
         bal = register_start
         for row in val_history:
-            # EBITDA recorded for that year (it evolves with the return). Legacy
-            # deals cranked before per-year tracking fall back to current EBITDA.
-            ebitda_y = company.get_year_ebitda(row['year'])
-            if ebitda_y is None:
-                ebitda_y = company.ltm_ebitda or 0.0
-            cash_y = ebitda_to_cash(ebitda_y)  # EBITDA -> cash (70% / 1.25x)
             opening = bal
-            raw_close = opening + cash_y - annual_interest
+            if is_buyout:
+                # EBITDA recorded for that year (evolves with the return); legacy
+                # rows fall back to current EBITDA.
+                ebitda_y = company.get_year_ebitda(row['year'])
+                if ebitda_y is None:
+                    ebitda_y = company.ltm_ebitda or 0.0
+                cash_y = ebitda_to_cash(ebitda_y)
+                raw_close = opening + cash_y - annual_interest
+                rowdata = {'ebitda': ebitda_y, 'cash': cash_y, 'interest': annual_interest}
+            else:
+                # Venture: burn cash. Burn evolves each year (recorded per year);
+                # legacy rows fall back to the current burn rate.
+                burn_y = company.get_year_burn(row['year'])
+                if burn_y is None:
+                    burn_y = burn
+                raw_close = opening - burn_y
+                rowdata = {'burn': burn_y}
             distressed = raw_close < 0
             closing = max(0.0, raw_close)
-            cash_register.append({'year': row['year'], 'opening': opening,
-                                  'ebitda': ebitda_y, 'cash': cash_y,
-                                  'interest': annual_interest,
-                                  'closing': closing, 'distressed': distressed})
+            rowdata.update({'year': row['year'], 'opening': opening,
+                            'closing': closing, 'distressed': distressed})
+            cash_register.append(rowdata)
             bal = closing
 
     return render_template('portfolio/company.html',
