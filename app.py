@@ -1133,7 +1133,8 @@ def mark_liquidation(company_id):
     if deal.lead_team_id != current_user.id:
         abort(403)
 
-    reserve_price = float(request.form.get('reserve_price', 0))
+    # A blank reserve-price field means "no floor" — treat it as 0.
+    reserve_price = float(request.form.get('reserve_price', 0) or 0)
     deal.marked_for_liquidation = True
     deal.reserve_price = reserve_price
     db.session.commit()
