@@ -844,9 +844,10 @@ def _record_transaction(fund_id, tx_type, amount, description, year, company_id=
 
 
 # Deal debt is interest-only (no amortization); principal is repaid from sale
-# proceeds at exit. DEBT_TERM_YEARS is retained only to populate the legacy
-# debt_years_remaining column and is not used to amortize.
-DEBT_TERM_YEARS = 5
+# proceeds at exit. The term spans the full 7-year fund life so there is no
+# refinancing. (DEBT_TERM_YEARS only populates the legacy debt_years_remaining
+# column now; it is not used to amortize.)
+DEBT_TERM_YEARS = 7
 DEBT_INTEREST_RATE = 0.08   # fixed market rate applied to all deal debt
 
 
