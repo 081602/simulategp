@@ -33,8 +33,8 @@
             <div class="fw-bold text-white">{% if company.stage == 'mature' %}<span class="text-secondary">N/A</span>{% else %}${{ "{:,.1f}M".format(company.capital_requested) }}{% endif %}</div>
           </div>
           <div class="col-4 col-md-2">
-            <div class="text-light small">{% if company.stage == 'mature' %}Mgmt Pool{% else %}Rolled Equity{% endif %}</div>
-            <div class="fw-bold text-white">{% if company.stage == 'mature' %}{{ "%.1f"|format((company.management_option_pct or 0) * 100) }}%{% else %}<span class="text-secondary">All rolled</span>{% endif %}</div>
+            <div class="text-light small">Mgmt Pool</div>
+            <div class="fw-bold text-white">{{ "%.1f"|format((company.management_option_pct or 0) * 100) }}%</div>
           </div>
           <div class="col-4 col-md-2">
             <div class="text-light small">LTM EBITDA</div>
@@ -138,9 +138,10 @@
               <div class="form-control bg-dark text-secondary border-secondary">Founders roll over 100%</div>
               <div class="form-text text-light">
                 <i class="bi bi-info-circle text-info"></i>
-                This is a primary round &mdash; founders can't sell shares, so they roll all of
-                their equity. Your stake is simply your investment &divide; post-money; founders
-                keep the rest.
+                Primary round &mdash; founders can't sell shares, so they roll all their equity.
+                Your stake is your investment &divide; post-money;
+                <strong>management holds a {{ "%.1f"|format((company.management_option_pct or 0) * 100) }}% option pool</strong>;
+                founders keep the rest.
               </div>
             </div>
             {% endif %}
