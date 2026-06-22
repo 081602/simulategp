@@ -18398,5 +18398,557 @@
     "ltm_ebitda": 4.4,
     "base_valuation": 188.9,
     "year_available": 4
+  },
+  {
+    "name": "Helios Quantum Computing",
+    "sector": "Technology",
+    "stage": "startup",
+    "description": "Pre-revenue quantum-computing hardware company with a large physicist team and a flagship 256-qubit prototype. Capital-intensive build-out; no revenue yet but major enterprise pilots in the pipeline.",
+    "capital_requested": 45.0,
+    "rolled_equity_min": 0.85,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 80.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling R&D and fabrication capacity",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.12,
+    "subsector": "Technology / Deep Tech",
+    "revenue_growth_3yr": 1.5,
+    "ltm_ebitda_margin": -1.0,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -16.0
+  },
+  {
+    "name": "Aurora Fusion Energy",
+    "sector": "Energy",
+    "stage": "startup",
+    "description": "Pre-revenue fusion-energy startup building a demonstration reactor. Deep IP moat and government grant interest; years from commercialization with a heavy burn profile.",
+    "capital_requested": 40.0,
+    "rolled_equity_min": 0.85,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 70.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "demonstration-reactor construction",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.13,
+    "subsector": "Energy / Cleantech",
+    "revenue_growth_3yr": 1.3,
+    "ltm_ebitda_margin": -1.0,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -13.0
+  },
+  {
+    "name": "Vitalis Health Networks",
+    "sector": "Healthcare",
+    "stage": "developing",
+    "description": "Fast-scaling multi-site outpatient clinic network with $30M revenue across three states. Strong unit economics but still investing heavily in new locations.",
+    "capital_requested": 50.0,
+    "rolled_equity_min": 0.7,
+    "rolled_equity_max": 0.9,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 95.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "de-novo clinic expansion",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.1,
+    "subsector": "Healthcare / Services",
+    "revenue_growth_3yr": 0.55,
+    "ltm_ebitda_margin": -0.1,
+    "ltm_revenue": 30.0,
+    "ltm_ebitda": -3.0
+  },
+  {
+    "name": "Stratos Cloud Systems",
+    "sector": "Technology",
+    "stage": "developing",
+    "description": "High-growth cloud infrastructure / SaaS platform at $28M revenue growing ~60% a year. Land-and-expand model with strong net retention; burning to fund go-to-market.",
+    "capital_requested": 55.0,
+    "rolled_equity_min": 0.7,
+    "rolled_equity_max": 0.9,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 110.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "sales and marketing scale-up",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.11,
+    "subsector": "Technology / SaaS",
+    "revenue_growth_3yr": 0.6,
+    "ltm_ebitda_margin": -0.15,
+    "ltm_revenue": 28.0,
+    "ltm_ebitda": -4.2
+  },
+  {
+    "name": "Cipher AI Labs",
+    "sector": "Technology",
+    "stage": "startup",
+    "description": "Pre-revenue foundation-model lab training frontier AI systems. Elite research team and compute-heavy roadmap; monetization still ahead.",
+    "capital_requested": 42.0,
+    "rolled_equity_min": 0.85,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 78.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling R&D and commercialization",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.12,
+    "subsector": "Technology / AI",
+    "revenue_growth_3yr": 1.5,
+    "ltm_ebitda_margin": -1.0,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -15.0
+  },
+  {
+    "name": "Genovia Biosciences",
+    "sector": "Healthcare",
+    "stage": "startup",
+    "description": "Pre-revenue gene-therapy platform with two programs in IND-enabling studies. Large capital needs to reach the clinic.",
+    "capital_requested": 48.0,
+    "rolled_equity_min": 0.85,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 85.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling R&D and commercialization",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.11,
+    "subsector": "Healthcare / Biotech",
+    "revenue_growth_3yr": 1.4,
+    "ltm_ebitda_margin": -0.95,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -17.0
+  },
+  {
+    "name": "Sentinel Robotics",
+    "sector": "Industrials",
+    "stage": "startup",
+    "description": "Pre-revenue autonomous-warehouse robotics company. Strong pilots with national logistics firms; scaling manufacturing before first revenue.",
+    "capital_requested": 40.0,
+    "rolled_equity_min": 0.85,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 72.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling R&D and commercialization",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.12,
+    "subsector": "Industrials / Robotics",
+    "revenue_growth_3yr": 1.3,
+    "ltm_ebitda_margin": -1.0,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -14.0
+  },
+  {
+    "name": "Quasar Semiconductors",
+    "sector": "Technology",
+    "stage": "startup",
+    "description": "Pre-revenue fabless chip designer targeting AI inference accelerators. Capital-intensive tape-outs; no product revenue yet.",
+    "capital_requested": 50.0,
+    "rolled_equity_min": 0.85,
+    "rolled_equity_max": 1.0,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 90.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 1.5,
+        "prob": 0.2
+      },
+      {
+        "multiple": 4.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 10.0,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "scaling R&D and commercialization",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.13,
+    "subsector": "Technology / Semiconductors",
+    "revenue_growth_3yr": 1.5,
+    "ltm_ebitda_margin": -1.0,
+    "ltm_revenue": 0.0,
+    "ltm_ebitda": -18.0
+  },
+  {
+    "name": "Harvest Table Foods",
+    "sector": "Consumer",
+    "stage": "developing",
+    "description": "Premium better-for-you food brand at $26M revenue expanding from DTC into national retail. Investing ahead of distribution growth.",
+    "capital_requested": 46.0,
+    "rolled_equity_min": 0.7,
+    "rolled_equity_max": 0.9,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 88.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "go-to-market and capacity expansion",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.1,
+    "subsector": "Consumer / Food & Bev",
+    "revenue_growth_3yr": 0.55,
+    "ltm_ebitda_margin": -0.1,
+    "ltm_revenue": 26.0,
+    "ltm_ebitda": -2.6
+  },
+  {
+    "name": "Ledgerline Payments",
+    "sector": "Technology",
+    "stage": "developing",
+    "description": "B2B payments and spend-management platform at $24M revenue growing ~60%/yr. Burning to fund sales expansion.",
+    "capital_requested": 52.0,
+    "rolled_equity_min": 0.7,
+    "rolled_equity_max": 0.9,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "strong",
+    "base_valuation": 105.0,
+    "year_available": 1,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "go-to-market and capacity expansion",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.11,
+    "subsector": "Technology / Fintech",
+    "revenue_growth_3yr": 0.6,
+    "ltm_ebitda_margin": -0.15,
+    "ltm_revenue": 24.0,
+    "ltm_ebitda": -3.6
+  },
+  {
+    "name": "CarePath Diagnostics",
+    "sector": "Healthcare",
+    "stage": "developing",
+    "description": "Specialty diagnostics lab network at $27M revenue scaling test menu and payer coverage. Margin-negative while building scale.",
+    "capital_requested": 48.0,
+    "rolled_equity_min": 0.7,
+    "rolled_equity_max": 0.9,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 92.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "go-to-market and capacity expansion",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.1,
+    "subsector": "Healthcare / Diagnostics",
+    "revenue_growth_3yr": 0.5,
+    "ltm_ebitda_margin": -0.1,
+    "ltm_revenue": 27.0,
+    "ltm_ebitda": -2.7
+  },
+  {
+    "name": "Voltbridge Storage",
+    "sector": "Energy",
+    "stage": "developing",
+    "description": "Grid-scale battery-storage developer at $22M revenue with a large project pipeline. Heavy upfront investment per project.",
+    "capital_requested": 55.0,
+    "rolled_equity_min": 0.7,
+    "rolled_equity_max": 0.9,
+    "debt_capacity": 0.0,
+    "is_cash_flow_positive": false,
+    "dividend_eligible": false,
+    "management_quality": "average",
+    "base_valuation": 100.0,
+    "year_available": 2,
+    "outcome_distributions": [
+      {
+        "multiple": 0.0,
+        "prob": 0.2
+      },
+      {
+        "multiple": 0.5,
+        "prob": 0.25
+      },
+      {
+        "multiple": 1.0,
+        "prob": 0.3
+      },
+      {
+        "multiple": 2.0,
+        "prob": 0.15
+      },
+      {
+        "multiple": 3.5,
+        "prob": 0.1
+      }
+    ],
+    "reasons_for_funding": "go-to-market and capacity expansion",
+    "available_cash": 0.0,
+    "founder_shares": 10000000,
+    "management_option_pct": 0.11,
+    "subsector": "Energy / Storage",
+    "revenue_growth_3yr": 0.58,
+    "ltm_ebitda_margin": -0.15,
+    "ltm_revenue": 22.0,
+    "ltm_ebitda": -3.3
   }
 ]
