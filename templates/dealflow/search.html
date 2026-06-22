@@ -122,9 +122,22 @@
                   <span class="fw-bold">${{ "{:,.1f}M".format(company.initial_val_ask or 0) }}</span>
                   {% else %}
                   <small class="text-light d-block">Funds Wanted</small>
-                  <span class="fw-bold">${{ "{:,.1f}M".format(company.capital_requested) }}</span>
+                  {% set pre = company.initial_val_ask or 0 %}
+                  {% set inv = company.capital_requested or 0 %}
+                  {% set post = pre + inv %}
+                  {% set pool_pct = (company.management_option_pct or 0) * 100 %}
+                  {% set rolled_pct = (pre / post * 100) if post > 0 else 0 %}
+                  {% set own = (100 - rolled_pct) - ([pool_pct - rolled_pct, 0] | max) %}
+                  <span class="fw-bold">${{ "{:,.1f}M".format(inv) }}</span>
+                  <span class="text-secondary small">({{ "%.1f"|format(own) }}% implied)</span>
                   {% endif %}
                 </div>
+                {% if company.stage != 'mature' %}
+                <div class="col-6">
+                  <small class="text-light d-block">Pre-Money</small>
+                  <span class="fw-bold">${{ "{:,.1f}M".format(company.initial_val_ask or 0) }}</span>
+                </div>
+                {% endif %}
                 <div class="col-6">
                   <small class="text-light d-block">LTM Revenue</small>
                   <span class="fw-bold">{% if company.ltm_revenue is not none %}${{ "{:,.1f}M".format(company.ltm_revenue) }}{% else %}&mdash;{% endif %}</span>
