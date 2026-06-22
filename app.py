@@ -1407,7 +1407,7 @@ def admin_setup():
         db.session.expire_all()
         flash('All teams and their data have been removed, and every company '
               'was reloaded fresh.', 'success')
-        return redirect(url_for('admin_teams'))
+        return redirect(url_for('admin_setup'))
 
     return render_template('admin/setup.html')
 
