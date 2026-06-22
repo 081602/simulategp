@@ -87,7 +87,7 @@
             <div class="text-center mb-3">
               <div class="display-4 fw-bold {% if ret.deal_irr >= 0 %}text-success{% else %}text-danger{% endif %}">{{ "%+.1f"|format(ret.deal_irr * 100) }}%</div>
               <div class="text-light small">Deal IRR</div>
-              <div class="fs-4 fw-semibold {% if ret.moic >= 1 %}text-info{% else %}text-danger{% endif %} mt-1">{{ "%.2f"|format(ret.moic) }}&times; <span class="fs-6 fw-normal text-light">MOIC</span></div>
+              <div class="fs-4 fw-semibold {% if ret.moic >= 0.995 %}text-info{% else %}text-danger{% endif %} mt-1">{{ "%.2f"|format(ret.moic) }}&times; <span class="fs-6 fw-normal text-light">MOIC</span></div>
             </div>
             <p class="text-secondary small">
               Deal performance on the capital you actually <strong>deployed</strong>, <strong>before</strong> fund fees and carry.

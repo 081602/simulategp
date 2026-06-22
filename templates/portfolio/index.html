@@ -92,7 +92,8 @@
                 </td>
                 <td class="text-end fw-bold">
                   {% set moic = (stake.current_value / stake.equity_invested) if stake.equity_invested else 0 %}
-                  <span class="{% if moic >= 1 %}text-info{% else %}text-danger{% endif %}">{{ "%.2f"|format(moic) }}&times;</span>
+                  {# Color by the displayed (2-dp) value so a 1.00x mark isn't painted red by float rounding #}
+                  <span class="{% if moic >= 0.995 %}text-info{% else %}text-danger{% endif %}">{{ "%.2f"|format(moic) }}&times;</span>
                 </td>
                 <td class="text-end">
                   <span class="{% if is_distressed %}text-danger{% else %}text-white{% endif %}">${{ "{:,.1f}M".format(company.company_funds or 0) }}</span>
@@ -162,7 +163,7 @@
                 <td class="text-end fw-bold text-success">${{ "{:,.1f}M".format(item.proceeds) }}</td>
                 <td class="text-end">
                   {% set multiple = item.proceeds / item.equity_invested if item.equity_invested > 0 else 0 %}
-                  <span class="fw-bold {% if multiple >= 2 %}text-success{% elif multiple >= 1 %}text-info{% else %}text-danger{% endif %}">
+                  <span class="fw-bold {% if multiple >= 1.995 %}text-success{% elif multiple >= 0.995 %}text-info{% else %}text-danger{% endif %}">
                     {{ "%.2f"|format(multiple) }}x
                   </span>
                 </td>

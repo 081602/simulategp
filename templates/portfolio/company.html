@@ -367,7 +367,7 @@
         <div class="px-3 pt-2 small text-secondary">
           Acquired in Year {{ company.year_funded }} with
           <strong class="text-white">${{ "{:,.1f}M".format(register_start) }}</strong> of cash
-          {% if is_buyout %}(cash-free buyout &mdash; starts at $0, lives off earnings). EBITDA converts to <strong>Cash Flow</strong> each year (60% of a profit) and interest is paid (debt is interest-only).{% elif company.turned_profitable %}(the capital invested in the round). It <strong>burned</strong> cash early on, then <strong>turned profitable</strong> &mdash; it now generates cash from EBITDA.{% else %}(the capital invested in the round). The company <strong>burns</strong> cash each year &mdash; the team must exit before it runs out.{% endif %}
+          {% if is_buyout %}(cash-free buyout &mdash; starts at $0, lives off earnings). EBITDA converts to <strong>Cash Flow</strong> each year (60% of a profit) and interest is paid (debt is interest-only).{% elif company.turned_profitable %}(the capital invested in the round). It <strong>burned</strong> cash early on, then <strong>turned profitable</strong> &mdash; it now generates cash from EBITDA.{% else %}(the capital invested in the round). The company <strong>burns</strong> cash each year.{% endif %}
         </div>
         {% if cash_register %}
         <table class="table table-dark table-sm mb-0 align-middle">
@@ -410,7 +410,7 @@
         <strong>Cash Flow</strong> = how EBITDA converts to cash (60% of a profit, or 1.25&times; a loss).
         <strong>Cash Burn</strong> = cash a pre-profit venture consumes each year.
         {% if company.debt_outstanding and company.debt_outstanding > 0 %}<strong>Interest</strong> is paid on debt (interest-only); the ${{ "{:,.1f}M".format(company.debt_outstanding) }} principal is repaid at exit.{% endif %}
-        Columns not in use for a given year show &mdash;. A closing balance of $0 means cash was exhausted that year (distress).
+        A &ldquo;&mdash;&rdquo; in a cell means that column doesn&rsquo;t apply that year (it&rsquo;s not $0) &mdash; e.g. Cash Burn in a profitable year, or EBITDA in a cash-burning year. A closing balance of $0 means cash was exhausted that year (distress).
         {% if register_has_followons %}<br><strong>Follow-on</strong> = fresh capital the lead injected that year (the valuation rises by the same amount).{% endif %}
         {% if register_has_mgmt_fees %}<br><strong>Mgmt Change</strong> = management-change fees paid out of cash that year (the valuation drops by the same amount).{% endif %}
         {% if register_has_dividends %}<br><strong>Dividend</strong> = cash distributed to the fund(s) that year (the valuation drops by the same amount).{% endif %}

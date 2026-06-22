@@ -125,7 +125,7 @@
                   <div class="text-secondary" style="font-size:0.7rem;">{{ "%.2f"|format(item.ret.multiple) }}&times; net / committed</div>
                 </td>
                 <td class="text-end">
-                  <span class="fw-bold {% if item.ret.moic >= 1 %}text-info{% else %}text-danger{% endif %}">{{ "%.2f"|format(item.ret.moic) }}&times;</span>
+                  <span class="fw-bold {% if item.ret.moic >= 0.995 %}text-info{% else %}text-danger{% endif %}">{{ "%.2f"|format(item.ret.moic) }}&times;</span>
                   <span class="{% if item.ret.deal_irr >= 0 %}text-info{% else %}text-danger{% endif %}">/ {{ "%+.0f"|format(item.ret.deal_irr * 100) }}%</span>
                   <div class="text-secondary" style="font-size:0.7rem;">on ${{ "{:,.1f}M".format(item.ret.invested) }} invested</div>
                 </td>
