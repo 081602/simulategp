@@ -121,6 +121,11 @@
               <div class="form-text text-light">
                 Funds Wanted: ${{ "{:,.1f}M".format(company.capital_requested) }}
               </div>
+              <div class="form-text">
+                <i class="bi bi-pie-chart text-info"></i>
+                <span class="text-info">Implied fully-diluted ownership:
+                  <strong id="implied_ownership">&mdash;</strong></span>
+              </div>
             </div>
             {% endif %}
 
@@ -340,6 +345,34 @@
     }
     priceInput.addEventListener('input', update);
     debtInput.addEventListener('input', update);
+    update();
+  })();
+
+  // Live implied fully-diluted ownership for venture deals: the new money's
+  // share of post-money. The option pool is carved from the founder (rolled)
+  // side, so it only dilutes the investor if it exceeds the rolled stake —
+  // mirrors finalize_deal.
+  (function () {
+    var out = document.getElementById('implied_ownership');
+    if (!out) return;  // mature company — no implied ownership field
+    var preInput = document.getElementById('pre_money_valuation');
+    var invInput = document.getElementById('total_investment');
+    var poolPct = {{ (company.management_option_pct or 0) * 100 }};
+    function update() {
+      var pre = parseFloat(preInput.value);
+      var inv = parseFloat(invInput.value);
+      if (!isFinite(pre) || !isFinite(inv) || pre < 0 || inv <= 0) {
+        out.textContent = '—'; return;
+      }
+      var post = pre + inv;
+      var rolledPct = (post > 0 ? pre / post : 0) * 100;   // founders' %
+      var investorPoolPct = 100 - rolledPct;               // total to investors
+      var poolFromInvestors = Math.max(0, poolPct - rolledPct);
+      var ownership = investorPoolPct - poolFromInvestors;
+      out.textContent = ownership.toFixed(1) + '%';
+    }
+    preInput.addEventListener('input', update);
+    invInput.addEventListener('input', update);
     update();
   })();
 </script>
