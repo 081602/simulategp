@@ -253,6 +253,11 @@ class GameCompany(db.Model):
     in_distress = db.Column(db.Boolean, default=False)
     ever_distressed = db.Column(db.Boolean, default=False)  # ran out of cash at least once
     flagged_for_liquidation = db.Column(db.Boolean, default=False)
+    # How a previously-distressed holding was resolved at the most recent crank,
+    # and the game year it happened — drives the "what happened last period"
+    # recap. One of: 'bankrupt', 'recovered', 'still_burning'.
+    distress_resolution = db.Column(db.String(20), nullable=True)
+    distress_resolution_year = db.Column(db.Integer, nullable=True)
     revenue_growth_3yr = db.Column(db.Float, nullable=True)   # e.g. 0.12 = 12%
     ltm_ebitda_margin = db.Column(db.Float, nullable=True)    # e.g. 0.20 = 20%
     ltm_revenue = db.Column(db.Float, nullable=True)          # $M

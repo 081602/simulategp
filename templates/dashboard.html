@@ -57,6 +57,31 @@
   </div>
   {% endif %}
 
+  <!-- Distress recap: what happened last period to previously-distressed holdings -->
+  {% if distress_recap %}
+  <div class="card bg-dark border-secondary text-white mb-4">
+    <div class="card-header border-secondary">
+      <i class="bi bi-clock-history text-warning"></i> Distress Update &mdash; what happened at the last Deal &amp; Return Process
+    </div>
+    <ul class="list-group list-group-flush">
+      {% for r in distress_recap %}
+      <li class="list-group-item bg-dark text-white border-secondary d-flex align-items-start gap-2">
+        {% if r.outcome == 'bankrupt' %}
+        <i class="bi bi-x-octagon-fill text-danger mt-1"></i>
+        <span><strong>{{ r.name }}</strong> went <span class="text-danger fw-semibold">bankrupt</span> &mdash; the investment is lost.</span>
+        {% elif r.outcome == 'recovered' %}
+        <i class="bi bi-check-circle-fill text-success mt-1"></i>
+        <span><strong>{{ r.name }}</strong> <span class="text-success fw-semibold">turned profitable</span> &mdash; it now generates cash and is no longer at risk of running dry.</span>
+        {% elif r.outcome == 'still_burning' %}
+        <i class="bi bi-fire text-warning mt-1"></i>
+        <span><strong>{{ r.name }}</strong> received a cash injection but <span class="text-warning fw-semibold">did not turn profitable</span> &mdash; it is still burning cash.</span>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
   <!-- Deal Activity: where your bids stand in the deal process -->
   {% if bid_activity %}
   <div class="card bg-dark border-warning text-white mb-4">

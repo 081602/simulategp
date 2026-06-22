@@ -273,6 +273,9 @@ def run_phase2_crank(game: Game):
 
     for deal in active_deals:
         company = deal.company
+        # Whether a previously-distressed venture failed its recovery roll this
+        # year (used to flag "rescued but still burning" if it survives).
+        recovery_failed = False
 
         # Roll outcome. The FIRST year after funding grows off the company's
         # original ask (see _ask_anchor) so entry price discipline drives the
@@ -330,12 +333,15 @@ def run_phase2_crank(game: Game):
                     company.set_year_ebitda(year, company.ltm_ebitda)
                     company.company_funds += ebitda_to_cash(company.ltm_ebitda)
                     company.in_distress = False
+                    company.distress_resolution = 'recovered'
+                    company.distress_resolution_year = year
                     for stake in deal.equity_stakes:
                         _notify(stake.team_id,
                                 f"{company.name} turned profitable — it now generates "
                                 f"cash and is no longer at risk of running dry.",
                                 'crank_complete', company.id)
                 else:
+                    recovery_failed = True
                     company.annual_burn_rate = max(
                         0.0, (company.annual_burn_rate or 0.0) * (1 - BURN_EVOLUTION_RATE * annual_return))
                     company.set_year_burn(year, company.annual_burn_rate)
@@ -387,6 +393,17 @@ def run_phase2_crank(game: Game):
                 _notify(stake.team_id, msg, 'distress', company.id)
         else:
             company.in_distress = False
+            # Was distressed and rescued (follow-on) but the recovery roll failed
+            # — it survived the year on the injected cash, yet is still burning.
+            # Tell the team the rescue didn't turn the corner this year.
+            if recovery_failed:
+                company.distress_resolution = 'still_burning'
+                company.distress_resolution_year = year
+                for stake in deal.equity_stakes:
+                    _notify(stake.team_id,
+                            f"{company.name} received a cash injection but did not "
+                            f"turn profitable — it is still burning cash.",
+                            'distress', company.id)
 
         # Liquidation check
         if deal.marked_for_liquidation:
@@ -544,6 +561,11 @@ def _roll_outcome(company: GameCompany, market_condition: float) -> float:
 def _process_bankruptcy(deal: Deal, company: GameCompany, year: int):
     company.status = 'bankrupt'
     deal.status = 'bankrupt'
+    # Record the outcome for the distress recap (only for holdings that went
+    # through the distress lifecycle — not a clean valuation wipeout).
+    if company.ever_distressed:
+        company.distress_resolution = 'bankrupt'
+        company.distress_resolution_year = year
     for stake in deal.equity_stakes:
         _notify(stake.team_id,
                 f"{company.name} has gone bankrupt. Your investment has been lost.",

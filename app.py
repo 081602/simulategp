@@ -137,12 +137,28 @@ def dashboard():
     # the company drops off this banner.
     distressed = [d for d in active_deals
                   if d.company.in_distress and not d.let_it_roll]
+    # Recap of what happened LAST period (year N-1) to holdings that were in
+    # distress: bankrupt / recovered / rescued-but-still-burning.
+    prior_year = game.current_year - 1
+    distress_recap = []
+    if prior_year >= 1:
+        recap_cos = (GameCompany.query
+                     .join(Deal, Deal.company_id == GameCompany.id)
+                     .join(DealEquity, DealEquity.deal_id == Deal.id)
+                     .filter(DealEquity.team_id == current_user.id,
+                             GameCompany.distress_resolution.isnot(None),
+                             GameCompany.distress_resolution_year == prior_year)
+                     .distinct()
+                     .all())
+        distress_recap = [{'name': c.name, 'outcome': c.distress_resolution}
+                          for c in recap_cos]
     ret = team_simple_return(current_user, game)
     return render_template('dashboard.html',
                            game=game,
                            notifications=notifications,
                            active_deals=active_deals,
                            distressed=distressed,
+                           distress_recap=distress_recap,
                            bid_activity=bid_activity,
                            ret=ret)
 
