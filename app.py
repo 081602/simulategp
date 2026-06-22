@@ -1691,6 +1691,15 @@ def admin_edit_company(company_id):
             le = request.form.get('ltm_ebitda')
             company.ltm_ebitda = float(le) if le else None
 
+        # Invariant: a company with $0 revenue is burning cash, so its LTM EBITDA
+        # must be negative (and its EBITDA margin is undefined — shown as N/A).
+        if not company.ltm_revenue and (company.ltm_ebitda is None or company.ltm_ebitda >= 0):
+            db.session.rollback()
+            flash('A company with $0 revenue must have a negative LTM EBITDA — '
+                  'no revenue means it is burning cash. (EBITDA margin is N/A.)',
+                  'danger')
+            return redirect(url_for('admin_edit_company', company_id=company_id))
+
         outcomes = []
         for i in range(12):
             multiple = request.form.get(f'multiple_{i}')

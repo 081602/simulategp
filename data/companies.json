@@ -1192,7 +1192,7 @@
     "subsector": "Media / Gaming",
     "revenue_growth_3yr": 2.0,
     "ltm_ebitda_margin": -0.1,
-    "ltm_revenue": 4.0,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -0.4
   },
   {
@@ -2388,7 +2388,7 @@
     "subsector": "Energy / CleanTech",
     "revenue_growth_3yr": 1.8,
     "ltm_ebitda_margin": -0.7,
-    "ltm_revenue": 0.4,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -0.28
   },
   {
@@ -3768,7 +3768,7 @@
     "subsector": "Education / AI",
     "revenue_growth_3yr": 2.5,
     "ltm_ebitda_margin": -0.6,
-    "ltm_revenue": 0.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -0.3
   },
   {
@@ -4550,7 +4550,7 @@
     "subsector": "Technology / Audio",
     "revenue_growth_3yr": 1.2,
     "ltm_ebitda_margin": -0.4,
-    "ltm_revenue": 1.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -0.6
   },
   {
@@ -5148,7 +5148,7 @@
     "subsector": "Energy / CleanTech",
     "revenue_growth_3yr": 1.88,
     "ltm_ebitda_margin": -0.77,
-    "ltm_revenue": 2.0,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.5
   },
   {
@@ -5286,7 +5286,7 @@
     "subsector": "Technology / Cybersecurity",
     "revenue_growth_3yr": 1.75,
     "ltm_ebitda_margin": -0.9,
-    "ltm_revenue": 1.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.4
   },
   {
@@ -5746,7 +5746,7 @@
     "subsector": "Technology / AI/ML",
     "revenue_growth_3yr": 1.46,
     "ltm_ebitda_margin": -0.93,
-    "ltm_revenue": 0.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -0.5
   },
   {
@@ -6344,7 +6344,7 @@
     "subsector": "Healthcare / Biotech",
     "revenue_growth_3yr": 1.83,
     "ltm_ebitda_margin": -1.08,
-    "ltm_revenue": 1.0,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.1
   },
   {
@@ -6390,7 +6390,7 @@
     "subsector": "Industrials / Distribution",
     "revenue_growth_3yr": 1.03,
     "ltm_ebitda_margin": -0.51,
-    "ltm_revenue": 2.0,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.0
   },
   {
@@ -6436,7 +6436,7 @@
     "subsector": "Technology / SaaS",
     "revenue_growth_3yr": 1.76,
     "ltm_ebitda_margin": -0.83,
-    "ltm_revenue": 0.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -0.4
   },
   {
@@ -6574,7 +6574,7 @@
     "subsector": "Healthcare / Diagnostics",
     "revenue_growth_3yr": 1.05,
     "ltm_ebitda_margin": -1.12,
-    "ltm_revenue": 1.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.7
   },
   {
@@ -6666,7 +6666,7 @@
     "subsector": "Technology / Cybersecurity",
     "revenue_growth_3yr": 1.89,
     "ltm_ebitda_margin": -1.2,
-    "ltm_revenue": 1.0,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.2
   },
   {
@@ -7080,7 +7080,7 @@
     "subsector": "Industrials / Logistics",
     "revenue_growth_3yr": 1.73,
     "ltm_ebitda_margin": -1.03,
-    "ltm_revenue": 1.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.5
   },
   {
@@ -7264,7 +7264,7 @@
     "subsector": "Healthcare / Diagnostics",
     "revenue_growth_3yr": 1.15,
     "ltm_ebitda_margin": -0.67,
-    "ltm_revenue": 1.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.0
   },
   {
@@ -7402,7 +7402,7 @@
     "subsector": "Consumer / Retail",
     "revenue_growth_3yr": 1.3,
     "ltm_ebitda_margin": -0.64,
-    "ltm_revenue": 2.0,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.3
   },
   {
@@ -7770,7 +7770,7 @@
     "subsector": "Industrials / Manufacturing",
     "revenue_growth_3yr": 1.09,
     "ltm_ebitda_margin": -0.51,
-    "ltm_revenue": 1.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -0.8
   },
   {
@@ -7862,7 +7862,7 @@
     "subsector": "Consumer / Fitness",
     "revenue_growth_3yr": 1.42,
     "ltm_ebitda_margin": -0.68,
-    "ltm_revenue": 2.0,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.4
   },
   {
@@ -8322,7 +8322,7 @@
     "subsector": "Consumer / Fitness",
     "revenue_growth_3yr": 1.58,
     "ltm_ebitda_margin": -1.13,
-    "ltm_revenue": 1.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.7
   },
   {
@@ -8552,7 +8552,7 @@
     "subsector": "Consumer / Retail",
     "revenue_growth_3yr": 1.69,
     "ltm_ebitda_margin": -0.63,
-    "ltm_revenue": 1.0,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -0.6
   },
   {
@@ -8598,7 +8598,7 @@
     "subsector": "Energy / Renewables",
     "revenue_growth_3yr": 1.28,
     "ltm_ebitda_margin": -1.17,
-    "ltm_revenue": 1.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.8
   },
   {
@@ -9288,7 +9288,7 @@
     "subsector": "Energy / Utilities",
     "revenue_growth_3yr": 1.57,
     "ltm_ebitda_margin": -0.68,
-    "ltm_revenue": 0.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -0.3
   },
   {
@@ -9426,7 +9426,7 @@
     "subsector": "Technology / Fintech",
     "revenue_growth_3yr": 1.45,
     "ltm_ebitda_margin": -0.66,
-    "ltm_revenue": 2.0,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.3
   },
   {
@@ -10024,7 +10024,7 @@
     "subsector": "Healthcare / Diagnostics",
     "revenue_growth_3yr": 1.43,
     "ltm_ebitda_margin": -1.14,
-    "ltm_revenue": 0.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -0.6
   },
   {
@@ -10530,7 +10530,7 @@
     "subsector": "Industrials / Building Products",
     "revenue_growth_3yr": 1.26,
     "ltm_ebitda_margin": -1.05,
-    "ltm_revenue": 1.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.6
   },
   {
@@ -11128,7 +11128,7 @@
     "subsector": "Energy / Oil & Gas Services",
     "revenue_growth_3yr": 1.71,
     "ltm_ebitda_margin": -1.11,
-    "ltm_revenue": 2.0,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -2.2
   },
   {
@@ -11726,7 +11726,7 @@
     "subsector": "Technology / DevTools",
     "revenue_growth_3yr": 1.42,
     "ltm_ebitda_margin": -0.56,
-    "ltm_revenue": 1.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -0.8
   },
   {
@@ -12002,7 +12002,7 @@
     "subsector": "Consumer / Retail",
     "revenue_growth_3yr": 1.96,
     "ltm_ebitda_margin": -0.95,
-    "ltm_revenue": 1.0,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -0.9
   },
   {
@@ -12186,7 +12186,7 @@
     "subsector": "Technology / Cybersecurity",
     "revenue_growth_3yr": 1.86,
     "ltm_ebitda_margin": -1.08,
-    "ltm_revenue": 1.0,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.1
   },
   {
@@ -12278,7 +12278,7 @@
     "subsector": "Energy / Power Infrastructure",
     "revenue_growth_3yr": 1.99,
     "ltm_ebitda_margin": -0.69,
-    "ltm_revenue": 0.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -0.3
   },
   {
@@ -13474,7 +13474,7 @@
     "subsector": "Healthcare / Diagnostics",
     "revenue_growth_3yr": 1.66,
     "ltm_ebitda_margin": -0.83,
-    "ltm_revenue": 1.0,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -0.8
   },
   {
@@ -13520,7 +13520,7 @@
     "subsector": "Industrials / Logistics",
     "revenue_growth_3yr": 1.33,
     "ltm_ebitda_margin": -1.01,
-    "ltm_revenue": 1.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.5
   },
   {
@@ -13658,7 +13658,7 @@
     "subsector": "Energy / Utilities",
     "revenue_growth_3yr": 1.61,
     "ltm_ebitda_margin": -0.8,
-    "ltm_revenue": 1.0,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -0.8
   },
   {
@@ -13750,7 +13750,7 @@
     "subsector": "Industrials / Manufacturing",
     "revenue_growth_3yr": 1.15,
     "ltm_ebitda_margin": -0.9,
-    "ltm_revenue": 1.5,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.4
   },
   {
@@ -13796,7 +13796,7 @@
     "subsector": "Technology / Fintech",
     "revenue_growth_3yr": 1.1,
     "ltm_ebitda_margin": -0.52,
-    "ltm_revenue": 2.0,
+    "ltm_revenue": 0.0,
     "ltm_ebitda": -1.0
   },
   {

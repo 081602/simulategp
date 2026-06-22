@@ -187,7 +187,8 @@
                 <tr>
                   <td class="text-light">3-Yr Revenue Growth</td>
                   <td class="fw-bold text-white">
-                    {% if company.revenue_growth_3yr is not none %}
+                    {% if company.stage == 'startup' %}<span class="text-secondary">N/A</span>
+                    {% elif company.revenue_growth_3yr is not none %}
                       {{ "%.1f"|format(company.revenue_growth_3yr * 100) }}%
                     {% else %}<span class="text-secondary">—</span>{% endif %}
                   </td>
@@ -195,7 +196,8 @@
                 <tr>
                   <td class="text-light">LTM EBITDA Margin</td>
                   <td class="fw-bold text-white">
-                    {% if company.ltm_ebitda_margin is not none %}
+                    {% if not company.ltm_revenue %}<span class="text-secondary">N/A</span>
+                    {% elif company.ltm_ebitda_margin is not none %}
                       {{ "%.1f"|format(company.ltm_ebitda_margin * 100) }}%
                     {% else %}<span class="text-secondary">—</span>{% endif %}
                   </td>
@@ -271,7 +273,7 @@
             </p>
             <p class="text-secondary small mb-0">
               <i class="bi bi-info-circle text-warning"></i>
-              Actual return will also depend on management quality, EBITDA margin, and historical revenue growth rate.
+              Actual return will also depend on management quality, EBITDA margin, historical revenue growth rate, and cash burn rate relative to value.
             </p>
             {% else %}
             <p class="text-secondary text-center small mt-3">No return data available for this sector/stage.</p>

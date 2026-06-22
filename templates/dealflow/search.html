@@ -131,12 +131,12 @@
                 </div>
                 <div class="col-6">
                   <small class="text-light d-block">3-Yr Rev Growth</small>
-                  <span>{% if company.revenue_growth_3yr is not none %}{{ "%.0f"|format(company.revenue_growth_3yr * 100) }}%{% else %}&mdash;{% endif %}</span>
+                  <span>{% if company.stage == 'startup' %}N/A{% elif company.revenue_growth_3yr is not none %}{{ "%.0f"|format(company.revenue_growth_3yr * 100) }}%{% else %}&mdash;{% endif %}</span>
                 </div>
                 <div class="col-6">
                   <small class="text-light d-block">EBITDA Margin</small>
-                  <span class="{% if company.ltm_ebitda_margin is not none and company.ltm_ebitda_margin < 0 %}text-danger{% endif %}">
-                    {% if company.ltm_ebitda_margin is not none %}{{ "%.0f"|format(company.ltm_ebitda_margin * 100) }}%{% else %}&mdash;{% endif %}
+                  <span class="{% if company.ltm_revenue and company.ltm_ebitda_margin is not none and company.ltm_ebitda_margin < 0 %}text-danger{% endif %}">
+                    {% if not company.ltm_revenue %}N/A{% elif company.ltm_ebitda_margin is not none %}{{ "%.0f"|format(company.ltm_ebitda_margin * 100) }}%{% else %}&mdash;{% endif %}
                   </span>
                 </div>
                 {% if company.stage != 'mature' %}
