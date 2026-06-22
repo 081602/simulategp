@@ -1191,9 +1191,9 @@
     "management_option_pct": 0.126,
     "subsector": "Media / Gaming",
     "revenue_growth_3yr": 2.0,
-    "ltm_ebitda_margin": 0.1,
+    "ltm_ebitda_margin": -0.1,
     "ltm_revenue": 4.0,
-    "ltm_ebitda": 0.4
+    "ltm_ebitda": -0.4
   },
   {
     "name": "Forge Analytics",
