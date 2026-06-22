@@ -359,9 +359,9 @@ def run_phase2_crank(game: Game):
             interest = company.debt_outstanding * company.debt_interest_rate
             company.company_funds -= interest
 
-        # Valuation wipeout -> immediate bankruptcy
+        # Valuation wipeout -> immediate bankruptcy (market forces, not cash)
         if (company.latest_valuation or 0) <= 0:
-            _process_bankruptcy(deal, company, year)
+            _process_bankruptcy(deal, company, year, reason='wipeout')
             continue
 
         # Cash exhausted handling.
@@ -558,18 +558,25 @@ def _roll_outcome(company: GameCompany, market_condition: float) -> float:
     return multiple
 
 
-def _process_bankruptcy(deal: Deal, company: GameCompany, year: int):
+def _process_bankruptcy(deal: Deal, company: GameCompany, year: int,
+                        reason: str = 'distress'):
     company.status = 'bankrupt'
     deal.status = 'bankrupt'
-    # Record the outcome for the distress recap (only for holdings that went
-    # through the distress lifecycle — not a clean valuation wipeout).
-    if company.ever_distressed:
-        company.distress_resolution = 'bankrupt'
+    # Record the outcome for the last-period recap. A valuation wipeout (the
+    # market roll took the mark to $0) is "market forces"; a cash-exhaustion
+    # bankruptcy only counts for holdings that went through the distress cycle.
+    if reason == 'wipeout':
+        company.distress_resolution = 'wipeout'
         company.distress_resolution_year = year
+        msg = (f"Market forces caused {company.name} to go bankrupt — "
+               f"its valuation was wiped out and the investment is lost.")
+    else:
+        if company.ever_distressed:
+            company.distress_resolution = 'bankrupt'
+            company.distress_resolution_year = year
+        msg = f"{company.name} has gone bankrupt. Your investment has been lost."
     for stake in deal.equity_stakes:
-        _notify(stake.team_id,
-                f"{company.name} has gone bankrupt. Your investment has been lost.",
-                'liquidation', company.id)
+        _notify(stake.team_id, msg, 'liquidation', company.id)
     db.session.commit()
 
 

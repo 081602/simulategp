@@ -68,7 +68,10 @@
       <li class="list-group-item bg-dark text-white border-secondary d-flex align-items-start gap-2">
         {% if r.outcome == 'bankrupt' %}
         <i class="bi bi-x-octagon-fill text-danger mt-1"></i>
-        <span><strong>{{ r.name }}</strong> went <span class="text-danger fw-semibold">bankrupt</span> &mdash; the investment is lost.</span>
+        <span><strong>{{ r.name }}</strong> went <span class="text-danger fw-semibold">bankrupt</span> &mdash; it ran out of cash and the investment is lost.</span>
+        {% elif r.outcome == 'wipeout' %}
+        <i class="bi bi-graph-down-arrow text-danger mt-1"></i>
+        <span><span class="text-danger fw-semibold">Market forces</span> caused <strong>{{ r.name }}</strong> to go <span class="text-danger fw-semibold">bankrupt</span> &mdash; its valuation was wiped out and the investment is lost.</span>
         {% elif r.outcome == 'recovered' %}
         <i class="bi bi-check-circle-fill text-success mt-1"></i>
         <span><strong>{{ r.name }}</strong> <span class="text-success fw-semibold">turned profitable</span> &mdash; it now generates cash and is no longer at risk of running dry.</span>
