@@ -437,6 +437,12 @@ STAGE_TYPICAL_FUNDAMENTALS = {
 }
 GROWTH_RETURN_WEIGHT = 0.10   # 10 pts of above-typical growth -> +1% expected return
 MARGIN_RETURN_WEIGHT = 0.20   # 10 pts of above-typical margin -> +2% expected return
+# Cash-burn tilt: venture companies are EXPECTED to burn, so what matters is burn
+# RELATIVE TO VALUE vs. the stage norm. Burning much more than typical (cash-
+# inefficient) drags expected return; burning less than typical lifts it. Ratios
+# below are annual burn / company value (calibrated to each stage's median).
+STAGE_TYPICAL_BURN_RATIO = {'startup': 0.20, 'developing': 0.15, 'early_revenue': 0.09}
+BURN_RETURN_WEIGHT = 0.15     # 10 pts of below-typical burn/value -> +1.5% expected return
 MAX_FUNDAMENTALS_TILT = 0.05  # cap on total expected-return shift (+/- 5%)
 MARGIN_VOL_WEIGHT = 0.6       # 10 pts of above-typical margin -> -6% relative volatility
 VOL_FACTOR_RANGE = (0.75, 1.25)
@@ -462,24 +468,41 @@ VENTURE_MAX_PROFIT_MARGIN = 0.20
 
 
 def _fundamentals_adjustment(company: GameCompany, mu: float, sigma: float):
-    """Tilt (mu, sigma) by how the company's growth/margin compare to stage-typical values.
+    """Tilt (mu, sigma) by how the company's growth/margin/burn compare to stage-typical values.
 
     Above-typical revenue growth or EBITDA margin raises expected return;
     above-typical margin also dampens volatility (steadier businesses), and
-    below-typical margin amplifies it. Companies without metrics are unaffected.
+    below-typical margin amplifies it. Cash burn is judged RELATIVE TO VALUE
+    against the stage norm — venture companies are expected to burn, so only a
+    burn/value ratio well above typical drags return (cash-inefficient), while a
+    below-typical ratio lifts it. Revenue growth and margin only apply when the
+    company has revenue (both are undefined otherwise); companies without
+    metrics are unaffected.
     """
     typical_growth, typical_margin = STAGE_TYPICAL_FUNDAMENTALS.get(
         company.stage, (0.20, 0.10))
 
+    # Revenue growth and EBITDA margin are both undefined without revenue, so
+    # they only tilt companies that actually have revenue.
+    has_revenue = bool(company.ltm_revenue)
+    has_margin = company.ltm_ebitda_margin is not None and has_revenue
+
     tilt = 0.0
-    if company.revenue_growth_3yr is not None:
+    if company.revenue_growth_3yr is not None and has_revenue:
         tilt += GROWTH_RETURN_WEIGHT * (company.revenue_growth_3yr - typical_growth)
-    if company.ltm_ebitda_margin is not None:
+    if has_margin:
         tilt += MARGIN_RETURN_WEIGHT * (company.ltm_ebitda_margin - typical_margin)
+    # Cash-burn tilt: compare burn/value to the stage norm. High burn for the
+    # value (ratio above typical) tilts down; low burn (below typical) tilts up.
+    typical_burn = STAGE_TYPICAL_BURN_RATIO.get(company.stage)
+    value = company.latest_valuation or 0.0
+    if typical_burn and company.annual_burn_rate and value > 0:
+        burn_ratio = company.annual_burn_rate / value
+        tilt += BURN_RETURN_WEIGHT * (typical_burn - burn_ratio)
     tilt = max(-MAX_FUNDAMENTALS_TILT, min(MAX_FUNDAMENTALS_TILT, tilt))
 
     vol_factor = 1.0
-    if company.ltm_ebitda_margin is not None:
+    if has_margin:
         vol_factor = 1.0 - MARGIN_VOL_WEIGHT * (company.ltm_ebitda_margin - typical_margin)
         vol_factor = max(VOL_FACTOR_RANGE[0], min(VOL_FACTOR_RANGE[1], vol_factor))
 

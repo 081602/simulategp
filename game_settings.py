@@ -81,6 +81,14 @@ PARAMS = [
          help="Weight on above-typical EBITDA margin when tilting expected return.",
          get=lambda: game_logic.MARGIN_RETURN_WEIGHT,
          set=lambda v: setattr(game_logic, 'MARGIN_RETURN_WEIGHT', v)),
+    dict(key='burn_weight', group='Returns & Risk',
+         label='Cash-burn return weight', unit='number', suffix='',
+         min=0, max=1, step=0.01, default=0.15,
+         help="Weight on burn/value vs. the stage norm when tilting expected "
+              "return. Burning more than typical for the value drags return; "
+              "burning less lifts it (0.15 = 10 pts of below-typical burn → +1.5%).",
+         get=lambda: game_logic.BURN_RETURN_WEIGHT,
+         set=lambda v: setattr(game_logic, 'BURN_RETURN_WEIGHT', v)),
     dict(key='max_fund_tilt', group='Returns & Risk',
          label='Max fundamentals tilt', unit='percent', suffix='%',
          min=0, max=25, step=0.5, default=0.05,
