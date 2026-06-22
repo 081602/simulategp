@@ -617,6 +617,29 @@ def create_term_sheet(company_id):
 # Timeline (Phase 2 deal finalization + syndicate approvals)
 # ---------------------------------------------------------------------------
 
+def _implied_lead_ownership(deal):
+    """The lead's fully-diluted ownership % if this deal finalizes solo (no
+    co-investors). Mirrors finalize_deal: the option pool is carved from the
+    founder/seller side, so it only dilutes the buyer if it exceeds that side."""
+    ts = deal.lead_term_sheet
+    company = deal.company
+    if not ts:
+        return 0.0
+    pool_pct = (company.management_option_pct or 0) * 100.0
+    if company.stage == 'mature':
+        # Buyout: sellers cash out 100%, buyer owns everything but the pool.
+        return max(0.0, 100.0 - pool_pct)
+    pre = ts.pre_money_valuation or 0.0
+    inv = ts.total_investment or 0.0
+    post = pre + inv
+    if post <= 0:
+        return 0.0
+    rolled_pct = pre / post * 100.0
+    investor_pool_pct = 100.0 - rolled_pct
+    pool_from_investors = max(0.0, pool_pct - rolled_pct)
+    return max(0.0, investor_pool_pct - pool_from_investors)
+
+
 @app.route('/timeline')
 @login_required
 def timeline():
@@ -652,13 +675,28 @@ def timeline():
     my_funds = {f.id: f for f in
                 Fund.query.filter_by(team_id=current_user.id, is_active=True).all()}
 
+    # Per pending deal: are there fill investors who indicated interest (so the
+    # lead has someone to invite), and the lead's implied solo ownership %.
+    deal_info = {}
+    for deal in pending_deals:
+        fills = (TermSheet.query
+                 .filter_by(company_id=deal.company_id,
+                            game_year=game.current_year, status='fill_offered')
+                 .filter(TermSheet.team_id != current_user.id)
+                 .count())
+        deal_info[deal.id] = {
+            'fills': fills,
+            'ownership': _implied_lead_ownership(deal),
+        }
+
     return render_template('timeline.html',
                            game=game,
                            my_term_sheets=my_ts,
                            pending_deals=pending_deals,
                            coinvest_offers=coinvest_offers,
                            awaiting_coinvest=awaiting_coinvest,
-                           my_funds=my_funds)
+                           my_funds=my_funds,
+                           deal_info=deal_info)
 
 
 @app.route('/timeline/coinvest/<int:ts_id>', methods=['POST'])

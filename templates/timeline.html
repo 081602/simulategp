@@ -202,6 +202,9 @@
                   {% elif deal.company.stage == 'developing' %}<span class="badge bg-warning text-dark">Developing</span>
                   {% elif deal.company.stage == 'early_revenue' %}<span class="badge bg-info text-dark">Early Revenue</span>
                   {% elif deal.company.stage == 'mature' %}<span class="badge bg-success">Mature</span>{% endif %}
+                  {% if deal.company.management_quality == 'strong' %}<span class="badge bg-success ms-1"><i class="bi bi-people-fill"></i> Strong</span>
+                  {% elif deal.company.management_quality == 'average' %}<span class="badge bg-warning text-dark ms-1"><i class="bi bi-people-fill"></i> Average</span>
+                  {% elif deal.company.management_quality == 'weak' %}<span class="badge bg-danger ms-1"><i class="bi bi-people-fill"></i> Weak</span>{% endif %}
                 </div>
 
                 {% if deal.lead_term_sheet %}
@@ -222,20 +225,35 @@
                   {% else %}
                   <div class="col-6">
                     <div class="text-secondary" style="font-size:0.75rem;">Liq. Pref.</div>
-                    <div class="fw-semibold small">{{ deal.lead_term_sheet.liquidation_preference }}x</div>
+                    <div class="fw-semibold small">{{ deal.lead_term_sheet.liquidation_preference }}x / {% if deal.lead_term_sheet.participation %}Participating{% else %}Non-Particip.{% endif %}</div>
                   </div>
                   {% endif %}
                   <div class="col-6">
                     <div class="text-secondary" style="font-size:0.75rem;">Type</div>
                     <div class="fw-semibold small">{{ deal.lead_term_sheet.term_sheet_type | title }}</div>
                   </div>
+                  <div class="col-6">
+                    <div class="text-secondary" style="font-size:0.75rem;">Implied % Owned</div>
+                    <div class="fw-semibold small">{{ "%.1f"|format(deal_info[deal.id].ownership) }}%</div>
+                  </div>
                 </div>
                 {% endif %}
               </div>
               <div class="card-footer border-secondary bg-transparent">
+                {% if deal_info[deal.id].fills > 0 %}
                 <a href="{{ url_for('finalize_deal_route', deal_id=deal.id) }}" class="btn btn-warning text-dark fw-semibold btn-sm w-100">
-                  <i class="bi bi-check2-square"></i> Finalize Deal
+                  <i class="bi bi-people"></i> Review Fill Investors &amp; Finalize
                 </a>
+                <div class="text-secondary text-center mt-1" style="font-size:0.7rem;">
+                  {{ deal_info[deal.id].fills }} fill investor(s) interested
+                </div>
+                {% else %}
+                <form method="POST" action="{{ url_for('finalize_deal_route', deal_id=deal.id) }}">
+                  <button type="submit" class="btn btn-warning text-dark fw-semibold btn-sm w-100">
+                    <i class="bi bi-check2-square"></i> Finalize Deal
+                  </button>
+                </form>
+                {% endif %}
               </div>
             </div>
           </div>
