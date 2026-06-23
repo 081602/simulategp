@@ -1901,9 +1901,9 @@ def _leaderboard_team_data(game, sort='committed'):
 @admin_required
 def admin_leaderboard():
     game = Game.query.first()
-    sort = request.args.get('sort', 'committed')
+    sort = request.args.get('sort', 'invested')
     if sort not in LEADERBOARD_SORTS:
-        sort = 'committed'
+        sort = 'invested'
     return render_template('admin/leaderboard.html', game=game, sort=sort,
                            team_data=_leaderboard_team_data(game, sort))
 
@@ -1918,9 +1918,9 @@ def leaderboard():
     if not game or not game.is_complete:
         flash('The leaderboard opens once the game is complete.', 'info')
         return redirect(url_for('dashboard'))
-    sort = request.args.get('sort', 'committed')
+    sort = request.args.get('sort', 'invested')
     if sort not in LEADERBOARD_SORTS:
-        sort = 'committed'
+        sort = 'invested'
     return render_template('admin/leaderboard.html', game=game, sort=sort,
                            team_data=_leaderboard_team_data(game, sort))
 
