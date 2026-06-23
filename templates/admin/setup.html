@@ -15,6 +15,32 @@
       </div>
     </div>
 
+    <!-- Full Reset (all three at once) -->
+    <div class="card border-danger shadow mb-4" style="background:rgba(220,53,69,0.12) !important;">
+      <div class="card-header bg-transparent border-danger">
+        <h5 class="mb-0 text-danger fw-bold"><i class="bi bi-stars me-2"></i>Full Reset &mdash; New Game</h5>
+      </div>
+      <div class="card-body p-4">
+        <div class="alert border-danger mb-3" style="background:rgba(220,53,69,0.18);">
+          <div class="d-flex align-items-center gap-3">
+            <i class="bi bi-exclamation-octagon-fill text-danger fs-4"></i>
+            <p class="mb-0 text-light">Does all three resets below at once: <strong>removes all teams, funds, deals, and transactions</strong>; <strong>reloads every company fresh</strong> from the source file; and <strong>resets the game clock to Year 1, Phase 1</strong>. Use this for a clean slate before a new class. This cannot be undone.</p>
+          </div>
+        </div>
+        <form method="POST" action="{{ url_for('admin_full_reset') }}">
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="confirm_full_reset" name="confirm_full_reset" value="1" required>
+            <label class="form-check-label fw-semibold text-danger" for="confirm_full_reset">
+              I understand this deletes all teams, reloads all companies, and resets the clock to Year 1, Phase 1.
+            </label>
+          </div>
+          <button type="submit" class="btn btn-danger fw-bold w-100">
+            <i class="bi bi-stars me-2"></i> Full Reset (Teams + Companies + Clock)
+          </button>
+        </form>
+      </div>
+    </div>
+
     <!-- Remove All Teams -->
     <div class="card border-danger shadow mb-4" style="background:rgba(220,53,69,0.08) !important;">
       <div class="card-header bg-transparent border-danger">

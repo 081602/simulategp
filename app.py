@@ -1442,6 +1442,37 @@ def admin_reset_clock():
     return redirect(url_for('admin_setup'))
 
 
+@app.route('/admin/full-reset', methods=['POST'])
+@login_required
+@admin_required
+def admin_full_reset():
+    """One-click full reset: remove all teams, reload every company fresh, and
+    reset the game clock to Year 1, Phase 1 — i.e. the other three setup
+    actions combined into a single clean-slate operation."""
+    from sqlalchemy import text
+    db.session.expire_all()
+    game = Game.query.first()
+    if not game:
+        flash('No game found.', 'warning')
+        return redirect(url_for('admin_setup'))
+    # Remove all teams and their data.
+    db.session.execute(text('DELETE FROM fund_transaction'))
+    db.session.execute(text('DELETE FROM notification'))
+    db.session.execute(text('DELETE FROM fund'))
+    db.session.execute(text('DELETE FROM team WHERE is_admin = 0'))
+    # Reload every company fresh (clears deals/stakes/term sheets/searches).
+    n = _reload_companies_from_json(game)
+    # Reset the game clock to the beginning.
+    game.current_year = 1
+    game.current_phase = 1
+    game.status = 'active'
+    db.session.commit()
+    db.session.expire_all()
+    flash(f'Full reset complete — all teams removed, {n} companies reloaded '
+          f'fresh, and the game clock reset to Year 1, Phase 1.', 'success')
+    return redirect(url_for('admin_setup'))
+
+
 @app.route('/admin/teams')
 @login_required
 @admin_required
