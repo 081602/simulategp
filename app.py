@@ -1851,8 +1851,8 @@ def admin_set_market():
 
 # Sortable leaderboard columns -> key into each team's row dict.
 LEADERBOARD_SORTS = {
-    'committed': lambda x: x['ret']['annualized'],   # Return on Committed Capital
-    'invested': lambda x: x['ret']['moic'],          # Return on Invested Capital
+    'committed': lambda x: x['ret']['annualized'],   # Return on Committed Capital (IRR)
+    'invested': lambda x: x['ret']['deal_irr'],      # Return on Invested Capital (deal IRR)
     'gp': lambda x: x['gp_income']['per_partner'],   # GP Income / Partner
 }
 
