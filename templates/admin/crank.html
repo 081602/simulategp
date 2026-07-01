@@ -38,7 +38,7 @@
         <div class="fs-3 fw-bold">
           <i class="bi bi-calendar3 text-info me-2"></i>
           Year {{ game.current_year }} / {{ game.total_years }}
-          <span class="badge bg-info text-dark ms-2 fs-5">Phase {{ game.current_phase }} &mdash; {{ game.phase_label }}</span>
+          <span class="badge bg-info text-dark ms-2 fs-5">{% if game.is_complete %}Complete{% else %}Phase {{ game.current_phase }}{% endif %}</span>
         </div>
         {% if game.status == 'paused' %}
         <div class="mt-2">
