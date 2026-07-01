@@ -2170,6 +2170,14 @@ def _ensure_schema():
 
 def init_db():
     with app.app_context():
+        # Report the active DB backend so deploy logs make it obvious whether
+        # production is on persistent Postgres or (accidentally) ephemeral
+        # SQLite, which resets every deploy.
+        backend = db.engine.dialect.name
+        print(f"[init_db] Database backend: {backend}")
+        if backend == 'sqlite' and not os.environ.get('DATABASE_URL'):
+            print("[init_db] WARNING: no DATABASE_URL set - using local SQLite. "
+                  "On an ephemeral host this wipes all data on every deploy.")
         db.create_all()
         _ensure_schema()
         # Load any saved Game Dynamics overrides onto the live module globals.
