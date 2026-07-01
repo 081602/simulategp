@@ -201,6 +201,18 @@ def current_game():
     return Game.query.first()
 
 
+@app.context_processor
+def inject_asset_version():
+    """Version string for static assets (based on main.css mtime) so a new
+    deploy busts the browser cache — otherwise clients keep stale CSS/JS."""
+    try:
+        v = int(os.path.getmtime(
+            os.path.join(_BASE_DIR, 'static', 'css', 'main.css')))
+    except OSError:
+        v = 0
+    return {'asset_version': v}
+
+
 # ---------------------------------------------------------------------------
 # Team Dashboard
 # ---------------------------------------------------------------------------
