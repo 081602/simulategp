@@ -1839,6 +1839,33 @@ FUND_SIZE_OPEX = {200: 0.015, 500: 0.01, 1000: 0.0075}   # fund size ($M) -> GP 
 STAGE_LABELS = {'startup': 'Startup', 'developing': 'Developing',
                 'early_revenue': 'Early Revenue', 'mature': 'Mature'}
 
+# Authored baseline expected return / std dev by (sector, stage) for a
+# sector-focused fund. This is the canonical default set seeded on a fresh DB
+# (see _seed_return_assumptions). Admins can override on the Return Assumptions
+# page; customized values are preserved across deploys.
+RETURN_ASSUMPTION_DEFAULTS = {
+    ('Consumer', 'startup'): (0.30, 0.85),
+    ('Consumer', 'developing'): (0.22, 0.55),
+    ('Consumer', 'early_revenue'): (0.16, 0.35),
+    ('Consumer', 'mature'): (0.08, 0.18),
+    ('Energy', 'startup'): (0.28, 0.75),
+    ('Energy', 'developing'): (0.20, 0.50),
+    ('Energy', 'early_revenue'): (0.14, 0.32),
+    ('Energy', 'mature'): (0.095, 0.24),
+    ('Healthcare', 'startup'): (0.40, 1.10),
+    ('Healthcare', 'developing'): (0.28, 0.70),
+    ('Healthcare', 'early_revenue'): (0.18, 0.40),
+    ('Healthcare', 'mature'): (0.085, 0.20),
+    ('Industrials', 'startup'): (0.26, 0.70),
+    ('Industrials', 'developing'): (0.18, 0.45),
+    ('Industrials', 'early_revenue'): (0.13, 0.28),
+    ('Industrials', 'mature'): (0.09, 0.22),
+    ('Technology', 'startup'): (0.35, 0.95),
+    ('Technology', 'developing'): (0.25, 0.60),
+    ('Technology', 'early_revenue'): (0.17, 0.38),
+    ('Technology', 'mature'): (0.105, 0.26),
+}
+
 
 @app.route('/admin/return-assumptions', methods=['GET', 'POST'])
 @login_required
@@ -2321,21 +2348,28 @@ def _ensure_schema():
 
 
 def _seed_return_assumptions():
-    """Ensure a baseline ReturnAssumption exists for every sector/stage combo,
-    using the model defaults (10% expected return, 20% std dev). Only fills
-    missing combos — never overwrites values an admin has customized. Without
-    this, a fresh DB has an empty table, so the company Valuation Forecast shows
-    nothing and the crank has no sector/stage baseline to draw from."""
-    existing = {(ra.sector, ra.stage) for ra in ReturnAssumption.query.all()}
-    added = 0
-    for sector in SECTORS:
-        for stage in STAGES:
-            if (sector, stage) not in existing:
-                db.session.add(ReturnAssumption(sector=sector, stage=stage))
-                added += 1
-    if added:
+    """Ensure the authored baseline ReturnAssumption (RETURN_ASSUMPTION_DEFAULTS)
+    exists for every sector/stage combo. Creates any missing row, and corrects a
+    row that still holds the old generic 10%/20% placeholder to its authored
+    value (a one-time fix for DBs seeded before the authored defaults existed).
+    Admin-customized values — anything other than that placeholder — are left
+    untouched. Without this, a fresh DB shows a blank Valuation Forecast and the
+    crank has no sector/stage baseline."""
+    PLACEHOLDER = (0.10, 0.20)  # the earlier model-default seed, safe to replace
+    existing = {(ra.sector, ra.stage): ra for ra in ReturnAssumption.query.all()}
+    changed = 0
+    for (sector, stage), (er, sd) in RETURN_ASSUMPTION_DEFAULTS.items():
+        ra = existing.get((sector, stage))
+        if ra is None:
+            db.session.add(ReturnAssumption(sector=sector, stage=stage,
+                                            expected_return=er, std_dev=sd))
+            changed += 1
+        elif (round(ra.expected_return, 6), round(ra.std_dev, 6)) == PLACEHOLDER:
+            ra.expected_return, ra.std_dev = er, sd
+            changed += 1
+    if changed:
         db.session.commit()
-        print(f"[init_db] Seeded {added} default return assumptions.")
+        print(f"[init_db] Seeded/corrected {changed} return assumptions.")
 
 
 def init_db():
