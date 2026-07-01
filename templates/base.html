@@ -93,7 +93,10 @@
 
     {% else %}
     <!-- Admin nav -->
-    <div class="collapse navbar-collapse">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAdmin">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarAdmin">
       <ul class="navbar-nav me-auto">
         <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_dashboard') }}">
           <i class="bi bi-speedometer2"></i> Dashboard</a></li>

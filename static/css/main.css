@@ -6,6 +6,13 @@
 /* ----------------------------------------------------------
    Base & Body
    ---------------------------------------------------------- */
+/* Always reserve the vertical scrollbar gutter so every page is the same
+   width. Without this, long pages (with a scrollbar) are ~17px narrower than
+   short ones, which tipped the admin navbar into wrapping only on some pages. */
+html {
+  overflow-y: scroll;
+}
+
 body {
   background: #0f172a;
   color: #e2e8f0;
