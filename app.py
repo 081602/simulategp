@@ -1467,9 +1467,17 @@ def admin_required(f):
 @admin_required
 def admin_dashboard():
     game = current_game()
-    teams = Team.query.filter_by(is_admin=False).all() if game else []
+    teams = (Team.query.filter_by(game_id=game.id, is_admin=False).all()
+             if game else [])
     companies = GameCompany.query.filter_by(game_id=game.id).all() if game else []
-    deals = Deal.query.all() if game else []
+    # Deals scoped to this game via their company.
+    deals = (Deal.query
+             .join(GameCompany, Deal.company_id == GameCompany.id)
+             .filter(GameCompany.game_id == game.id).all()
+             if game else [])
+    # All games for the switcher (newest first, archived ones hidden).
+    all_games = (Game.query.filter_by(is_archived=False)
+                 .order_by(Game.id.desc()).all())
 
     # Current-year term sheets grouped by company (sorted by company name)
     term_sheet_groups = []
@@ -1493,30 +1501,15 @@ def admin_dashboard():
                            term_sheet_groups=term_sheet_groups,
                            ready_roster=ready_roster,
                            ready_count=ready_count,
-                           total_teams=total_teams)
+                           total_teams=total_teams,
+                           all_games=all_games)
 
 
-def _reload_companies_from_json(game):
-    """Reload every company for the game fresh from data/companies.json,
-    restoring all authored fields and clearing ALL per-game simulation state
-    (status, valuations, EBITDA/revenue/margin, burn, company cash,
-    turned_profitable, distress flags, and the per-year history columns).
-
-    Anything that references a company (deals, stakes, term sheets, searches,
-    and company-linked transactions/notifications) is cleared first so the
-    delete-and-reload is safe. Returns the number of companies loaded.
-    """
-    from sqlalchemy import text
+def _seed_companies(game):
+    """Insert a fresh set of companies into `game` from data/companies.json.
+    Insert-only — assumes the game has no companies yet (e.g. a brand-new game).
+    Returns the number of companies created."""
     from models import starting_burn_rate
-    db.session.execute(text('DELETE FROM deal_equity'))
-    db.session.execute(text('DELETE FROM deal'))
-    db.session.execute(text('DELETE FROM company_search'))
-    db.session.execute(text('DELETE FROM term_sheet'))
-    db.session.execute(text('UPDATE fund_transaction SET company_id=NULL'))
-    db.session.execute(text('UPDATE notification SET related_company_id=NULL'))
-    db.session.execute(text('DELETE FROM game_company WHERE game_id=:g'),
-                       {'g': game.id})
-    db.session.flush()
     with open(os.path.join(_BASE_DIR, 'data', 'companies.json')) as f:
         company_data = json.load(f)
     for cd in company_data:
@@ -1539,6 +1532,33 @@ def _reload_companies_from_json(game):
             annual_burn_rate=starting_burn_rate(cd['stage'], cd['capital_requested']),
         ))
     return len(company_data)
+
+
+def _reload_companies_from_json(game):
+    """Reset an EXISTING game's companies fresh from data/companies.json.
+
+    Clears this game's per-company simulation state (deals, stakes, term sheets,
+    searches, and company-linked transactions/notifications), deletes its
+    companies, then re-seeds. Every clear is scoped to THIS game so resetting
+    one game never touches another. Returns the number of companies loaded.
+    """
+    from sqlalchemy import text
+    gid = {'g': game.id}
+    comp = "SELECT id FROM game_company WHERE game_id = :g"
+    db.session.execute(text(
+        f"DELETE FROM deal_equity WHERE deal_id IN "
+        f"(SELECT id FROM deal WHERE company_id IN ({comp}))"), gid)
+    db.session.execute(text(f"DELETE FROM deal WHERE company_id IN ({comp})"), gid)
+    db.session.execute(text(f"DELETE FROM company_search WHERE company_id IN ({comp})"), gid)
+    db.session.execute(text(f"DELETE FROM term_sheet WHERE company_id IN ({comp})"), gid)
+    db.session.execute(text(
+        f"UPDATE fund_transaction SET company_id=NULL WHERE company_id IN ({comp})"), gid)
+    db.session.execute(text(
+        f"UPDATE notification SET related_company_id=NULL "
+        f"WHERE related_company_id IN ({comp})"), gid)
+    db.session.execute(text('DELETE FROM game_company WHERE game_id=:g'), gid)
+    db.session.flush()
+    return _seed_companies(game)
 
 
 @app.route('/admin/reset-companies', methods=['POST'])
@@ -2008,8 +2028,12 @@ def admin_crank():
                           TermSheet.game_year == game.current_year,
                           TermSheet.status == 'pending')
                   .count())
-    pending_deals = Deal.query.filter_by(
-        game_year=game.current_year, status='pending_finalization').count()
+    pending_deals = (Deal.query
+                     .join(GameCompany, Deal.company_id == GameCompany.id)
+                     .filter(GameCompany.game_id == game.id,
+                             Deal.game_year == game.current_year,
+                             Deal.status == 'pending_finalization')
+                     .count())
 
     return render_template('admin/crank.html',
                            game=game,
@@ -2046,6 +2070,55 @@ def admin_toggle_auto_advance():
         else:
             flash(f'Auto-advance is now {state}.', 'info')
     return redirect(request.referrer or url_for('admin_dashboard'))
+
+
+@app.route('/admin/game/create', methods=['POST'])
+@login_required
+@admin_required
+def admin_create_game():
+    """Create a new game, seed its companies, and switch the admin to it."""
+    name = (request.form.get('name') or '').strip() or 'New Simulation'
+    game = Game(name=name, current_year=1, current_phase=1, status='active',
+                owner_id=current_user.id)
+    db.session.add(game)
+    db.session.flush()   # assign game.id before seeding
+    n = _seed_companies(game)
+    db.session.commit()
+    session['admin_game_id'] = game.id   # start managing the new game
+    flash(f'Created "{game.name}" and seeded {n} companies — you are now '
+          f'managing it. Add teams next.', 'success')
+    return redirect(url_for('admin_dashboard'))
+
+
+@app.route('/admin/game/select', methods=['POST'])
+@login_required
+@admin_required
+def admin_select_game():
+    """Switch which game the admin is currently managing."""
+    game = Game.query.get(request.form.get('game_id', type=int))
+    if game:
+        session['admin_game_id'] = game.id
+        flash(f'Now managing "{game.name}".', 'info')
+    else:
+        flash('Game not found.', 'warning')
+    return redirect(request.referrer or url_for('admin_dashboard'))
+
+
+@app.route('/admin/game/archive', methods=['POST'])
+@login_required
+@admin_required
+def admin_archive_game():
+    """Archive a game — hides it from the switcher but keeps all its data."""
+    game = Game.query.get(request.form.get('game_id', type=int))
+    if not game:
+        flash('Game not found.', 'warning')
+        return redirect(url_for('admin_dashboard'))
+    game.is_archived = True
+    db.session.commit()
+    if session.get('admin_game_id') == game.id:
+        session.pop('admin_game_id', None)   # fall back to another active game
+    flash(f'Archived "{game.name}" (its data is kept).', 'info')
+    return redirect(url_for('admin_dashboard'))
 
 
 @app.route('/admin/game/market', methods=['POST'])
