@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}All Games{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-11">
+
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+      <div>
+        <h2 class="fw-bold mb-0"><i class="bi bi-controller text-warning"></i> All Games at a Glance</h2>
+        <p class="text-secondary mb-0">Every simulation's status and size — spot anything odd instantly.</p>
+      </div>
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+
+    <div class="card border-secondary shadow">
+      <div class="card-body p-0">
+        {% if rows %}
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle mb-0">
+            <thead><tr>
+              <th>Game</th>
+              <th>Status</th>
+              <th>Progress</th>
+              <th class="text-center">Teams</th>
+              <th class="text-center">Companies</th>
+              <th class="text-center">Active Deals</th>
+              <th></th>
+            </tr></thead>
+            <tbody>
+            {% for r in rows %}
+            {% set g = r.game %}
+            <tr {% if g.is_archived %}class="opacity-50"{% endif %}>
+              <td class="fw-semibold">
+                {{ g.name }}
+                {% if g.id == current_id %}<span class="badge bg-info text-dark ms-1">Managing</span>{% endif %}
+                {% if g.is_archived %}<span class="badge bg-secondary ms-1">Archived</span>{% endif %}
+              </td>
+              <td>
+                {% if g.status == 'completed' %}<span class="badge bg-secondary">Completed</span>
+                {% elif g.status == 'paused' %}<span class="badge bg-danger">Paused</span>
+                {% elif g.status == 'in_crank' %}<span class="badge bg-warning text-dark">Processing</span>
+                {% else %}<span class="badge bg-success">Running</span>{% endif %}
+              </td>
+              <td>
+                {% if g.is_complete %}
+                  <span class="text-secondary">Complete — Year {{ g.current_year }}</span>
+                {% else %}
+                  Year {{ g.current_year }} / {{ g.total_years }}
+                  <span class="text-secondary">· Phase {{ g.current_phase }}</span>
+                {% endif %}
+              </td>
+              <td class="text-center">{{ r.teams }}</td>
+              <td class="text-center">{{ r.companies }}</td>
+              <td class="text-center">{{ r.active_deals }}</td>
+              <td class="text-end">
+                {% if g.is_archived %}
+                <form method="POST" action="{{ url_for('admin_unarchive_game') }}" class="m-0 d-inline">
+                  <input type="hidden" name="game_id" value="{{ g.id }}">
+                  <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-counterclockwise"></i> Restore</button>
+                </form>
+                {% elif g.id == current_id %}
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-sm btn-info text-dark">Open</a>
+                {% else %}
+                <form method="POST" action="{{ url_for('admin_select_game') }}" class="m-0 d-inline">
+                  <input type="hidden" name="game_id" value="{{ g.id }}">
+                  <button class="btn btn-sm btn-outline-info">Manage</button>
+                </form>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="text-center text-secondary py-5">
+          <i class="bi bi-controller fs-2 d-block mb-2"></i>
+          No games yet.
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

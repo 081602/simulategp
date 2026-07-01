@@ -33,6 +33,9 @@
           {% endif %}
         </div>
         <div class="d-flex align-items-center gap-2">
+          <a href="{{ url_for('admin_games_overview') }}" class="btn btn-sm btn-outline-info">
+            <i class="bi bi-list-ul"></i> All games
+          </a>
           {% if game %}
           <form method="POST" action="{{ url_for('admin_archive_game') }}" class="m-0"
                 onsubmit="return confirm('Archive {{ game.name }}? It will be hidden from this list, but its data is kept.');">

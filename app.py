@@ -2143,6 +2143,28 @@ def admin_unarchive_game():
     return redirect(url_for('admin_dashboard'))
 
 
+@app.route('/admin/games')
+@login_required
+@admin_required
+def admin_games_overview():
+    """Cross-game overview: every game's phase/status and counts at a glance."""
+    current = current_game()
+    games = Game.query.order_by(Game.is_archived.asc(), Game.id.desc()).all()
+    rows = []
+    for g in games:
+        rows.append({
+            'game': g,
+            'teams': Team.query.filter_by(game_id=g.id, is_admin=False).count(),
+            'companies': GameCompany.query.filter_by(game_id=g.id).count(),
+            'active_deals': (Deal.query
+                             .join(GameCompany, Deal.company_id == GameCompany.id)
+                             .filter(GameCompany.game_id == g.id,
+                                     Deal.status == 'active').count()),
+        })
+    return render_template('admin/games.html', rows=rows,
+                           current_id=(current.id if current else None))
+
+
 @app.route('/admin/game/market', methods=['POST'])
 @login_required
 @admin_required
