@@ -15,6 +15,62 @@
     </div>
   </div>
 
+  <!-- Phase completion / auto-advance -->
+  {% if game.status == 'active' and not game.is_complete %}
+  <div class="card border-info bg-dark text-white mb-4" id="phaseReadyCard"
+       data-year="{{ game.current_year }}" data-phase="{{ game.current_phase }}">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+          <h5 class="mb-0">
+            <i class="bi bi-flag-fill text-info"></i>
+            Done with {{ game.phase_label }}?
+          </h5>
+        </div>
+        <div class="text-end">
+          {% if i_am_ready %}
+          <span class="badge bg-success fs-6 d-inline-block mb-2">
+            <i class="bi bi-check-circle-fill"></i> You've marked this phase complete
+          </span><br>
+          <form method="POST" action="{{ url_for('unmark_ready') }}" class="d-inline">
+            <button class="btn btn-sm btn-outline-light" type="submit">
+              <i class="bi bi-arrow-counterclockwise"></i> Undo
+            </button>
+          </form>
+          {% else %}
+          <form method="POST" action="{{ url_for('mark_ready') }}" class="d-inline">
+            <button class="btn btn-info fw-semibold" type="submit">
+              <i class="bi bi-flag"></i>
+              Mark {% if game.current_phase == 1 %}Deal Phase{% else %}Return Phase{% endif %} Complete
+            </button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Team readiness roster -->
+      <div class="mt-3">
+        <div class="d-flex justify-content-between small text-secondary mb-1">
+          <span>Team readiness</span>
+          <span><span id="readyCount">{{ ready_count }}</span> of {{ total_teams }} ready</span>
+        </div>
+        <div class="progress bg-secondary mb-2" style="height:8px;">
+          <div id="readyBar" class="progress-bar bg-info"
+               style="width: {{ (ready_count / total_teams * 100) if total_teams else 0 }}%"></div>
+        </div>
+        <div id="readyRoster" class="d-flex flex-wrap gap-2">
+          {% for r in ready_roster %}
+          <span class="badge {% if r.ready %}bg-success{% else %}bg-secondary{% endif %}">
+            {% if r.ready %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-hourglass-split"></i>{% endif %}
+            {{ r.firm_name }}{% if r.id == current_user.id %} (you){% endif %}
+          </span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
   <!-- Distress alert: holdings that have run out of cash -->
   {% if distressed %}
   <div class="alert alert-danger border-danger shadow-sm mb-4" role="alert">
@@ -279,4 +335,48 @@
 
 </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+/* Live phase-readiness: refresh the roster every few seconds, and reload the
+   page when the phase advances (auto-crank fired, or the instructor ran it)
+   so the team immediately sees the new phase. */
+(function pollReadiness() {
+  var card = document.getElementById('phaseReadyCard');
+  if (!card) return;
+  var curYear = card.getAttribute('data-year');
+  var curPhase = card.getAttribute('data-phase');
+  var myId = {{ current_user.id }};
+
+  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+  function tick() {
+    fetch('{{ url_for("api_game_status") }}')
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(d) {
+        if (!d) return;
+        if (String(d.year) !== curYear || String(d.phase) !== curPhase) {
+          window.location.reload();
+          return;
+        }
+        var cnt = document.getElementById('readyCount');
+        if (cnt) cnt.textContent = d.ready_count;
+        var bar = document.getElementById('readyBar');
+        if (bar && d.total_teams) bar.style.width = (d.ready_count / d.total_teams * 100) + '%';
+        var roster = document.getElementById('readyRoster');
+        if (roster && d.roster) {
+          roster.innerHTML = d.roster.map(function(t) {
+            var cls = t.ready ? 'bg-success' : 'bg-secondary';
+            var ic = t.ready ? '<i class="bi bi-check-lg"></i>' : '<i class="bi bi-hourglass-split"></i>';
+            var you = (t.id === myId) ? ' (you)' : '';
+            return '<span class="badge ' + cls + '">' + ic + ' ' + esc(t.firm_name) + you + '</span>';
+          }).join('');
+        }
+      })
+      .catch(function() {});
+  }
+  setInterval(tick, 6000);
+})();
+</script>
 {% endblock %}

@@ -99,6 +99,89 @@ def logout():
 
 
 # ---------------------------------------------------------------------------
+# Phase readiness / auto-advance helpers
+# ---------------------------------------------------------------------------
+
+def _team_roster(game):
+    """Non-admin teams for this game, ordered stably for display."""
+    return (Team.query
+            .filter_by(game_id=game.id, is_admin=False)
+            .order_by(Team.id)
+            .all())
+
+
+def _readiness(game):
+    """(roster, ready_count, total) for the current phase. Each roster entry is
+    a dict the dashboard/admin templates and the status API can all render."""
+    teams = _team_roster(game)
+    roster = [{'id': t.id, 'firm_name': t.firm_name,
+               'ready': t.is_ready_for(game)} for t in teams]
+    ready = sum(1 for r in roster if r['ready'])
+    return roster, ready, len(roster)
+
+
+def _clear_readiness(game):
+    """Wipe every team's phase-complete signal (used on manual crank / reset)."""
+    for t in _team_roster(game):
+        t.ready_year = None
+        t.ready_phase = None
+
+
+def _run_current_phase_crank(game):
+    """Run the crank for the game's current phase and return (message, category)
+    for flashing. Caller must have confirmed game.status == 'active' and set any
+    market condition beforehand. Shared by the admin Run-Process page and the
+    automatic all-teams-ready trigger."""
+    phase = game.current_phase
+    game.status = 'in_crank'
+    db.session.commit()
+    if phase == 1:
+        run_phase1_crank(game)
+        return (f'Deal Process complete. Year {game.current_year} '
+                f'Phase 2 is now open.'), 'success'
+    run_phase2_crank(game)
+    if game.status == 'completed':
+        return (f"The fund's term has ended after Year {game.current_year}. "
+                f'All remaining holdings were exited — the game is complete. '
+                f'See the leaderboard for final results.'), 'success'
+    return (f'Deal & Return Process complete. Year {game.current_year} '
+            f'Phase 1 is now open.'), 'success'
+
+
+def _maybe_auto_crank(game):
+    """If auto-advance is on, the game is active, and every team has marked the
+    current phase complete, run the crank. Returns (message, category) if it
+    fired, else None. The status flip to 'in_crank' inside
+    _run_current_phase_crank guards against a double-fire if two final 'ready'
+    clicks race."""
+    if not game.auto_advance or game.status != 'active':
+        return None
+    teams = _team_roster(game)
+    if not teams or not all(t.is_ready_for(game) for t in teams):
+        return None
+    return _run_current_phase_crank(game)
+
+
+def block_if_ready(f):
+    """Guard a team action: once a team has marked the current phase complete,
+    its mutating (POST) actions are frozen until it clicks Undo. Read (GET)
+    requests still go through, so the team can look but not change anything."""
+    from functools import wraps
+
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if request.method == 'POST' and not current_user.is_admin:
+            game = Game.query.get(current_user.game_id)
+            if game and current_user.is_ready_for(game):
+                flash('You have marked this phase complete. Click "Undo" on '
+                      'your dashboard if you want to make more changes.',
+                      'warning')
+                return redirect(request.referrer or url_for('dashboard'))
+        return f(*args, **kwargs)
+    return wrapper
+
+
+# ---------------------------------------------------------------------------
 # Team Dashboard
 # ---------------------------------------------------------------------------
 
@@ -153,6 +236,7 @@ def dashboard():
         distress_recap = [{'name': c.name, 'outcome': c.distress_resolution}
                           for c in recap_cos]
     ret = team_simple_return(current_user, game)
+    ready_roster, ready_count, total_teams = _readiness(game)
     return render_template('dashboard.html',
                            game=game,
                            notifications=notifications,
@@ -160,7 +244,55 @@ def dashboard():
                            distressed=distressed,
                            distress_recap=distress_recap,
                            bid_activity=bid_activity,
-                           ret=ret)
+                           ret=ret,
+                           ready_roster=ready_roster,
+                           ready_count=ready_count,
+                           total_teams=total_teams,
+                           i_am_ready=current_user.is_ready_for(game))
+
+
+@app.route('/ready', methods=['POST'])
+@login_required
+def mark_ready():
+    """A team marks the current phase complete. If that was the last team and
+    auto-advance is on, the crank fires immediately."""
+    if current_user.is_admin:
+        abort(403)
+    game = Game.query.get(current_user.game_id)
+    if not game or game.status != 'active':
+        flash('This phase is not open for marking complete right now.', 'warning')
+        return redirect(url_for('dashboard'))
+    current_user.ready_year = game.current_year
+    current_user.ready_phase = game.current_phase
+    db.session.commit()
+    fired = _maybe_auto_crank(game)
+    if fired:
+        msg, cat = fired
+        flash('All teams marked this phase complete — ' + msg, cat)
+    else:
+        _, ready, total = _readiness(game)
+        remaining = total - ready
+        if game.auto_advance:
+            flash(f"Marked complete. Waiting on {remaining} more "
+                  f"team{'s' if remaining != 1 else ''} before the process "
+                  f"runs automatically.", 'success')
+        else:
+            flash('Marked complete. (Auto-advance is off — your instructor '
+                  'will run the process.)', 'success')
+    return redirect(url_for('dashboard'))
+
+
+@app.route('/ready/undo', methods=['POST'])
+@login_required
+def unmark_ready():
+    """A team retracts its phase-complete signal (before the crank fires)."""
+    if current_user.is_admin:
+        abort(403)
+    current_user.ready_year = None
+    current_user.ready_phase = None
+    db.session.commit()
+    flash('You are no longer marked complete for this phase.', 'info')
+    return redirect(url_for('dashboard'))
 
 
 @app.route('/notifications/read', methods=['POST'])
@@ -260,6 +392,7 @@ MAX_SEARCH_RESULTS = 15  # cap on new companies found per search
 
 @app.route('/dealflow/search', methods=['GET', 'POST'])
 @login_required
+@block_if_ready
 def search_companies():
     game = Game.query.get(current_user.game_id)
     if game.current_phase != 1:
@@ -437,6 +570,7 @@ def remove_from_watchlist(company_id):
 
 @app.route('/company/<int:company_id>/refer', methods=['POST'])
 @login_required
+@block_if_ready
 def refer_company(company_id):
     game = Game.query.get(current_user.game_id)
     company = GameCompany.query.filter_by(id=company_id, game_id=game.id).first_or_404()
@@ -483,6 +617,7 @@ CHANGE_MGMT_P_AVERAGE = 0.50
 
 @app.route('/company/<int:company_id>/termsheet', methods=['GET', 'POST'])
 @login_required
+@block_if_ready
 def create_term_sheet(company_id):
     game = Game.query.get(current_user.game_id)
     company = GameCompany.query.filter_by(id=company_id, game_id=game.id).first_or_404()
@@ -715,6 +850,7 @@ def timeline():
 
 @app.route('/timeline/coinvest/<int:ts_id>', methods=['POST'])
 @login_required
+@block_if_ready
 def respond_coinvest(ts_id):
     ts = TermSheet.query.get_or_404(ts_id)
     if ts.team_id != current_user.id:
@@ -774,6 +910,7 @@ def respond_coinvest(ts_id):
 
 @app.route('/deal/<int:deal_id>/finalize', methods=['GET', 'POST'])
 @login_required
+@block_if_ready
 def finalize_deal_route(deal_id):
     deal = Deal.query.get_or_404(deal_id)
     game = Game.query.get(current_user.game_id)
@@ -1082,6 +1219,7 @@ def portfolio_company(company_id):
 
 @app.route('/portfolio/company/<int:company_id>/change_mgmt', methods=['POST'])
 @login_required
+@block_if_ready
 def change_management(company_id):
     game = Game.query.get(current_user.game_id)
     company = GameCompany.query.filter_by(id=company_id, game_id=game.id).first_or_404()
@@ -1128,6 +1266,7 @@ def change_management(company_id):
 
 @app.route('/portfolio/company/<int:company_id>/dividend', methods=['POST'])
 @login_required
+@block_if_ready
 def issue_dividend(company_id):
     if not DIVIDENDS_ENABLED:
         abort(404)
@@ -1177,6 +1316,7 @@ def issue_dividend(company_id):
 
 @app.route('/portfolio/company/<int:company_id>/liquidate', methods=['POST'])
 @login_required
+@block_if_ready
 def mark_liquidation(company_id):
     game = Game.query.get(current_user.game_id)
     company = GameCompany.query.filter_by(id=company_id, game_id=game.id).first_or_404()
@@ -1196,6 +1336,7 @@ def mark_liquidation(company_id):
 
 @app.route('/portfolio/company/<int:company_id>/followon', methods=['POST'])
 @login_required
+@block_if_ready
 def follow_on(company_id):
     game = Game.query.get(current_user.game_id)
     company = GameCompany.query.filter_by(id=company_id, game_id=game.id).first_or_404()
@@ -1229,6 +1370,7 @@ def follow_on(company_id):
 
 @app.route('/portfolio/company/<int:company_id>/let-it-roll', methods=['POST'])
 @login_required
+@block_if_ready
 def let_it_roll(company_id):
     """Lead explicitly chooses to forgo a rescue and let the turn-profitable
     roll decide at the next Deal & Return Process (non-mature only)."""
@@ -1323,10 +1465,15 @@ def admin_dashboard():
             by_company.setdefault(ts.company, []).append(ts)
         term_sheet_groups = sorted(by_company.items(), key=lambda x: x[0].name)
 
+    ready_roster, ready_count, total_teams = (
+        _readiness(game) if game else ([], 0, 0))
     return render_template('admin/dashboard.html',
                            game=game, teams=teams,
                            companies=companies, deals=deals,
-                           term_sheet_groups=term_sheet_groups)
+                           term_sheet_groups=term_sheet_groups,
+                           ready_roster=ready_roster,
+                           ready_count=ready_count,
+                           total_teams=total_teams)
 
 
 def _reload_companies_from_json(game):
@@ -1435,6 +1582,7 @@ def admin_reset_clock():
         game.current_year = 1
         game.current_phase = 1
         game.status = 'active'
+        _clear_readiness(game)
         db.session.commit()
         flash('Game clock reset to Year 1, Phase 1.', 'success')
     else:
@@ -1822,21 +1970,12 @@ def admin_crank():
 
         if game.status == 'completed':
             flash('The game has ended — no further processes can be run.', 'warning')
-        elif crank_type == 'phase1' and game.current_phase == 1:
-            game.status = 'in_crank'
+        elif (crank_type == 'phase1' and game.current_phase == 1) or \
+             (crank_type == 'phase2' and game.current_phase == 2):
+            msg, cat = _run_current_phase_crank(game)
+            _clear_readiness(game)
             db.session.commit()
-            run_phase1_crank(game)
-            flash(f'Deal Process complete. Year {game.current_year} Phase 2 is now open.', 'success')
-        elif crank_type == 'phase2' and game.current_phase == 2:
-            game.status = 'in_crank'
-            db.session.commit()
-            run_phase2_crank(game)
-            if game.status == 'completed':
-                flash(f'The fund\'s term has ended after Year {game.current_year}. '
-                      f'All remaining holdings were exited — the game is complete. '
-                      f'See the leaderboard for final results.', 'success')
-            else:
-                flash(f'Deal & Return Process complete. Year {game.current_year} Phase 1 is now open.', 'success')
+            flash(msg, cat)
         else:
             flash('Invalid process for current phase.', 'danger')
 
@@ -1867,6 +2006,26 @@ def admin_pause_game():
     db.session.commit()
     flash(f'Game is now {game.status}.', 'info')
     return redirect(url_for('admin_dashboard'))
+
+
+@app.route('/admin/auto-advance', methods=['POST'])
+@login_required
+@admin_required
+def admin_toggle_auto_advance():
+    game = Game.query.first()
+    if game:
+        game.auto_advance = not bool(game.auto_advance)
+        db.session.commit()
+        state = 'ON' if game.auto_advance else 'OFF'
+        # Turning it on when every team is already ready should fire immediately.
+        fired = _maybe_auto_crank(game) if game.auto_advance else None
+        if fired:
+            msg, cat = fired
+            flash(f'Auto-advance is now {state}. All teams were already '
+                  f'marked complete — {msg}', cat)
+        else:
+            flash(f'Auto-advance is now {state}.', 'info')
+    return redirect(request.referrer or url_for('admin_dashboard'))
 
 
 @app.route('/admin/game/market', methods=['POST'])
@@ -1964,12 +2123,21 @@ def leaderboard():
 @login_required
 def api_game_status():
     game = Game.query.get(current_user.game_id)
+    roster, ready_count, total_teams = _readiness(game)
     return jsonify({
         'year': game.current_year,
         'phase': game.current_phase,
         'status': game.status,
         'label': game.phase_label,
-        'unread': current_user.unread_notifications
+        'phase_label': game.phase_label,
+        'is_paused': game.status == 'paused',
+        'unread': current_user.unread_notifications,
+        'auto_advance': bool(game.auto_advance),
+        'ready_count': ready_count,
+        'total_teams': total_teams,
+        'roster': roster,
+        'i_am_ready': (False if current_user.is_admin
+                       else current_user.is_ready_for(game)),
     })
 
 
@@ -1977,9 +2145,33 @@ def api_game_status():
 # DB Init
 # ---------------------------------------------------------------------------
 
+def _ensure_schema():
+    """Additive migration for columns introduced after an existing DB was
+    created. db.create_all() only creates missing *tables*, not missing
+    *columns*, so new columns on existing tables are added here. Idempotent,
+    and dialect-aware for the one boolean default (SQLite vs Postgres)."""
+    from sqlalchemy import text, inspect
+    insp = inspect(db.engine)
+    bool_default = 'DEFAULT 1' if db.engine.dialect.name == 'sqlite' else 'DEFAULT TRUE'
+    wanted = {
+        'game': [('auto_advance', f'BOOLEAN {bool_default}')],
+        'team': [('ready_year', 'INTEGER'), ('ready_phase', 'INTEGER')],
+    }
+    for table, cols in wanted.items():
+        if not insp.has_table(table):
+            continue
+        existing = {c['name'] for c in insp.get_columns(table)}
+        for name, coltype in cols:
+            if name not in existing:
+                db.session.execute(text(
+                    f'ALTER TABLE {table} ADD COLUMN {name} {coltype}'))
+    db.session.commit()
+
+
 def init_db():
     with app.app_context():
         db.create_all()
+        _ensure_schema()
         # Load any saved Game Dynamics overrides onto the live module globals.
         game_settings.apply_overrides()
         # Create admin user if none exists
@@ -2005,5 +2197,9 @@ def init_db():
 
 
 if __name__ == '__main__':
+    # Local dev only — gunicorn imports `app:app` and never runs this block,
+    # so the auto-reloader stays out of the production path. The reloader
+    # restarts the server on any .py change so edits take effect without a
+    # manual restart (templates already refresh per request).
     init_db()
-    app.run(debug=True, port=5000, use_reloader=False)
+    app.run(debug=True, port=5000, use_reloader=True)

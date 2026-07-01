@@ -48,6 +48,9 @@ class Game(db.Model):
     current_year = db.Column(db.Integer, default=1)
     current_phase = db.Column(db.Integer, default=1)  # 1 or 2
     status = db.Column(db.String(20), default='active')  # active, paused, in_crank, completed
+    # When on, the phase crank runs automatically once every team has marked the
+    # current phase complete (see Team.ready_year/ready_phase) — no admin needed.
+    auto_advance = db.Column(db.Boolean, default=True)
     market_condition = db.Column(db.Float, default=1.0)  # multiplier on outcome distributions
     query_points_per_year = db.Column(db.Integer, default=10)  # unused — searches are free
     total_years = db.Column(db.Integer, default=7)
@@ -81,6 +84,11 @@ class Team(db.Model, UserMixin):
     sector_focus = db.Column(db.String(30), default='generalist')  # generalist or a sector name
     fund_type = db.Column(db.String(10), default='pe')             # 'vc' or 'pe'
     num_partners = db.Column(db.Integer, default=5)                # set by fund size at creation
+    # "Done with this phase" signal. The team is ready for the CURRENT phase when
+    # ready_year/ready_phase match the game's current year/phase; on any phase
+    # advance the stored pair no longer matches, so readiness self-clears.
+    ready_year = db.Column(db.Integer, nullable=True)
+    ready_phase = db.Column(db.Integer, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     funds = db.relationship('Fund', backref='team', lazy=True, cascade='all, delete-orphan')
@@ -123,6 +131,11 @@ class Team(db.Model, UserMixin):
             return (f'{company.name} is in {company.sector}. Your fund mandate '
                     f'is limited to {self.sector_focus}.')
         return None
+
+    def is_ready_for(self, game):
+        """True if this team has marked the game's current phase complete."""
+        return (self.ready_year == game.current_year
+                and self.ready_phase == game.current_phase)
 
 
 class Fund(db.Model):

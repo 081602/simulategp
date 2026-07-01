@@ -172,6 +172,52 @@
       </div>
     </div>
 
+    <!-- Phase Auto-Advance -->
+    {% if game %}
+    <div class="card border-info shadow mb-4">
+      <div class="card-header border-secondary d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-flag text-info"></i> Phase Auto-Advance</h6>
+        <form method="POST" action="{{ url_for('admin_toggle_auto_advance') }}">
+          {% if game.auto_advance %}
+          <button class="btn btn-sm btn-success fw-semibold"><i class="bi bi-toggle-on"></i> ON &mdash; click to disable</button>
+          {% else %}
+          <button class="btn btn-sm btn-outline-secondary fw-semibold"><i class="bi bi-toggle-off"></i> OFF &mdash; click to enable</button>
+          {% endif %}
+        </form>
+      </div>
+      <div class="card-body">
+        <p class="text-secondary small mb-3">
+          {% if game.auto_advance %}
+          When all teams mark the current phase complete, the process runs
+          <strong>automatically</strong> using the market condition set above. Set the
+          market condition <em>before</em> teams finish the Return Phase.
+          {% else %}
+          Teams can still mark themselves complete, but you must run each process
+          manually from <a href="{{ url_for('admin_crank') }}">Run Process</a>.
+          {% endif %}
+        </p>
+        <div class="d-flex justify-content-between small text-secondary mb-1">
+          <span>{{ game.phase_label }} &mdash; team readiness</span>
+          <span>{{ ready_count }} of {{ total_teams }} ready</span>
+        </div>
+        <div class="progress bg-secondary mb-2" style="height:8px;">
+          <div class="progress-bar bg-info"
+               style="width: {{ (ready_count / total_teams * 100) if total_teams else 0 }}%"></div>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+          {% for r in ready_roster %}
+          <span class="badge {% if r.ready %}bg-success{% else %}bg-secondary{% endif %}">
+            {% if r.ready %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-hourglass-split"></i>{% endif %}
+            {{ r.firm_name }}
+          </span>
+          {% else %}
+          <span class="text-secondary small">No teams yet.</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
     <!-- Term Sheets (current year, by company) -->
     <div class="card border-secondary shadow mb-4">
       <div class="card-header border-secondary">
