@@ -181,6 +181,26 @@ def block_if_ready(f):
     return wrapper
 
 
+def current_game():
+    """Resolve the game in context for the current request.
+
+    - A team user is bound to its own game via `game_id`.
+    - An admin manages one game at a time, selected via the session key
+      'admin_game_id'. When nothing is selected yet, fall back to the first
+      game so single-game behavior is unchanged until a game is picked.
+
+    Returns None only when no games exist at all.
+    """
+    if current_user.is_authenticated and not current_user.is_admin:
+        return Game.query.get(current_user.game_id)
+    gid = session.get('admin_game_id')
+    if gid is not None:
+        g = Game.query.get(gid)
+        if g is not None:
+            return g
+    return Game.query.first()
+
+
 # ---------------------------------------------------------------------------
 # Team Dashboard
 # ---------------------------------------------------------------------------
@@ -1446,7 +1466,7 @@ def admin_required(f):
 @login_required
 @admin_required
 def admin_dashboard():
-    game = Game.query.first()
+    game = current_game()
     teams = Team.query.filter_by(is_admin=False).all() if game else []
     companies = GameCompany.query.filter_by(game_id=game.id).all() if game else []
     deals = Deal.query.all() if game else []
@@ -1525,7 +1545,7 @@ def _reload_companies_from_json(game):
 @login_required
 @admin_required
 def admin_reset_companies():
-    game = Game.query.first()
+    game = current_game()
     n = _reload_companies_from_json(game)
     db.session.commit()
     flash(f'All {n} companies reloaded fresh from the source file — every '
@@ -1563,7 +1583,7 @@ def admin_setup():
         db.session.execute(text('DELETE FROM team WHERE is_admin = 0'))
         # Reload every company fresh so nothing carries over from the last game
         # (clears deals/stakes/term sheets/searches and resets all company state).
-        _reload_companies_from_json(Game.query.first())
+        _reload_companies_from_json(current_game())
         db.session.commit()
         db.session.expire_all()
         flash('All teams and their data have been removed, and every company '
@@ -1577,7 +1597,7 @@ def admin_setup():
 @login_required
 @admin_required
 def admin_reset_clock():
-    game = Game.query.first()
+    game = current_game()
     if game:
         game.current_year = 1
         game.current_phase = 1
@@ -1599,7 +1619,7 @@ def admin_full_reset():
     actions combined into a single clean-slate operation."""
     from sqlalchemy import text
     db.session.expire_all()
-    game = Game.query.first()
+    game = current_game()
     if not game:
         flash('No game found.', 'warning')
         return redirect(url_for('admin_setup'))
@@ -1625,7 +1645,7 @@ def admin_full_reset():
 @login_required
 @admin_required
 def admin_teams():
-    game = Game.query.first()
+    game = current_game()
     teams = Team.query.filter_by(game_id=game.id, is_admin=False).all() if game else []
     return render_template('admin/teams.html', game=game, teams=teams,
                            sectors=SECTORS, fund_sizes=FUND_SIZE_PARTNERS)
@@ -1635,7 +1655,7 @@ def admin_teams():
 @login_required
 @admin_required
 def admin_create_team():
-    game = Game.query.first()
+    game = current_game()
     if not game:
         flash('No game found. Please set up a game first.', 'warning')
         return redirect(url_for('admin_teams'))
@@ -1846,7 +1866,7 @@ def admin_game_dynamics():
 @login_required
 @admin_required
 def admin_companies():
-    game = Game.query.first()
+    game = current_game()
     f_status = request.args.get('status') or ''
     f_sector = request.args.get('sector') or ''
     f_stage = request.args.get('stage') or ''
@@ -1889,7 +1909,7 @@ def admin_companies():
 @login_required
 @admin_required
 def admin_edit_company(company_id):
-    game = Game.query.first()
+    game = current_game()
     company = GameCompany.query.get_or_404(company_id)
     if request.method == 'POST':
         company.name = request.form.get('name', company.name)
@@ -1951,7 +1971,7 @@ def admin_edit_company(company_id):
 @login_required
 @admin_required
 def admin_crank():
-    game = Game.query.first()
+    game = current_game()
     if not game:
         flash('No game found. Please set up a game first.', 'warning')
         return redirect(url_for('admin_setup'))
@@ -2001,7 +2021,7 @@ def admin_crank():
 @login_required
 @admin_required
 def admin_pause_game():
-    game = Game.query.first()
+    game = current_game()
     game.status = 'paused' if game.status == 'active' else 'active'
     db.session.commit()
     flash(f'Game is now {game.status}.', 'info')
@@ -2012,7 +2032,7 @@ def admin_pause_game():
 @login_required
 @admin_required
 def admin_toggle_auto_advance():
-    game = Game.query.first()
+    game = current_game()
     if game:
         game.auto_advance = not bool(game.auto_advance)
         db.session.commit()
@@ -2032,7 +2052,7 @@ def admin_toggle_auto_advance():
 @login_required
 @admin_required
 def admin_set_market():
-    game = Game.query.first()
+    game = current_game()
     game.market_condition = float(request.form.get('market_condition', 1.0))
     db.session.commit()
     flash(f'Market condition set to {game.market_condition:.2f}x.', 'success')
@@ -2090,7 +2110,7 @@ def _leaderboard_team_data(game, sort='committed'):
 @login_required
 @admin_required
 def admin_leaderboard():
-    game = Game.query.first()
+    game = current_game()
     sort = request.args.get('sort', 'invested')
     if sort not in LEADERBOARD_SORTS:
         sort = 'invested'
@@ -2153,8 +2173,11 @@ def _ensure_schema():
     from sqlalchemy import text, inspect
     insp = inspect(db.engine)
     bool_default = 'DEFAULT 1' if db.engine.dialect.name == 'sqlite' else 'DEFAULT TRUE'
+    bool_false = 'DEFAULT 0' if db.engine.dialect.name == 'sqlite' else 'DEFAULT FALSE'
     wanted = {
-        'game': [('auto_advance', f'BOOLEAN {bool_default}')],
+        'game': [('auto_advance', f'BOOLEAN {bool_default}'),
+                 ('owner_id', 'INTEGER'),
+                 ('is_archived', f'BOOLEAN {bool_false}')],
         'team': [('ready_year', 'INTEGER'), ('ready_phase', 'INTEGER')],
     }
     for table, cols in wanted.items():
@@ -2185,7 +2208,8 @@ def init_db():
         # Create admin user if none exists
         admin = Team.query.filter_by(username='admin').first()
         if not admin:
-            # Need a placeholder game_id; create a default game
+            # Need a placeholder game_id; create a default game. Runs outside any
+            # request (no current_user/session), so query the game directly.
             game = Game.query.first()
             if not game:
                 game = Game(name='SimulateGP', current_year=1, current_phase=1)

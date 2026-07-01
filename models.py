@@ -54,6 +54,11 @@ class Game(db.Model):
     market_condition = db.Column(db.Float, default=1.0)  # multiplier on outcome distributions
     query_points_per_year = db.Column(db.Integer, default=10)  # unused — searches are free
     total_years = db.Column(db.Integer, default=7)
+    # Multi-game support. owner_id is the organizer who runs this game (wired up
+    # in Phase 2 accounts; nullable for now). is_archived hides finished games
+    # from the admin's active game switcher without deleting their data.
+    owner_id = db.Column(db.Integer, nullable=True)
+    is_archived = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     teams = db.relationship('Team', backref='game', lazy=True)
