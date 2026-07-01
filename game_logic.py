@@ -213,6 +213,67 @@ def _ask_anchor(company: GameCompany, deal: Deal) -> float:
     return ask + (deal.total_equity_invested or 0.0) + (deal.debt_amount or 0.0)
 
 
+def _auto_finalize_pending(game: Game):
+    """Close out deals a lead won in Phase 1 but never finalized.
+
+    Winning the lead is a commitment, so the deal is auto-closed SOLO at the
+    lead's own accepted term sheet (its pre-money and committed equity, locked
+    economics, no co-investors). If the lead's fund can no longer cover that
+    committed equity, the deal is dropped instead and the company is relisted
+    for a future year. Runs at the very start of the Deal & Return Process so an
+    auto-finalized holding is treated exactly like a manually finalized one
+    (fees charged, performance rolled) the same year.
+    """
+    pending = (
+        Deal.query
+        .join(GameCompany, Deal.company_id == GameCompany.id)
+        .filter(GameCompany.game_id == game.id,
+                Deal.status == 'pending_finalization')
+        .all()
+    )
+    for deal in pending:
+        company = deal.company
+        lead_ts = deal.lead_term_sheet
+        lead_fund = Fund.query.get(lead_ts.fund_id) if lead_ts else None
+        total_equity = lead_ts.total_investment if lead_ts else 0.0
+
+        # Can't close without the term sheet/fund, or if the fund is short cash:
+        # the deal falls through and the company returns to the market next year.
+        if (not lead_ts or not lead_fund
+                or lead_fund.available_capital + 1e-6 < total_equity):
+            deal.status = 'dropped'
+            company.status = 'available'
+            company.lead_team_id = None
+            company.year_available = game.current_year + 1
+            _notify(deal.lead_team_id,
+                    f"You never finalized the {company.name} deal"
+                    + (f" and your fund could not cover the committed "
+                       f"${total_equity:,.1f}M" if lead_ts else "")
+                    + f", so it fell through. The company is back on the market "
+                      f"next year.",
+                    'deal_lost', company.id)
+            continue
+
+        # Solo close: any outstanding fill offers are declined (not invited).
+        for fts in TermSheet.query.filter_by(
+                company_id=company.id, game_year=deal.game_year,
+                status='fill_offered').all():
+            fts.status = 'fill_declined'
+
+        stakes = [{'team_id': deal.lead_team_id, 'fund_id': lead_ts.fund_id,
+                   'equity_invested': total_equity}]
+        _, rolled_pct, debt_amount, debt_rate, mgmt_options = \
+            locked_deal_economics(deal)
+        finalize_deal(deal, lead_ts.pre_money_valuation, stakes,
+                      rolled_pct, debt_amount, debt_rate, mgmt_options)
+        _notify(deal.lead_team_id,
+                f"You didn't finalize {company.name}, so it was auto-closed at "
+                f"your term-sheet terms (${total_equity:,.1f}M, solo). The "
+                f"investment is now active in your portfolio.",
+                'deal_won', company.id)
+    db.session.commit()
+
+
 def run_phase2_crank(game: Game):
     """
     - Charge management fees
@@ -223,6 +284,10 @@ def run_phase2_crank(game: Game):
     - Reset query points; advance to next year Phase 1
     """
     year = game.current_year
+
+    # 0a. Auto-close any deal a lead won but never finalized (solo, at their
+    #     term-sheet terms) — or drop it if their fund can't cover it.
+    _auto_finalize_pending(game)
 
     # 0. Force-close any deal still awaiting co-investor responses: outstanding
     #    offers auto-decline and the lead backstops them, so the year can advance
