@@ -793,6 +793,7 @@ def team_gp_income(team):
     ledger = []   # line items: {'year', 'kind', 'description', 'amount'} (GP view)
     exits = []    # realized exits feeding the carry basis
     carry_funds = []  # per-fund carry calculation breakdown
+    mgmt_fee_funds = []  # per-fund management-fee calculation breakdown
 
     # Last year that has actually been cranked. The crank advances current_year
     # after every year except the final one (the game completes in place without
@@ -822,6 +823,27 @@ def team_gp_income(team):
             ledger.append({'year': tx.game_year, 'kind': 'fee',
                            'description': fee_desc,
                            'amount': abs(tx.amount)})
+
+        # Per-fund management-fee breakdown (for the "how it's calculated"
+        # explainer on the GP Economics page). The fee is charged each year on
+        # the capital deployed in ACTIVE holdings times the fund's fee rate.
+        fee_rate = fund.management_fee_rate or 0.0
+        deployed_now = fund.deployed_capital
+        mgmt_fee_funds.append({
+            'fund': fund.name,
+            'rate': fee_rate,
+            'deployed': deployed_now,
+            'committed': fund.total_capital,
+            'annual_fee': deployed_now * fee_rate,
+            'total_paid': fund_mgmt_fees,
+            'yearly': [
+                {'year': tx.game_year, 'amount': abs(tx.amount),
+                 'shortfall': bool(tx.description and
+                                   MGMT_FEE_SHORTFALL_NOTE.lower()
+                                   in tx.description.lower())}
+                for tx in fee_txs
+            ],
+        })
 
         # Operating costs are the GP's running expenses — incurred every year the
         # fund operates (vintage through the last cranked year), independent of
@@ -906,6 +928,7 @@ def team_gp_income(team):
         'ledger': ledger,
         'exits': exits,
         'carry_funds': carry_funds,
+        'mgmt_fee_funds': mgmt_fee_funds,
     }
 
 

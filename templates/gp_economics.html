@@ -82,6 +82,73 @@
       </div>
     </div>
 
+    <!-- Management Fee — How It's Calculated -->
+    <div class="card border-secondary shadow mb-4">
+      <div class="card-header border-secondary">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-percent text-warning"></i> Management Fee &mdash; How It's Calculated</h6>
+      </div>
+      <div class="card-body p-0">
+        {% if gp.mgmt_fee_funds %}
+        <div class="px-3 pt-3 text-secondary small">
+          The management fee is charged to your fund <strong class="text-light">every year</strong> at the
+          Deal &amp; Return Process. It is a percentage of the capital you have
+          <strong class="text-light">actually deployed</strong> in active holdings &mdash;
+          <em>not</em> your full committed fund size &mdash; so you earn fees only on money put to work.
+          If the fund doesn't hold enough cash to pay in full, the fee is
+          <strong class="text-light">capped at the cash on hand</strong> (the shortfall is shown, not accrued).
+        </div>
+        {% for mf in gp.mgmt_fee_funds %}
+        <div class="px-3 pt-3 pb-1 fw-semibold text-white">
+          <i class="bi bi-bank2 text-warning me-1"></i> {{ mf.fund }}
+        </div>
+        <div class="px-3 py-3 border-top border-secondary" style="background:rgba(251,191,36,0.06);">
+          <div class="small text-secondary mb-2 fw-semibold text-uppercase">Fee calculation (per year)</div>
+          <div class="font-monospace small text-light">
+            Management fee rate = <span class="text-info">{{ "%.2f"|format(mf.rate * 100) }}%</span>
+            <span class="text-secondary">of deployed capital</span>
+          </div>
+          <div class="font-monospace small text-light mt-1">
+            Capital deployed = <span class="text-info">${{ "{:,.1f}M".format(mf.deployed) }}</span>
+            <span class="text-secondary">(of ${{ "{:,.1f}M".format(mf.committed) }} committed &mdash; fees are on invested, not committed)</span>
+          </div>
+          <div class="font-monospace small text-light mt-1">
+            Annual management fee = {{ "%.2f"|format(mf.rate * 100) }}% &times; ${{ "{:,.1f}M".format(mf.deployed) }}
+            = <span class="text-success fw-bold">${{ "{:,.2f}M".format(mf.annual_fee) }}</span>
+            <span class="text-secondary">per year</span>
+          </div>
+          {% if mf.deployed <= 0 %}
+          <div class="small text-secondary mt-2"><i class="bi bi-info-circle text-warning"></i> No capital deployed yet &rarr; no management fee is charged until you close a deal.</div>
+          {% endif %}
+
+          {% if mf.yearly %}
+          <div class="mt-3 small text-secondary fw-semibold text-uppercase">Fees charged so far</div>
+          <table class="table table-dark table-sm mb-0 mt-1" style="max-width:380px;">
+            <tbody>
+            {% for y in mf.yearly %}
+            <tr>
+              <td class="text-secondary" style="width:70px;">Year {{ y.year }}</td>
+              <td class="text-end text-success">${{ "{:,.2f}M".format(y.amount) }}</td>
+              <td class="small text-warning ps-2">{% if y.shortfall %}<i class="bi bi-exclamation-triangle-fill"></i> partial &mdash; capped at cash{% endif %}</td>
+            </tr>
+            {% endfor %}
+            <tr class="border-top border-secondary fw-bold">
+              <td class="text-light">Total to date</td>
+              <td class="text-end text-success">${{ "{:,.2f}M".format(mf.total_paid) }}</td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+          {% endif %}
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="text-center text-secondary py-4">
+          No funds yet &mdash; management fees post at each Deal &amp; Return Process.
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
     <!-- Carry Basis -->
     <div class="card border-secondary shadow">
       <div class="card-header border-secondary">
