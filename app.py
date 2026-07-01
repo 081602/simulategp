@@ -1931,6 +1931,9 @@ def admin_companies():
 def admin_edit_company(company_id):
     game = current_game()
     company = GameCompany.query.get_or_404(company_id)
+    # Only edit companies in the game currently being managed.
+    if not game or company.game_id != game.id:
+        abort(404)
     if request.method == 'POST':
         company.name = request.form.get('name', company.name)
         company.description = request.form.get('description', company.description)
