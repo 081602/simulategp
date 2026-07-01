@@ -3,6 +3,7 @@ Core game logic: crank algorithms, IRR calculation, lead selection.
 """
 import random
 import math
+import re
 from datetime import datetime
 from models import (db, Game, Team, Fund, GameCompany, CompanySearch,
                     TermSheet, Deal, DealEquity, FundTransaction, Notification,
@@ -12,6 +13,10 @@ from models import (db, Game, Team, Fund, GameCompany, CompanySearch,
 # Shown on the management-fee line (Fund Economics + GP Economics) when a fund
 # owes a fee but lacks the cash to pay it in full.
 MGMT_FEE_SHORTFALL_NOTE = "Insufficient capital at the fund level to pay management fee"
+
+# Pulls the deployed base out of a management-fee transaction description
+# (e.g. "Year 3 management fee on $42.0M deployed") for the GP Economics detail.
+_MGMT_DEPLOYED_RE = re.compile(r'on \$([\d,]+(?:\.\d+)?)M deployed')
 
 
 # ---------------------------------------------------------------------------
@@ -309,7 +314,8 @@ def run_phase2_crank(game: Game):
         for fund in team.funds:
             if not fund.is_active:
                 continue
-            fee = fund.deployed_capital * fund.management_fee_rate
+            deployed = fund.deployed_capital
+            fee = deployed * fund.management_fee_rate
             # No deployed capital ⇒ no fee owed ⇒ no line at all.
             if fee <= 1e-9:
                 continue
@@ -319,8 +325,9 @@ def run_phase2_crank(game: Game):
             paid = min(fee, max(0.0, fund.available_capital))
             # Always post the fee line so the year is visible even when the fund
             # can't pay — show what was actually paid ($0 or partial) and flag the
-            # shortfall for transparency.
-            desc = f"Year {year} management fee"
+            # shortfall for transparency. The deployed base is embedded so the GP
+            # Economics page can show where each year's fee came from.
+            desc = f"Year {year} management fee on ${deployed:,.1f}M deployed"
             if fee - paid > 1e-9:
                 desc += (f" — {MGMT_FEE_SHORTFALL_NOTE} "
                          f"(${fee:,.1f}M owed, ${paid:,.1f}M paid)")
@@ -894,6 +901,24 @@ def team_gp_income(team):
         # the capital deployed in ACTIVE holdings times the fund's fee rate.
         fee_rate = fund.management_fee_rate or 0.0
         deployed_now = fund.deployed_capital
+        fee_yearly = []
+        for tx in fee_txs:
+            desc = tx.description or ''
+            m = _MGMT_DEPLOYED_RE.search(desc)
+            if m:
+                dep = float(m.group(1).replace(',', ''))
+            elif fee_rate:
+                # Legacy fee lines (before the deployed base was recorded):
+                # back it out from the fee paid. Approximate on capped years.
+                dep = abs(tx.amount) / fee_rate
+            else:
+                dep = None
+            fee_yearly.append({
+                'year': tx.game_year,
+                'deployed': dep,
+                'amount': abs(tx.amount),
+                'shortfall': MGMT_FEE_SHORTFALL_NOTE.lower() in desc.lower(),
+            })
         mgmt_fee_funds.append({
             'fund': fund.name,
             'rate': fee_rate,
@@ -901,13 +926,7 @@ def team_gp_income(team):
             'committed': fund.total_capital,
             'annual_fee': deployed_now * fee_rate,
             'total_paid': fund_mgmt_fees,
-            'yearly': [
-                {'year': tx.game_year, 'amount': abs(tx.amount),
-                 'shortfall': bool(tx.description and
-                                   MGMT_FEE_SHORTFALL_NOTE.lower()
-                                   in tx.description.lower())}
-                for tx in fee_txs
-            ],
+            'yearly': fee_yearly,
         })
 
         # Operating costs are the GP's running expenses — incurred every year the
