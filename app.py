@@ -2320,6 +2320,24 @@ def _ensure_schema():
     db.session.commit()
 
 
+def _seed_return_assumptions():
+    """Ensure a baseline ReturnAssumption exists for every sector/stage combo,
+    using the model defaults (10% expected return, 20% std dev). Only fills
+    missing combos — never overwrites values an admin has customized. Without
+    this, a fresh DB has an empty table, so the company Valuation Forecast shows
+    nothing and the crank has no sector/stage baseline to draw from."""
+    existing = {(ra.sector, ra.stage) for ra in ReturnAssumption.query.all()}
+    added = 0
+    for sector in SECTORS:
+        for stage in STAGES:
+            if (sector, stage) not in existing:
+                db.session.add(ReturnAssumption(sector=sector, stage=stage))
+                added += 1
+    if added:
+        db.session.commit()
+        print(f"[init_db] Seeded {added} default return assumptions.")
+
+
 def init_db():
     with app.app_context():
         # Report the active DB backend so deploy logs make it obvious whether
@@ -2332,6 +2350,7 @@ def init_db():
                   "On an ephemeral host this wipes all data on every deploy.")
         db.create_all()
         _ensure_schema()
+        _seed_return_assumptions()
         # Load any saved Game Dynamics overrides onto the live module globals.
         game_settings.apply_overrides()
         # Create admin user if none exists
