@@ -15,6 +15,17 @@
       </div>
     </div>
 
+    <!-- Heads-up: consequence of not finalizing -->
+    <div class="alert border-info text-light d-flex align-items-start gap-2 mb-4" style="background:rgba(13,202,240,0.1);">
+      <i class="bi bi-info-circle-fill text-info fs-5"></i>
+      <div class="small mb-0">
+        <strong class="text-white">Heads-up:</strong> if you don't finalize before the next
+        Deal &amp; Return Process, this deal <strong class="text-white">auto-closes at your submitted terms</strong>
+        (solo, no co-investors) &mdash; ${{ "{:,.1f}M".format(lead_ts.total_investment) }} of equity is deployed
+        from your fund. If your fund can't cover that, the deal is dropped and the company returns to the market next year.
+      </div>
+    </div>
+
     <!-- Company Summary -->
     <div class="card border-secondary shadow mb-4">
       <div class="card-body p-4">
