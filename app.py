@@ -1478,6 +1478,8 @@ def admin_dashboard():
     # All games for the switcher (newest first, archived ones hidden).
     all_games = (Game.query.filter_by(is_archived=False)
                  .order_by(Game.id.desc()).all())
+    archived_games = (Game.query.filter_by(is_archived=True)
+                      .order_by(Game.id.desc()).all())
 
     # Current-year term sheets grouped by company (sorted by company name)
     term_sheet_groups = []
@@ -1502,7 +1504,8 @@ def admin_dashboard():
                            ready_roster=ready_roster,
                            ready_count=ready_count,
                            total_teams=total_teams,
-                           all_games=all_games)
+                           all_games=all_games,
+                           archived_games=archived_games)
 
 
 def _seed_companies(game):
@@ -2121,6 +2124,22 @@ def admin_archive_game():
     if session.get('admin_game_id') == game.id:
         session.pop('admin_game_id', None)   # fall back to another active game
     flash(f'Archived "{game.name}" (its data is kept).', 'info')
+    return redirect(url_for('admin_dashboard'))
+
+
+@app.route('/admin/game/unarchive', methods=['POST'])
+@login_required
+@admin_required
+def admin_unarchive_game():
+    """Bring an archived game back into the active switcher and manage it."""
+    game = Game.query.get(request.form.get('game_id', type=int))
+    if not game:
+        flash('Game not found.', 'warning')
+        return redirect(url_for('admin_dashboard'))
+    game.is_archived = False
+    db.session.commit()
+    session['admin_game_id'] = game.id   # switch to the restored game
+    flash(f'Restored "{game.name}" — you are now managing it.', 'success')
     return redirect(url_for('admin_dashboard'))
 
 

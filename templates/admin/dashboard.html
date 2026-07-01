@@ -45,6 +45,23 @@
           </button>
         </div>
       </div>
+      {% if archived_games %}
+      <details class="border-top border-secondary px-3 py-2">
+        <summary class="small text-secondary" style="cursor:pointer">
+          <i class="bi bi-archive"></i> Archived games ({{ archived_games|length }})
+        </summary>
+        <div class="d-flex flex-wrap gap-2 mt-2">
+          {% for g in archived_games %}
+          <form method="POST" action="{{ url_for('admin_unarchive_game') }}" class="m-0">
+            <input type="hidden" name="game_id" value="{{ g.id }}">
+            <button class="btn btn-sm btn-outline-secondary" title="Restore and manage this game">
+              <i class="bi bi-arrow-counterclockwise"></i> {{ g.name }}
+            </button>
+          </form>
+          {% endfor %}
+        </div>
+      </details>
+      {% endif %}
     </div>
 
     <!-- Game Status Banner -->
