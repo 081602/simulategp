@@ -2204,6 +2204,20 @@ def admin_games_overview():
                            current_id=(current.id if current else None))
 
 
+@app.route('/admin/all-teams')
+@login_required
+@admin_required
+def admin_all_teams():
+    """Master roster: every team across every game, with login credentials
+    (passwords are stored in the clear for classroom handout) and mandate."""
+    rows = (db.session.query(Team, Game)
+            .join(Game, Team.game_id == Game.id)
+            .filter(Team.is_admin.is_(False))
+            .order_by(Game.is_archived.asc(), Game.id.desc(), Team.username)
+            .all())
+    return render_template('admin/all_teams.html', rows=rows)
+
+
 @app.route('/admin/game/market', methods=['POST'])
 @login_required
 @admin_required

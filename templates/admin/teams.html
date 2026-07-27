@@ -11,6 +11,9 @@
         <p class="text-secondary mb-0">{{ teams|length }} teams registered</p>
       </div>
       <div class="d-flex gap-2">
+        <a href="{{ url_for('admin_all_teams') }}" class="btn btn-outline-warning">
+          <i class="bi bi-people-fill me-1"></i> All Teams (all games)
+        </a>
         <button class="btn btn-warning text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#createTeamModal">
           <i class="bi bi-person-plus-fill me-1"></i> Add Team
         </button>
