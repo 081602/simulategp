@@ -105,6 +105,66 @@ def logout():
 # DB — each game seeds the full company catalog.
 MAX_ACTIVE_GAMES = 40
 
+# Join codes avoid easily-confused characters (no I/L/O/0/1).
+_JOIN_CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'
+
+
+def _new_join_code():
+    """Generate a unique 6-character join code for a game."""
+    while True:
+        code = ''.join(random.choices(_JOIN_CODE_ALPHABET, k=6))
+        if not Game.query.filter_by(join_code=code).first():
+            return code
+
+
+def _parse_team_signup_form():
+    """Sanitize the shared team-signup fields (create-game and join-game)."""
+    firm_name = (request.form.get('firm_name') or '').strip()
+    username = (request.form.get('username') or '').strip()
+    password = (request.form.get('password') or '').strip()
+    fund_type = request.form.get('fund_type', 'pe')
+    if fund_type not in ('pe', 'vc'):
+        fund_type = 'pe'
+    sector_focus = request.form.get('sector_focus', 'generalist')
+    if sector_focus != 'generalist' and sector_focus not in SECTORS:
+        sector_focus = 'generalist'
+    try:
+        fund_size = float(request.form.get('fund_size', 500))
+    except ValueError:
+        fund_size = 500.0
+    if int(fund_size) not in FUND_SIZE_PARTNERS:
+        fund_size = 500.0
+    return firm_name, username, password, fund_type, sector_focus, fund_size
+
+
+def _create_team_with_fund(game, firm_name, username, password,
+                           fund_type, sector_focus, fund_size):
+    """Create a team in `game` with its Fund I at the standard 2%/20% terms
+    (same defaults as admin team creation). Caller commits."""
+    team = Team(
+        game_id=game.id,
+        username=username,
+        firm_name=firm_name,
+        reputation=5.0,
+        sector_focus=sector_focus,
+        fund_type=fund_type,
+        num_partners=FUND_SIZE_PARTNERS.get(int(fund_size), 5),
+    )
+    team.set_password(password)
+    db.session.add(team)
+    db.session.flush()
+    db.session.add(Fund(
+        team_id=team.id,
+        name=f'{firm_name} Fund I',
+        total_capital=fund_size,
+        available_capital=fund_size,
+        year_raised=game.current_year,
+        management_fee_rate=0.02,
+        performance_fee_rate=0.20,
+        operating_cost_rate=FUND_SIZE_OPEX.get(int(fund_size), 0.01),
+    ))
+    return team
+
 
 @app.route('/create-game', methods=['GET', 'POST'])
 def create_game_self_service():
@@ -123,22 +183,9 @@ def create_game_self_service():
                   'danger')
             return redirect(url_for('create_game_self_service'))
 
-        firm_name = (request.form.get('firm_name') or '').strip()
-        username = (request.form.get('username') or '').strip()
-        password = (request.form.get('password') or '').strip()
+        firm_name, username, password, fund_type, sector_focus, fund_size = \
+            _parse_team_signup_form()
         game_name = (request.form.get('game_name') or '').strip()
-        fund_type = request.form.get('fund_type', 'pe')
-        if fund_type not in ('pe', 'vc'):
-            fund_type = 'pe'
-        sector_focus = request.form.get('sector_focus', 'generalist')
-        if sector_focus != 'generalist' and sector_focus not in SECTORS:
-            sector_focus = 'generalist'
-        try:
-            fund_size = float(request.form.get('fund_size', 500))
-        except ValueError:
-            fund_size = 500.0
-        if int(fund_size) not in FUND_SIZE_PARTNERS:
-            fund_size = 500.0
 
         if not firm_name or not username or not password:
             flash('Firm name, username, and password are all required.', 'danger')
@@ -154,35 +201,15 @@ def create_game_self_service():
             return redirect(url_for('create_game_self_service'))
 
         game = Game(name=game_name or f'{firm_name} — Test Game',
-                    current_year=1, current_phase=1, status='active')
+                    current_year=1, current_phase=1, status='active',
+                    join_code=_new_join_code())
         db.session.add(game)
         db.session.flush()
         _seed_companies(game)
 
-        team = Team(
-            game_id=game.id,
-            username=username,
-            firm_name=firm_name,
-            reputation=5.0,
-            sector_focus=sector_focus,
-            fund_type=fund_type,
-            num_partners=FUND_SIZE_PARTNERS.get(int(fund_size), 5),
-        )
-        team.set_password(password)
-        db.session.add(team)
-        db.session.flush()
+        team = _create_team_with_fund(game, firm_name, username, password,
+                                      fund_type, sector_focus, fund_size)
         game.owner_id = team.id   # creator "owns" their sandbox
-
-        db.session.add(Fund(
-            team_id=team.id,
-            name=f'{firm_name} Fund I',
-            total_capital=fund_size,
-            available_capital=fund_size,
-            year_raised=1,
-            management_fee_rate=0.02,
-            performance_fee_rate=0.20,
-            operating_cost_rate=FUND_SIZE_OPEX.get(int(fund_size), 0.01),
-        ))
         db.session.commit()
 
         login_user(team, remember=True)
@@ -192,10 +219,57 @@ def create_game_self_service():
         flash(f'Welcome to "{game.name}"! Your fund is raised — search for '
               f'companies to get started. When you finish a phase, mark it '
               f'complete on your dashboard and the simulation advances '
-              f'automatically.', 'success')
+              f'automatically. Friends can join your game with code '
+              f'{game.join_code} (until the first Deal Process runs).',
+              'success')
         return redirect(url_for('dashboard'))
 
     return render_template('create_game.html', sectors=SECTORS,
+                           fund_sizes=sorted(FUND_SIZE_PARTNERS))
+
+
+@app.route('/join-game', methods=['GET', 'POST'])
+def join_game():
+    """Join an existing game with its join code — create your own team in it.
+    Only allowed while the game is still at Year 1, Phase 1."""
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        code = (request.form.get('join_code') or '').strip().upper()
+        game = Game.query.filter_by(join_code=code).first() if code else None
+        if not game:
+            flash('No game found with that join code.', 'danger')
+            return redirect(url_for('join_game'))
+        if not game.is_joinable:
+            flash(f'"{game.name}" is no longer accepting new teams — joining '
+                  f'is only possible before the first Deal Process runs '
+                  f'(Year 1, Phase 1).', 'warning')
+            return redirect(url_for('join_game'))
+
+        firm_name, username, password, fund_type, sector_focus, fund_size = \
+            _parse_team_signup_form()
+        if not firm_name or not username or not password:
+            flash('Firm name, username, and password are all required.', 'danger')
+            return redirect(url_for('join_game'))
+        if Team.query.filter_by(username=username).first():
+            flash(f'Username "{username}" is already taken — pick another.',
+                  'danger')
+            return redirect(url_for('join_game'))
+
+        team = _create_team_with_fund(game, firm_name, username, password,
+                                      fund_type, sector_focus, fund_size)
+        db.session.commit()
+
+        login_user(team, remember=True)
+        team.last_login = datetime.utcnow()
+        team.last_seen = team.last_login
+        db.session.commit()
+        flash(f'Welcome to "{game.name}"! Your fund is raised — search for '
+              f'companies to get started.', 'success')
+        return redirect(url_for('dashboard'))
+
+    return render_template('join_game.html', sectors=SECTORS,
                            fund_sizes=sorted(FUND_SIZE_PARTNERS))
 
 
@@ -2256,14 +2330,15 @@ def admin_create_game():
     """Create a new game, seed its companies, and switch the admin to it."""
     name = (request.form.get('name') or '').strip() or 'New Simulation'
     game = Game(name=name, current_year=1, current_phase=1, status='active',
-                owner_id=current_user.id)
+                owner_id=current_user.id, join_code=_new_join_code())
     db.session.add(game)
     db.session.flush()   # assign game.id before seeding
     n = _seed_companies(game)
     db.session.commit()
     session['admin_game_id'] = game.id   # start managing the new game
     flash(f'Created "{game.name}" and seeded {n} companies — you are now '
-          f'managing it. Add teams next.', 'success')
+          f'managing it. Add teams next, or share join code '
+          f'{game.join_code} so teams can sign themselves up.', 'success')
     return redirect(url_for('admin_dashboard'))
 
 
@@ -2479,7 +2554,8 @@ def _ensure_schema():
     wanted = {
         'game': [('auto_advance', f'BOOLEAN {bool_default}'),
                  ('owner_id', 'INTEGER'),
-                 ('is_archived', f'BOOLEAN {bool_false}')],
+                 ('is_archived', f'BOOLEAN {bool_false}'),
+                 ('join_code', 'VARCHAR(12)')],
         'team': [('ready_year', 'INTEGER'), ('ready_phase', 'INTEGER'),
                  ('last_login', 'TIMESTAMP'), ('last_seen', 'TIMESTAMP')],
     }
@@ -2555,6 +2631,14 @@ def init_db():
             db.session.add(admin)
             db.session.commit()
             print("Admin user created: username=admin")
+        # Backfill join codes for any game without one (legacy games and the
+        # bootstrap game created just above) — must run AFTER game creation.
+        missing = Game.query.filter(Game.join_code.is_(None)).all()
+        if missing:
+            for g in missing:
+                g.join_code = _new_join_code()
+            db.session.commit()
+            print(f"[init_db] Backfilled join codes for {len(missing)} game(s).")
 
 
 if __name__ == '__main__':

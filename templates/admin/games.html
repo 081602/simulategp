@@ -29,6 +29,7 @@
               <th>Game</th>
               <th>Status</th>
               <th>Progress</th>
+              <th>Join Code</th>
               <th class="text-center">Teams</th>
               <th class="text-center">Companies</th>
               <th class="text-center">Active Deals</th>
@@ -55,6 +56,18 @@
                 {% else %}
                   Year {{ g.current_year }} / {{ g.total_years }}
                   <span class="text-secondary">· Phase {{ g.current_phase }}</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if g.join_code %}
+                <code class="{% if g.is_joinable %}text-info{% else %}text-secondary{% endif %}">{{ g.join_code }}</code>
+                {% if g.is_joinable %}
+                <span class="badge bg-info text-dark ms-1">open</span>
+                {% else %}
+                <span class="badge bg-secondary ms-1">closed</span>
+                {% endif %}
+                {% else %}
+                <span class="text-secondary">—</span>
                 {% endif %}
               </td>
               <td class="text-center">{{ r.teams }}</td>

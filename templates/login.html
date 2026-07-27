@@ -44,8 +44,10 @@
         </form>
         <p class="mt-4 text-secondary small mb-2">Contact your instructor for login credentials.</p>
         <p class="text-secondary small mb-0">
-          Have an access code?
-          <a href="{{ url_for('create_game_self_service') }}" class="text-warning">Create your own game &rarr;</a>
+          <a href="{{ url_for('join_game') }}" class="text-warning">Join a game</a>
+          with its join code, or
+          <a href="{{ url_for('create_game_self_service') }}" class="text-warning">create your own</a>
+          with an access code.
         </p>
       </div>
     </div>

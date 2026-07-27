@@ -84,10 +84,17 @@
                 <span class="badge bg-success ms-2">RUNNING</span>
               {% endif %}
             </h4>
-            <div class="d-flex gap-3 text-secondary">
+            <div class="d-flex gap-3 text-secondary flex-wrap">
               <span><i class="bi bi-calendar3 text-warning"></i> Year {{ game.current_year }} / {{ game.total_years }}</span>
               <span><i class="bi bi-layers text-info"></i> Phase {{ game.current_phase }}</span>
               <span><i class="bi bi-graph-up text-success"></i> Market: {{ "%.2f"|format(game.market_condition) }}x</span>
+              {% if game.join_code %}
+              <span title="{% if game.is_joinable %}Share this code — teams can sign themselves up at /join-game{% else %}Joining closed — the first Deal Process has run{% endif %}">
+                <i class="bi bi-ticket-perforated text-info"></i> Join code:
+                <code class="{% if game.is_joinable %}text-info{% else %}text-secondary text-decoration-line-through{% endif %}">{{ game.join_code }}</code>
+                {% if not game.is_joinable %}<span class="small">(closed)</span>{% endif %}
+              </span>
+              {% endif %}
             </div>
           </div>
           <form method="POST" action="{{ url_for('admin_pause_game') }}">

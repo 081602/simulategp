@@ -59,6 +59,9 @@ class Game(db.Model):
     # from the admin's active game switcher without deleting their data.
     owner_id = db.Column(db.Integer, nullable=True)
     is_archived = db.Column(db.Boolean, default=False)
+    # Short shareable code for the public Join-a-Game page. Joining is only
+    # allowed while the game is still at Year 1, Phase 1.
+    join_code = db.Column(db.String(12), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     teams = db.relationship('Team', backref='game', lazy=True)
@@ -69,6 +72,12 @@ class Game(db.Model):
         if self.status == 'completed':
             return f"Game Complete — Year {self.current_year} Final Results"
         return f"Year {self.current_year}, Phase {self.current_phase}"
+
+    @property
+    def is_joinable(self):
+        """New teams may join only before the first Deal Process has run."""
+        return (not self.is_archived and self.status == 'active'
+                and self.current_year == 1 and self.current_phase == 1)
 
     @property
     def is_complete(self):
