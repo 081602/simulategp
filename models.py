@@ -94,6 +94,10 @@ class Team(db.Model, UserMixin):
     # advance the stored pair no longer matches, so readiness self-clears.
     ready_year = db.Column(db.Integer, nullable=True)
     ready_phase = db.Column(db.Integer, nullable=True)
+    # Activity tracking: when the team last signed in, and the last time it made
+    # any request (updated at most every few minutes to keep writes cheap).
+    last_login = db.Column(db.DateTime, nullable=True)
+    last_seen = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     funds = db.relationship('Fund', backref='team', lazy=True, cascade='all, delete-orphan')

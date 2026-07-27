@@ -36,6 +36,8 @@
               <th>Username</th>
               <th>Password</th>
               <th>Mandate</th>
+              <th>Last Login</th>
+              <th>Last Seen</th>
             </tr></thead>
             <tbody>
             {% for team, g in rows %}
@@ -58,6 +60,14 @@
                 {% else %}
                 <span class="badge bg-info text-dark">{{ team.sector_focus }}</span>
                 {% endif %}
+              </td>
+              <td class="text-secondary small"
+                  {% if team.last_login %}title="{{ team.last_login.strftime('%b %d, %Y %H:%M') }} UTC"{% endif %}>
+                {{ team.last_login | time_ago }}
+              </td>
+              <td class="small {% if team.last_seen %}text-light{% else %}text-secondary{% endif %}"
+                  {% if team.last_seen %}title="{{ team.last_seen.strftime('%b %d, %Y %H:%M') }} UTC"{% endif %}>
+                {{ team.last_seen | time_ago }}
               </td>
             </tr>
             {% endfor %}

@@ -1,7 +1,7 @@
 import os
 import json
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy import or_, and_
 from flask import (Flask, render_template, request, redirect, url_for,
                    flash, jsonify, abort, session)
@@ -86,6 +86,9 @@ def login():
         team = Team.query.filter_by(username=username).first()
         if team and team.check_password(password):
             login_user(team, remember=True)
+            team.last_login = datetime.utcnow()
+            team.last_seen = team.last_login
+            db.session.commit()
             return redirect(url_for('index'))
         flash('Invalid username or password.', 'danger')
     return render_template('login.html')
@@ -199,6 +202,37 @@ def current_game():
         if g is not None:
             return g
     return Game.query.first()
+
+
+# Refresh last_seen at most this often — keeps the "last seen" signal live
+# (the dashboard polls every few seconds) without a DB write per request.
+LAST_SEEN_REFRESH = timedelta(minutes=3)
+
+
+@app.before_request
+def touch_last_seen():
+    if current_user.is_authenticated and not current_user.is_admin:
+        now = datetime.utcnow()
+        if (current_user.last_seen is None
+                or now - current_user.last_seen > LAST_SEEN_REFRESH):
+            current_user.last_seen = now
+            db.session.commit()
+
+
+@app.template_filter('time_ago')
+def time_ago(dt):
+    """Compact relative time ('3m ago', '2h ago', '5d ago') for roster views."""
+    if not dt:
+        return 'never'
+    delta = datetime.utcnow() - dt
+    secs = int(delta.total_seconds())
+    if secs < 60:
+        return 'just now'
+    if secs < 3600:
+        return f'{secs // 60}m ago'
+    if secs < 86400:
+        return f'{secs // 3600}h ago'
+    return f'{secs // 86400}d ago'
 
 
 @app.context_processor
@@ -2348,7 +2382,8 @@ def _ensure_schema():
         'game': [('auto_advance', f'BOOLEAN {bool_default}'),
                  ('owner_id', 'INTEGER'),
                  ('is_archived', f'BOOLEAN {bool_false}')],
-        'team': [('ready_year', 'INTEGER'), ('ready_phase', 'INTEGER')],
+        'team': [('ready_year', 'INTEGER'), ('ready_phase', 'INTEGER'),
+                 ('last_login', 'TIMESTAMP'), ('last_seen', 'TIMESTAMP')],
     }
     for table, cols in wanted.items():
         if not insp.has_table(table):
