@@ -42,7 +42,11 @@
             <i class="bi bi-box-arrow-in-right"></i> Log In
           </button>
         </form>
-        <p class="mt-4 text-secondary small">Contact your instructor for login credentials.</p>
+        <p class="mt-4 text-secondary small mb-2">Contact your instructor for login credentials.</p>
+        <p class="text-secondary small mb-0">
+          Have an access code?
+          <a href="{{ url_for('create_game_self_service') }}" class="text-warning">Create your own game &rarr;</a>
+        </p>
       </div>
     </div>
   </div>

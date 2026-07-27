@@ -101,6 +101,104 @@ def logout():
     return redirect(url_for('login'))
 
 
+# Cap on active (non-archived) games so the self-service page can't flood the
+# DB — each game seeds the full company catalog.
+MAX_ACTIVE_GAMES = 40
+
+
+@app.route('/create-game', methods=['GET', 'POST'])
+def create_game_self_service():
+    """Self-service sandbox: with the instructor's access code, a visitor
+    creates a fresh game plus their own team login in one step and is signed
+    straight in. The code is set via the GAME_CREATE_CODE environment variable
+    (change it there to rotate or disable access)."""
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        code = (request.form.get('access_code') or '').strip()
+        expected = os.environ.get('GAME_CREATE_CODE', 'letmetry')
+        if not code or code != expected:
+            flash('Invalid access code — ask your instructor for the current one.',
+                  'danger')
+            return redirect(url_for('create_game_self_service'))
+
+        firm_name = (request.form.get('firm_name') or '').strip()
+        username = (request.form.get('username') or '').strip()
+        password = (request.form.get('password') or '').strip()
+        game_name = (request.form.get('game_name') or '').strip()
+        fund_type = request.form.get('fund_type', 'pe')
+        if fund_type not in ('pe', 'vc'):
+            fund_type = 'pe'
+        sector_focus = request.form.get('sector_focus', 'generalist')
+        if sector_focus != 'generalist' and sector_focus not in SECTORS:
+            sector_focus = 'generalist'
+        try:
+            fund_size = float(request.form.get('fund_size', 500))
+        except ValueError:
+            fund_size = 500.0
+        if int(fund_size) not in FUND_SIZE_PARTNERS:
+            fund_size = 500.0
+
+        if not firm_name or not username or not password:
+            flash('Firm name, username, and password are all required.', 'danger')
+            return redirect(url_for('create_game_self_service'))
+        if Team.query.filter_by(username=username).first():
+            flash(f'Username "{username}" is already taken — pick another.',
+                  'danger')
+            return redirect(url_for('create_game_self_service'))
+        if (Game.query.filter_by(is_archived=False).count()
+                >= MAX_ACTIVE_GAMES):
+            flash('Too many active games right now — please contact your '
+                  'instructor.', 'warning')
+            return redirect(url_for('create_game_self_service'))
+
+        game = Game(name=game_name or f'{firm_name} — Test Game',
+                    current_year=1, current_phase=1, status='active')
+        db.session.add(game)
+        db.session.flush()
+        _seed_companies(game)
+
+        team = Team(
+            game_id=game.id,
+            username=username,
+            firm_name=firm_name,
+            reputation=5.0,
+            sector_focus=sector_focus,
+            fund_type=fund_type,
+            num_partners=FUND_SIZE_PARTNERS.get(int(fund_size), 5),
+        )
+        team.set_password(password)
+        db.session.add(team)
+        db.session.flush()
+        game.owner_id = team.id   # creator "owns" their sandbox
+
+        db.session.add(Fund(
+            team_id=team.id,
+            name=f'{firm_name} Fund I',
+            total_capital=fund_size,
+            available_capital=fund_size,
+            year_raised=1,
+            management_fee_rate=0.02,
+            performance_fee_rate=0.20,
+            operating_cost_rate=FUND_SIZE_OPEX.get(int(fund_size), 0.01),
+        ))
+        db.session.commit()
+
+        login_user(team, remember=True)
+        team.last_login = datetime.utcnow()
+        team.last_seen = team.last_login
+        db.session.commit()
+        flash(f'Welcome to "{game.name}"! Your fund is raised — search for '
+              f'companies to get started. When you finish a phase, mark it '
+              f'complete on your dashboard and the simulation advances '
+              f'automatically.', 'success')
+        return redirect(url_for('dashboard'))
+
+    return render_template('create_game.html', sectors=SECTORS,
+                           fund_sizes=sorted(FUND_SIZE_PARTNERS))
+
+
 # ---------------------------------------------------------------------------
 # Phase readiness / auto-advance helpers
 # ---------------------------------------------------------------------------
