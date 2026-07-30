@@ -1,6 +1,9 @@
 import os
+import hmac
 import json
+import time
 import random
+from collections import defaultdict, deque
 from datetime import datetime, timedelta
 from sqlalchemy import or_, and_
 from flask import (Flask, render_template, request, redirect, url_for,
@@ -76,11 +79,40 @@ def index():
     return redirect(url_for('login'))
 
 
+# ---------------------------------------------------------------------------
+# Rate limiting for the public endpoints (login / create-game / join-game) so
+# bots can't brute-force passwords, access codes, or join codes. In-memory
+# sliding window per client IP — fine for the single-worker gunicorn setup.
+# ---------------------------------------------------------------------------
+
+_RATE_BUCKETS = defaultdict(deque)
+
+
+def _rate_limited(bucket, limit, window_secs):
+    """True if this request pushes the (bucket, client-ip) count over `limit`
+    within the trailing window. Uses X-Forwarded-For because production sits
+    behind Railway's proxy (remote_addr would be the proxy for everyone)."""
+    ip = (request.headers.get('X-Forwarded-For', request.remote_addr or '?')
+          .split(',')[0].strip())
+    now = time.time()
+    q = _RATE_BUCKETS[(bucket, ip)]
+    while q and now - q[0] > window_secs:
+        q.popleft()
+    if len(q) >= limit:
+        return True
+    q.append(now)
+    return False
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     if request.method == 'POST':
+        if _rate_limited('login', 20, 300):
+            flash('Too many login attempts — please wait a few minutes.',
+                  'warning')
+            return redirect(url_for('login'))
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '')
         team = Team.query.filter_by(username=username).first()
@@ -205,9 +237,19 @@ def create_game_self_service():
         return redirect(url_for('index'))
 
     if request.method == 'POST':
+        if _rate_limited('create_game', 10, 600):
+            flash('Too many attempts — please wait a few minutes.', 'warning')
+            return redirect(url_for('create_game_self_service'))
         code = (request.form.get('access_code') or '').strip()
-        expected = os.environ.get('GAME_CREATE_CODE', 'letmetry')
-        if not code or code != expected:
+        # No default in production: unless GAME_CREATE_CODE is set, creation is
+        # disabled (a hardcoded fallback would be readable in the public repo).
+        # Local dev (debug) keeps 'letmetry' for convenience.
+        expected = os.environ.get('GAME_CREATE_CODE') or \
+            ('letmetry' if app.debug else None)
+        if not expected:
+            flash('Self-service game creation is currently disabled.', 'warning')
+            return redirect(url_for('create_game_self_service'))
+        if not code or not hmac.compare_digest(code, expected):
             flash('Invalid access code — ask your instructor for the current one.',
                   'danger')
             return redirect(url_for('create_game_self_service'))
@@ -266,6 +308,9 @@ def join_game():
         return redirect(url_for('index'))
 
     if request.method == 'POST':
+        if _rate_limited('join_game', 15, 600):
+            flash('Too many attempts — please wait a few minutes.', 'warning')
+            return redirect(url_for('join_game'))
         code = (request.form.get('join_code') or '').strip().upper()
         game = Game.query.filter_by(join_code=code).first() if code else None
         if not game:
