@@ -80,19 +80,13 @@
               </select>
             </div>
           </div>
-          <div class="row g-3">
-            <div class="col-md-6 mb-3">
-              <label class="form-label text-white">Management Fee %</label>
-              <input type="number" name="management_fee" min="0" max="10" step="0.25" value="2.0"
-                     class="form-control bg-dark text-white border-secondary">
-              <div class="form-text text-secondary">Charged yearly on deployed capital. 2% is standard.</div>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label text-white">Carried Interest %</label>
-              <input type="number" name="performance_fee" min="0" max="50" step="1" value="20"
-                     class="form-control bg-dark text-white border-secondary">
-              <div class="form-text text-secondary">Your share of net realized profits. 20% is standard.</div>
-            </div>
+          <div class="mb-3">
+            <label class="form-label text-white">Fee Structure</label>
+            <select name="fee_structure" class="form-select bg-dark text-white border-secondary">
+              <option value="2_20" selected>2 &amp; 20 &mdash; 2% management fee, 20% carried interest (standard)</option>
+              <option value="1_10">1 &amp; 10 &mdash; 1% management fee, 10% carried interest (low-fee)</option>
+            </select>
+            <div class="form-text text-secondary">The fee is charged yearly on deployed capital; carry is your share of net realized profits.</div>
           </div>
           <div class="mb-4">
             <label class="form-label text-white">Game Name <span class="text-secondary small">(optional)</span></label>

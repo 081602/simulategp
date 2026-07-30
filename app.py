@@ -130,6 +130,19 @@ def _new_join_code():
             return code
 
 
+# The only LP fee structures on offer: management fee & carried interest.
+FEE_STRUCTURES = {
+    '2_20': (0.02, 0.20),   # standard
+    '1_10': (0.01, 0.10),   # low-fee
+}
+
+
+def _parse_fee_structure(field='fee_structure'):
+    """Resolve the chosen fee structure to (mgmt_fee, perf_fee) decimals.
+    Anything unrecognized falls back to the standard 2 & 20."""
+    return FEE_STRUCTURES.get(request.form.get(field), FEE_STRUCTURES['2_20'])
+
+
 def _parse_team_signup_form():
     """Sanitize the shared team-signup fields (create-game and join-game)."""
     firm_name = (request.form.get('firm_name') or '').strip()
@@ -147,18 +160,7 @@ def _parse_team_signup_form():
         fund_size = 500.0
     if int(fund_size) not in FUND_SIZE_PARTNERS:
         fund_size = 500.0
-    # LP terms are the team's choice (entered as percentages), within sane
-    # bounds so a typo can't create a 200%-fee fund.
-    try:
-        mgmt_fee = float(request.form.get('management_fee', 2.0))
-    except ValueError:
-        mgmt_fee = 2.0
-    mgmt_fee = min(max(mgmt_fee, 0.0), 10.0) / 100
-    try:
-        perf_fee = float(request.form.get('performance_fee', 20.0))
-    except ValueError:
-        perf_fee = 20.0
-    perf_fee = min(max(perf_fee, 0.0), 50.0) / 100
+    mgmt_fee, perf_fee = _parse_fee_structure()
     return (firm_name, username, password, fund_type, sector_focus, fund_size,
             mgmt_fee, perf_fee)
 
@@ -1967,8 +1969,7 @@ def admin_create_team():
     db.session.add(team)
     db.session.flush()
 
-    management_fee = float(request.form.get('management_fee', 2.0)) / 100
-    performance_fee = float(request.form.get('performance_fee', 20.0)) / 100
+    management_fee, performance_fee = _parse_fee_structure()
     fund = Fund(
         team_id=team.id,
         name=f'{firm_name} Fund I',
@@ -2061,12 +2062,12 @@ def admin_edit_team(team_id):
             key = f'fund_cap_{fund.id}'
             if key in request.form and request.form[key]:
                 fund.available_capital = float(request.form[key])
-            mkey = f'fund_mgmt_{fund.id}'
-            if mkey in request.form and request.form[mkey]:
-                fund.management_fee_rate = float(request.form[mkey]) / 100
-            pkey = f'fund_perf_{fund.id}'
-            if pkey in request.form and request.form[pkey]:
-                fund.performance_fee_rate = float(request.form[pkey]) / 100
+            # Fee structure: only the two offered structures may be chosen;
+            # 'keep' (or anything unrecognized) leaves the fund's rates as-is.
+            fkey = f'fund_fees_{fund.id}'
+            if request.form.get(fkey) in FEE_STRUCTURES:
+                (fund.management_fee_rate,
+                 fund.performance_fee_rate) = FEE_STRUCTURES[request.form[fkey]]
 
         db.session.commit()
         flash(f'{team.firm_name} updated.', 'success')

@@ -168,30 +168,16 @@
               </div>
             </div>
             <div class="col-md-4">
-              <label for="fund_mgmt_{{ fund.id }}" class="form-label fw-semibold text-white">Management Fee (%)</label>
-              <div class="input-group">
-                <input type="number"
-                       class="form-control bg-dark text-white border-secondary"
-                       id="fund_mgmt_{{ fund.id }}"
-                       name="fund_mgmt_{{ fund.id }}"
-                       min="0" max="10" step="0.1"
-                       value="{{ "%.1f"|format(fund.management_fee_rate * 100) }}">
-                <span class="input-group-text bg-dark border-secondary text-secondary">%</span>
-              </div>
-              <div class="form-text text-secondary">Charged on committed capital each year</div>
-            </div>
-            <div class="col-md-4">
-              <label for="fund_perf_{{ fund.id }}" class="form-label fw-semibold text-white">Performance Fee (%)</label>
-              <div class="input-group">
-                <input type="number"
-                       class="form-control bg-dark text-white border-secondary"
-                       id="fund_perf_{{ fund.id }}"
-                       name="fund_perf_{{ fund.id }}"
-                       min="0" max="50" step="0.1"
-                       value="{{ "%.1f"|format(fund.performance_fee_rate * 100) }}">
-                <span class="input-group-text bg-dark border-secondary text-secondary">%</span>
-              </div>
-              <div class="form-text text-secondary">Carried interest on gains</div>
+              <label for="fund_fees_{{ fund.id }}" class="form-label fw-semibold text-white">Fee Structure</label>
+              <select id="fund_fees_{{ fund.id }}" name="fund_fees_{{ fund.id }}"
+                      class="form-select bg-dark text-white border-secondary">
+                <option value="keep" selected>
+                  Keep current ({{ "%.1f"|format(fund.management_fee_rate * 100) }}% / {{ "%.0f"|format(fund.performance_fee_rate * 100) }}%)
+                </option>
+                <option value="2_20">2 &amp; 20 &mdash; standard</option>
+                <option value="1_10">1 &amp; 10 &mdash; low-fee</option>
+              </select>
+              <div class="form-text text-secondary">Management fee &amp; carried interest</div>
             </div>
           </div>
           {% endfor %}
