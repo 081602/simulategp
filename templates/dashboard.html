@@ -4,7 +4,7 @@
 <div class="row justify-content-center">
 <div class="col-lg-11">
 
-  <div class="d-flex justify-content-between align-items-center mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
       <h2 class="fw-bold mb-0">{{ current_user.firm_name }}</h2>
       <span class="text-muted">{{ game.phase_label }} &nbsp;|&nbsp;
@@ -13,6 +13,9 @@
         </span>
       </span>
     </div>
+    <a href="{{ url_for('guide') }}" class="btn btn-sm btn-outline-info">
+      <i class="bi bi-book"></i> How to Play
+    </a>
   </div>
 
   <!-- Phase completion / auto-advance -->

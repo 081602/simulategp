@@ -43,11 +43,14 @@
           </button>
         </form>
         <p class="mt-4 text-secondary small mb-2">Contact your instructor for login credentials.</p>
-        <p class="text-secondary small mb-0">
+        <p class="text-secondary small mb-2">
           <a href="{{ url_for('join_game') }}" class="text-warning">Join a game</a>
           with its join code, or
           <a href="{{ url_for('create_game_self_service') }}" class="text-warning">create your own</a>
           with an access code.
+        </p>
+        <p class="text-secondary small mb-0">
+          First time? <a href="{{ url_for('guide') }}" class="text-warning"><i class="bi bi-book"></i> Read the How-to-Play guide</a>
         </p>
       </div>
     </div>

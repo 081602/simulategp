@@ -107,6 +107,13 @@ def logout():
     return redirect(url_for('login'))
 
 
+@app.route('/guide')
+def guide():
+    """First-time player guide. Public, so students can read it before they
+    create or join a game."""
+    return render_template('guide.html')
+
+
 # Cap on active (non-archived) games so the self-service page can't flood the
 # DB — each game seeds the full company catalog.
 MAX_ACTIVE_GAMES = 40

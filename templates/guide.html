@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% block title %}How to Play{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-9">
+
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+      <div>
+        <h2 class="fw-bold mb-0"><i class="bi bi-book text-warning"></i> How to Play</h2>
+        <p class="text-secondary mb-0">A first-timer's guide to running your fund in SimulateGP</p>
+      </div>
+      {% if not current_user.is_authenticated %}
+      <a href="{{ url_for('login') }}" class="btn btn-warning text-dark fw-semibold">
+        <i class="bi bi-box-arrow-in-right"></i> Log In
+      </a>
+      {% endif %}
+    </div>
+
+    <!-- The big picture -->
+    <div class="card border-secondary shadow mb-3">
+      <div class="card-body">
+        <h5 class="text-warning fw-bold"><i class="bi bi-globe2 me-1"></i> The Big Picture</h5>
+        <p class="mb-2">
+          You are the <strong>General Partner (GP)</strong> of a private capital fund. Your investors
+          (the LPs) have committed capital; your job over a <strong>7-year fund life</strong> is to find companies,
+          win deals, manage the portfolio, and exit &mdash; delivering the best returns you can.
+        </p>
+        <p class="mb-0">
+          Each game year has <strong>two phases</strong>, each followed by a simulated "process":
+        </p>
+        <ul class="mb-0 mt-2">
+          <li><strong>Phase 1 &mdash; Deal Sourcing:</strong> search for companies and submit term sheets.</li>
+          <li><strong>The Deal Process:</strong> companies choose their lead investor from the bids.</li>
+          <li><strong>Phase 2 &mdash; Deals &amp; Portfolio:</strong> finalize won deals and manage your holdings.</li>
+          <li><strong>The Deal &amp; Return Process:</strong> fees are charged, every company's year is simulated, and the game advances.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion" id="guideAccordion">
+
+      <!-- Your firm -->
+      <div class="accordion-item bg-dark border-secondary">
+        <h2 class="accordion-header">
+          <button class="accordion-button bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#gFirm">
+            <i class="bi bi-building text-warning me-2"></i> Your Firm, Fund &amp; Mandate
+          </button>
+        </h2>
+        <div id="gFirm" class="accordion-collapse collapse show" data-bs-parent="#guideAccordion">
+          <div class="accordion-body text-light">
+            <ul class="mb-2">
+              <li><strong>Fund type sets what you can buy.</strong> A <span class="badge bg-danger">VC</span> fund invests in
+                <em>Startup</em> and <em>Developing</em> companies; a <span class="badge bg-primary">PE</span> fund invests in
+                <em>Early Revenue</em> and <em>Mature</em> companies. Companies reject bids from funds outside their mandate
+                &mdash; at the Deal Process, not when you submit.</li>
+              <li><strong>Sector focus:</strong> a focused fund (e.g. Healthcare-only) earns the full sector return.
+                A <em>generalist</em> can bid anywhere but earns a slightly lower expected return (&times;0.95) at slightly
+                lower volatility (&times;0.9).</li>
+              <li><strong>Fund size</strong> sets your firm's scale: $200M (3 partners), $500M (7), or $1B (12), with GP
+                operating costs of 1.5% / 1.0% / 0.75% of committed capital per year respectively.</li>
+              <li>Your fund charges LPs a <strong>2% management fee</strong> (on deployed capital) and keeps
+                <strong>20% carried interest</strong> on net realized profits.</li>
+            </ul>
+            <p class="text-secondary small mb-0">See it in-game: <em>Fund Economics</em> and <em>GP Economics</em> pages.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 1 -->
+      <div class="accordion-item bg-dark border-secondary">
+        <h2 class="accordion-header">
+          <button class="accordion-button bg-dark text-white collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gP1">
+            <i class="bi bi-1-circle text-warning me-2"></i> Phase 1 &mdash; Find Companies &amp; Submit Term Sheets
+          </button>
+        </h2>
+        <div id="gP1" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+          <div class="accordion-body text-light">
+            <ul class="mb-2">
+              <li><strong>Search</strong> (Deal Flow page) is free and unlimited. Filter by sector, stage, and deal size.
+                Companies are only on the market in their listed year &mdash; miss the year, miss the deal.</li>
+              <li>Save interesting companies to your <strong>watchlist</strong>, and <strong>refer</strong> deals to friendly
+                firms (they see them in their pipeline).</li>
+              <li><strong>Submit term sheets:</strong> you propose a pre-money valuation and investment amount, plus terms:
+                liquidation preference (1&ndash;3&times;), participation, and anti-dilution. Aggressive terms aren't available
+                for mature buyouts. For buyouts you also choose how much <strong>debt</strong> to load on (8% interest-only,
+                repaid at exit).</li>
+              <li>You may bid on many companies, form <strong>syndicates</strong>, and offer to be a
+                <strong>fill (co-)investor</strong> on deals others lead.</li>
+              <li>Done for the phase? Click <strong>Mark Deal Phase Complete</strong> on your dashboard. When every team has,
+                the Deal Process runs automatically. (Marking complete freezes your actions &mdash; use <em>Undo</em> if you
+                need to change something.)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deal process -->
+      <div class="accordion-item bg-dark border-secondary">
+        <h2 class="accordion-header">
+          <button class="accordion-button bg-dark text-white collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gDP">
+            <i class="bi bi-award text-warning me-2"></i> The Deal Process &mdash; How Companies Pick a Lead
+          </button>
+        </h2>
+        <div id="gDP" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+          <div class="accordion-body text-light">
+            <p class="mb-2">Each company weighs its offers. What makes yours attractive:</p>
+            <ul class="mb-2">
+              <li><strong>Price:</strong> a higher valuation is the biggest lever.</li>
+              <li><strong>Clean terms:</strong> 1&times; liquidation preference beats 2&times;&ndash;3&times;; no participation
+                and no anti-dilution score better than aggressive protections.</li>
+              <li><strong>Covering the ask:</strong> offering less than the capital the company wants is penalized.</li>
+              <li><strong>Mandate fit:</strong> off-mandate bids are rejected outright.</li>
+            </ul>
+            <p class="mb-0">Winners become <strong>lead investor</strong>. Losing bidders who offered to fill may be invited
+              as co-investors by the lead. Watch your dashboard's Deal Activity and Timeline for results.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="accordion-item bg-dark border-secondary">
+        <h2 class="accordion-header">
+          <button class="accordion-button bg-dark text-white collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gP2">
+            <i class="bi bi-2-circle text-warning me-2"></i> Phase 2 &mdash; Finalize Deals &amp; Manage the Portfolio
+          </button>
+        </h2>
+        <div id="gP2" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+          <div class="accordion-body text-light">
+            <ul class="mb-2">
+              <li><strong>Finalize deals you lead</strong> (Timeline): close solo or invite co-investors from the fill offers.
+                The accepted terms are binding. <em>If you never finalize, the deal auto-closes solo at your submitted terms
+                at the next process</em> &mdash; or is dropped if your fund can't cover it.</li>
+              <li><strong>Respond to co-invest offers</strong> other leads send you &mdash; accept or reject on your Timeline.</li>
+              <li><strong>Manage holdings</strong> (Portfolio): pay <em>dividends</em> out of company cash, make
+                <em>follow-on investments</em>, <em>change management</em> (costs cash, can upgrade quality), or
+                <em>mark a company for sale</em> with a reserve price.</li>
+              <li><strong>Distress:</strong> a company that runs out of cash needs a decision from its lead &mdash; inject
+                rescue capital, or "let it roll" and hope it turns profitable on its own. If it stays dry, it goes bankrupt
+                and the investment is lost. (Mature companies that survive distress carry a permanent return scar.)</li>
+              <li>Done? <strong>Mark Return Phase Complete</strong> &mdash; when every team has, the Deal &amp; Return Process runs.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Return process -->
+      <div class="accordion-item bg-dark border-secondary">
+        <h2 class="accordion-header">
+          <button class="accordion-button bg-dark text-white collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gRP">
+            <i class="bi bi-graph-up-arrow text-warning me-2"></i> The Deal &amp; Return Process &mdash; A Year Happens
+          </button>
+        </h2>
+        <div id="gRP" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+          <div class="accordion-body text-light">
+            <ul class="mb-2">
+              <li><strong>Management fees</strong> are charged: 2% &times; capital deployed in active deals (not committed capital).</li>
+              <li><strong>Every company's year is simulated:</strong> returns draw from its sector/stage baseline, tilted by
+                revenue growth, EBITDA margin, and management quality, and multiplied by the instructor-set
+                <strong>market condition</strong> (bull or bear).</li>
+              <li>Venture companies <strong>burn cash</strong>; mature companies convert EBITDA to cash. Debt interest is paid,
+                dividends and marked sales execute, and distressed outcomes resolve (recover, keep burning, or bankrupt).</li>
+              <li>The game advances to the next year's Phase 1. After <strong>Year 7</strong>, every remaining holding is
+                exited at its final valuation and the game ends &mdash; final standings on the Leaderboard.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scorekeeping -->
+      <div class="accordion-item bg-dark border-secondary">
+        <h2 class="accordion-header">
+          <button class="accordion-button bg-dark text-white collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gScore">
+            <i class="bi bi-trophy text-warning me-2"></i> Scorekeeping &mdash; How You Win
+          </button>
+        </h2>
+        <div id="gScore" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+          <div class="accordion-body text-light">
+            <ul class="mb-2">
+              <li><strong>Fund returns:</strong> annualized return on committed capital, MOIC, and per-deal IRR on invested capital.</li>
+              <li><strong>GP income:</strong> management fees earned, minus operating costs, plus carried interest &mdash;
+                carry is 20% of realized profits <em>net</em> of losses, bankruptcies, and the fees LPs paid. Shown per partner.</li>
+              <li>The <strong>GP Economics</strong> page shows exactly how your fees and carry are computed &mdash; every number traces back to a formula.</li>
+            </ul>
+            <p class="text-secondary small mb-0">The leaderboard ranks all firms on these measures at game end.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tips -->
+      <div class="accordion-item bg-dark border-secondary">
+        <h2 class="accordion-header">
+          <button class="accordion-button bg-dark text-white collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gTips">
+            <i class="bi bi-lightbulb text-warning me-2"></i> Tips for Your First Game
+          </button>
+        </h2>
+        <div id="gTips" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+          <div class="accordion-body text-light">
+            <ul class="mb-0">
+              <li><strong>Price discipline pays.</strong> Your first-year mark grows off the company's <em>ask</em>: buy below
+                the ask and your mark starts above cost; overpay and it starts below.</li>
+              <li><strong>Winning isn't just bidding high</strong> &mdash; a slightly lower price with clean terms often beats
+                a top price loaded with 3&times; preferences.</li>
+              <li><strong>Keep dry powder.</strong> Fees come out of your fund every year, and distressed companies may need
+                rescue capital. A fully-deployed fund has no flexibility.</li>
+              <li><strong>Watch venture runway.</strong> Startups burn cash every year; know when each holding runs dry.</li>
+              <li><strong>Finalize your deals</strong> in Phase 2 &mdash; don't leave them to auto-close.</li>
+              <li><strong>Diversify early years.</strong> Companies are only on the market in their listed year; the catalog
+                spans all seven.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+{% endblock %}
