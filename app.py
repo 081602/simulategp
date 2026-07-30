@@ -270,7 +270,7 @@ def create_game_self_service():
                   'instructor.', 'warning')
             return redirect(url_for('create_game_self_service'))
 
-        game = Game(name=game_name or f'{firm_name} — Test Game',
+        game = Game(name=game_name or firm_name,
                     current_year=1, current_phase=1, status='active',
                     join_code=_new_join_code())
         db.session.add(game)
