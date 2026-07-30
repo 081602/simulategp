@@ -18,6 +18,41 @@
     </a>
   </div>
 
+  <!-- First-time quick start (Year 1 Phase 1 only; hideable, remembered per browser) -->
+  {% if game.current_year == 1 and game.current_phase == 1 and game.status == 'active' %}
+  <div class="card border-warning bg-dark text-white mb-4" id="quickstartCard" style="display:none">
+    <div class="card-body py-3">
+      <div class="d-flex justify-content-between align-items-center gap-2">
+        <a class="text-warning fw-semibold text-decoration-none flex-grow-1"
+           data-bs-toggle="collapse" href="#quickstartBody" role="button" aria-expanded="false">
+          <i class="bi bi-stars"></i> Is this your first time? Click here for a quick-start guide!
+          <i class="bi bi-chevron-down small"></i>
+        </a>
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="quickstartHide"
+                title="Hide this permanently on this browser">
+          <i class="bi bi-x-lg"></i> Hide
+        </button>
+      </div>
+      <div class="collapse mt-3" id="quickstartBody">
+        <p class="mb-2">
+          You are the <strong>GP of your fund</strong>, and it's <strong>Year 1, Phase 1</strong> &mdash; time to find deals:
+        </p>
+        <ol class="mb-3">
+          <li>Click <a href="{{ url_for('dealflow') }}" class="text-warning fw-semibold">DEAL FLOW</a>
+            to search for companies to invest in.</li>
+          <li>Submit <strong>TERM SHEETS</strong> for the companies you want to invest in.</li>
+          <li>When you've submitted all the term sheets you want, come back to this Dashboard and click
+            <strong>MARK DEAL PHASE COMPLETE</strong>. Once every team has, the Deal Process runs and
+            Phase 2 of the game begins.</li>
+        </ol>
+        <a href="{{ url_for('guide') }}" class="btn btn-sm btn-outline-info">
+          <i class="bi bi-book"></i> Read the full How-to-Play guide
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
   <!-- Phase completion / auto-advance -->
   {% if game.status == 'active' and not game.is_complete %}
   <div class="card border-info bg-dark text-white mb-4" id="phaseReadyCard"
@@ -342,6 +377,20 @@
 
 {% block scripts %}
 <script>
+/* First-time quick start: hidden permanently (per browser) once dismissed.
+   The card starts display:none so dismissed users never see it flash. */
+(function initQuickstart() {
+  var card = document.getElementById('quickstartCard');
+  if (!card) return;
+  if (localStorage.getItem('sgpHideQuickstart') === '1') { card.remove(); return; }
+  card.style.display = '';
+  var hide = document.getElementById('quickstartHide');
+  if (hide) hide.addEventListener('click', function () {
+    localStorage.setItem('sgpHideQuickstart', '1');
+    card.remove();
+  });
+})();
+
 /* Live phase-readiness: refresh the roster every few seconds, and reload the
    page when the phase advances (auto-crank fired, or the instructor ran it)
    so the team immediately sees the new phase. */
