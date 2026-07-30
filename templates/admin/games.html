@@ -73,18 +73,27 @@
               <td class="text-center">{{ r.teams }}</td>
               <td class="text-center">{{ r.companies }}</td>
               <td class="text-center">{{ r.active_deals }}</td>
-              <td class="text-end">
+              <td class="text-end text-nowrap">
                 {% if g.is_archived %}
                 <form method="POST" action="{{ url_for('admin_unarchive_game') }}" class="m-0 d-inline">
                   <input type="hidden" name="game_id" value="{{ g.id }}">
                   <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-counterclockwise"></i> Restore</button>
                 </form>
-                {% elif g.id == current_id %}
+                {% else %}
+                {% if g.id == current_id %}
                 <a href="{{ url_for('admin_dashboard') }}" class="btn btn-sm btn-info text-dark">Open</a>
                 {% else %}
                 <form method="POST" action="{{ url_for('admin_select_game') }}" class="m-0 d-inline">
                   <input type="hidden" name="game_id" value="{{ g.id }}">
                   <button class="btn btn-sm btn-outline-info">Manage</button>
+                </form>
+                {% endif %}
+                <form method="POST" action="{{ url_for('admin_archive_game') }}" class="m-0 d-inline"
+                      onsubmit="return confirm('Archive {{ g.name }}? Its team logins will be disabled until restored; all data is kept.');">
+                  <input type="hidden" name="game_id" value="{{ g.id }}">
+                  <button class="btn btn-sm btn-outline-secondary" title="End this game: hide it and disable its team logins">
+                    <i class="bi bi-archive"></i> Archive
+                  </button>
                 </form>
                 {% endif %}
               </td>

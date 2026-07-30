@@ -85,6 +85,12 @@ def login():
         password = request.form.get('password', '')
         team = Team.query.filter_by(username=username).first()
         if team and team.check_password(password):
+            if not team.is_admin:
+                team_game = Game.query.get(team.game_id)
+                if team_game and team_game.is_archived:
+                    flash('This game has been archived by the instructor — '
+                          'its logins are disabled.', 'warning')
+                    return redirect(url_for('login'))
             login_user(team, remember=True)
             team.last_login = datetime.utcnow()
             team.last_seen = team.last_login
@@ -382,8 +388,16 @@ LAST_SEEN_REFRESH = timedelta(minutes=3)
 
 
 @app.before_request
-def touch_last_seen():
+def team_request_gate():
     if current_user.is_authenticated and not current_user.is_admin:
+        # A team whose game was archived is signed out on its next request —
+        # archiving a game retires its users along with it.
+        game = Game.query.get(current_user.game_id)
+        if game and game.is_archived:
+            logout_user()
+            flash('This game has been archived by the instructor — you have '
+                  'been signed out.', 'info')
+            return redirect(url_for('login'))
         now = datetime.utcnow()
         if (current_user.last_seen is None
                 or now - current_user.last_seen > LAST_SEEN_REFRESH):
@@ -2369,8 +2383,10 @@ def admin_archive_game():
     db.session.commit()
     if session.get('admin_game_id') == game.id:
         session.pop('admin_game_id', None)   # fall back to another active game
-    flash(f'Archived "{game.name}" (its data is kept).', 'info')
-    return redirect(url_for('admin_dashboard'))
+    flash(f'Archived "{game.name}" — its team logins are disabled and anyone '
+          f'signed in is logged out. All data is kept; restore the game to '
+          f're-enable it.', 'info')
+    return redirect(request.referrer or url_for('admin_dashboard'))
 
 
 @app.route('/admin/game/unarchive', methods=['POST'])
