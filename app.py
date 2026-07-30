@@ -120,8 +120,8 @@ def login():
             if not team.is_admin:
                 team_game = Game.query.get(team.game_id)
                 if team_game and team_game.is_archived:
-                    flash('This game has been archived by the instructor — '
-                          'its logins are disabled.', 'warning')
+                    flash('This game has been archived — its logins are '
+                          'disabled.', 'warning')
                     return redirect(url_for('login'))
             login_user(team, remember=True)
             team.last_login = datetime.utcnow()
@@ -295,8 +295,8 @@ def create_game_self_service():
             return redirect(url_for('create_game_self_service'))
         if (Game.query.filter_by(is_archived=False).count()
                 >= MAX_ACTIVE_GAMES):
-            flash('Too many active games right now — please contact your '
-                  'instructor.', 'warning')
+            flash('Too many active games right now — please try again later.',
+                  'warning')
             return redirect(url_for('create_game_self_service'))
 
         game = Game(name=game_name or firm_name,
@@ -497,8 +497,8 @@ def team_request_gate():
         game = Game.query.get(current_user.game_id)
         if game and game.is_archived:
             logout_user()
-            flash('This game has been archived by the instructor — you have '
-                  'been signed out.', 'info')
+            flash('This game has been archived — you have been signed out.',
+                  'info')
             return redirect(url_for('login'))
         now = datetime.utcnow()
         if (current_user.last_seen is None
@@ -631,7 +631,7 @@ def mark_ready():
                   f"team{'s' if remaining != 1 else ''} before the process "
                   f"runs automatically.", 'success')
         else:
-            flash('Marked complete. (Auto-advance is off — your instructor '
+            flash('Marked complete. (Auto-advance is off — the game admin '
                   'will run the process.)', 'success')
     return redirect(url_for('dashboard'))
 
