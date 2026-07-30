@@ -53,6 +53,48 @@
   </div>
   {% endif %}
 
+  <!-- First-time quick start for Phase 2 (Year 1 Phase 2 only; hideable) -->
+  {% if game.current_year == 1 and game.current_phase == 2 and game.status == 'active' %}
+  <div class="card border-warning bg-dark text-white mb-4" id="quickstartCardP2" style="display:none">
+    <div class="card-body py-3">
+      <div class="d-flex justify-content-between align-items-center gap-2">
+        <a class="text-warning fw-semibold text-decoration-none flex-grow-1"
+           data-bs-toggle="collapse" href="#quickstartBodyP2" role="button" aria-expanded="false">
+          <i class="bi bi-stars"></i> First time in Phase 2? Click here for a quick-start guide!
+          <i class="bi bi-chevron-down small"></i>
+        </a>
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="quickstartHideP2"
+                title="Hide this permanently on this browser">
+          <i class="bi bi-x-lg"></i> Hide
+        </button>
+      </div>
+      <div class="collapse mt-3" id="quickstartBodyP2">
+        <p class="mb-2">
+          The <strong>Deal Process has run</strong> &mdash; companies have chosen their lead investors.
+          Now it's <strong>Year 1, Phase 2</strong>: close your deals and manage your holdings.
+        </p>
+        <ol class="mb-3">
+          <li>Check <strong>Deal Activity</strong> above (or your
+            <a href="{{ url_for('timeline') }}" class="text-warning fw-semibold">TIMELINE</a>) to see how your
+            term sheets fared.</li>
+          <li>If you <strong>won a deal as lead</strong>, go to the
+            <a href="{{ url_for('timeline') }}" class="text-warning fw-semibold">TIMELINE</a> and
+            <strong>FINALIZE</strong> it &mdash; close it solo or invite co-investors. If another firm offered
+            <em>you</em> a co-investment, accept or reject it there too.</li>
+          <li>Visit your <a href="{{ url_for('portfolio') }}" class="text-warning fw-semibold">PORTFOLIO</a>
+            to see your new holdings.</li>
+          <li>When you're done, come back to this Dashboard and click
+            <strong>MARK RETURN PHASE COMPLETE</strong>. Once every team has, the Deal &amp; Return Process
+            runs &mdash; a year of performance is simulated and Year 2 begins.</li>
+        </ol>
+        <a href="{{ url_for('guide') }}" class="btn btn-sm btn-outline-info">
+          <i class="bi bi-book"></i> Read the full How-to-Play guide
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
   <!-- Phase completion / auto-advance -->
   {% if game.status == 'active' and not game.is_complete %}
   <div class="card border-info bg-dark text-white mb-4" id="phaseReadyCard"
@@ -377,17 +419,23 @@
 
 {% block scripts %}
 <script>
-/* First-time quick start: hidden permanently (per browser) once dismissed.
-   The card starts display:none so dismissed users never see it flash. */
-(function initQuickstart() {
-  var card = document.getElementById('quickstartCard');
-  if (!card) return;
-  if (localStorage.getItem('sgpHideQuickstart') === '1') { card.remove(); return; }
-  card.style.display = '';
-  var hide = document.getElementById('quickstartHide');
-  if (hide) hide.addEventListener('click', function () {
-    localStorage.setItem('sgpHideQuickstart', '1');
-    card.remove();
+/* First-time quick starts (Phase 1 and Phase 2 variants): hidden permanently
+   (per browser) once dismissed. Cards start display:none so dismissed users
+   never see them flash. */
+(function initQuickstarts() {
+  [
+    ['quickstartCard',   'quickstartHide',   'sgpHideQuickstart'],
+    ['quickstartCardP2', 'quickstartHideP2', 'sgpHideQuickstartP2']
+  ].forEach(function (cfg) {
+    var card = document.getElementById(cfg[0]);
+    if (!card) return;
+    if (localStorage.getItem(cfg[2]) === '1') { card.remove(); return; }
+    card.style.display = '';
+    var hide = document.getElementById(cfg[1]);
+    if (hide) hide.addEventListener('click', function () {
+      localStorage.setItem(cfg[2], '1');
+      card.remove();
+    });
   });
 })();
 
