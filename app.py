@@ -147,13 +147,27 @@ def _parse_team_signup_form():
         fund_size = 500.0
     if int(fund_size) not in FUND_SIZE_PARTNERS:
         fund_size = 500.0
-    return firm_name, username, password, fund_type, sector_focus, fund_size
+    # LP terms are the team's choice (entered as percentages), within sane
+    # bounds so a typo can't create a 200%-fee fund.
+    try:
+        mgmt_fee = float(request.form.get('management_fee', 2.0))
+    except ValueError:
+        mgmt_fee = 2.0
+    mgmt_fee = min(max(mgmt_fee, 0.0), 10.0) / 100
+    try:
+        perf_fee = float(request.form.get('performance_fee', 20.0))
+    except ValueError:
+        perf_fee = 20.0
+    perf_fee = min(max(perf_fee, 0.0), 50.0) / 100
+    return (firm_name, username, password, fund_type, sector_focus, fund_size,
+            mgmt_fee, perf_fee)
 
 
 def _create_team_with_fund(game, firm_name, username, password,
-                           fund_type, sector_focus, fund_size):
-    """Create a team in `game` with its Fund I at the standard 2%/20% terms
-    (same defaults as admin team creation). Caller commits."""
+                           fund_type, sector_focus, fund_size,
+                           mgmt_fee=0.02, perf_fee=0.20):
+    """Create a team in `game` with its Fund I at the team's chosen LP terms
+    (management fee and carried interest as decimals). Caller commits."""
     team = Team(
         game_id=game.id,
         username=username,
@@ -172,8 +186,8 @@ def _create_team_with_fund(game, firm_name, username, password,
         total_capital=fund_size,
         available_capital=fund_size,
         year_raised=game.current_year,
-        management_fee_rate=0.02,
-        performance_fee_rate=0.20,
+        management_fee_rate=mgmt_fee,
+        performance_fee_rate=perf_fee,
         operating_cost_rate=FUND_SIZE_OPEX.get(int(fund_size), 0.01),
     ))
     return team
@@ -196,8 +210,8 @@ def create_game_self_service():
                   'danger')
             return redirect(url_for('create_game_self_service'))
 
-        firm_name, username, password, fund_type, sector_focus, fund_size = \
-            _parse_team_signup_form()
+        (firm_name, username, password, fund_type, sector_focus, fund_size,
+         mgmt_fee, perf_fee) = _parse_team_signup_form()
         game_name = (request.form.get('game_name') or '').strip()
 
         if not firm_name or not username or not password:
@@ -221,7 +235,8 @@ def create_game_self_service():
         _seed_companies(game)
 
         team = _create_team_with_fund(game, firm_name, username, password,
-                                      fund_type, sector_focus, fund_size)
+                                      fund_type, sector_focus, fund_size,
+                                      mgmt_fee, perf_fee)
         game.owner_id = team.id   # creator "owns" their sandbox
         db.session.commit()
 
@@ -260,8 +275,8 @@ def join_game():
                   f'(Year 1, Phase 1).', 'warning')
             return redirect(url_for('join_game'))
 
-        firm_name, username, password, fund_type, sector_focus, fund_size = \
-            _parse_team_signup_form()
+        (firm_name, username, password, fund_type, sector_focus, fund_size,
+         mgmt_fee, perf_fee) = _parse_team_signup_form()
         if not firm_name or not username or not password:
             flash('Firm name, username, and password are all required.', 'danger')
             return redirect(url_for('join_game'))
@@ -271,7 +286,8 @@ def join_game():
             return redirect(url_for('join_game'))
 
         team = _create_team_with_fund(game, firm_name, username, password,
-                                      fund_type, sector_focus, fund_size)
+                                      fund_type, sector_focus, fund_size,
+                                      mgmt_fee, perf_fee)
         db.session.commit()
 
         login_user(team, remember=True)
