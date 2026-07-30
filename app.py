@@ -250,8 +250,7 @@ def create_game_self_service():
             flash('Self-service game creation is currently disabled.', 'warning')
             return redirect(url_for('create_game_self_service'))
         if not code or not hmac.compare_digest(code, expected):
-            flash('Invalid access code — ask your instructor for the current one.',
-                  'danger')
+            flash('Invalid access code.', 'danger')
             return redirect(url_for('create_game_self_service'))
 
         (firm_name, username, password, fund_type, sector_focus, fund_size,
