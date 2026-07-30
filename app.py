@@ -146,6 +146,23 @@ def guide():
     return render_template('guide.html')
 
 
+@app.route('/forgot')
+def forgot_login():
+    """Forgot-login form. The submission is sent client-side via EmailJS
+    (browser -> EmailJS -> instructor's inbox), so no server email
+    infrastructure is needed. The instructor then looks the player up on the
+    All Teams roster and replies manually. EmailJS credentials come from env
+    vars (kept out of the public repo); if unset, the page says the form is
+    unavailable."""
+    cfg = {
+        'service_id': os.environ.get('EMAILJS_SERVICE_ID', ''),
+        'template_id': os.environ.get('EMAILJS_TEMPLATE_ID', ''),
+        'public_key': os.environ.get('EMAILJS_PUBLIC_KEY', ''),
+    }
+    return render_template('forgot.html', emailjs=cfg,
+                           available=all(cfg.values()))
+
+
 # Cap on active (non-archived) games so the self-service page can't flood the
 # DB — each game seeds the full company catalog.
 MAX_ACTIVE_GAMES = 40
