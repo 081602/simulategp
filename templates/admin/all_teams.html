@@ -35,6 +35,7 @@
               <th>Firm</th>
               <th>Username</th>
               <th>Password</th>
+              <th>Email</th>
               <th>Mandate</th>
               <th>Last Login</th>
               <th>Last Seen</th>
@@ -49,6 +50,11 @@
               <td class="fw-semibold">{{ team.firm_name }}</td>
               <td><code>{{ team.username }}</code></td>
               <td><code>{{ team.password_plain or '—' }}</code></td>
+              <td class="small">
+                {% if team.email %}
+                <a href="mailto:{{ team.email }}" class="text-info text-decoration-none">{{ team.email }}</a>
+                {% else %}<span class="text-secondary">—</span>{% endif %}
+              </td>
               <td>
                 {% if team.fund_type == 'vc' %}
                 <span class="badge bg-danger">VC</span>

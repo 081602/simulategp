@@ -97,6 +97,14 @@
                      value="{{ team.firm_name }}" maxlength="100" required>
             </div>
 
+            <div class="col-md-8">
+              <label for="email" class="form-label fw-semibold text-white">Email</label>
+              <input type="email" class="form-control bg-dark text-white border-secondary"
+                     id="email" name="email" maxlength="255"
+                     value="{{ team.email or '' }}" placeholder="team@example.com">
+              <div class="form-text text-light small">Recovery contact; blank to clear.</div>
+            </div>
+
             <div class="col-md-4">
               <label for="fund_type" class="form-label fw-semibold text-white">Fund Type</label>
               <select class="form-select bg-dark text-white border-secondary" id="fund_type" name="fund_type">

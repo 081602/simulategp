@@ -193,19 +193,27 @@ def _parse_team_signup_form():
     if int(fund_size) not in FUND_SIZE_PARTNERS:
         fund_size = 500.0
     mgmt_fee, perf_fee = _parse_fee_structure()
+    email = (request.form.get('email') or '').strip().lower()
     return (firm_name, username, password, fund_type, sector_focus, fund_size,
-            mgmt_fee, perf_fee)
+            mgmt_fee, perf_fee, email)
+
+
+def _valid_email(email):
+    """Light sanity check — enough to catch typos, not full RFC validation."""
+    return (email and 3 <= len(email) <= 255 and email.count('@') == 1
+            and '.' in email.split('@')[1])
 
 
 def _create_team_with_fund(game, firm_name, username, password,
                            fund_type, sector_focus, fund_size,
-                           mgmt_fee=0.02, perf_fee=0.20):
+                           mgmt_fee=0.02, perf_fee=0.20, email=None):
     """Create a team in `game` with its Fund I at the team's chosen LP terms
     (management fee and carried interest as decimals). Caller commits."""
     team = Team(
         game_id=game.id,
         username=username,
         firm_name=firm_name,
+        email=email or None,
         reputation=5.0,
         sector_focus=sector_focus,
         fund_type=fund_type,
@@ -254,11 +262,15 @@ def create_game_self_service():
             return redirect(url_for('create_game_self_service'))
 
         (firm_name, username, password, fund_type, sector_focus, fund_size,
-         mgmt_fee, perf_fee) = _parse_team_signup_form()
+         mgmt_fee, perf_fee, email) = _parse_team_signup_form()
         game_name = (request.form.get('game_name') or '').strip()
 
         if not firm_name or not username or not password:
             flash('Firm name, username, and password are all required.', 'danger')
+            return redirect(url_for('create_game_self_service'))
+        if not _valid_email(email):
+            flash('Please enter a valid email address — it is how you recover '
+                  'your login if you forget it.', 'danger')
             return redirect(url_for('create_game_self_service'))
         if Team.query.filter_by(username=username).first():
             flash(f'Username "{username}" is already taken — pick another.',
@@ -279,7 +291,7 @@ def create_game_self_service():
 
         team = _create_team_with_fund(game, firm_name, username, password,
                                       fund_type, sector_focus, fund_size,
-                                      mgmt_fee, perf_fee)
+                                      mgmt_fee, perf_fee, email)
         game.owner_id = team.id   # creator "owns" their sandbox
         db.session.commit()
 
@@ -322,9 +334,13 @@ def join_game():
             return redirect(url_for('join_game'))
 
         (firm_name, username, password, fund_type, sector_focus, fund_size,
-         mgmt_fee, perf_fee) = _parse_team_signup_form()
+         mgmt_fee, perf_fee, email) = _parse_team_signup_form()
         if not firm_name or not username or not password:
             flash('Firm name, username, and password are all required.', 'danger')
+            return redirect(url_for('join_game'))
+        if not _valid_email(email):
+            flash('Please enter a valid email address — it is how you recover '
+                  'your login if you forget it.', 'danger')
             return redirect(url_for('join_game'))
         if Team.query.filter_by(username=username).first():
             flash(f'Username "{username}" is already taken — pick another.',
@@ -333,7 +349,7 @@ def join_game():
 
         team = _create_team_with_fund(game, firm_name, username, password,
                                       fund_type, sector_focus, fund_size,
-                                      mgmt_fee, perf_fee)
+                                      mgmt_fee, perf_fee, email)
         db.session.commit()
 
         login_user(team, remember=True)
@@ -2004,6 +2020,7 @@ def admin_create_team():
         game_id=game.id,
         username=username,
         firm_name=firm_name,
+        email=(request.form.get('email') or '').strip().lower() or None,
         reputation=5.0,
         sector_focus=sector_focus,
         fund_type=fund_type,
@@ -2100,6 +2117,8 @@ def admin_edit_team(team_id):
         new_pw = request.form.get('new_password', '').strip()
         if new_pw:
             team.set_password(new_pw)
+        if 'email' in request.form:
+            team.email = request.form.get('email', '').strip().lower() or None
 
         # Fund adjustments
         for fund in team.funds:
@@ -2641,7 +2660,8 @@ def _ensure_schema():
                  ('is_archived', f'BOOLEAN {bool_false}'),
                  ('join_code', 'VARCHAR(12)')],
         'team': [('ready_year', 'INTEGER'), ('ready_phase', 'INTEGER'),
-                 ('last_login', 'TIMESTAMP'), ('last_seen', 'TIMESTAMP')],
+                 ('last_login', 'TIMESTAMP'), ('last_seen', 'TIMESTAMP'),
+                 ('email', 'VARCHAR(255)')],
     }
     for table, cols in wanted.items():
         if not insp.has_table(table):
