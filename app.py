@@ -215,6 +215,41 @@ def _parse_team_signup_form():
             mgmt_fee, perf_fee, email)
 
 
+def _notify_admin_email(subject, message):
+    """Email the site admin a notification via EmailJS's REST API (server-side;
+    requires the account's private key and the "non-browser applications"
+    toggle in EmailJS Security). Sends in a background thread so signups never
+    wait on it. No-ops unless EMAILJS_SERVICE_ID / EMAILJS_PUBLIC_KEY /
+    EMAILJS_PRIVATE_KEY / EMAILJS_ADMIN_TEMPLATE_ID are all set; failures are
+    logged, never raised."""
+    import threading
+    import urllib.request
+    service = os.environ.get('EMAILJS_SERVICE_ID')
+    template = os.environ.get('EMAILJS_ADMIN_TEMPLATE_ID')
+    public = os.environ.get('EMAILJS_PUBLIC_KEY')
+    private = os.environ.get('EMAILJS_PRIVATE_KEY')
+    if not all((service, template, public, private)):
+        return
+    payload = json.dumps({
+        'service_id': service,
+        'template_id': template,
+        'user_id': public,
+        'accessToken': private,
+        'template_params': {'subject': subject, 'message': message},
+    }).encode()
+    req = urllib.request.Request(
+        'https://api.emailjs.com/api/v1.0/email/send', data=payload,
+        headers={'Content-Type': 'application/json'})
+
+    def _send():
+        try:
+            urllib.request.urlopen(req, timeout=8)
+        except Exception as e:
+            print(f"[notify_admin] EmailJS send failed: {e}")
+
+    threading.Thread(target=_send, daemon=True).start()
+
+
 def _valid_email(email):
     """Light sanity check — enough to catch typos, not full RFC validation."""
     return (email and 3 <= len(email) <= 255 and email.count('@') == 1
@@ -316,6 +351,12 @@ def create_game_self_service():
         team.last_login = datetime.utcnow()
         team.last_seen = team.last_login
         db.session.commit()
+        _notify_admin_email(
+            'SimulateGP: new game created',
+            f'A new game was just created on simulategp.com.\n\n'
+            f'Game: {game.name} (join code {game.join_code})\n'
+            f'Firm: {firm_name}\nUsername: {username}\nEmail: {email}\n'
+            f'Fund: ${fund_size:,.0f}M {fund_type.upper()}, {sector_focus}')
         flash(f'Welcome to "{game.name}"! Your fund is raised — search for '
               f'companies to get started. When you finish a phase, mark it '
               f'complete on your dashboard and the simulation advances '
@@ -373,6 +414,12 @@ def join_game():
         team.last_login = datetime.utcnow()
         team.last_seen = team.last_login
         db.session.commit()
+        _notify_admin_email(
+            'SimulateGP: new team joined a game',
+            f'A new team just joined a game on simulategp.com.\n\n'
+            f'Game: {game.name}\n'
+            f'Firm: {firm_name}\nUsername: {username}\nEmail: {email}\n'
+            f'Fund: ${fund_size:,.0f}M {fund_type.upper()}, {sector_focus}')
         flash(f'Welcome to "{game.name}"! Your fund is raised — search for '
               f'companies to get started.', 'success')
         return redirect(url_for('dashboard'))
