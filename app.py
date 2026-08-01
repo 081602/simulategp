@@ -797,16 +797,56 @@ def firm_directory():
 @login_required
 def edit_firm():
     game = Game.query.get(current_user.game_id)
-    if game.current_year > 1:
-        flash('Firm profile can only be edited in Year 1.', 'warning')
-        return redirect(url_for('firm_directory'))
+    # Firm identity is locked after Year 1, but the page stays reachable —
+    # the Account & Login section (email / password) is editable any time.
+    can_edit_firm = game.current_year == 1
     if request.method == 'POST':
+        if not can_edit_firm:
+            flash('Firm profile can only be edited in Year 1.', 'warning')
+            return redirect(url_for('edit_firm'))
         current_user.firm_name = request.form.get('firm_name', current_user.firm_name).strip()
         current_user.about_us = request.form.get('about_us', '').strip()
         db.session.commit()
         flash('Firm profile updated.', 'success')
         return redirect(url_for('firm_directory'))
-    return render_template('edit_firm.html', game=game)
+    return render_template('edit_firm.html', game=game,
+                           can_edit_firm=can_edit_firm)
+
+
+@app.route('/account/update', methods=['POST'])
+@login_required
+def update_account():
+    """Update the player's contact email and (optionally) password. The same
+    login may exist in several games, so changes apply to every team sharing
+    this username + current password — otherwise a password change would split
+    the player's cross-game identity (the login game-picker links teams by
+    password)."""
+    if current_user.is_admin:
+        abort(403)
+    email = (request.form.get('email') or '').strip().lower()
+    new_pw = (request.form.get('new_password') or '').strip()
+    if not _valid_email(email):
+        flash('Please enter a valid email address.', 'danger')
+        return redirect(url_for('edit_firm'))
+    me = Team.query.get(current_user.id)
+    linked = [me]
+    if me.password_plain:
+        linked = [t for t in Team.query.filter_by(username=me.username).all()
+                  if t.check_password(me.password_plain)]
+        if me.id not in [t.id for t in linked]:
+            linked.append(me)
+    for t in linked:
+        t.email = email
+        if new_pw:
+            t.set_password(new_pw)
+    db.session.commit()
+    msg = 'Account updated'
+    if new_pw:
+        msg += ' — new password saved'
+    if len(linked) > 1:
+        msg += f' (applied across your {len(linked)} games)'
+    flash(msg + '.', 'success')
+    return redirect(url_for('edit_firm'))
 
 
 # ---------------------------------------------------------------------------

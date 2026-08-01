@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Edit Firm Profile{% endblock %}
+{% block title %}Edit Profile{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -10,12 +10,67 @@
         <i class="bi bi-arrow-left"></i>
       </a>
       <div>
-        <h2 class="fw-bold mb-0"><i class="bi bi-pencil-square text-warning"></i> Edit Firm Profile</h2>
-        <p class="text-secondary mb-0">Update your firm's public-facing information</p>
+        <h2 class="fw-bold mb-0"><i class="bi bi-pencil-square text-warning"></i> Edit Profile</h2>
+        <p class="text-secondary mb-0">Your login details and your firm's public-facing information</p>
       </div>
     </div>
 
+    <!-- Account & Login -->
+    <div class="card border-secondary shadow mb-4">
+      <div class="card-header border-secondary">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-person-badge text-warning"></i> Account &amp; Login</h6>
+      </div>
+      <div class="card-body p-4">
+        <form method="POST" action="{{ url_for('update_account') }}">
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-white">Username</label>
+              <input type="text" class="form-control bg-dark text-secondary border-secondary"
+                     value="{{ current_user.username }}" disabled>
+              <div class="form-text text-secondary">Usernames can't be changed.</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-white">Current Password</label>
+              <input type="text" class="form-control bg-dark text-secondary border-secondary"
+                     value="{{ current_user.password_plain or '—' }}" disabled>
+              <div class="form-text text-secondary">Case-sensitive.</div>
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="acct_email" class="form-label fw-semibold text-white">Email</label>
+              <input type="email" id="acct_email" name="email" maxlength="255" required
+                     class="form-control bg-dark text-white border-secondary"
+                     value="{{ current_user.email or '' }}">
+              <div class="form-text text-secondary">Used to recover your login if you forget it.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="acct_new_pw" class="form-label fw-semibold text-white">
+                New Password <span class="text-secondary small fw-normal">(optional)</span>
+              </label>
+              <input type="text" id="acct_new_pw" name="new_password" maxlength="100"
+                     class="form-control bg-dark text-white border-secondary"
+                     placeholder="Leave blank to keep current" autocomplete="new-password">
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span class="text-secondary small">Changes apply to this login in every game you play.</span>
+            <button type="submit" class="btn btn-warning text-dark fw-semibold">
+              <i class="bi bi-check-circle"></i> Save Account
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Firm profile -->
     <div class="card border-secondary shadow">
+      <div class="card-header border-secondary d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-building text-warning"></i> Firm Profile</h6>
+        {% if not can_edit_firm %}
+        <span class="badge bg-secondary"><i class="bi bi-lock"></i> Locked after Year 1</span>
+        {% endif %}
+      </div>
       <div class="card-body p-4">
         <form method="POST" action="{{ url_for('edit_firm') }}">
 
@@ -29,6 +84,7 @@
                    name="firm_name"
                    value="{{ current_user.firm_name }}"
                    maxlength="100"
+                   {% if not can_edit_firm %}disabled{% endif %}
                    required>
             <div class="form-text text-secondary">This name is visible to all participants.</div>
           </div>
@@ -42,6 +98,7 @@
                       name="about_us"
                       rows="5"
                       maxlength="500"
+                      {% if not can_edit_firm %}disabled{% endif %}
                       placeholder="Describe your firm's investment strategy, focus sectors, and competitive advantage...">{{ current_user.about_us or '' }}</textarea>
             <div class="d-flex justify-content-between form-text text-secondary">
               <span>Shown on the firm directory to other teams.</span>
@@ -49,6 +106,7 @@
             </div>
           </div>
 
+          {% if can_edit_firm %}
           <div class="d-flex gap-2 justify-content-end">
             <a href="{{ url_for('firm_directory') }}" class="btn btn-outline-secondary">
               <i class="bi bi-x-circle"></i> Cancel
@@ -57,6 +115,11 @@
               <i class="bi bi-check-circle"></i> Save Changes
             </button>
           </div>
+          {% else %}
+          <p class="text-secondary small mb-0">
+            <i class="bi bi-info-circle"></i> Firm name and description are locked once the game moves past Year 1.
+          </p>
+          {% endif %}
 
         </form>
       </div>
