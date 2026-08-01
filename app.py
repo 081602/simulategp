@@ -298,6 +298,16 @@ def _valid_email(email):
             and '.' in email.split('@')[1])
 
 
+def _username_password_ok(username, password):
+    """A username in use anywhere may only be reused with its existing
+    password — that's what makes the same login work across games (and what
+    catches a returning player who typos their password, instead of silently
+    splitting them into two identities). Free usernames always pass."""
+    existing = Team.query.filter_by(username=username).all()
+    return (not existing
+            or any(t.check_password(password) for t in existing))
+
+
 def _create_team_with_fund(game, firm_name, username, password,
                            fund_type, sector_focus, fund_size,
                            mgmt_fee=0.02, perf_fee=0.20, email=None):
@@ -368,6 +378,11 @@ def create_game_self_service():
             return redirect(url_for('create_game_self_service'))
         if username.lower() == 'admin':
             flash('That username is reserved — pick another.', 'danger')
+            return redirect(url_for('create_game_self_service'))
+        if not _username_password_ok(username, password):
+            flash('That username is already in use with a different password. '
+                  'If it\'s yours, enter your usual password; otherwise pick '
+                  'a different username.', 'danger')
             return redirect(url_for('create_game_self_service'))
         if (Game.query.filter_by(is_archived=False).count()
                 >= MAX_ACTIVE_GAMES):
@@ -448,6 +463,11 @@ def join_game():
         if Team.query.filter_by(game_id=game.id, username=username).first():
             flash(f'Username "{username}" is already taken in this game — '
                   f'pick another.', 'danger')
+            return redirect(url_for('join_game'))
+        if not _username_password_ok(username, password):
+            flash('That username is already in use with a different password. '
+                  'If it\'s yours, enter your usual password; otherwise pick '
+                  'a different username.', 'danger')
             return redirect(url_for('join_game'))
 
         team = _create_team_with_fund(game, firm_name, username, password,
