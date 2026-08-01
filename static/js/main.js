@@ -348,7 +348,46 @@ window.SimulateGP.renderTeamInputs = function(containerId, count) {
 
 
 /* ----------------------------------------------------------
-   12. Toast Notifications helper (for future use)
+   12. Archived-status toggle (All / Active / Archived)
+      A button group with [data-archived-toggle="#tableSel"]
+      filters rows by their data-archived attribute. Visibility
+      composes with any text filter via two hide flags per row.
+   ---------------------------------------------------------- */
+window.SimulateGP = window.SimulateGP || {};
+
+window.SimulateGP.refreshRowVisibility = function (tr) {
+  tr.style.display =
+    (tr.dataset.hideStatus === '1' || tr.dataset.hideQuery === '1') ? 'none' : '';
+};
+
+(function initArchivedToggles() {
+  document.querySelectorAll('[data-archived-toggle]').forEach(function (group) {
+    var table = document.querySelector(group.getAttribute('data-archived-toggle'));
+    if (!table) return;
+    var btns = group.querySelectorAll('button[data-status]');
+
+    function apply(status) {
+      btns.forEach(function (b) {
+        b.classList.toggle('active', b.dataset.status === status);
+      });
+      table.querySelectorAll('tbody tr').forEach(function (tr) {
+        var archived = tr.getAttribute('data-archived') === '1';
+        var ok = (status === 'all') || ((status === 'archived') === archived);
+        tr.dataset.hideStatus = ok ? '' : '1';
+        window.SimulateGP.refreshRowVisibility(tr);
+      });
+    }
+
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.dataset.status); });
+    });
+    apply('active');   // default view: active games
+  });
+})();
+
+
+/* ----------------------------------------------------------
+   13. Toast Notifications helper (for future use)
    ---------------------------------------------------------- */
 window.SimulateGP.showToast = function(message, type) {
   type = type || 'info';

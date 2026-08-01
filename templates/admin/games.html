@@ -21,10 +21,18 @@
     </div>
 
     <div class="card border-secondary shadow">
+      <div class="card-header border-secondary d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-controller text-warning"></i> Games</h6>
+        <div class="btn-group btn-group-sm" role="group" data-archived-toggle="#gamesTable">
+          <button type="button" class="btn btn-outline-secondary" data-status="all">All</button>
+          <button type="button" class="btn btn-outline-secondary" data-status="active">Active</button>
+          <button type="button" class="btn btn-outline-secondary" data-status="archived">Archived</button>
+        </div>
+      </div>
       <div class="card-body p-0">
         {% if rows %}
         <div class="table-responsive">
-          <table class="table table-dark table-hover align-middle mb-0">
+          <table class="table table-dark table-hover align-middle mb-0" id="gamesTable">
             <thead><tr>
               <th class="sortable" style="cursor:pointer" title="Click to sort">Game <i class="bi bi-arrow-down-up small text-secondary"></i></th>
               <th>Status</th>
@@ -38,7 +46,8 @@
             <tbody>
             {% for r in rows %}
             {% set g = r.game %}
-            <tr {% if g.is_archived %}class="opacity-50"{% endif %}>
+            <tr data-archived="{{ '1' if g.is_archived else '0' }}"
+                {% if g.is_archived %}class="opacity-50"{% endif %}>
               <td data-sort="{{ g.name | lower }}" class="fw-semibold">
                 {{ g.name }}
                 {% if g.id == current_id %}<span class="badge bg-info text-dark ms-1">Managing</span>{% endif %}

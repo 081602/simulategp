@@ -23,8 +23,15 @@
     <div class="card border-secondary shadow">
       <div class="card-header border-secondary d-flex justify-content-between align-items-center flex-wrap gap-2">
         <h6 class="mb-0 fw-semibold"><i class="bi bi-key text-warning"></i> Logins &amp; Mandates</h6>
-        <input type="text" id="rosterFilter" class="form-control form-control-sm bg-dark text-white border-secondary"
-               style="max-width:260px" placeholder="Filter by team, game, mandate&hellip;">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <div class="btn-group btn-group-sm" role="group" data-archived-toggle="#rosterTable">
+            <button type="button" class="btn btn-outline-secondary" data-status="all">All</button>
+            <button type="button" class="btn btn-outline-secondary" data-status="active">Active</button>
+            <button type="button" class="btn btn-outline-secondary" data-status="archived">Archived</button>
+          </div>
+          <input type="text" id="rosterFilter" class="form-control form-control-sm bg-dark text-white border-secondary"
+                 style="max-width:260px" placeholder="Filter by team, game, mandate&hellip;">
+        </div>
       </div>
       <div class="card-body p-0">
         {% if rows %}
@@ -41,7 +48,8 @@
             </tr></thead>
             <tbody>
             {% for team, g in rows %}
-            <tr {% if g.is_archived %}class="opacity-50"{% endif %}>
+            <tr data-archived="{{ '1' if g.is_archived else '0' }}"
+                {% if g.is_archived %}class="opacity-50"{% endif %}>
               <td data-sort="{{ g.name | lower }}">
                 {{ g.name }}
                 {% if g.is_archived %}<span class="badge bg-secondary ms-1">Archived</span>{% endif %}
@@ -104,7 +112,9 @@
   input.addEventListener('input', function () {
     var q = input.value.trim().toLowerCase();
     table.querySelectorAll('tbody tr').forEach(function (tr) {
-      tr.style.display = (!q || tr.textContent.toLowerCase().indexOf(q) !== -1) ? '' : 'none';
+      var match = !q || tr.textContent.toLowerCase().indexOf(q) !== -1;
+      tr.dataset.hideQuery = match ? '' : '1';
+      window.SimulateGP.refreshRowVisibility(tr);
     });
   });
 })();
