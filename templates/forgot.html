@@ -65,9 +65,12 @@
     var btn = document.getElementById('forgotSubmit');
     btn.disabled = true;
     document.getElementById('forgotErr').classList.add('d-none');
+    var email = document.getElementById('requesterEmail').value.trim();
+    var note = document.getElementById('requesterNote').value.trim() || '(none)';
     emailjs.send({{ emailjs.service_id | tojson }}, {{ emailjs.template_id | tojson }}, {
-      requester_email: document.getElementById('requesterEmail').value.trim(),
-      message: document.getElementById('requesterNote').value.trim() || '(none)'
+      subject: 'SimulateGP: login help request',
+      requester_email: email,
+      message: 'A player forgot their login.\nTheir email: ' + email + '\nNote: ' + note
     }).then(function () {
       document.getElementById('forgotForm').classList.add('d-none');
       document.getElementById('forgotOk').classList.remove('d-none');
