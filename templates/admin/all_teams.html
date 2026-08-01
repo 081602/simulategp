@@ -22,16 +22,13 @@
 
     <div class="card border-secondary shadow">
       <div class="card-header border-secondary d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <h6 class="mb-0 fw-semibold"><i class="bi bi-key text-warning"></i> Logins &amp; Mandates</h6>
-        <div class="d-flex align-items-center gap-2 flex-wrap">
-          <div class="btn-group btn-group-sm" role="group" data-archived-toggle="#rosterTable">
-            <button type="button" class="btn btn-outline-secondary" data-status="all">All</button>
-            <button type="button" class="btn btn-outline-secondary" data-status="active">Active</button>
-            <button type="button" class="btn btn-outline-secondary" data-status="archived">Archived</button>
-          </div>
-          <input type="text" id="rosterFilter" class="form-control form-control-sm bg-dark text-white border-secondary"
-                 style="max-width:260px" placeholder="Filter by team, game, mandate&hellip;">
+        <div class="btn-group btn-group-sm" role="group" data-archived-toggle="#rosterTable">
+          <button type="button" class="btn btn-outline-secondary" data-status="all">All</button>
+          <button type="button" class="btn btn-outline-secondary" data-status="active">Active</button>
+          <button type="button" class="btn btn-outline-secondary" data-status="archived">Archived</button>
         </div>
+        <input type="text" id="rosterFilter" class="form-control form-control-sm bg-dark text-white border-secondary"
+               style="max-width:260px" placeholder="Filter by team, game, mandate&hellip;">
       </div>
       <div class="card-body p-0">
         {% if rows %}
