@@ -418,6 +418,21 @@
 {% endblock %}
 
 {% block scripts %}
+{% if admin_notify and notify_cfg %}
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+/* One-shot admin notification queued at signup (popped server-side, so a
+   refresh won't resend). Sent from the browser like the forgot page. */
+try {
+  emailjs.init({ publicKey: {{ notify_cfg.public_key | tojson }} });
+  emailjs.send({{ notify_cfg.service_id | tojson }}, {{ notify_cfg.template_id | tojson }}, {
+    subject: {{ admin_notify.subject | tojson }},
+    message: {{ admin_notify.message | tojson }},
+    requester_email: {{ admin_notify.requester_email | tojson }}
+  }).catch(function () {});
+} catch (e) {}
+</script>
+{% endif %}
 <script>
 /* First-time quick starts (Phase 1 and Phase 2 variants): hidden permanently
    (per browser) once dismissed. Cards start display:none so dismissed users

@@ -154,11 +154,7 @@ def forgot_login():
     All Teams roster and replies manually. EmailJS credentials come from env
     vars (kept out of the public repo); if unset, the page says the form is
     unavailable."""
-    cfg = {
-        'service_id': os.environ.get('EMAILJS_SERVICE_ID', ''),
-        'template_id': os.environ.get('EMAILJS_TEMPLATE_ID', ''),
-        'public_key': os.environ.get('EMAILJS_PUBLIC_KEY', ''),
-    }
+    cfg = _emailjs_cfg()
     return render_template('forgot.html', emailjs=cfg,
                            available=all(cfg.values()))
 
@@ -215,39 +211,32 @@ def _parse_team_signup_form():
             mgmt_fee, perf_fee, email)
 
 
-def _notify_admin_email(subject, message):
-    """Email the site admin a notification via EmailJS's REST API (server-side;
-    requires the account's private key and the "non-browser applications"
-    toggle in EmailJS Security). Sends in a background thread so signups never
-    wait on it. No-ops unless EMAILJS_SERVICE_ID / EMAILJS_PUBLIC_KEY /
-    EMAILJS_PRIVATE_KEY / EMAILJS_ADMIN_TEMPLATE_ID are all set; failures are
-    logged, never raised."""
-    import threading
-    import urllib.request
-    service = os.environ.get('EMAILJS_SERVICE_ID')
-    template = os.environ.get('EMAILJS_ADMIN_TEMPLATE_ID')
-    public = os.environ.get('EMAILJS_PUBLIC_KEY')
-    private = os.environ.get('EMAILJS_PRIVATE_KEY')
-    if not all((service, template, public, private)):
-        return
-    payload = json.dumps({
-        'service_id': service,
+def _notify_admin_email(subject, message, requester_email=''):
+    """Queue an admin notification to be sent from the player's browser on
+    their next page load, via the same client-side EmailJS setup the forgot
+    page uses — no server email infrastructure or private key needed. The
+    dashboard pops the payload (so it sends exactly once) and fires it with
+    the existing EmailJS credentials. Uses EMAILJS_ADMIN_TEMPLATE_ID if set
+    (a generic {{subject}}/{{message}} template), else falls back to the
+    forgot-page template."""
+    session['admin_notify'] = {
+        'subject': subject,
+        'message': message,
+        'requester_email': requester_email,
+    }
+
+
+def _emailjs_cfg(admin=False):
+    """Client-side EmailJS config from env. For admin notifications, prefer
+    the generic admin template when configured."""
+    template = os.environ.get('EMAILJS_TEMPLATE_ID', '')
+    if admin:
+        template = os.environ.get('EMAILJS_ADMIN_TEMPLATE_ID', '') or template
+    return {
+        'service_id': os.environ.get('EMAILJS_SERVICE_ID', ''),
         'template_id': template,
-        'user_id': public,
-        'accessToken': private,
-        'template_params': {'subject': subject, 'message': message},
-    }).encode()
-    req = urllib.request.Request(
-        'https://api.emailjs.com/api/v1.0/email/send', data=payload,
-        headers={'Content-Type': 'application/json'})
-
-    def _send():
-        try:
-            urllib.request.urlopen(req, timeout=8)
-        except Exception as e:
-            print(f"[notify_admin] EmailJS send failed: {e}")
-
-    threading.Thread(target=_send, daemon=True).start()
+        'public_key': os.environ.get('EMAILJS_PUBLIC_KEY', ''),
+    }
 
 
 def _valid_email(email):
@@ -356,7 +345,8 @@ def create_game_self_service():
             f'A new game was just created on simulategp.com.\n\n'
             f'Game: {game.name} (join code {game.join_code})\n'
             f'Firm: {firm_name}\nUsername: {username}\nEmail: {email}\n'
-            f'Fund: ${fund_size:,.0f}M {fund_type.upper()}, {sector_focus}')
+            f'Fund: ${fund_size:,.0f}M {fund_type.upper()}, {sector_focus}',
+            email)
         flash(f'Welcome to "{game.name}"! Your fund is raised — search for '
               f'companies to get started. When you finish a phase, mark it '
               f'complete on your dashboard and the simulation advances '
@@ -419,7 +409,8 @@ def join_game():
             f'A new team just joined a game on simulategp.com.\n\n'
             f'Game: {game.name}\n'
             f'Firm: {firm_name}\nUsername: {username}\nEmail: {email}\n'
-            f'Fund: ${fund_size:,.0f}M {fund_type.upper()}, {sector_focus}')
+            f'Fund: ${fund_size:,.0f}M {fund_type.upper()}, {sector_focus}',
+            email)
         flash(f'Welcome to "{game.name}"! Your fund is raised — search for '
               f'companies to get started.', 'success')
         return redirect(url_for('dashboard'))
@@ -638,7 +629,15 @@ def dashboard():
                           for c in recap_cos]
     ret = team_simple_return(current_user, game)
     ready_roster, ready_count, total_teams = _readiness(game)
+    # Pending admin notification (queued at signup): pop it so the browser
+    # sends it exactly once, via the same EmailJS setup the forgot page uses.
+    admin_notify = session.pop('admin_notify', None)
+    notify_cfg = _emailjs_cfg(admin=True) if admin_notify else None
+    if notify_cfg and not all(notify_cfg.values()):
+        notify_cfg = None   # EmailJS not configured — skip silently
     return render_template('dashboard.html',
+                           admin_notify=admin_notify if notify_cfg else None,
+                           notify_cfg=notify_cfg,
                            game=game,
                            notifications=notifications,
                            active_deals=active_deals,
