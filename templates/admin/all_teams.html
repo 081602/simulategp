@@ -31,7 +31,7 @@
         <div class="table-responsive">
           <table class="table table-dark table-hover align-middle mb-0" id="rosterTable">
             <thead><tr>
-              <th>Game</th>
+              <th class="sortable" style="cursor:pointer" title="Click to sort">Game <i class="bi bi-arrow-down-up small text-secondary"></i></th>
               <th class="sortable" style="cursor:pointer" title="Click to sort">Join Code <i class="bi bi-arrow-down-up small text-secondary"></i></th>
               <th class="sortable" style="cursor:pointer" title="Click to sort">Firm <span class="text-secondary small fw-normal">(email)</span> <i class="bi bi-arrow-down-up small text-secondary"></i></th>
               <th class="sortable" style="cursor:pointer" title="Click to sort">Username <span class="text-secondary small fw-normal">(password)</span> <i class="bi bi-arrow-down-up small text-secondary"></i></th>
@@ -42,7 +42,7 @@
             <tbody>
             {% for team, g in rows %}
             <tr {% if g.is_archived %}class="opacity-50"{% endif %}>
-              <td>
+              <td data-sort="{{ g.name | lower }}">
                 {{ g.name }}
                 {% if g.is_archived %}<span class="badge bg-secondary ms-1">Archived</span>{% endif %}
               </td>
