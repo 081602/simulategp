@@ -87,7 +87,12 @@ class Game(db.Model):
 class Team(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'), nullable=False)
-    username = db.Column(db.String(50), unique=True, nullable=False)
+    # Usernames are unique PER GAME (not globally): one person reuses their
+    # login across the games they play; login disambiguates by password and,
+    # when several games match, a game-selection step.
+    username = db.Column(db.String(50), nullable=False)
+    __table_args__ = (db.UniqueConstraint('game_id', 'username',
+                                          name='uq_team_game_username'),)
     password_hash = db.Column(db.String(256), nullable=False)
     password_plain = db.Column(db.String(100), default='')  # shown to admin; classroom tool, not sensitive
     firm_name = db.Column(db.String(100), nullable=False)

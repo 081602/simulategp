@@ -115,21 +115,74 @@ def login():
             return redirect(url_for('login'))
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '')
-        team = Team.query.filter_by(username=username).first()
-        if team and team.check_password(password):
-            if not team.is_admin:
-                team_game = Game.query.get(team.game_id)
-                if team_game and team_game.is_archived:
-                    flash('This game has been archived — its logins are '
-                          'disabled.', 'warning')
-                    return redirect(url_for('login'))
-            login_user(team, remember=True)
-            team.last_login = datetime.utcnow()
-            team.last_seen = team.last_login
-            db.session.commit()
-            return redirect(url_for('index'))
+        # A username may exist in several games (one per game); the password
+        # narrows the field to this person's teams.
+        candidates = Team.query.filter_by(username=username).all()
+        matches = [t for t in candidates if t.check_password(password)]
+        if matches:
+            usable = []
+            for t in matches:
+                if t.is_admin:
+                    usable.append(t)
+                    continue
+                g = Game.query.get(t.game_id)
+                if g and g.is_archived:
+                    continue   # archived games don't accept logins
+                usable.append(t)
+            if not usable:
+                flash('This game has been archived — its logins are disabled.',
+                      'warning')
+                return redirect(url_for('login'))
+            if len(usable) == 1:
+                return _complete_login(usable[0])
+            # Several active games share this login: let the player pick.
+            session['login_choices'] = {'ids': [t.id for t in usable],
+                                        'ts': time.time()}
+            return redirect(url_for('login_select'))
         flash('Invalid username or password.', 'danger')
     return render_template('login.html')
+
+
+def _complete_login(team):
+    login_user(team, remember=True)
+    team.last_login = datetime.utcnow()
+    team.last_seen = team.last_login
+    db.session.commit()
+    return redirect(url_for('index'))
+
+
+LOGIN_CHOICE_TTL = 300   # seconds a pending game-selection stays valid
+
+
+@app.route('/login/select', methods=['GET', 'POST'])
+def login_select():
+    """Second login step when one username+password exists in several games:
+    pick which (active) game to enter. The choice list lives in the session
+    and was built only from password-verified teams."""
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    pending = session.get('login_choices')
+    if not pending or time.time() - pending.get('ts', 0) > LOGIN_CHOICE_TTL:
+        session.pop('login_choices', None)
+        flash('Please log in again.', 'warning')
+        return redirect(url_for('login'))
+    choices = []
+    for tid in pending['ids']:
+        t = Team.query.get(tid)
+        if not t:
+            continue
+        g = Game.query.get(t.game_id)
+        if t.is_admin or (g and not g.is_archived):
+            choices.append((t, g))
+    if request.method == 'POST':
+        tid = request.form.get('team_id', type=int)
+        chosen = next((t for t, g in choices if t.id == tid), None)
+        if not chosen:
+            flash('Invalid selection.', 'danger')
+            return redirect(url_for('login_select'))
+        session.pop('login_choices', None)
+        return _complete_login(chosen)
+    return render_template('login_select.html', choices=choices)
 
 
 @app.route('/logout')
@@ -313,9 +366,8 @@ def create_game_self_service():
             flash('Please enter a valid email address — it is how you recover '
                   'your login if you forget it.', 'danger')
             return redirect(url_for('create_game_self_service'))
-        if Team.query.filter_by(username=username).first():
-            flash(f'Username "{username}" is already taken — pick another.',
-                  'danger')
+        if username.lower() == 'admin':
+            flash('That username is reserved — pick another.', 'danger')
             return redirect(url_for('create_game_self_service'))
         if (Game.query.filter_by(is_archived=False).count()
                 >= MAX_ACTIVE_GAMES):
@@ -390,9 +442,12 @@ def join_game():
             flash('Please enter a valid email address — it is how you recover '
                   'your login if you forget it.', 'danger')
             return redirect(url_for('join_game'))
-        if Team.query.filter_by(username=username).first():
-            flash(f'Username "{username}" is already taken — pick another.',
-                  'danger')
+        if username.lower() == 'admin':
+            flash('That username is reserved — pick another.', 'danger')
+            return redirect(url_for('join_game'))
+        if Team.query.filter_by(game_id=game.id, username=username).first():
+            flash(f'Username "{username}" is already taken in this game — '
+                  f'pick another.', 'danger')
             return redirect(url_for('join_game'))
 
         team = _create_team_with_fund(game, firm_name, username, password,
@@ -2075,8 +2130,11 @@ def admin_create_team():
         flash('Firm name, username, and password are required.', 'danger')
         return redirect(url_for('admin_teams'))
 
-    if Team.query.filter_by(username=username).first():
-        flash(f'Username "{username}" is already taken.', 'danger')
+    if username.lower() == 'admin':
+        flash('That username is reserved.', 'danger')
+        return redirect(url_for('admin_teams'))
+    if Team.query.filter_by(game_id=game.id, username=username).first():
+        flash(f'Username "{username}" is already taken in this game.', 'danger')
         return redirect(url_for('admin_teams'))
 
     team = Team(
@@ -2735,6 +2793,71 @@ def _ensure_schema():
                 db.session.execute(text(
                     f'ALTER TABLE {table} ADD COLUMN {name} {coltype}'))
     db.session.commit()
+    _drop_global_username_unique()
+
+
+def _drop_global_username_unique():
+    """One-time migration: usernames used to be globally unique; they are now
+    unique per game (so one person can reuse their login across games). Drops
+    the old global UNIQUE on team.username if the database still has it.
+
+    SQLite can't drop an inline UNIQUE, so the team table is rebuilt from the
+    current model (which carries the per-game constraint) and rows are copied
+    over — ids are preserved, so foreign keys stay valid. Detection uses
+    PRAGMA index_list because SQLAlchemy's SQLite inspector does not report
+    inline column UNIQUEs. legacy_alter_table keeps the RENAME from rewriting
+    other tables' FK references to the temp name. Postgres: drop the named
+    constraint/index and add the per-game unique index."""
+    from sqlalchemy import text, inspect
+    insp = inspect(db.engine)
+    if not insp.has_table('team'):
+        return
+    if db.engine.dialect.name == 'sqlite':
+        with db.engine.connect() as conn:
+            has_global = False
+            for row in conn.exec_driver_sql("PRAGMA index_list('team')"):
+                idx_name, is_unique = row[1], row[2]
+                if not is_unique:
+                    continue
+                cols = [r[2] for r in
+                        conn.exec_driver_sql(f"PRAGMA index_info('{idx_name}')")]
+                if cols == ['username']:
+                    has_global = True
+                    break
+            if not has_global:
+                return
+            col_list = ', '.join(c['name'] for c in insp.get_columns('team'))
+            conn.exec_driver_sql('PRAGMA legacy_alter_table=ON')
+            conn.exec_driver_sql('ALTER TABLE team RENAME TO _team_old')
+            Team.__table__.create(conn)   # current model: per-game unique
+            conn.exec_driver_sql(
+                f'INSERT INTO team ({col_list}) '
+                f'SELECT {col_list} FROM _team_old')
+            conn.exec_driver_sql('DROP TABLE _team_old')
+            conn.exec_driver_sql('PRAGMA legacy_alter_table=OFF')
+            conn.commit()
+    else:
+        uniques = insp.get_unique_constraints('team')
+        unique_idx = [i for i in insp.get_indexes('team') if i.get('unique')]
+        target_cons = [u for u in uniques
+                       if (u.get('column_names') or []) == ['username']]
+        target_idx = [i for i in unique_idx
+                      if i.get('column_names') == ['username']]
+        if not target_cons and not target_idx:
+            return
+        for u in target_cons:
+            if u.get('name'):
+                db.session.execute(text(
+                    f'ALTER TABLE team DROP CONSTRAINT IF EXISTS {u["name"]}'))
+        for i in target_idx:
+            if i.get('name'):
+                db.session.execute(text(f'DROP INDEX IF EXISTS {i["name"]}'))
+        # Guard per-game uniqueness going forward (matches the model).
+        db.session.execute(text(
+            'CREATE UNIQUE INDEX IF NOT EXISTS uq_team_game_username '
+            'ON team (game_id, username)'))
+        db.session.commit()
+    print("[init_db] Migrated team.username: global unique -> per-game unique.")
 
 
 def _seed_return_assumptions():
