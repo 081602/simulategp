@@ -310,7 +310,45 @@ window.SimulateGP.renderTeamInputs = function(containerId, count) {
 
 
 /* ----------------------------------------------------------
-   11. Toast Notifications helper (for future use)
+   11. Sortable table columns
+      Any <th class="sortable"> toggles asc/desc sorting of its
+      column on click. Cells may provide data-sort for a clean
+      sort key; otherwise their text content is used.
+   ---------------------------------------------------------- */
+(function initSortableTables() {
+  document.querySelectorAll('table').forEach(function (table) {
+    var headers = table.querySelectorAll('th.sortable');
+    if (!headers.length) return;
+    headers.forEach(function (th) {
+      th.addEventListener('click', function () {
+        var idx = th.cellIndex;
+        var tbody = table.querySelector('tbody');
+        if (!tbody) return;
+        var dir = th.dataset.sortDir === 'asc' ? 'desc' : 'asc';
+        headers.forEach(function (h) { delete h.dataset.sortDir; });
+        th.dataset.sortDir = dir;
+        var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+        rows.sort(function (a, b) {
+          function key(row) {
+            var cell = row.cells[idx];
+            if (!cell) return '';
+            var v = cell.dataset.sort !== undefined ? cell.dataset.sort : cell.textContent;
+            return v.trim().toLowerCase();
+          }
+          var av = key(a), bv = key(b);
+          if (av < bv) return dir === 'asc' ? -1 : 1;
+          if (av > bv) return dir === 'asc' ? 1 : -1;
+          return 0;
+        });
+        rows.forEach(function (r) { tbody.appendChild(r); });
+      });
+    });
+  });
+})();
+
+
+/* ----------------------------------------------------------
+   12. Toast Notifications helper (for future use)
    ---------------------------------------------------------- */
 window.SimulateGP.showToast = function(message, type) {
   type = type || 'info';

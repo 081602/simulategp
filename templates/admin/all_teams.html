@@ -32,10 +32,9 @@
           <table class="table table-dark table-hover align-middle mb-0" id="rosterTable">
             <thead><tr>
               <th>Game</th>
-              <th>Firm</th>
-              <th>Username</th>
-              <th>Password</th>
-              <th>Email</th>
+              <th class="sortable" style="cursor:pointer" title="Click to sort">Join Code <i class="bi bi-arrow-down-up small text-secondary"></i></th>
+              <th class="sortable" style="cursor:pointer" title="Click to sort">Firm <span class="text-secondary small fw-normal">(email)</span> <i class="bi bi-arrow-down-up small text-secondary"></i></th>
+              <th class="sortable" style="cursor:pointer" title="Click to sort">Username <span class="text-secondary small fw-normal">(password)</span> <i class="bi bi-arrow-down-up small text-secondary"></i></th>
               <th>Mandate</th>
               <th>Last Login</th>
               <th>Last Seen</th>
@@ -47,13 +46,16 @@
                 {{ g.name }}
                 {% if g.is_archived %}<span class="badge bg-secondary ms-1">Archived</span>{% endif %}
               </td>
-              <td class="fw-semibold">{{ team.firm_name }}</td>
-              <td><code>{{ team.username }}</code></td>
-              <td><code>{{ team.password_plain or '—' }}</code></td>
-              <td class="small">
+              <td data-sort="{{ g.join_code or '' }}"><code class="text-info">{{ g.join_code or '—' }}</code></td>
+              <td data-sort="{{ team.firm_name | lower }}" class="fw-semibold">
+                {{ team.firm_name }}
                 {% if team.email %}
-                <a href="mailto:{{ team.email }}" class="text-info text-decoration-none">{{ team.email }}</a>
-                {% else %}<span class="text-secondary">—</span>{% endif %}
+                <span class="fw-normal small">(<a href="mailto:{{ team.email }}" class="text-info text-decoration-none">{{ team.email }}</a>)</span>
+                {% endif %}
+              </td>
+              <td data-sort="{{ team.username | lower }}">
+                <code>{{ team.username }}</code>
+                <span class="text-secondary small">({{ team.password_plain or '—' }})</span>
               </td>
               <td>
                 {% if team.fund_type == 'vc' %}
