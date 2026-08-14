@@ -12,6 +12,14 @@
           {{ "%.2f"|format(game.market_condition) }}x
         </span>
       </span>
+      {% if game.is_joinable and game.join_code %}
+      <div class="small mt-1">
+        <i class="bi bi-ticket-perforated text-info"></i>
+        <span class="text-secondary">Invite others to this game with join code</span>
+        <code class="text-info">{{ game.join_code }}</code>
+        <span class="text-secondary">&mdash; joining closes at the first Deal Process.</span>
+      </div>
+      {% endif %}
     </div>
     <a href="{{ url_for('guide') }}" class="btn btn-sm btn-outline-info">
       <i class="bi bi-book"></i> How to Play
