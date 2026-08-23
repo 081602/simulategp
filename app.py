@@ -199,6 +199,16 @@ def guide():
     return render_template('guide.html')
 
 
+@app.route('/contact')
+def contact():
+    """Contact form. Sends via client-side EmailJS (no email address is ever
+    exposed in the page); a honeypot field and a minimum-fill-time check in
+    the page filter out bot submissions before anything is sent."""
+    cfg = _emailjs_cfg()
+    return render_template('contact.html', emailjs=cfg,
+                           available=all(cfg.values()))
+
+
 @app.route('/single-player')
 def single_player_info():
     """Explainer landing page for single-player mode."""
