@@ -199,6 +199,18 @@ def guide():
     return render_template('guide.html')
 
 
+@app.route('/single-player')
+def single_player_info():
+    """Explainer landing page for single-player mode."""
+    return render_template('single_player.html')
+
+
+@app.route('/multi-player')
+def multi_player_info():
+    """Explainer landing page for multi-player mode."""
+    return render_template('multi_player.html')
+
+
 @app.route('/forgot')
 def forgot_login():
     """Forgot-login form. The submission is sent client-side via EmailJS

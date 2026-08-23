@@ -42,14 +42,15 @@
             <i class="bi bi-box-arrow-in-right"></i> Log In
           </button>
         </form>
-        <p class="mt-4 text-secondary mb-2">
-          <a href="{{ url_for('join_game') }}" class="text-warning">Join a game</a>
-          with its join code
-        </p>
-        <p class="text-secondary mb-2">
-          <a href="{{ url_for('create_game_self_service') }}" class="text-warning">Create your own game</a>
-          with an access code
-        </p>
+        <hr class="border-secondary my-4">
+        <div class="d-grid gap-2 mb-3">
+          <a href="{{ url_for('single_player_info') }}" class="btn btn-outline-warning fw-semibold py-2">
+            <i class="bi bi-person-fill"></i> Launch New Single-Player Mode
+          </a>
+          <a href="{{ url_for('multi_player_info') }}" class="btn btn-outline-warning fw-semibold py-2">
+            <i class="bi bi-people-fill"></i> Launch New Multi-Player Mode
+          </a>
+        </div>
         <p class="text-secondary mb-2">
           First time? <a href="{{ url_for('guide') }}" class="text-warning"><i class="bi bi-book"></i> Read the How-to-Play guide</a>
         </p>
