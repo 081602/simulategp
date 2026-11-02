@@ -330,6 +330,13 @@ def _username_password_ok(username, password):
             or any(t.check_password(password) for t in existing))
 
 
+def _linked_teams(username, password):
+    """Teams already using this username+password — the same player's linked
+    identity across games (empty list for a brand-new login)."""
+    return [t for t in Team.query.filter_by(username=username).all()
+            if t.check_password(password)]
+
+
 def _create_team_with_fund(game, firm_name, username, password,
                            fund_type, sector_focus, fund_size,
                            mgmt_fee=0.02, perf_fee=0.20, email=None):
@@ -394,10 +401,6 @@ def create_game_self_service():
         if not firm_name or not username or not password:
             flash('Firm name, username, and password are all required.', 'danger')
             return redirect(url_for('create_game_self_service'))
-        if not _valid_email(email):
-            flash('Please enter a valid email address — it is how you recover '
-                  'your login if you forget it.', 'danger')
-            return redirect(url_for('create_game_self_service'))
         if username.lower() == 'admin':
             flash('That username is reserved — pick another.', 'danger')
             return redirect(url_for('create_game_self_service'))
@@ -406,6 +409,16 @@ def create_game_self_service():
                   'If it\'s yours, enter your usual password; otherwise pick '
                   'a different username.', 'danger')
             return redirect(url_for('create_game_self_service'))
+        linked = _linked_teams(username, password)
+        if linked:
+            # Returning player — reuse the email already on file, don't re-ask.
+            email = next((t.email for t in linked if t.email), None) or ''
+        elif not _valid_email(email):
+            # Brand-new login: re-show the form (values preserved) with the
+            # email field revealed so they can add one and resubmit.
+            return render_template('create_game.html', sectors=SECTORS,
+                                   fund_sizes=sorted(FUND_SIZE_PARTNERS),
+                                   need_email=True)
         if (Game.query.filter_by(is_archived=False).count()
                 >= MAX_ACTIVE_GAMES):
             flash('Too many active games right now — please try again later.',
@@ -433,7 +446,8 @@ def create_game_self_service():
             'SimulateGP: new game created',
             f'A new game was just created on simulategp.com.\n\n'
             f'Game: {game.name} (join code {game.join_code})\n'
-            f'Firm: {firm_name}\nUsername: {username}\nEmail: {email}\n'
+            f'Firm: {firm_name}\nUsername: {username}\n'
+            f'Email: {email or "(not collected)"}\n'
             f'Fund: ${fund_size:,.0f}M {fund_type.upper()}, {sector_focus}',
             email)
         flash(f'Welcome to "{game.name}"! Your fund is raised — search for '
@@ -475,10 +489,6 @@ def join_game():
         if not firm_name or not username or not password:
             flash('Firm name, username, and password are all required.', 'danger')
             return redirect(url_for('join_game'))
-        if not _valid_email(email):
-            flash('Please enter a valid email address — it is how you recover '
-                  'your login if you forget it.', 'danger')
-            return redirect(url_for('join_game'))
         if username.lower() == 'admin':
             flash('That username is reserved — pick another.', 'danger')
             return redirect(url_for('join_game'))
@@ -491,6 +501,16 @@ def join_game():
                   'If it\'s yours, enter your usual password; otherwise pick '
                   'a different username.', 'danger')
             return redirect(url_for('join_game'))
+        linked = _linked_teams(username, password)
+        if linked:
+            # Returning player — reuse the email already on file, don't re-ask.
+            email = next((t.email for t in linked if t.email), None) or ''
+        elif not _valid_email(email):
+            # Brand-new login: re-show the form (values preserved) with the
+            # email field revealed so they can add one and resubmit.
+            return render_template('join_game.html', sectors=SECTORS,
+                                   fund_sizes=sorted(FUND_SIZE_PARTNERS),
+                                   need_email=True)
 
         team = _create_team_with_fund(game, firm_name, username, password,
                                       fund_type, sector_focus, fund_size,
@@ -505,7 +525,8 @@ def join_game():
             'SimulateGP: new team joined a game',
             f'A new team just joined a game on simulategp.com.\n\n'
             f'Game: {game.name}\n'
-            f'Firm: {firm_name}\nUsername: {username}\nEmail: {email}\n'
+            f'Firm: {firm_name}\nUsername: {username}\n'
+            f'Email: {email or "(not collected)"}\n'
             f'Fund: ${fund_size:,.0f}M {fund_type.upper()}, {sector_focus}',
             email)
         flash(f'Welcome to "{game.name}"! Your fund is raised — search for '

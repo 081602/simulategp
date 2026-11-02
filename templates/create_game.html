@@ -29,11 +29,13 @@
           {% endfor %}
         {% endwith %}
 
+        {% set f = request.form %}
         <form method="POST">
           <div class="mb-3">
             <label class="form-label text-white">Access Code</label>
             <input type="text" name="access_code" class="form-control bg-dark text-white border-secondary"
-                   placeholder="Enter your access code" required autofocus>
+                   placeholder="Enter your access code" value="{{ f.get('access_code', '') }}"
+                   required{% if not need_email %} autofocus{% endif %}>
             <div class="form-text text-secondary">
               Currently an access code is necessary to create a game &mdash; it prevents
               unauthorized, unlimited games being created by unfriendly bots.
@@ -43,24 +45,30 @@
           <div class="mb-3">
             <label class="form-label text-white">Firm Name</label>
             <input type="text" name="firm_name" maxlength="100" class="form-control bg-dark text-white border-secondary"
-                   placeholder="e.g. Atlas Capital" required>
+                   placeholder="e.g. Atlas Capital" value="{{ f.get('firm_name', '') }}" required>
           </div>
+          {% if need_email %}
           <div class="mb-3">
+            <div class="alert alert-info py-2 mb-2">
+              <i class="bi bi-envelope"></i> Looks like a new account &mdash; add an
+              email address so you can recover your login, then press the button again.
+            </div>
             <label class="form-label text-white">Email</label>
             <input type="email" name="email" maxlength="255" class="form-control bg-dark text-white border-secondary"
-                   placeholder="you@example.com" required>
+                   placeholder="you@example.com" value="{{ f.get('email', '') }}" required autofocus>
             <div class="form-text text-secondary">Used to recover your login if you forget it.</div>
           </div>
+          {% endif %}
           <div class="row g-3">
             <div class="col-md-6 mb-3">
               <label class="form-label text-white">Username</label>
               <input type="text" name="username" maxlength="50" class="form-control bg-dark text-white border-secondary"
-                     placeholder="Pick a username" required>
+                     placeholder="Pick a username" value="{{ f.get('username', '') }}" required>
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label text-white">Password</label>
               <input type="text" name="password" maxlength="100" class="form-control bg-dark text-white border-secondary"
-                     placeholder="Pick a password" required autocomplete="new-password">
+                     placeholder="Pick a password" value="{{ f.get('password', '') }}" required autocomplete="new-password">
               <div class="form-text text-secondary">Shown as you type &mdash; write it down. Case-sensitive.</div>
             </div>
           </div>
@@ -68,16 +76,16 @@
             <div class="col-md-4 mb-3">
               <label class="form-label text-white">Fund Type</label>
               <select name="fund_type" class="form-select bg-dark text-white border-secondary">
-                <option value="pe" selected>Private Equity</option>
-                <option value="vc">Venture Capital</option>
+                <option value="pe" {% if f.get('fund_type', 'pe') != 'vc' %}selected{% endif %}>Private Equity</option>
+                <option value="vc" {% if f.get('fund_type') == 'vc' %}selected{% endif %}>Venture Capital</option>
               </select>
             </div>
             <div class="col-md-4 mb-3">
               <label class="form-label text-white">Sector Focus</label>
               <select name="sector_focus" class="form-select bg-dark text-white border-secondary">
-                <option value="generalist" selected>Generalist</option>
+                <option value="generalist" {% if f.get('sector_focus', 'generalist') not in sectors %}selected{% endif %}>Generalist</option>
                 {% for s in sectors %}
-                <option value="{{ s }}">{{ s }}</option>
+                <option value="{{ s }}" {% if f.get('sector_focus') == s %}selected{% endif %}>{{ s }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -85,7 +93,7 @@
               <label class="form-label text-white">Fund Size</label>
               <select name="fund_size" class="form-select bg-dark text-white border-secondary">
                 {% for fs in fund_sizes %}
-                <option value="{{ fs }}" {% if fs == 500 %}selected{% endif %}>${{ fs }}M</option>
+                <option value="{{ fs }}" {% if fs|string == f.get('fund_size', '500') %}selected{% endif %}>${{ fs }}M</option>
                 {% endfor %}
               </select>
             </div>
@@ -93,15 +101,15 @@
           <div class="mb-3">
             <label class="form-label text-white">Fee Structure</label>
             <select name="fee_structure" class="form-select bg-dark text-white border-secondary">
-              <option value="2_20" selected>2 &amp; 20 &mdash; 2% management fee, 20% carried interest (standard)</option>
-              <option value="1_10">1 &amp; 10 &mdash; 1% management fee, 10% carried interest (low-fee)</option>
+              <option value="2_20" {% if f.get('fee_structure', '2_20') != '1_10' %}selected{% endif %}>2 &amp; 20 &mdash; 2% management fee, 20% carried interest (standard)</option>
+              <option value="1_10" {% if f.get('fee_structure') == '1_10' %}selected{% endif %}>1 &amp; 10 &mdash; 1% management fee, 10% carried interest (low-fee)</option>
             </select>
             <div class="form-text text-secondary">The fee is charged yearly on deployed capital; carry is your share of net realized profits.</div>
           </div>
           <div class="mb-4">
             <label class="form-label text-white">Game Name <span class="text-secondary small">(optional)</span></label>
             <input type="text" name="game_name" maxlength="100" class="form-control bg-dark text-white border-secondary"
-                   placeholder="e.g. Jamie's Test Run">
+                   placeholder="e.g. Jamie's Test Run" value="{{ f.get('game_name', '') }}">
           </div>
           <button type="submit" class="btn btn-warning w-100 fw-bold py-2">
             <i class="bi bi-rocket-takeoff"></i> Create Game &amp; Start
