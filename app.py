@@ -2896,7 +2896,33 @@ def _ensure_schema():
                 db.session.execute(text(
                     f'ALTER TABLE {table} ADD COLUMN {name} {coltype}'))
     db.session.commit()
+    _widen_generated_text_columns()
     _drop_global_username_unique()
+
+
+def _widen_generated_text_columns():
+    """Migration: columns that store generated prose were VARCHAR(200/300),
+    which Postgres enforces strictly — a long crank-generated rejection reason
+    crashed the Deal Process mid-run (2026-11-02). Widen them to TEXT.
+    SQLite ignores VARCHAR lengths, so nothing to do there."""
+    from sqlalchemy import text, inspect
+    if db.engine.dialect.name == 'sqlite':
+        return
+    insp = inspect(db.engine)
+    targets = [('term_sheet', 'rejection_reason'),
+               ('fund_transaction', 'description'),
+               ('game_company', 'reasons_for_funding')]
+    for table, col in targets:
+        if not insp.has_table(table):
+            continue
+        info = next((c for c in insp.get_columns(table)
+                     if c['name'] == col), None)
+        if info is None or str(info['type']).upper() == 'TEXT':
+            continue
+        db.session.execute(text(
+            f'ALTER TABLE {table} ALTER COLUMN {col} TYPE TEXT'))
+        print(f'[init_db] Widened {table}.{col} to TEXT.')
+    db.session.commit()
 
 
 def _drop_global_username_unique():

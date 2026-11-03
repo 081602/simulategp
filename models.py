@@ -285,7 +285,7 @@ class GameCompany(db.Model):
     lead_team_id = db.Column(db.Integer, db.ForeignKey('team.id'), nullable=True)
     liquidation_proceeds = db.Column(db.Float, nullable=True)
     company_funds = db.Column(db.Float, default=0.0)  # cash the company holds
-    reasons_for_funding = db.Column(db.String(200), nullable=True)
+    reasons_for_funding = db.Column(db.Text, nullable=True)
     available_cash = db.Column(db.Float, default=0.0)
     founder_shares = db.Column(db.Integer, default=10000000)
     management_option_pct = db.Column(db.Float, default=0.10)
@@ -578,7 +578,9 @@ class TermSheet(db.Model):
     status = db.Column(db.String(30), default='pending')
     # pending, lead, fill_offered, coinvest_offered, fill_accepted,
     # fill_declined, rejected, withdrawn
-    rejection_reason = db.Column(db.String(300), nullable=True)  # set when status -> rejected
+    # Generated prose can run long; TEXT so Postgres never rejects it
+    # (SQLite ignores VARCHAR lengths, which is why this only bit in prod).
+    rejection_reason = db.Column(db.Text, nullable=True)  # set when status -> rejected
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     fund = db.relationship('Fund')
@@ -698,7 +700,7 @@ class FundTransaction(db.Model):
     # investment, management_fee, search_fee, dividend_received,
     # liquidation_proceeds, debt_interest_received, management_change_fee
     amount = db.Column(db.Float, nullable=False)   # positive = inflow, negative = outflow
-    description = db.Column(db.String(300))
+    description = db.Column(db.Text)
     game_year = db.Column(db.Integer, nullable=False)
     company_id = db.Column(db.Integer, db.ForeignKey('game_company.id'), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
