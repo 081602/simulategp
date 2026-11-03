@@ -48,8 +48,8 @@
                 </td>
                 <td class="text-secondary font-monospace">{{ team.username }}</td>
                 <td class="text-center">
-                  <span class="badge {% if team.fund_type == 'vc' %}bg-info text-dark{% else %}bg-primary{% endif %}">
-                    {{ 'VC' if team.fund_type == 'vc' else 'PE' }}
+                  <span class="badge {% if team.fund_type == 'vc' %}bg-info text-dark{% elif team.fund_type == 'buyout' %}bg-success{% else %}bg-primary{% endif %}">
+                    {{ 'VC' if team.fund_type == 'vc' else ('Buyout' if team.fund_type == 'buyout' else 'PE') }}
                   </span>
                   <span class="badge bg-secondary">{{ team.sector_focus | title }}</span>
                   <div class="text-light small mt-1">{{ team.num_partners }} partners</div>
@@ -158,9 +158,10 @@
               <label class="form-label fw-semibold text-white">Fund Type</label>
               <select class="form-select bg-dark text-white border-secondary" name="fund_type" required>
                 <option value="pe" selected>Private Equity</option>
+                <option value="buyout">Private Equity Buyout</option>
                 <option value="vc">Venture Capital</option>
               </select>
-              <div class="form-text text-light small">VC: Startup &amp; Developing. PE: Early Revenue &amp; Mature.</div>
+              <div class="form-text text-light small">PE: Early Revenue &amp; Mature. Buyout: Mature only. VC: Startup &amp; Developing.</div>
             </div>
             <div class="col-6">
               <label class="form-label fw-semibold text-white">Sector Focus</label>

@@ -138,14 +138,20 @@ class Team(db.Model, UserMixin):
 
     @property
     def allowed_stages(self):
-        """VC funds invest in startup/developing; PE funds in early_revenue/mature."""
+        """VC funds invest in startup/developing; PE funds in early_revenue/
+        mature; buyout funds in mature only (straight common-equity buyouts —
+        no preferred-stock terms ever come up)."""
         if self.fund_type == 'vc':
             return ('startup', 'developing')
+        if self.fund_type == 'buyout':
+            return ('mature',)
         return ('early_revenue', 'mature')
 
     @property
     def fund_type_label(self):
-        return 'Venture Capital' if self.fund_type == 'vc' else 'Private Equity'
+        return {'vc': 'Venture Capital',
+                'buyout': 'Private Equity Buyout'}.get(
+                    self.fund_type, 'Private Equity')
 
     def investment_block_reason(self, company):
         """Return None if this team may invest in the company, else a human-readable reason."""

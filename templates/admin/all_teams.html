@@ -65,6 +65,8 @@
               <td>
                 {% if team.fund_type == 'vc' %}
                 <span class="badge bg-danger">VC</span>
+                {% elif team.fund_type == 'buyout' %}
+                <span class="badge bg-success">Buyout</span>
                 {% else %}
                 <span class="badge bg-primary">PE</span>
                 {% endif %}

@@ -269,7 +269,7 @@ def _parse_team_signup_form():
     username = (request.form.get('username') or '').strip()
     password = (request.form.get('password') or '').strip()
     fund_type = request.form.get('fund_type', 'pe')
-    if fund_type not in ('pe', 'vc'):
+    if fund_type not in ('pe', 'vc', 'buyout'):
         fund_type = 'pe'
     sector_focus = request.form.get('sector_focus', 'generalist')
     if sector_focus != 'generalist' and sector_focus not in SECTORS:
@@ -2332,7 +2332,7 @@ def admin_edit_team(team_id):
     game = Game.query.get(team.game_id)
     if request.method == 'POST':
         team.firm_name = request.form.get('firm_name', team.firm_name)
-        if request.form.get('fund_type') in ('pe', 'vc'):
+        if request.form.get('fund_type') in ('pe', 'vc', 'buyout'):
             team.fund_type = request.form.get('fund_type')
         if 'sector_focus' in request.form:
             sf = request.form.get('sector_focus')

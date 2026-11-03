@@ -30,7 +30,7 @@
 
             <!-- Mandate -->
             <div class="mb-2">
-              <span class="badge {% if team.fund_type == 'vc' %}bg-info text-dark{% else %}bg-primary{% endif %}">
+              <span class="badge {% if team.fund_type == 'vc' %}bg-info text-dark{% elif team.fund_type == 'buyout' %}bg-success{% else %}bg-primary{% endif %}">
                 {{ team.fund_type_label }}
               </span>
               <span class="badge bg-secondary">{{ team.sector_focus | title }}</span>

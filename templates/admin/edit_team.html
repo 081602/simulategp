@@ -32,8 +32,8 @@
           </div>
           <div class="col-md-3">
             <div class="text-secondary small">Mandate</div>
-            <span class="badge {% if team.fund_type == 'vc' %}bg-info text-dark{% else %}bg-primary{% endif %}">
-              {{ 'VC' if team.fund_type == 'vc' else 'PE' }}
+            <span class="badge {% if team.fund_type == 'vc' %}bg-info text-dark{% elif team.fund_type == 'buyout' %}bg-success{% else %}bg-primary{% endif %}">
+              {{ 'VC' if team.fund_type == 'vc' else ('Buyout' if team.fund_type == 'buyout' else 'PE') }}
             </span>
             <span class="badge bg-secondary">{{ team.sector_focus | title }}</span>
           </div>
@@ -109,6 +109,7 @@
               <label for="fund_type" class="form-label fw-semibold text-white">Fund Type</label>
               <select class="form-select bg-dark text-white border-secondary" id="fund_type" name="fund_type">
                 <option value="pe" {% if team.fund_type == 'pe' %}selected{% endif %}>Private Equity</option>
+                <option value="buyout" {% if team.fund_type == 'buyout' %}selected{% endif %}>Private Equity Buyout</option>
                 <option value="vc" {% if team.fund_type == 'vc' %}selected{% endif %}>Venture Capital</option>
               </select>
               <div class="form-text text-light small">VC: Startup &amp; Developing. PE: Early Revenue &amp; Mature.</div>

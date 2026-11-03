@@ -76,9 +76,11 @@
             <div class="col-md-4 mb-3">
               <label class="form-label text-white">Fund Type</label>
               <select name="fund_type" class="form-select bg-dark text-white border-secondary">
-                <option value="pe" {% if f.get('fund_type', 'pe') != 'vc' %}selected{% endif %}>Private Equity</option>
+                <option value="pe" {% if f.get('fund_type', 'pe') not in ('vc', 'buyout') %}selected{% endif %}>Private Equity</option>
+                <option value="buyout" {% if f.get('fund_type') == 'buyout' %}selected{% endif %}>Private Equity Buyout</option>
                 <option value="vc" {% if f.get('fund_type') == 'vc' %}selected{% endif %}>Venture Capital</option>
               </select>
+              <div class="form-text text-secondary">PE: Early Revenue &amp; Mature &middot; Buyout: Mature only &middot; VC: Startup &amp; Developing</div>
             </div>
             <div class="col-md-4 mb-3">
               <label class="form-label text-white">Sector Focus</label>
